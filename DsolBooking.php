@@ -67,29 +67,68 @@ class DsolBookingPluginHooks
 		
 		global $wpdb;
 		global $bookaroom_db_version;
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		# create table for branches
-		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branches (
-					branchID int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-					branchDesc varchar(64) CHARACTER SET latin1 NOT NULL,
-					branchOpen_0 time DEFAULT NULL,
-					branchOpen_1 time DEFAULT NULL,
-					branchOpen_2 time DEFAULT NULL,
-					branchOpen_3 time DEFAULT NULL,
-					branchOpen_4 time DEFAULT NULL,
-					branchOpen_5 time DEFAULT NULL,
-					branchOpen_6 time DEFAULT NULL,
-					branchClose_0 time DEFAULT NULL,
-					branchClose_1 time DEFAULT NULL,
-					branchClose_2 time DEFAULT NULL,
-					branchClose_3 time DEFAULT NULL,
-					branchClose_4 time DEFAULT NULL,
-					branchClose_5 time DEFAULT NULL,
-					branchClose_6 time DEFAULT NULL,
-					PRIMARY KEY  (branchID)
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        
+		// my edit starts here
+        # create table for branches		
+		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_branch (
+				  branchID int(10) unsigned NOT NULL AUTO_INCREMENT,
+				  branchName varchar(128) NOT NULL,
+				  PRIMARY KEY (branchID)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
+
+        dbDelta( $sql );
+
+		# create table for branch schedules
+		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_branch_schedule (
+					branchSchedule int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+					branchOpen time DEFAULT NULL,
+					branchClose time DEFAULT NULL,
+                    dayOfTheWeek int(1-7), DEFAULT 1;
+					PRIMARY KEY  (branchSchedule),
+                    FOREIGN KEY (branchID) REFERENCES branch(branchId),
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
+        dbDelta( $sql );
+        
+        # create table for room
+		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_room(
+					roomID int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+					roomNumber int() UNSIGNED NOT NULL;
+					roomDesc varchar(128) NOT NULL,
+					PRIMARY KEY  (roomID),
+                    FOREIGN KEY (branchID) REFERENCES branch(branchID)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
+        dbDelta( $sql );
+
+         # create table for time
+		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_time (
+					timeID int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+				    startTime time DEFAULT NULL,
+					endTime time DEFAULT NULL,
+					PRIMARY KEY  (timeID),
 					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
 		dbDelta( $sql );
-		
+        
+         # create table for container
+		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_container (
+					containerID int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+					containerNumber int() UNSIGNED NOT NULL;
+					containerDesc varchar(128) NOT NULL,
+					PRIMARY KEY  (containerID),
+                    FOREIGN KEY (roomID) REFERENCES branch(roomID),
+                    FOREIGN KEY (timeID) REFERENCES branch(timeID)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
+        dbDelta( $sql );
+        
+         # create table for reservation
+		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_reservation (
+					reservationID int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+                    // Time stamp
+					PRIMARY KEY  (reservationID),
+                    FOREIGN KEY (containerID) REFERENCES container(containerID)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
+        dbDelta( $sql );
+		// my edit ends here (Aung)
 
 		# create table for closings
 		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_closings (
