@@ -1,25 +1,25 @@
 <?php
 /*
-Plugin Name: Book a Room
-Plugin URI: https://wordpress.org/plugins/book-a-room/
-Description: Book a Room is a library oriented meeting room management and event calendar system.
-Version: 2.8.2.1
-Author: Colin Tomele
-Author URI: http://heightslibrary.org
+Plugin Name: D Solutions Booking Plugin
+Plugin URI: https://github.com/dave325/dsolBooking
+Description: Figure it out
+Version: 1.0.0
+Author: David Solutions 
+Author URI: http://dataramsolutions.com
 License: GPLv2 or later
-Text Domain: book-a-room
+Text Domain: dsol-booking
 */
-global $bookaroom_db_version;
-$bookaroom_db_version = "3";
+global $dsol_booking_version;
+$dsol_booking_version = "1";
 
-define( 'BOOKAROOM_PATH', plugin_dir_path( __FILE__ ) );
-require_once( BOOKAROOM_PATH . 'bookaroom-meetings-public.php' );
-require_once( BOOKAROOM_PATH . 'bookaroom-company-profile.php' );
-require_once( BOOKAROOM_PATH . 'sharedFunctions.php' );
+define( 'DSOL_BOOKING_PATH', plugin_dir_path( __FILE__ ) );
 
-register_activation_hook( __FILE__, array( 'bookaroom_init', 'on_activate' ) );
-register_deactivation_hook( __FILE__, array( 'bookaroom_init', 'on_deactivate' ) );
-register_uninstall_hook( __FILE__, array( 'bookaroom_init', 'on_uninstall' ) );
+/**
+ * Change init functions and class
+ */
+register_activation_hook( __FILE__, array( 'DsolBookingPluginHooks', 'on_activate' ) );
+register_deactivation_hook( __FILE__, array( 'DsolBookingPluginHooks', 'on_deactivate' ) );
+register_uninstall_hook( __FILE__, array( 'DsolBookingPluginHooks', 'on_uninstall' ) );
 
 add_action( 'init', 'myStartSession', 1);
 add_action( 'wp_logout', 'myEndSession' );
@@ -27,7 +27,7 @@ add_action( 'init', 'my_script_enqueuer' );
 
 #add_filter( 'the_content',  array( 'bookaroom_public', 'mainForm' ) );
 
-add_action( 'admin_notices', array( 'bookaroom_init', 'plugin_activation_message' ) ) ;
+add_action( 'admin_notices', array( 'DsolBookingPluginHooks', 'plugin_activation_message' ) ) ;
 
 add_action( 'admin_menu', array( 'bookaroom_settings', 'add_settingsPage' ) );
 
@@ -35,7 +35,7 @@ add_action( 'admin_menu', array( 'bookaroom_settings', 'add_settingsPage' ) );
 #add_action(		'gform_after_submission',	array( 'bookaroom_creditCardPayments', 'finishedSubmission' ));
 
 function my_script_enqueuer() {
-	
+	// Prefix later on
 	add_shortcode( 'meetingRooms',	array( 'bookaroom_public', 'mainForm' ) );
 	add_shortcode( 'profile',	array( 'bookaroom_company_profile', 'showBookings' ) );
 	$width = get_option( 'bookaroom_screenWidth' );
@@ -48,11 +48,7 @@ function my_script_enqueuer() {
 	
 	global $bookaroom_db_version;
 	
-	if( get_option( 'bookaroom_db_version' ) !== $bookaroom_db_version ) {
-		
-		update_bookaroom_database();
-	}
-	wp_enqueue_script('jquery');
+	wp_dequeue_script('jquery');
 	wp_enqueue_style( 'jquery_ui_css', "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" );
 	wp_enqueue_script( 'bookaroom_js', plugins_url( 'book-a-room/js/jstree/jquery.jstree.js' ), false );
 	wp_enqueue_script( 'jquery_ui', "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js", 'jquery','',false );
@@ -61,23 +57,8 @@ function my_script_enqueuer() {
 
 }
 
-function update_bookaroom_database()
-{
-	global $wpdb;
-	global $bookaroom_db_version;
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		
-	#
-	# 1.2 to 1.3 - I added functions to internationalize addresses. This changes the state from a 2 to 255 long value.
-	if( get_option( 'bookaroom_db_version' ) <= '1.2' ) {
-		$sql = "ALTER TABLE {$wpdb->prefix}bookaroom_reservations CHANGE  me_contactState me_contactState VARCHAR( 255 );";
-		$wpdb->query( $sql );
-		$sql = "ALTER TABLE {$wpdb->prefix}bookaroom_reservations_deleted CHANGE  me_contactState me_contactState VARCHAR( 255 );";
-		$wpdb->query( $sql );
-	}
-}
 
-class bookaroom_init
+class DsolBookingPluginHooks
 # simple class for activating, deactivating and uninstalling plugin
 {
     public static function on_activate( $dbOnly = false )
@@ -86,30 +67,11 @@ class bookaroom_init
 		
 		global $wpdb;
 		global $bookaroom_db_version;
-		
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-
-		# create table for amenities		
-		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_amenities (
-				  amenityID int(10) unsigned NOT NULL AUTO_INCREMENT,
-				  amenityDesc varchar(128) NOT NULL,
-				  amenity_isReservable tinyint(1) NOT NULL DEFAULT '0',
-				  PRIMARY KEY  (amenityID)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
-
-		dbDelta( $sql );
-
 		# create table for branches
-		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_branches (
+		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branches (
 					branchID int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 					branchDesc varchar(64) CHARACTER SET latin1 NOT NULL,
-					branchAddress text CHARACTER SET latin1 NOT NULL,
-					branchMapLink varchar(255) CHARACTER SET latin1 NOT NULL,
-					branchImageURL text CHARACTER SET latin1,
-					branch_isPublic tinyint(1) NOT NULL,
-					branch_isSocial tinyint(1) NOT NULL DEFAULT '1',
-				    branch_showSocial tinyint(1) NOT NULL DEFAULT '1',
-					branch_hasNoloc tinyint(1) NOT NULL DEFAULT '1',
 					branchOpen_0 time DEFAULT NULL,
 					branchOpen_1 time DEFAULT NULL,
 					branchOpen_2 time DEFAULT NULL,
@@ -128,14 +90,6 @@ class bookaroom_init
 					) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
 		dbDelta( $sql );
 		
-		# create table for citie list		
-		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_cityList (
-				  cityID int(10) unsigned NOT NULL AUTO_INCREMENT,
-				  cityDesc varchar(128) NOT NULL,
-				  UNIQUE KEY cityID (cityID)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
-
-		dbDelta( $sql );
 
 		# create table for closings
 		$sql = "CREATE TABLE {$wpdb->prefix}bookaroom_closings (
@@ -548,7 +502,7 @@ class bookaroom_init
 	{
 		global $bookaroom_db_version;
 		if( $bookaroom_db_version !== get_option( "bookaroom_db_version" ) ) {
-			bookaroom_init::on_activate( true );
+			DsolBookingPluginHooks::on_activate( true );
 			
 		}
 		
