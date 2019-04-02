@@ -161,6 +161,8 @@ class bookaroom_settings_branches
                  * 
                  * Deleted: branchDesc, branchMapLink, branchImageURL,
                  * branch_isPublic, branch_HasNoLoc
+                 * 
+                 * David -> Reflect for new time set up 
                  */
                 'branchOpen_0' => $finalTime['Open'][0],
                 'branchOpen_1' => $finalTime['Open'][1],
@@ -448,6 +450,8 @@ class bookaroom_settings_branches
                  * removed branchMapLink
                  * removed branchDesc
                  * removed branch_hasNoLoc
+                 * 
+                 * David -> Reflect for new time set up
                  */
                 'branchOpen_0' => $finalTime['Open'][0],
                 'branchOpen_1' => $finalTime['Open'][1],
@@ -504,6 +508,9 @@ class bookaroom_settings_branches
 
 
         # parse the times and convert from 24:00:00 to a 12:00 with a bit for PM
+        /**
+         * David -> This is old time set up, how can we improve this? 
+         */
         foreach ($final as $key => $val) {
             if (!in_array(substr($key, 0, 10), array('branchOpen', 'branchClos'))) {
                 continue;
@@ -562,6 +569,8 @@ class bookaroom_settings_branches
         *
         * Deleted branch_hasNoLoc, branchDesc, branchMapLink, branchImageURL, branch_isPublic,
         * branch_isSocial, and branch_showSocial
+
+        * David -> Refactor for new time DB set up
         */
         $sql = "SELECT `branchID`, `branchAddress`,`branchOpen_0`, `branchOpen_1`, `branchOpen_2`, `branchOpen_3`, `branchOpen_4`, `branchOpen_5`, `branchOpen_6`, `branchClose_0`, `branchClose_1`, `branchClose_2`, `branchClose_3`, `branchClose_4`, `branchClose_5`, `branchClose_6` FROM `$table_name` {$where}ORDER BY `branchDesc`";
 
@@ -604,6 +613,8 @@ class bookaroom_settings_branches
             * Deleted by: Jazmyn  
             *
             * Branch_isPublic, Branch_desc, Branch_isSocial, Branch_showSocial, branchMapLink, branchImageURL, branch_hasNoLoc
+            *   
+            * David -> Refactor to reflect new time set up
             */
             'branchOpen_0' => FILTER_SANITIZE_STRING,
             'branchOpen_0PM' => FILTER_SANITIZE_STRING,
