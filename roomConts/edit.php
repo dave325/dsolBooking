@@ -57,18 +57,8 @@ if ( !empty( $roomContInfo['errors'] ) ) {
 			<td><input name="occupancy" type="text" id="occupancy" value="<?php echo $roomContInfo['occupancy']; ?>" size="4" maxlength="4"/>
 			</td>
 		</tr>
-		<tr>
-			<td>
-				<?php _e( 'Public?', 'book-a-room' ); ?>
-			</td>
-			<td><input name="isPublic" type="checkbox" id="isPublic" value="true" <?php echo $isPublic; ?> /></td>
-		</tr>
-		<tr>
-			<td>
-				<?php _e( 'Hide on daily?', 'book-a-room' ); ?>
-			</td>
-			<td><input name="hideDaily" type="checkbox" id="hideDaily" value="true" <?php echo $hideDaily; ?> /></td>
-		</tr>
+		<!-- Kelvin: remove isPublic option -->
+		<!-- Kelvin: remove hideDaily option -->
 		<tr>
 			<td>
 				<?php _e( 'Branch', 'book-a-room' ); ?>

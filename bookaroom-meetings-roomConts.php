@@ -151,8 +151,13 @@ class bookaroom_settings_roomConts {
 
 		$roomArrSQL = array();
 
-		$isPublic = ( $externals[ 'isPublic' ] == true ) ? 1 : 0;
-		$hideDaily = ( $externals[ 'hideDaily' ] == true ) ? 1 : 0;
+		/*
+			Kelvin: set $isPublic, $hideDaily to NULL (since we aren't using it by still want to preserve the db structure/column values)
+		*/
+
+		$isPublic = NULL;
+		$hideDaily = NULL;
+
 		$final = $wpdb->insert( $table_name,
 			array( 'roomCont_desc' => $externals[ 'roomContDesc' ],
 				'roomCont_branch' => $externals[ 'branchID' ],
@@ -260,8 +265,12 @@ class bookaroom_settings_roomConts {
 			$goodArr = array_keys( $roomList[ 'id' ] );
 			$roomArr = array_intersect( $goodArr, $externals[ 'room' ] );
 		}
-		$isPublic = ( !empty( $externals[ 'isPublic' ] ) ) ? 1 : 0;
-		$hideDaily = ( !empty( $externals[ 'hideDaily' ] ) ) ? 1 : 0;
+		
+		/*
+			Kelvin: set both isPublic and hideDaily to NULL
+		*/
+		$isPublic = NULL;
+		$hideDaily = NULL;
 
 		$sql = "UPDATE `{$table_name}` SET `roomCont_desc` = '{$externals['roomContDesc']}', `roomCont_branch` = '{$externals['branchID']}', `roomCont_isPublic` = '{$isPublic}', `roomCont_hideDaily` = '{$hideDaily}',`roomCont_occ` = '{$externals['occupancy']}' WHERE `roomCont_ID` = '{$roomContID}'";
 
@@ -332,9 +341,12 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
+		/*
+			Kelvin: Remove roomCont_isPublic and roomCont_hideDaily from query
+		*/
 		$table_name = $wpdb->prefix . "bookaroom_roomConts";
 		$table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
-		$sql = "SELECT `roomCont`.`roomCont_ID`, `roomCont`.`roomCont_desc`, `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_occ`, `roomCont`.`roomCont_isPublic`, `roomCont`.`roomCont_hideDaily`, 
+		$sql = "SELECT `roomCont`.`roomCont_ID`, `roomCont`.`roomCont_desc`, `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_occ`,
 				GROUP_CONCAT( `members`.`rcm_roomID` ) as `roomCont_roomArr` 
 				FROM `$table_name` as `roomCont` 
 				LEFT JOIN `$table_name_members` as `members` ON `roomCont`.`roomCont_ID` = `members`.`rcm_roomContID` 
@@ -343,10 +355,12 @@ class bookaroom_settings_roomConts {
 
 		$final = $wpdb->get_row( $sql, ARRAY_A );
 
-		$roomContInfo = array( 'roomContID' => $roomContID, 'roomContDesc' => $final[ 'roomCont_desc' ], 'branchID' => $final[ 'roomCont_branch' ], 'room' => explode( ',', $final[ 'roomCont_roomArr' ] ), 'occupancy' => $final[ 'roomCont_occ' ], 'isPublic' => $final[ 'roomCont_isPublic' ], 'hideDaily' => $final[ 'roomCont_hideDaily' ] );
+		/*
+			Kelvin: Remove isPublic and hideDaily from the $roomContInfo array
+		*/
+		$roomContInfo = array( 'roomContID' => $roomContID, 'roomContDesc' => $final[ 'roomCont_desc' ], 'branchID' => $final[ 'roomCont_branch' ], 'room' => explode( ',', $final[ 'roomCont_roomArr' ] ), 'occupancy' => $final[ 'roomCont_occ' ]);
 		return $roomContInfo;
 	}
-
 
 	public static
 	function getRoomContList( $isPublic = false )
@@ -358,18 +372,22 @@ class bookaroom_settings_roomConts {
 		$table_name = $wpdb->prefix . "bookaroom_roomConts";
 		$table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
 
-		$where = NULL;
+		/*
+			Kelvin: delete $where variable
+		*/
 
-		if ( $isPublic == true ) {
-			$where = "WHERE `roomCont`.`roomCont_isPublic` = '1'";
-		}
+		/*
+			Kelvin: Remove the check for isPublic
+		*/
 
-		$sql = "SELECT `roomCont`.`roomCont_ID`, `roomCont`.`roomCont_desc`, `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_occ`, `roomCont`.`roomCont_isPublic`, 
-				`roomCont`.`roomCont_hideDaily`, 
+		/*
+			Kelvin: Remove isPublic and hideDaily from query, remove $where from join
+		*/
+		$sql = "SELECT `roomCont`.`roomCont_ID`, `roomCont`.`roomCont_desc`, `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_occ`, 
 				GROUP_CONCAT( `members`.`rcm_roomID` ) as `roomCont_roomArr` 
 				FROM `$table_name` as `roomCont` 
 				LEFT JOIN `$table_name_members` as `members` ON `roomCont`.`roomCont_ID` = `members`.`rcm_roomContID` 
-				{$where}
+			
 				GROUP BY `roomCont`.`roomCont_ID` 
 				ORDER BY `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_desc`";
 
@@ -380,10 +398,14 @@ class bookaroom_settings_roomConts {
 		if ( count( $cooked ) == 0 ) {
 			return array( 'id' => array(), 'names' => array(), 'branch' => array() );
 		}
+
+		/*
+			Kelvin: edit $roomContList by removing isPublic and hideDaily from $cooked
+		*/
 		foreach ( $cooked as $key => $val ) {
 			# check for rooms
 			$roomsGood = ( empty( $val[ 'roomCont_roomArr' ] ) ) ? NULL : explode( ',', $val[ 'roomCont_roomArr' ] );
-			$roomContList[ 'id' ][ $val[ 'roomCont_ID' ] ] = array( 'branchID' => $val[ 'roomCont_branch' ], 'rooms' => $roomsGood, 'desc' => $val[ 'roomCont_desc' ], 'occupancy' => $val[ 'roomCont_occ' ], 'isPublic' => $val[ 'roomCont_isPublic' ], 'hideDaily' => $val[ 'roomCont_hideDaily' ] );
+			$roomContList[ 'id' ][ $val[ 'roomCont_ID' ] ] = array( 'branchID' => $val[ 'roomCont_branch' ], 'rooms' => $roomsGood, 'desc' => $val[ 'roomCont_desc' ], 'occupancy' => $val[ 'roomCont_occ' ] );
 			$roomContList[ 'names' ][ $val[ 'roomCont_branch' ] ][ $val[ 'roomCont_ID' ] ] = $val[ 'roomCont_desc' ];
 			$roomContList[ 'branch' ][ $val[ 'roomCont_branch' ] ][] = $val[ 'roomCont_ID' ];
 
