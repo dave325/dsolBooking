@@ -10,199 +10,20 @@ class book_a_room_meetings
 	{
 		self::bookaroom_pendingRequests( 'all' );
 	}
-	
-	public static function bookaroom_pendingRequests( $pendingType )
-	{	
-		$typeArr = array( 'pending', 'pendPayment', '501C3', 'approved', 'denied', 'archived', 'all' );
-		$pendingType = trim( $pendingType );
-		
-		if( empty( $pendingType ) or !in_array( $pendingType, $typeArr) ) {
-			$pendingType = 'pending';
-		}
-		
-        # make lines
-        /**
-         * Aung
-         * Removed require-once amentities
-         */
-		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-rooms.php' );
-		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-branches.php' );
-		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-roomConts.php' );
-		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-closings.php' );
-		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-public.php' );
-		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-cityManagement.php' );
-		# vaiables from includes
-		$roomContList = bookaroom_settings_roomConts::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-        $branchList = bookaroom_settings_branches::getBranchList( TRUE );
-        
-         /**
-         * Aung
-         * Removed require-once amentities
-         * $amenityList = bookaroom_settings_amenities::getAmenityList()
-         */
-		$cityList = bookaroom_settings_cityManagement::getCityList( );
-		
-		$pendingList = self::getPending();
-		$externals = self::getExternals();
-		if( empty( $_SESSION['bookaroom_res_id'] ) ) $_SESSION['bookaroom_res_id'] = null;
-		switch( $externals['action'] ) {
-			case 'changeStatusShow':
-				self::changeStatusShow();
-				break;
-				
-			case 'changeReservation':
-				# check hours
-				$baseIncrement = get_option( 'bookaroom_baseIncrement' );
-			
-				if( !empty( $externals['hours'] ) ) {
-					$externals['startTime'] = current( $externals['hours'] );
-				} else {
-					$externals['startTime'] = $externals['timestamp'];
-				}
-				
-				if( !empty( $externals['hours'] ) ) {
-					$externals['endTime'] = end( $externals['hours'] ) + ( $baseIncrement * 60 );
-				} else {
-					$externals['endTime'] = $externals['timestamp'];
-				}
-				
-				
-				if( empty( $externals['roomID'] ) && !empty( $externals['branchID'] ) ) {
-					$externals['roomID'] = ( !empty( $roomContList['branch'][$externals['branchID']][0] ) ) ? $roomContList['branch'][$externals['branchID']][0] : null;
-				}
-				 
-				if( ( $errorMSG = bookaroom_public::showForm_checkHoursError( $externals['startTime'], $externals['endTime'], $externals['roomID'], $roomContList, $branchList, $_SESSION['bookaroom_res_id'] ) ) == TRUE ) {
-					self::showChangeReservationMeeting( $externals, $errorMSG, $_SESSION['bookaroom_res_id'] );
-					break;
-				}
-				$requestInfo = $pendingList['id'][$_SESSION['bookaroom_res_id']];
-				
-				$requestInfo['startTime'] = $externals['startTime'];
-				$requestInfo['endTime'] = $externals['endTime'];
-
-                /**
-                 * Aung
-                 * 
-                 * Remove $amenityList from showForm_publicRequest function arguments
-                 */
-				echo bookaroom_public::showForm_publicRequest( $externals['roomID'], $branchList, $roomContList, $roomList, $cityList, $requestInfo, array(), $_SESSION['bookaroom_res_id'] );
-				break;
-				
-			case 'changeReservationSetup':
-				$_SESSION['bookaroom_res_id'] = $externals['res_id'];
-				$final = $pendingList['id'][$externals['res_id']];
-				$final['timestamp'] = strtotime( $final['startTime'] );
-				# setup times
-				$baseIncrement = get_option( 'bookaroom_baseIncrement' );
-
-				for($i = strtotime( $final['startTime'] ); $i< strtotime( $final['endTime'] ); $i += ( $baseIncrement*60 ) ) {
-					$final['hours'][] = $i;
-				}
-				
-				$externals = $final;
-
-				self::showChangeReservationMeeting( $externals );
-				break;
-				
-			case 'changeStatus':
-				if( empty( $externals['res_id'] ) ) {
-					self::showError( 'res_id', $externals['res_id'] );
-					break;
-				}
-
-				$statusArr = array( 'pending', 'pendPayment', 'approved', 'denied', 'archived', 'delete' );
-				$requestInfo = $pendingList['id'][$externals['res_id']];
-				if( !in_array( $externals['status'], $statusArr ) ) {
-					# BAD STATUS ERROR MESSAGE
-					require( BOOKAROOM_PATH . 'templates/meetings/error_badStatus.php' );
-					break;
-				}
-				if( !is_array( $externals['res_id'] ) ) {
-					$externals['resList'] = array( $externals['res_id'] );
-				} else {
-					$externals['resList'] = $externals['res_id'];
-				}
-                
-                /**
-                 * Aunh
-                 * 
-                 * Remove $amenityList from changeStatus argument
-                 */
-				self::changeStatus( $externals, $pendingList, $branchList, $roomContList);				
-				break;
-				
-			case 'edit':
-				if( !array_key_exists( $externals['res_id'], $pendingList['id'] ) ) {
-					self::showError( 'res_id', $externals['res_id'] );
-					break;
-				}
-				$requestInfo = $pendingList['id'][$externals['res_id']];
-				$_SESSION['bookaroom_res_id'] = $externals['res_id'];
-				$requestInfo['startTime'] = strtotime( $requestInfo['startTime'] );
-                $requestInfo['endTime'] = strtotime( $requestInfo['endTime'] );
-                
-                /**
-                 * Aung 
-                 * 
-                 * Remove $requestInfo['amenity'] = unserialize( $requestInfo['amenity'] );
-                 * Remove $amenityList from showForm_publicRequest arguments
-                 */
-				
-				echo bookaroom_public::showForm_publicRequest( $requestInfo['roomID'], $branchList, $roomContList, $roomList, $cityList, $requestInfo, array(), $externals['res_id'] );
-				break;
-				
-			case 'editCheck':  
-				self::showForm_updateRequest( $externals, $branchList, $roomContList, $roomList, $_SESSION['bookaroom_res_id'] );
-				break;
-				
-			case 'editCheckShow':
-				if( empty( $_SESSION['bookaroom_temp_search_settings'] ) ) {
-					$_SESSION['bookaroom_temp_search_settings'] = NULL;
-				}
-				self::showForm_updateRequestShow( $externals['res_id'], $_SESSION['bookaroom_temp_search_settings'] );
-				break;
-				
-			case 'view':
-				if( !array_key_exists( $externals['res_id'], $pendingList['id'] ) ) {
-					self::showError( 'res_id', $externals['res_id'] );
-					break;
-				}
-
-                /**
-                 * Aung
-                 * 
-                 * Removed $amenityList from showView
-                 */
-				self::showView( $externals['res_id'], $pendingList, $roomContList, $roomList, $branchList);
-				break;
-			    /**
-                 * Aung
-                 * 
-                 * Removed $amenityList from showPending
-                 */
-			case 'showPendPayment':
-				self::showPending( 'pendPayment', $pendingList, $roomContList, $roomList, $branchList);
-				break;
-				
-            default:
-                /**
-                 * Aung
-                 * 
-                 * Removed $amenityList from showPending
-                 */
-				self::showPending( $pendingList, $roomContList, $roomList, $branchList, $pendingType );
-				break;				
-		}		
-	}
     
-            /**
-             * Aung
-             * 
-             * Removed $amenityList from changeStatus
-             */
+    /**
+     * Aung 
+     * 
+     * Removed public static function bookaroom_pendingRequests
+     */
+    
+    /**
+     * Aung
+     * 
+     * Removed $amenityList, $pendingList from changeStatus
+     */
 	protected static
-	function changeStatus( $externals, $pendingList, $branchList, $roomContList) {
+	function changeStatus( $externals, $branchList, $roomContList) {
 		global $wpdb;
 		# check that there is a non empty array for res list
 		if ( empty( $externals[ 'resList' ] ) || !is_array( $externals[ 'resList' ] ) ) {
@@ -214,14 +35,24 @@ class book_a_room_meetings
 
 		# cycle through res list.
 		foreach ( $externals[ 'resList' ] as $val ) {
-			# double check ID
-			if ( !array_key_exists( $val, $pendingList[ 'id' ] ) ) {
+
+            # double check ID
+            /**
+             * Aung
+             * 
+             * Removed $pendingList[ 'id' ]  from !array_key_exits(...)
+             */
+			if ( !array_key_exists( $val) ) {
 				$final[ 'fail' ][] = $val;
 				# check if status is different
-			} elseif ( $pendingList[ 'id' ][ $val ][ 'status' ] == $externals[ 'status' ] ) {
-				$final[ 'noChange' ][] = $val;
-				# update database
-			} else {
+            } 
+
+            /**
+             *  Aung
+             * 
+             * Removing elseif ( $pendingList[ 'id' ][ $val ][ 'status' ] == $externals[ 'status' ] )
+             */
+            else {
 				$final[ 'changed' ][] = $val;
 				# mail alerts
 			}
@@ -235,7 +66,11 @@ class book_a_room_meetings
 			$needHash = FALSE;
 
 			switch ( $externals[ 'status' ] ) {
-				case 'pending':
+                /**
+                 * Aung
+                 * 
+                 * Removed case 'pending'
+                 */
 				case 'archive':
 				case 'accepted':
 					break;
@@ -252,11 +87,12 @@ class book_a_room_meetings
 					$body = nl2br( get_option( 'bookaroom_requestDenied_body' ) );
 					$costIncrement = 0;
 					break;
+                /**
+                 * Aung
+                 * 
+                 * Removed case 'pendPayment':
+                 */
 
-				case 'pendPayment':
-					$sendMail = TRUE;
-					# get data for email
-					break;
 				case 'delete':
 					$delete = TRUE;
 			}
@@ -270,76 +106,68 @@ class book_a_room_meetings
 				$wpdb->delete(	$table_nameRes, 
 						array( 'res_id' => $val ) );
 
-				$wpdb->delete(	$table_name, 
-						array( 
-							'ti_id' => $pendingList['id'][$val]['id']
-						));
-					break;
-				}
+                /**
+                 * Aung
+                 * 
+                 * Removed $wpdb->delete ... 'ti_id' => $pendingList['id'][$val]['id']
+                 */
 				if ( $sendMail == true ) {
 					if ( $sendMail !== 'denied' ) {
-						if ( $pendingList[ 'id' ][ $val ][ 'nonProfit' ] == TRUE ) {
-							if ( $externals[ 'status' ] == 'pendPayment' ) {
-								$subject = get_option( 'bookaroom_nonProfit_pending_subject' );
-								$body = nl2br( get_option( 'bookaroom_nonProfit_pending_body' ) );
-							} else {
-								$subject = get_option( 'bookaroom_requestAcceptedNonprofit_subject' );
-								$body = nl2br( get_option( 'bookaroom_requestAcceptedNonprofit_body' ) );
-							}
-							$pendingList[ 'id' ][ $val ][ 'roomDeposit' ] = get_option( 'bookaroom_nonProfitDeposit' );
-							$costIncrement = get_option( 'bookaroom_nonProfitIncrementPrice' );
-						} else {
-							if ( $externals[ 'status' ] == 'pendPayment' ) {
-								$subject = get_option( 'bookaroom_profit_pending_subject' );
-								$body = nl2br( get_option( 'bookaroom_profit_pending_body' ) );
-							} else {
-								$subject = get_option( 'bookaroom_requestAcceptedProfit_subject' );
-								$body = nl2br( get_option( 'bookaroom_requestAcceptedProfit_body' ) );
-							}
-							$pendingList[ 'id' ][ $val ][ 'roomDeposit' ] = get_option( 'bookaroom_profitDeposit' );
-							$costIncrement = get_option( 'bookaroom_profitIncrementPrice' );
-						}
-					}
-					if ( empty( $pendingList[ 'id' ][ $val ][ 'roomDeposit' ] ) ) {
-						$pendingList[ 'id' ][ $val ][ 'roomDeposit' ] = '0';
-					}
-					# &&&
-					$roomCount = count( $roomContList[ 'id' ][ $pendingList[ 'id' ][ $val ][ 'roomID' ] ][ 'rooms' ] );
+                        /**
+                         * Aung
+                         * 
+                         * Removed $pendingList[ 'id' ][ $val ][ 'nonProfit' ] == TRUE
+                         * of if-logic case
+                         */
+                        if ( $externals[ 'status' ] == 'pendPayment' ) {
+                            $subject = get_option( 'bookaroom_profit_pending_subject' );
+                            $body = nl2br( get_option( 'bookaroom_profit_pending_body' ) );
+                        } else {
+                            $subject = get_option( 'bookaroom_requestAcceptedProfit_subject' );
+                            $body = nl2br( get_option( 'bookaroom_requestAcceptedProfit_body' ) );
+                        }
 
-					$pendingList[ 'id' ][ $val ][ 'roomPrice' ] = ( ( ( ( strtotime( $pendingList[ 'id' ][ $val ][ 'endTime' ] ) - strtotime( $pendingList[ 'id' ][ $val ][ 'startTime' ] ) ) / 60 ) / get_option( 'bookaroom_baseIncrement' ) ) * $costIncrement * $roomCount );
-					$pendingList[ 'id' ][ $val ][ 'totalPrice' ] = $pendingList[ 'id' ][ $val ][ 'roomPrice' ] + $pendingList[ 'id' ][ $val ][ 'roomDeposit' ];
-					$pendingList[ 'id' ][ $val ][ 'date' ] = date_i18n( 'l, F jS, Y', strtotime( $pendingList[ 'id' ][ $val ][ 'startTime' ] ) );
-					$pendingList[ 'id' ][ $val ][ 'startTime' ] = date( 'g:i a', strtotime( $pendingList[ 'id' ][ $val ][ 'startTime' ] ) );
-					$pendingList[ 'id' ][ $val ][ 'endTime' ] = date( 'g:i a', strtotime( $pendingList[ 'id' ][ $val ][ 'endTime' ] ) );
-					$pendingList[ 'id' ][ $val ][ 'nonProfit' ] = ( $pendingList[ 'id' ][ $val ][ 'nonProfit' ] == TRUE ) ? 'Yes' : 'No';
-					$pendingList[ 'id' ][ $val ][ 'roomName' ] = $roomContList[ 'id' ][ $pendingList[ 'id' ][ $val ][ 'roomID' ] ][ 'desc' ];
-					$pendingList[ 'id' ][ $val ][ 'branchName' ] = $branchList[ $roomContList[ 'id' ][ $pendingList[ 'id' ][ $val ][ 'roomID' ] ][ 'branchID' ] ][ 'branchDesc' ];
+                        /**
+                         * Aung
+                         * 
+                         * Removed $pendingList[ 'id' ][ $val ][ 'roomDeposit' ] = get_option( 'bookaroom_profitDeposit' );
+                         */
+                        $costIncrement = get_option( 'bookaroom_profitIncrementPrice' );
+                    }
+                    
+                    /**
+                     * Aung
+                     * 
+                     * Removed if-block of $pendingList[ 'id' ][ $val ][ 'roomDeposit' ] = '0';
+                     */
+
+                     /**
+                      * Aung
+                      *
+                      * Remove $roomCount = count( $roomContList[ 'id' ][ $pendingList[ 'id' ][ $val ][ 'roomID' ] ][ 'rooms' ] );
+                      */
+                    /**
+                     * Aung 
+                     * 
+                     * Removed udating pendingList
+                     */
+
 
                     /**
                      * Aung
                      * 
-                     * This block is about amenity
+                     * Removed $amenity = array() and updating $amenity
                      */
-                    /*
-					$amenity = array();
-					if ( !empty( $pendingList[ 'id' ][ $val ][ 'amenity' ] ) ) {
-						foreach ( unserialize( $pendingList[ 'id' ][ $val ][ 'amenity' ] ) as $am ) {
-							$amenity[] = $amenityList[ $am ];
-						}
-					}
-					if ( count( $amenity ) == 0 ) {
-						$amenity = 'None';
-					} else {
-						$amenity = implode( ', ', $amenity );
-					}
-                    $pendingList[ 'id' ][ $val ][ 'amenity' ] = $amenity;
-                    */
+                    
 					$fromName = get_option( 'bookaroom_alertEmailFromName' );
 					$fromEmail = get_option( 'bookaroom_alertEmailFromEmail' );
 					$replyToOnly = ( true == get_option( 'bookaroom_emailReplyToOnly' ) ) ? "From: {$fromName}\r\nReply-To: {$fromName} <{$fromEmail}>\r\n" : "From: {$fromName} <{$fromEmail}>\r\n";
 
-					# payment Link
-					$pendingList[ 'id' ][ $val ][ 'paymentLink' ] = self::makePaymentLink( $pendingList[ 'id' ][ $val ][ 'totalPrice' ], $val );
+                    /**
+                     * Aung
+                     * 
+                     * Removed pendingList payment link
+                     */
 
                     /**
                      *  Aung
@@ -348,20 +176,31 @@ class book_a_room_meetings
                      */
 					$valArr = array('branchName', 'ccLink', 'contactAddress1', 'contactAddress2', 'contactCity', 'contactEmail', 'contactName', 'contactPhonePrimary', 'contactPhoneSecondary', 'contactState', 'contactWebsite', 'contactZip', 'date', 'desc', 'endTime', 'endTimeDisp', 'eventName', 'formDate', 'nonProfit', 'nonProfitDisp', 'numAttend', 'paymentLink', 'roomDeposit', 'roomID', 'roomName', 'roomPrice', 'startTime', 'startTimeDisp', 'totalPrice' );
 					foreach ( $valArr as $val2 ) {
-						if ( !empty( $pendingList[ 'id' ][ $val ][ $val2 ] ) ) {
-							$body = str_replace( "{{$val2}}", $pendingList[ 'id' ][ $val ][ $val2 ], $body );
-						} else {
-							$body = str_replace( "{{$val2}}", NULL, $body );
-						}
+
+                        /**
+                         * Aung
+                         * 
+                         * Removed if-block replacing $body with pendingList 
+                         */
+						$body = str_replace( "{{$val2}}", NULL, $body );
 					}
 
-					# date 1 - two weeks from now
-					$timeArr = getdate( strtotime( $pendingList[ 'id' ][ $val ][ 'created' ] ) );
+                    # date 1 - two weeks from now
+                    /**
+                     * Aung
+                     * 
+                     * Removed $timeArr = getdate( strtotime( $pendingList[ 'id' ][ $val ][ 'created' ] ) );
+                     * Related with pendingList
+                     */
 					$date1 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] + 14, $timeArr[ 'year' ] );
 					$date3 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] + 1, $timeArr[ 'year' ] );
 
-					# two weeks before event	
-					$timeArr = getdate( strtotime( $pendingList[ 'id' ][ $val ][ 'date' ] . ' ' . $pendingList[ 'id' ][ $val ][ 'startTime' ] ) );
+                    # two weeks before event	
+                    /***
+                     * Aung
+                     * 
+                     * Removed $timeArr = getdate( strtotime( $pendingList[ 'id' ][ $val ][ 'date' ] . ' ' . $pendingList[ 'id' ][ $val ][ 'startTime' ] ) );
+                     */
 					$date2 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] - 14, $timeArr[ 'year' ] );
 
 
@@ -376,7 +215,11 @@ class book_a_room_meetings
 						$replyToOnly .
 						'X-Mailer: PHP/' . phpversion();
 
-					mail( $pendingList['id'][$val]['contactEmail'], $subject, $body, $headers );
+                    /**
+                     * Aung
+                     * 
+                     * Removed mail( $pendingList['id'][$val]['contactEmail'], $subject, $body, $headers );
+                     */
 				}				
 				
 				# UPDATE DATABASE
@@ -391,7 +234,7 @@ class book_a_room_meetings
 
 		$_SESSION['showData'] = $final;
 		echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=bookaroom_meetings&action=changeStatusShow">';
-	}
+    }
 	
 	public static function changeStatusShow()
 	{	
@@ -493,128 +336,12 @@ class book_a_room_meetings
 
 		return $final;
 	}
-	
-	public static function getPending( $date = NULL, $statusArr = array(), $isEvent = NULL, $showHidden = false, $approvedOnly = false, $viewAll = false )
-	{
-		global $wpdb;
-		
-		if( empty( $statusArr ) or !is_array( $statusArr ) ) { $statusArr = array(); }
-		
-		array_walk($statusArr, create_function('&$value,$key', '$value = \'"\'.$value.\'"\';'));
-		
-		$roomContList = bookaroom_settings_roomConts::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-		$branchList = bookaroom_settings_branches::getBranchList( TRUE );
-		
-		$table_name = $wpdb->prefix . "bookaroom_times";
-		$table_nameRes = $wpdb->prefix . "bookaroom_reservations";
-		
-		$where = array();
-		if( $approvedOnly == true ) {
-			$where[] = "( `ti`.`ti_type` = 'meeting' AND `res`.`me_status` = 'approved' ) OR ( `ti`.`ti_type` = 'event'  )";
-		}
-		
-		if( $isEvent == TRUE ) {
-			# staus array
-			# if empty, search all. If not, seach for only those statuses
-			if( count( $statusArr ) > 0 ) {
-				$where[] = "`ti`.`ti_type` = 'event' OR (`ti`.`ti_type` = 'meeting' AND `res`.`me_status` IN (". implode( ',', $statusArr ) . ") )";
-			}
-		} else {
-			#$where[] = "`ti`.`ti_type` = 'meeting'";
-			if( count( $statusArr ) > 0 ) {
-				$where[] = " `ti`.`ti_type` = 'meeting' AND `res`.`me_status` IN (". implode( ',', $statusArr ) . ")";
-			} else {
-				$where[] = "`ti`.`ti_type` = 'meeting'";
-			}
-		}
-
-		if( $showHidden == false ) {
-			$where[] = "( `ti`.`ti_roomID` = 0 ) or ( `ti`.`ti_roomID` != 0 and `cont`.`roomCont_hideDaily` = 0 )";
-		}
-		# date restriction
-
-		if( !empty( $date ) ) {
-			$dateInfo = getdate( $date );
-			$date = mktime( 0,0,0, $dateInfo['mon'], $dateInfo['mday'], $dateInfo['year'] );
-			
-			$startDateStamp = date( 'Y-m-d H:i:s', $date );
-			$endDateStamp = date( 'Y-m-d H:i:s', $date + 86400 );
-			
-			$where[] = "`ti_startTime` < '{$endDateStamp}' and `ti_endTime` >= '{$startDateStamp}'";
-		}
-	
-		if( count( $where ) > 0 ) {
-			$where = ' WHERE (' . implode( ') AND (', $where ) . ')';
-		} else {
-			$where = NULL;
-		}
-		/**
-         *  Aung
-         * 
-         *  Removed `res`.`me_amenity` as `amenity`, 
-         */
-		$sql = "	SELECT 
-					`res`.`res_id`, 
-					`ti`.`ti_id` as `id`, 
-					`ti`.`ti_startTime` as `startTime`, 
-					`ti`.`ti_endTime` as `endTime`, 
-					`ti`.`ti_roomID` as `roomID`, 
-					`ti`.`ti_created` as `created`, 
-					`ti`.`ti_type` as `type`, 
-					`ti`.`ti_noLocation_branch` as `noLocation_branch`, 
-					
-					IF( `ti`.`ti_type` = 'meeting', `res`.`me_eventName`, `res`.`ev_title` ) as `eventName`, 
-					IF( `ti`.`ti_type` = 'meeting', `res`.`me_desc`, `res`.`ev_desc` ) as `desc`, 
-					
-					
-					`res`.`me_numAttend` as `numAttend`, 
-					IF( `ti`.`ti_type` = 'meeting', `res`.`me_contactName`, `res`.`ev_publicName` ) as `contactName`, 
-										
-					`res`.`me_libcardNum` as `libcardNum`, 
-					`res`.`me_social` as `isSocial`, 
-					`res`.`me_contactPhonePrimary` as `contactPhonePrimary`, 
-					`res`.`me_contactPhoneSecondary` as `contactPhoneSecondary`, 
-					`res`.`me_contactAddress1` as `contactAddress1`, 
-					`res`.`me_contactAddress2` as `contactAddress2`, 
-					`res`.`me_contactCity` as `contactCity`, 
-					`res`.`me_contactState` as `contactState`, 
-					`res`.`me_contactZip` as `contactZip`, 
-					`res`.`me_contactEmail` as `contactEmail`, 
-					`res`.`me_contactWebsite` as `contactWebsite`, 
-					`res`.`me_nonProfit` as `nonProfit`, 
-					`res`.`me_status` as `status`, 
-					`res`.`me_notes` as `notes` 
-
-				FROM `{$table_name}` as `ti` 
-				LEFT JOIN `{$table_nameRes}` as `res` ON `ti`.`ti_extID` = `res`.`res_id` 
-				LEFT JOIN `{$wpdb->prefix}bookaroom_roomConts` as `cont` ON `ti`.`ti_roomID` = `cont`.`roomCont_ID` 
-				{$where} 
-				ORDER BY `res`.`me_status`, `ti`.`ti_startTime`";
-		$temp = $wpdb->get_results( $sql, ARRAY_A );
-		
-		if( empty( $temp ) ) {
-			 $final = NULL;
-		} else {
-			foreach( $temp as $key => $val ) {
-				if( $val['status'] == 'pendPayment' and $val['nonProfit']  == true ) {
-					$val['status'] = '501C3';
-				}
-				
-				$final['status'][$val['status']][$val['res_id']] = $val['res_id'];
-				$final['id'][$val['res_id']] = $val;
-				$final['status']['all'][$val['res_id']] = $val['res_id'];
-				
-				if( !empty( $val['roomID'] )) {				
-					$final['location'][$branchList[$roomContList['id'][$val['roomID']]['branchID']]['branchDesc']][$roomContList['id'][$val['roomID']]['desc']][] = $val;
-				} else {
-					$final['location'][$branchList[$val['noLocation_branch']]['branchDesc']]['No location specified'][] = $val;
-				}
-			}
-		}
-	
-		return $final;
-	} 
+    
+    /**
+     * Aung
+     * 
+     * Removed public static function getPending( $date = NULL, $statusArr = array(), $isEvent = NULL, $showHidden = false, $approvedOnly = false, $viewAll = false )
+     */
 	
 	public static function getDaily( $date )
 	{
@@ -785,8 +512,12 @@ class book_a_room_meetings
 			$timestamp = strtotime( $externals[ 'timestamp' ] );
 		}
 		$timeInfo = getdate( $timestamp );
-		$timestamp = mktime( 0,0,0, $timeInfo['mon'], $timeInfo['mday'], $timeInfo['year'] );
-		$pendingList = self::getPending(  $timestamp, array('approved'), true );
+        $timestamp = mktime( 0,0,0, $timeInfo['mon'], $timeInfo['mday'], $timeInfo['year'] );
+        /***
+         * Aung
+         * 
+         * Removed $pendingList = self::getPending(  $timestamp, array('approved'), true );
+         */
 		
 		require( BOOKAROOM_PATH . 'templates/meetings/dailyMeetings.php' );
 	}	
@@ -927,15 +658,8 @@ class book_a_room_meetings
         /**
          * Aung
          * 
-         * This block is about amenity
+         * Removed if-block updating $amenity = NULL or $amenity = serialize( $externals['amenity'] );
          */
-        /*
-		if( empty( $externals['amenity'] ) ) {
-			$amenity = NULL;
-		} else {
-			$amenity = serialize( $externals['amenity'] );
-        }
-        */
 		
 		$table_name = $wpdb->prefix . "bookaroom_times";
 		
@@ -954,7 +678,7 @@ class book_a_room_meetings
         /**
          * Aung
          * 
-         * Reomve these two lines
+         * Reomved these two lines
          * 'me_social'					=> $social,
 		 * 'me_amenity'				=> $amenity  
          */
@@ -992,72 +716,22 @@ class book_a_room_meetings
     /**
      * Aung
      * 
-     * Remove from the argument list $amenityList of showPending
+     * Removed 	public static function showPending
      */
-	public static
-	function showPending( $pendingList, $roomContList, $roomList, $branchList, $pendingType = 'pending' ) {
-		$option[ 'bookaroom_profitDeposit' ] = get_option( 'bookaroom_profitDeposit' );
-		$option[ 'bookaroom_nonProfitDeposit' ] = get_option( 'bookaroom_nonProfitDeposit' );
-		$option[ 'bookaroom_profitIncrementPrice' ] = get_option( 'bookaroom_profitIncrementPrice' );
-		$option[ 'bookaroom_nonProfitIncrementPrice' ] = get_option( 'bookaroom_nonProfitIncrementPrice' );
-		$option[ 'bookaroom_baseIncrement' ] = get_option( 'bookaroom_baseIncrement' );
-		switch ( $pendingType ) {
-			case '501C3':
-				$title = __( 'Pending 501(c)3 Reservations', 'book-a-room' );
-				$link = "?page=bookaroom_meetings_pending501C3";
-				break;
-			case 'pendPayment':
-				$title = __( 'Pending Payment Reservations', 'book-a-room' );
-				$link = "?page=bookaroom_meetings_pendingPayment";
-				break;
-			case 'approved':
-				$title = __( 'Approved Reservations', 'book-a-room' );
-				$link = "?page=bookaroom_meetings_approvedRequests";
-				break;
-			case 'denied':
-				$title = __( 'Denied Reservations', 'book-a-room' );
-				$link = "?page=bookaroom_meetings_deniedRequests";
-				break;
-			case 'archived':
-				$title = __( 'Archived Reservations', 'book-a-room' );
-				$link = "?page=bookaroom_meetings_archivedRequests";
-				break;
-			case 'all':
-				$title = __( 'All Reservations', 'book-a-room' );
-				$link = "?page=bookaroom_meetings";
-				break;
-			default:
-				$title = __( 'Pending Reservations', 'book-a-room' );
-				$link = "?page=bookaroom_meetings";
-				break;
-		}
-		$typeArr = array( 'pending' => __( 'New Pend.', 'book-a-room' ), 'pendPayment' => __( 'Pend. Payment', 'book-a-room' ), '501C3' => __( 'Pend 501(c)3', 'book-a-room' ), 'approved' => __( 'Approved', 'book-a-room' ), 'denied' => __( 'Denied', 'book-a-room' ), 'archived' => __( 'Archived', 'book-a-room' ) );
-		
-		require( BOOKAROOM_PATH . 'templates/meetings/pending.php' );
-	}
 	
 	/**
      * Aung
      * 
      * 
-     * Remove $amenityList from the argument list  of showView
+     * Remove $amenityList, $pendingList from the argument list  of showView
      */
-	protected static function showView( $res_id, $pendingList, $roomContList, $roomList, $branchList )
+	protected static function showView( $res_id, $roomContList, $roomList, $branchList )
 	{
-		# branchName
-		$pendingList[ 'id' ][ $res_id ][ 'branchName' ] = $branchList[ $roomContList[ 'id' ][ $pendingList[ 'id' ][ $res_id ][ 'roomID' ] ][ 'branchID' ] ][ 'branchDesc' ];
-		# endTimeDisp
-		$pendingList[ 'id' ][ $res_id ][ 'endTimeDisp' ] = date( 'g:i a', strtotime( $pendingList[ 'id' ][ $res_id ][ 'endTime' ] ) );
-		# formDate
-		$pendingList[ 'id' ][ $res_id ][ 'formDate' ] = date_i18n( 'D., M. jS, Y', strtotime( $pendingList[ 'id' ][ $res_id ][ 'startTime' ] ) );
-		# nonProfitDisp
-		$pendingList[ 'id' ][ $res_id ][ 'nonProfitDisp' ] = ( true == $pendingList[ 'id' ][ $res_id ][ 'nonProfit' ] ) ? 'Yes' : 'No';
-		# roomName
-		$pendingList[ 'id' ][ $res_id ][ 'roomName' ] = $roomContList[ 'id' ][ $pendingList[ 'id' ][ $res_id ][ 'roomID' ] ][ 'desc' ];
-		# startTimeDisp
-		$pendingList[ 'id' ][ $res_id ][ 'startTimeDisp' ] = date( 'g:i a', strtotime( $pendingList[ 'id' ][ $res_id ][ 'startTime' ] ) );
-		# is social
-		$pendingList[ 'id' ][ $res_id ][ 'socialDisp' ] = ( true == $pendingList[ 'id' ][ $res_id ][ 'isSocial' ] ) ? 'Yes' : 'No';
+        /**
+         * Aung
+         * 
+         * Removed pendingList['id] branchName, endTimeDisp ... updating
+         */
 		
 		if ( get_option( 'bookaroom_addressType' ) !== 'usa' ) {
 			$address1_name = get_option( 'bookaroom_address1_name' );
@@ -1076,26 +750,15 @@ class book_a_room_meetings
 		/**
          * Aung
          * 
-         * this block is about amenity
+         * Removed if-block updating $amenityArr = array() or $amenityArr = unserialize( $pendingList[ 'id' ][ $res_id ][ 'amenity' ] );
          */
-        # amenityVal
-        /*
-		if ( empty( $pendingList[ 'id' ][ $res_id ][ 'amenity' ] ) ) {
-			$amenityArr = array();
-		} else {
-			$amenityArr = unserialize( $pendingList[ 'id' ][ $res_id ][ 'amenity' ] );
-		}
-		$temp = array();
-		if ( !empty( $amenityArr ) ) {
-			foreach ( $amenityArr as $val ) {
-				$temp[] = $amenityList[ $val ];
-			}
-		}
-		if ( count( $temp ) > 0 ) {
-			$pendingList[ 'id' ][ $res_id ][ 'amenityVal' ] = implode( ', ', $temp );
-		} else {
-			$pendingList[ 'id' ][ $res_id ][ 'amenityVal' ] = 'None';
-        }	
+
+        /**
+         * Aung
+        *
+        * Removed if-block of 
+        * $pendingList[ 'id' ][ $res_id ][ 'amenityVal' ] = implode( ', ', $temp )
+        * $pendingList[ 'id' ][ $res_id ][ 'amenityVal' ] = 'None';
         */
 		
 		# cost
@@ -1103,27 +766,40 @@ class book_a_room_meetings
 		$option[ 'bookaroom_nonProfitDeposit' ] = get_option( 'bookaroom_nonProfitDeposit' );
 		$option[ 'bookaroom_profitIncrementPrice' ] = get_option( 'bookaroom_profitIncrementPrice' );
 		$option[ 'bookaroom_nonProfitIncrementPrice' ] = get_option( 'bookaroom_nonProfitIncrementPrice' );
-		$option[ 'bookaroom_baseIncrement' ] = get_option( 'bookaroom_baseIncrement' );
-		$roomCount = count( $roomContList[ 'id' ][ $pendingList[ 'id' ][ $res_id ][ 'roomID' ] ][ 'rooms' ] );
-		if ( empty( $pendingList[ 'id' ][ $res_id ][ 'nonProfit' ] ) ) {
-			# find how many increments
-			$minutes = ( ( strtotime( $pendingList[ 'id' ][ $res_id ][ 'endTime' ] ) - strtotime( $pendingList[ 'id' ][ $res_id ][ 'startTime' ] ) ) / 60 ) / $option[ 'bookaroom_baseIncrement' ];
-			$roomPrice = $minutes * $option[ 'bookaroom_profitIncrementPrice' ] * $roomCount;
-			$deposit = intval( $option[ 'bookaroom_profitDeposit' ] );
-		} else {
-			# find how many increments
-			$minutes = ( ( strtotime( $pendingList[ 'id' ][ $res_id ][ 'endTime' ] ) - strtotime( $pendingList[ 'id' ][ $res_id ][ 'startTime' ] ) ) / 60 ) / $option[ 'bookaroom_baseIncrement' ];
-			$roomPrice = $minutes * $option[ 'bookaroom_nonProfitIncrementPrice' ] * $roomCount;
-			$deposit = intval( $option[ 'bookaroom_nonProfitDeposit' ] );
-		}
+        $option[ 'bookaroom_baseIncrement' ] = get_option( 'bookaroom_baseIncrement' );
+        
+        /**
+         * Aung
+         * 
+         * Removed $roomCount = count($roomContList[ 'id' ][ $pendingList[ 'id' ][ $res_id ][ 'roomID' ] ][ 'rooms' ])
+         */
+
+        /**
+         * Aung
+        *
+        * Removed if-block if ( empty( $pendingList[ 'id' ][ $res_id ][ 'nonProfit' ] ) )
+        * $minutes = ( ( strtotime( $pendingList[ 'id' ][ $res_id ][ 'endTime' ] ) - strtotime( $pendingList[ 'id' ][ $res_id ][ 'startTime' ] ) ) / 60 ) / $option[ 'bookaroom_baseIncrement' ];
+        */
+        # find how many increments
+        $roomPrice = $minutes * $option[ 'bookaroom_nonProfitIncrementPrice' ] * $roomCount;
+        $deposit = intval( $option[ 'bookaroom_nonProfitDeposit' ] );
 		
-		# date 1 - two weeks from now
-		$timeArr = getdate( strtotime( $pendingList[ 'id' ][ $res_id ][ 'created' ] ) );
+        # date 1 - two weeks from now
+        
+        /**
+         * Aung
+         * 
+         * Removed $timeArr = getdate( strtotime( $pendingList[ 'id' ][ $res_id ][ 'created' ] ) );
+         */
 		$date1 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] + 14, $timeArr[ 'year' ] );
 		$date3 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] + 1, $timeArr[ 'year' ] );
 
-		# two weeks before event		
-		$timeArr = getdate( strtotime( $pendingList[ 'id' ][ $res_id ][ 'startTime' ] ) );
+        # two weeks before event
+        /**
+         *  Aung
+         * 
+         * Removed $timeArr = getdate( strtotime( $pendingList[ 'id' ][ $res_id ][ 'created' ] ) );
+         */
 		$date2 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] - 14, $timeArr[ 'year' ] );
 
 		# check dates
