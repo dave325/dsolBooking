@@ -220,7 +220,8 @@ class book_a_room_meetings
                      * 
                      * Removed mail( $pendingList['id'][$val]['contactEmail'], $subject, $body, $headers );
                      */
-				}				
+                }	
+            }			
 				
 				# UPDATE DATABASE
 				$table_name = $wpdb->prefix . "bookaroom_reservations";
@@ -235,8 +236,9 @@ class book_a_room_meetings
 		$_SESSION['showData'] = $final;
 		echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=bookaroom_meetings&action=changeStatusShow">';
     }
-	
-	public static function changeStatusShow()
+    
+    
+    public static function changeStatusShow()
 	{	
 		$final = @$_SESSION['showData'];
 		unset( $_SESSION['showData'] );
