@@ -48,7 +48,7 @@ class bookaroom_settings_branches
             case 'addCheck':
                 # check entries
                 if (($errors = self::checkEditBranch($externals, $branchList)) == null) {
-                    self::addBranch($externals);
+                    $hi =self::addBranch($externals);
                     require BOOKAROOM_PATH . 'templates/branches/addSuccess.php';
                     break;
                 }
@@ -155,15 +155,15 @@ class bookaroom_settings_branches
 
         $final = $wpdb->insert($table_name,
             array(
-                'branchAddress' => $externals['branchAddress'],
                 /**
                  * Jazmyn
                  * 
-                 * Deleted: branchDesc, branchMapLink, branchImageURL,
+                 * Deleted: branchMapLink, branchImageURL,
                  * branch_isPublic, branch_HasNoLoc
                  * 
                  * David -> Reflect for new time set up 
                  */
+                'branchDesc' => $externals['branchDesc'],
                 'branchOpen_0' => $finalTime['Open'][0],
                 'branchOpen_1' => $finalTime['Open'][1],
                 'branchOpen_2' => $finalTime['Open'][2],
@@ -178,6 +178,7 @@ class bookaroom_settings_branches
                 'branchClose_4' => $finalTime['Close'][4],
                 'branchClose_5' => $finalTime['Close'][5],
                 'branchClose_6' => $finalTime['Close'][6]));
+                return $finalTime;
 
     }
 
@@ -309,10 +310,6 @@ class bookaroom_settings_branches
         //     $error[] = 'You must choose if this branch is has a "No location" option.';
         // }
         
-        # check for empty branch name
-        if (empty($externals['branchAddress'])) {
-            $error[] = 'You must enter an address.';
-        }
 
        /**
         * Jazmyn
@@ -323,6 +320,8 @@ class bookaroom_settings_branches
          * Jazmyn
          * Deleted check for branchDesc
          */
+
+       
 
         # check dupe name 
         // branchDesc needs to be handled here because I deleted it
@@ -439,7 +438,6 @@ class bookaroom_settings_branches
 
         $final = $wpdb->update($table_name,
             array(
-                'branchAddress' => $externals['branchAddress'],
                 /*
                  * 
                  * Deleted by: Jazmyn  
@@ -453,6 +451,8 @@ class bookaroom_settings_branches
                  * 
                  * David -> Reflect for new time set up
                  */
+                'branchDesc' => $externals['branchDesc'],
+                // 'branchAddress' => $externals['branchAddress'],
                 'branchOpen_0' => $finalTime['Open'][0],
                 'branchOpen_1' => $finalTime['Open'][1],
                 'branchOpen_2' => $finalTime['Open'][2],
@@ -486,8 +486,10 @@ class bookaroom_settings_branches
 
     }
 
+   
+
     public static function getBranchInfo($branchID)
-    # get information about branch from daabase based on the ID
+    # get information about branch from database based on the ID
     {
         global $wpdb;
 
@@ -501,16 +503,14 @@ class bookaroom_settings_branches
         *
         * Deleted branch_hasNoLoc because you can check if there's an address value or not
         * also deleted branch_isPublic because it's not needed, branchImageURL, branchMapLink
-        * branchDesc, branch_isSocial and showSocial
+        * branch_isSocial and showSocial
         */
-        $branchInfo = array('branchID' => $final->branchID, 'branchAddress' => $final->branchAddress);
+        $branchInfo = array('branchID' => $final->branchID);
+        $branchDesc = array('branchID' => $final->branchDesc);
 
 
 
         # parse the times and convert from 24:00:00 to a 12:00 with a bit for PM
-        /**
-         * David -> This is old time set up, how can we improve this? 
-         */
         foreach ($final as $key => $val) {
             if (!in_array(substr($key, 0, 10), array('branchOpen', 'branchClos'))) {
                 continue;
@@ -525,6 +525,7 @@ class bookaroom_settings_branches
 
                 $branchInfo[$key] = date("g:i", $convTime);
                 $branchInfo[$name] = date("a", $convTime) == 'pm' ? true : false;
+                // print_r($branchInfo);
             }
         }
 
@@ -567,12 +568,12 @@ class bookaroom_settings_branches
         *
         * Jazmyn Fuller
         *
-        * Deleted branch_hasNoLoc, branchDesc, branchMapLink, branchImageURL, branch_isPublic,
+        * Deleted branch_hasNoLoc, branchMapLink, branchImageURL, branch_isPublic,
         * branch_isSocial, and branch_showSocial
 
         * David -> Refactor for new time DB set up
         */
-        $sql = "SELECT `branchID`, `branchAddress`,`branchOpen_0`, `branchOpen_1`, `branchOpen_2`, `branchOpen_3`, `branchOpen_4`, `branchOpen_5`, `branchOpen_6`, `branchClose_0`, `branchClose_1`, `branchClose_2`, `branchClose_3`, `branchClose_4`, `branchClose_5`, `branchClose_6` FROM `$table_name` {$where}ORDER BY `branchDesc`";
+        $sql = "SELECT `branchID`,`branchDesc`,`branchOpen_0`, `branchOpen_1`, `branchOpen_2`, `branchOpen_3`, `branchOpen_4`, `branchOpen_5`, `branchOpen_6`, `branchClose_0`, `branchClose_1`, `branchClose_2`, `branchClose_3`, `branchClose_4`, `branchClose_5`, `branchClose_6` FROM `$table_name` {$where}ORDER BY `branchDesc`";
 
         $count = 0;
 
@@ -586,7 +587,7 @@ class bookaroom_settings_branches
                 $final[$val['branchID']] = $val;
             } else {
                 $final[$val['branchID']] = $val['branchDesc'];
-            } // not sure what to do with this because I deleted branchDesc
+            }
         }
 
         return $final;
@@ -612,10 +613,9 @@ class bookaroom_settings_branches
             * 
             * Deleted by: Jazmyn  
             *
-            * Branch_isPublic, Branch_desc, Branch_isSocial, Branch_showSocial, branchMapLink, branchImageURL, branch_hasNoLoc
-            *   
-            * David -> Refactor to reflect new time set up
+            * Branch_isPublic, Branch_isSocial, Branch_showSocial, branchMapLink, branchImageURL, branch_hasNoLoc
             */
+            'branchDesc' => FILTER_SANITIZE_STRING,
             'branchOpen_0' => FILTER_SANITIZE_STRING,
             'branchOpen_0PM' => FILTER_SANITIZE_STRING,
             'branchClose_0' => FILTER_SANITIZE_STRING,
@@ -649,6 +649,19 @@ class bookaroom_settings_branches
         if ($postTemp = filter_input_array(INPUT_POST, $postArr)) {
             $final += $postTemp;
         }
+
+        /**
+         * possible call to convert to 24hr time for databse
+         * 
+         * echo date("h:i", strtotime($time))
+         * 
+         */
+
+        // if(strpos($num, 'PM') !== false) {
+        //     date("h:i", strtotime($num));
+        // } 
+        
+  
 
         $arrayCheck = array_unique(array_merge(array_keys($getArr), array_keys($postArr)));
 

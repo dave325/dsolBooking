@@ -21,16 +21,8 @@ $hideDaily = ( $roomContList['id'][$roomContID]['hideDaily'] ) ? 'Yes' : 'No';
 		</td>
 		<td><?php echo $branchList[$roomContList['id'][$roomContID]['branchID']]; ?></td>
 	</tr>
-	<tr>
-		<td><strong><?php _e( 'Public?', 'book-a-room' ); ?></strong>
-		</td>
-		<td><?php echo $isPublic; ?></td>
-	</tr>
-	<tr>
-		<td><strong><?php _e( 'Hide on Daily?', 'book-a-room' ); ?></strong>
-		</td>
-		<td><?php echo $hideDaily; ?></td>
-	</tr>
+	<!-- Kelvin: remove isPublic option -->
+	<!-- Kelvin: remove hide on daily option -->
 <?php
 	if( empty( $roomContList['id'][$roomContID]['rooms'] ) ) {
 		?>
