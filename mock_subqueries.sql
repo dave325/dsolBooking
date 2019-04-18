@@ -73,8 +73,36 @@ UPDATE reservation SET notes = ?notes WHERE res_id = ?;
 UPDATE reservation SET company_name = ?name WHERE res_id = ?;
 
 
--- ******************************************************
+-- ********************************************************************************************************************
 
 -- DELETE INFO
+
+-- *******************************
+-- Individual SELECT statements:
+Select branch.b_id from branch LEFT JOIN room ON branch.b_id = room.b_id group by branch.b_id;
+SELECT room.r_id from room LEFT JOIN room_container ON room.r_id = room_container.r_id group by room.r_id;
+SELECT room_container.r_id from room_container LEFT JOIN reservation ON room_container.c_id = reservation.c_id group by room_container.r_id;
+
+-- *******************************
+-- Collective SELECT statement:
+SELECT branch.b_id
+FROM branch
+LEFT JOIN room ON branch.b_id = room.b_id
+LEFT JOIN room_container ON room.r_id = room_container.r_id
+LEFT JOIN reservation ON room_container.c_id = reservation.c_id
+GROUP BY branch.b_id; 
+
+-- *******************************
+-- Specify branch_id = ?
+SELECT branch.b_id
+FROM branch
+LEFT JOIN room ON branch.b_id = room.b_id
+LEFT JOIN room_container ON room.r_id = room_container.r_id
+LEFT JOIN reservation ON room_container.c_id = reservation.c_id
+WHERE branch.b_id = ?
+GROUP BY branch.b_id; 
+
+
+
 
 
