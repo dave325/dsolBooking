@@ -4,13 +4,13 @@
 -- use dsol_booking;
 
 CREATE TABLE branch (
-	b_id int NOT NULL,
+	b_id int NOT NULL AUTO_INCREMENT,
     b_name varchar(323) NOT NULL,
     PRIMARY KEY(b_id)
 );
 
 CREATE TABLE room (
-	r_id int NOT NULL,
+	r_id int NOT NULL AUTO_INCREMENT,
     room_number int,
     b_id int,
     PRIMARY KEY (r_id),
@@ -18,16 +18,16 @@ CREATE TABLE room (
 );
 
  CREATE TABLE room_container (
- 	c_id int NOT NULL,
+ 	c_id int NOT NULL AUTO_INCREMENT,
  	r_id int,
-     t_id int,
+    t_id int,
  	container_number int,
  	PRIMARY KEY (c_id),
  	FOREIGN KEY (r_id) references room(r_id)
  );
 
 CREATE TABLE branch_schedule (
-	bs_id int NOT NULL,
+	bs_id int NOT NULL AUTO_INCREMENT,
     b_id int,
     open_time DATETIME,
     close_time DATETIME,
@@ -36,14 +36,14 @@ CREATE TABLE branch_schedule (
 );
 
 CREATE TABLE time_table (
- 	t_id int NOT NULL,
+ 	t_id int NOT NULL AUTO_INCREMENT,
  	start_time DATETIME,
  	end_time DATETIME,
  	PRIMARY KEY (t_id)
   );
 
 CREATE TABLE reservation (
-	res_id int NOT NULL,
+	res_id int NOT NULL AUTO_INCREMENT,
     c_id int,
     t_id int,
     modified_by varchar(40),
