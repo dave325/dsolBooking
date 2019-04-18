@@ -46,12 +46,35 @@ VALUES (?t_id, ?start_time, ?end_time);
 -- ******************************************************
 
 -- UPDATE EXISTING INFO (POST)
--- ** NOTE: !! (WILL BE AUTO-GENERATED FROM DB: will change db tables) **
 
--- Update reservation at a future time by admin, t_id = ?:
+-- Update reservation time at a future time by admin, t_id = ?:
+UPDATE time_table SET start_time = ?, end_time = ? WHERE t_id = ?;
 UPDATE reservation SET modified_at = now(), modified_by = ?admin WHERE t_id = ?;
 
--- CURRENTLY A WORKING PROGRESS ..........
+-- Change room number:
+UPDATE room SET room_number = ? WHERE r_id = ?;
 
+-- Change room_container number (?num) :
+UPDATE room_container SET container_number = ?num WHERE c_id = ?;
+
+
+-- *** Can be combined into one update query ***
+
+-- Change number of people (?num) in reservation :
+UPDATE reservation SET attendance = ?num WHERE res_id = ?;
+
+-- Change email (?email) in reservation:
+UPDATE reservation SET email = ?email WHERE res_id = ?;
+
+-- Change notes (?notes) in reservation:
+UPDATE reservation SET notes = ?notes WHERE res_id = ?;
+
+-- Change company name (?name) in reservation:
+UPDATE reservation SET company_name = ?name WHERE res_id = ?;
+
+
+-- ******************************************************
+
+-- DELETE INFO
 
 
