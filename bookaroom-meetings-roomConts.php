@@ -141,9 +141,13 @@ class bookaroom_settings_roomConts {
 	# add a new branch
 	{
 		global $wpdb;
-
-		$table_name = $wpdb->prefix . "bookaroom_roomConts";
-		$table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
+		
+		/*
+			change $table_name to reflect dsol_booking db
+		*/
+		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		// $table_name = $wpdb->prefix . "bookaroom_roomConts";
+		// $table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
 
 		# make room list
 		# only use valid amenity ids and serialize
@@ -155,24 +159,23 @@ class bookaroom_settings_roomConts {
 			Kelvin: set $isPublic, $hideDaily to NULL (since we aren't using it by still want to preserve the db structure/column values)
 		*/
 
-		$isPublic = NULL;
-		$hideDaily = NULL;
+		/*
+			Kelvin: change $final parameters
+		*/
 
 		$final = $wpdb->insert( $table_name,
-			array( 'roomCont_desc' => $externals[ 'roomContDesc' ],
-				'roomCont_branch' => $externals[ 'branchID' ],
-				'roomCont_isPublic' => $isPublic,
-				'roomCont_hideDaily' => $hideDaily,
-				'roomCont_occ' => $externals[ 'occupancy' ] ) );
-
+			array( 
+				'roomCont_roomId' => $roomId,
+				'roomCont_timeId' => $timeId,
+				'roomCont_container_number' => $container_number ) );
+		
 		$roomContID = $wpdb->insert_id;
 
-		foreach ( $roomArr as $val ) {
-			$roomArrSQL[] = "( '{$roomContID}', '{$val}' )";
-		}
+		$roomArrSQL[] = array($roomContID, $roomId, $timeId, $container_number);
 		$roomSQL_final = implode( ", ", $roomArrSQL );
 
-		$sql = "INSERT INTO `{$table_name_members}` ( `rcm_roomContID`, `rcm_roomID` ) VALUES {$roomSQL_final}";
+		$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number' ) VALUES {$roomSQL_final}";
+		
 		$wpdb->query( $sql );
 	}
 
@@ -242,7 +245,7 @@ class bookaroom_settings_roomConts {
 		$table_name = $wpdb->prefix . "bookaroom_roomConts";
 
 		$sql = "DELETE FROM `{$table_name}` WHERE `roomCont_ID` = '{$roomContID}' LIMIT 1";
-		$wpdb->query( $sql );
+		$wpdb->query( $sql ); 
 	}
 
 	public static
@@ -344,14 +347,19 @@ class bookaroom_settings_roomConts {
 		/*
 			Kelvin: Remove roomCont_isPublic and roomCont_hideDaily from query
 		*/
-		$table_name = $wpdb->prefix . "bookaroom_roomConts";
-		$table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
-		$sql = "SELECT `roomCont`.`roomCont_ID`, `roomCont`.`roomCont_desc`, `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_occ`,
-				GROUP_CONCAT( `members`.`rcm_roomID` ) as `roomCont_roomArr` 
-				FROM `$table_name` as `roomCont` 
-				LEFT JOIN `$table_name_members` as `members` ON `roomCont`.`roomCont_ID` = `members`.`rcm_roomContID` 
-				WHERE `roomCont`.`roomCont_ID` = '{$roomContID}'
-				GROUP BY `roomCont`.`roomCont_ID`";
+		
+		/*
+			Change $table_name to reflect dsol_booking db
+		*/
+		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		
+		/* 
+			Kelvin: Change sql statement for getRoomContInfo
+		*/
+
+		$sql = "SELECT `roomCont`.`c_id` AS containerId, `roomCont`.`r_id` AS roomId, `roomCont`.`t_id` AS timeId, `roomCont`.`container_number` AS containerNumber
+			FROM `$table_name` as `roomCont` 
+			GROUP BY `roomCont`.`c_id`";
 
 		$final = $wpdb->get_row( $sql, ARRAY_A );
 
@@ -369,8 +377,10 @@ class bookaroom_settings_roomConts {
 		global $wpdb;
 		$roomContList = array();
 
+		/*
+			Change $table_name to reflect dsol_booking db
+		*/
 		$table_name = $wpdb->prefix . "dsol_booking_room_container";
-		// $table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
 
 		/*
 			Kelvin: delete $where variable
@@ -402,13 +412,19 @@ class bookaroom_settings_roomConts {
 		/*
 			Kelvin: edit $roomContList by removing isPublic and hideDaily from $cooked
 		*/
+
+		/* 
+			Kelvin: 
+				* NOTE TO DAVE: since we changed what we are returning into the $roomContList, we 
+				also have to go back to the corresponding templates pages to take out certain unused
+				values in the FOR loops that display the relevant information.
+		*/
 		foreach ( $cooked as $key => $val ) {
 			# check for rooms
 			$roomsGood = ( empty( $val[ 'roomCont_roomArr' ] ) ) ? NULL : explode( ',', $val[ 'roomCont_roomArr' ] );
 			$roomContList[ 'id' ][ $val[ 'roomCont_ID' ] ] = array( 'branchID' => $val[ 'roomCont_branch' ], 'rooms' => $roomsGood, 'desc' => $val[ 'roomCont_desc' ], 'occupancy' => $val[ 'roomCont_occ' ] );
 			$roomContList[ 'names' ][ $val[ 'roomCont_branch' ] ][ $val[ 'roomCont_ID' ] ] = $val[ 'roomCont_desc' ];
 			$roomContList[ 'branch' ][ $val[ 'roomCont_branch' ] ][] = $val[ 'roomCont_ID' ];
-
 		}
 
 		return $roomContList;
