@@ -369,8 +369,8 @@ class bookaroom_settings_roomConts {
 		global $wpdb;
 		$roomContList = array();
 
-		$table_name = $wpdb->prefix . "bookaroom_roomConts";
-		$table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
+		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		// $table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
 
 		/*
 			Kelvin: delete $where variable
@@ -383,14 +383,14 @@ class bookaroom_settings_roomConts {
 		/*
 			Kelvin: Remove isPublic and hideDaily from query, remove $where from join
 		*/
-		$sql = "SELECT `roomCont`.`roomCont_ID`, `roomCont`.`roomCont_desc`, `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_occ`, 
-				GROUP_CONCAT( `members`.`rcm_roomID` ) as `roomCont_roomArr` 
-				FROM `$table_name` as `roomCont` 
-				LEFT JOIN `$table_name_members` as `members` ON `roomCont`.`roomCont_ID` = `members`.`rcm_roomContID` 
-			
-				GROUP BY `roomCont`.`roomCont_ID` 
-				ORDER BY `roomCont`.`roomCont_branch`, `roomCont`.`roomCont_desc`";
 
+		/* 
+			Kelvin: Change sql statement for getRoomContList
+		*/
+
+		$sql = "SELECT `roomCont`.`c_id` AS containerId, `roomCont`.`r_id` AS roomId, `roomCont`.`t_id` AS timeId, `roomCont`.`container_number` AS containerNumber
+			FROM `$table_name` as `roomCont` 
+			GROUP BY `roomCont`.`c_id`";
 
 		$count = 0;
 		$cooked = $wpdb->get_results( $sql, ARRAY_A );
