@@ -22,17 +22,12 @@ Insert into room_container (c_id, r_id, t_id, container_number) values (20, 200,
 Insert into time_table (t_id, start_time, end_time) values (2, 20190902123000, 20190902033000);
 Insert into reservation(res_id, c_id, t_id, modified_by, created_at, modified_at, created_by, company_name,email,attendance,notes) values (2, 20, 2, "Tom", 20190901103000, NULL, "Tom", "Tom's Company", "tom123@gmail.com", 2, "Need more stationary");
 -- At a future time when you update it by person= ? :
-update reservation set modified_at = now(), modified_by = ? where t_id = 2;
+update reservation set modified_at = now(), modified_by = NULL where t_id = 2;
 
 
 -- Same Branch (id: 2000)
 -- Same branch_schedule (since same branch)
-Insert into room (r_id, room_number, b_id) values (300, 2, 1000);
-Insert into room_container (c_id, r_id, t_id, container_number) values (21, 200, 4533, 1);
-Insert into time_table (t_id, start_time, end_time) values (3, 20190902033500, 20190902043000);
-Insert into reservation(res_id, c_id, t_id, modified_by, created_at, modified_at, created_by, company_name,email,attendance,notes) values (3, 21, 3, "Jerry", 20190901103000, NULL, "Jerry", "Jerry's Company", "jerry123@gmail.com", 2, "Need more laptops");
--- At a future time when you update it by person= ? :
-update reservation set modified_at = now(), modified_by = ? where t_id = 3;
+
 
 
 -- ********************************************************************************************************

@@ -102,6 +102,15 @@ LEFT JOIN reservation ON room_container.c_id = reservation.c_id
 WHERE branch.b_id = ?
 GROUP BY branch.b_id; 
 
+SELECT time_table.t_id
+FROM branch
+LEFT JOIN room ON branch.b_id = room.b_id
+LEFT JOIN room_container ON room.r_id = room_container.r_id
+LEFT JOIN reservation ON room_container.c_id = reservation.c_id
+LEFT JOIN time_table ON time_table.t_id = reservation.t_id
+WHERE branch.b_id = 2000
+GROUP BY time_table.t_id; 
+
 
 
 
