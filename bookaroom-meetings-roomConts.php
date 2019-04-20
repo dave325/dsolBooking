@@ -201,8 +201,7 @@ class bookaroom_settings_roomConts {
 		$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomSQL_final})";
 		
 		$wpdb->query( $sql );
-		
-		return $sql;
+	
 	}
 
 
