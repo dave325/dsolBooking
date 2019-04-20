@@ -111,7 +111,9 @@ class bookaroom_settings_roomConts {
 					*/
 					self::showRoomContEdit( $externals, $externals[ 'branchID' ], $roomContList, $roomList, $branchList, 'addCheck', 'Add' );
 				} else {
-					self::addRoomCont( $externals, $roomList );
+					$info = self::addRoomCont( $externals, $roomList );
+					ob_start();
+					
 					require( BOOKAROOM_PATH . 'templates/roomConts/addSuccess.php' );
 				}
 				break;
@@ -141,13 +143,9 @@ class bookaroom_settings_roomConts {
 	# add a new branch
 	{
 		global $wpdb;
-		
-		/*
-			change $table_name to reflect dsol_booking db
-		*/
+
+	
 		$table_name = $wpdb->prefix . "dsol_booking_room_container";
-		// $table_name = $wpdb->prefix . "bookaroom_roomConts";
-		// $table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
 
 		# make room list
 		# only use valid amenity ids and serialize
@@ -160,23 +158,51 @@ class bookaroom_settings_roomConts {
 		*/
 
 		/*
-			Kelvin: change $final parameters
+			Kelvin: I didn't want to touch isPublic and $hideDaily bc I am not sure where this insert statement is going to or if you plan on using it.
 		*/
 
+		$isPublic = NULL;
+		$hideDaily = NULL;
+
 		$final = $wpdb->insert( $table_name,
-			array( 
-				'roomCont_roomId' => $roomId,
-				'roomCont_timeId' => $timeId,
-				'roomCont_container_number' => $container_number ) );
-		
+			array( 'roomCont_desc' => $externals[ 'roomContDesc' ],
+				'roomCont_branch' => $externals[ 'branchID' ],
+				'roomCont_isPublic' => $isPublic,
+				'roomCont_hideDaily' => $hideDaily,
+				'roomCont_occ' => $externals[ 'occupancy' ] ) );
+
+		/*
+			Kelvin:
+
+			*** NOTE TO DAVE ***
+			- Assume that you can only assign ONE room per container.
+			- I think that if we were to add more than one room, we might have to 
+					modify our existing dsol_booking db or maybe iterate & make more than one
+					sql statement? :/
+			- Have to fix the database by removing t_id and adding occupancy.
+
+
+		*/
+
 		$roomContID = $wpdb->insert_id;
 
-		$roomArrSQL[] = array($roomContID, $roomId, $timeId, $container_number);
+		// Assuming that you only have selected one room, the roomId will just be the 
+		// 	first index of $roomArr
+		// Add c_id, r_id into roomArrSQL[]:
+		array_push($roomArrSQL, $roomContID, $roomArr[0]);
+
+		// Add t_id = NULL (temporary), container_number, and occupancy (have to add) into roomArrSQL[]:
+		array_push($roomArrSQL, NULL, $externals[ 'roomContDesc' ], $externals[ 'occupancy']);
+
+		// c_id, r_id:
 		$roomSQL_final = implode( ", ", $roomArrSQL );
 
-		$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number' ) VALUES {$roomSQL_final}";
+
+		$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomSQL_final})";
 		
 		$wpdb->query( $sql );
+		
+		return $sql;
 	}
 
 
