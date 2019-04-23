@@ -140,11 +140,9 @@ class bookaroom_settings_roomConts {
 
 	public static
 	function addRoomCont( $externals, $roomList )
-	# add a new branch
 	{
 		global $wpdb;
 
-	
 		$table_name = $wpdb->prefix . "dsol_booking_room_container";
 
 		# make room list
@@ -173,34 +171,22 @@ class bookaroom_settings_roomConts {
 
 		/*
 			Kelvin:
-
-			*** NOTE TO DAVE ***
-			- Assume that you can only assign ONE room per container.
-			- I think that if we were to add more than one room, we might have to 
-					modify our existing dsol_booking db or maybe iterate & make more than one
-					sql statement? :/
-			- Have to fix the database by removing t_id and adding occupancy.
-
-
+			
+			- If you select more than one room in the form, a separate individual query
+			will be sent PER room.
 		*/
 
 		$roomContID = $wpdb->insert_id;
 
-		// Assuming that you only have selected one room, the roomId will just be the 
-		// 	first index of $roomArr
-		// Add c_id, r_id into roomArrSQL[]:
-		array_push($roomArrSQL, $roomContID, $roomArr[0]);
-
-		// Add t_id = NULL (temporary), container_number, and occupancy (have to add) into roomArrSQL[]:
-		array_push($roomArrSQL, NULL, $externals[ 'roomContDesc' ], $externals[ 'occupancy']);
-
-		// c_id, r_id:
-		$roomSQL_final = implode( ", ", $roomArrSQL );
-
-
-		$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomSQL_final})";
-		
-		$wpdb->query( $sql );
+		// Iterate through the $roomArr containing multiple room selections
+		for ($x=0; $x<sizeof($roomArr);$x++){
+			$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomContID}, {$roomArr[$x]}, NULL, {$externals[ 'roomContDesc' ]}, {$externals[ 'occupancy']}";		
+			array_push($roomArrSQL, $sql);
+		}
+	
+		foreach ($roomArrSQL as $query){
+			$wpdb->query( $query );	
+		}
 	
 	}
 
