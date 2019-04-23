@@ -286,7 +286,7 @@ class bookaroom_settings_roomConts {
 		$isPublic = NULL;
 		$hideDaily = NULL;
 
-		$sql = "UPDATE `{$table_name}` SET `roomCont_desc` = '{$externals['roomContDesc']}', `roomCont_branch` = '{$externals['branchID']}', `roomCont_isPublic` = '{$isPublic}', `roomCont_hideDaily` = '{$hideDaily}',`roomCont_occ` = '{$externals['occupancy']}' WHERE `roomCont_ID` = '{$roomContID}'";
+		$sql = "UPDATE `{$table_name}` SET `container_number` = '{$externals['roomContDesc']}', `occupancy` = '{$externals['occupancy']}' WHERE `c_id` = '{$roomContID}'";
 
 		$wpdb->query( $sql );
 
