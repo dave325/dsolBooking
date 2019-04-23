@@ -171,7 +171,7 @@ class bookaroom_settings_roomConts {
 
 		/*
 			Kelvin:
-			
+
 			- If you select more than one room in the form, a separate individual query
 			will be sent PER room.
 		*/
@@ -388,9 +388,6 @@ class bookaroom_settings_roomConts {
 		global $wpdb;
 		$roomContList = array();
 
-		/*
-			Change $table_name to reflect dsol_booking db
-		*/
 		$table_name = $wpdb->prefix . "dsol_booking_room_container";
 
 		/*
@@ -405,13 +402,12 @@ class bookaroom_settings_roomConts {
 			Kelvin: Remove isPublic and hideDaily from query, remove $where from join
 		*/
 
-		/* 
-			Kelvin: Change sql statement for getRoomContList
+		/*
+			Kelvin: fix $sql query to match our dsol_booking db
 		*/
-
-		$sql = "SELECT `roomCont`.`c_id` AS containerId, `roomCont`.`r_id` AS roomId, `roomCont`.`t_id` AS timeId, `roomCont`.`container_number` AS containerNumber
-			FROM `$table_name` as `roomCont` 
-			GROUP BY `roomCont`.`c_id`";
+		$sql = "SELECT `rc`.`c_id` AS containerId, `rc`.`r_id` AS roomId, `rc`.`container_number`AS roomContDesc, `rc`.`occupancy` AS occupancy
+			FROM `$table_name` as `rc` 
+			GROUP BY `rc`.`c_id`";
 
 		$count = 0;
 		$cooked = $wpdb->get_results( $sql, ARRAY_A );
@@ -421,14 +417,7 @@ class bookaroom_settings_roomConts {
 		}
 
 		/*
-			Kelvin: edit $roomContList by removing isPublic and hideDaily from $cooked
-		*/
-
-		/* 
-			Kelvin: 
-				* NOTE TO DAVE: since we changed what we are returning into the $roomContList, we 
-				also have to go back to the corresponding templates pages to take out certain unused
-				values in the FOR loops that display the relevant information.
+			Kelvin: edit roomContList by removing isPublic and hideDaily from cooked
 		*/
 		foreach ( $cooked as $key => $val ) {
 			# check for rooms
@@ -436,6 +425,7 @@ class bookaroom_settings_roomConts {
 			$roomContList[ 'id' ][ $val[ 'roomCont_ID' ] ] = array( 'branchID' => $val[ 'roomCont_branch' ], 'rooms' => $roomsGood, 'desc' => $val[ 'roomCont_desc' ], 'occupancy' => $val[ 'roomCont_occ' ] );
 			$roomContList[ 'names' ][ $val[ 'roomCont_branch' ] ][ $val[ 'roomCont_ID' ] ] = $val[ 'roomCont_desc' ];
 			$roomContList[ 'branch' ][ $val[ 'roomCont_branch' ] ][] = $val[ 'roomCont_ID' ];
+
 		}
 
 		return $roomContList;
