@@ -291,13 +291,13 @@ class bookaroom_settings_roomConts {
 		*/
 
 		$sql = "UPDATE `{$table_name}` SET `container_number` = '{$externals['roomContDesc']}', `occupancy` = '{$externals['occupancy']}' WHERE `c_id` = '{$roomContID}'";
-
 		$wpdb->query( $sql );
 
-	
+		/*
+			Kelvin: Fix delete query
+		*/
 
-		$sql = "DELETE FROM `{$table_name_members}` WHERE `rcm_roomContID` = '{$roomContID}'";
-
+		$sql = "DELETE FROM `{$table_name}` WHERE `c_id` = '{$roomContID}'";
 		$wpdb->query( $sql );
 
 		/*
