@@ -375,19 +375,16 @@ class bookaroom_settings_roomConts {
 		/*
 			Kelvin: Remove roomCont_isPublic and roomCont_hideDaily from query
 		*/
-		
-		/*
-			Change $table_name to reflect dsol_booking db
-		*/
-		$table_name = $wpdb->prefix . "dsol_booking_room_container";
-		
-		/* 
-			Kelvin: Change sql statement for getRoomContInfo
-		*/
 
-		$sql = "SELECT `roomCont`.`c_id` AS containerId, `roomCont`.`r_id` AS roomId, `roomCont`.`t_id` AS timeId, `roomCont`.`container_number` AS containerNumber
-			FROM `$table_name` as `roomCont` 
-			GROUP BY `roomCont`.`c_id`";
+		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+
+		/*
+			Kelvin: fix select query
+		*/
+		$sql = "SELECT `rc`.`c_id`, `rc`.`r_id` AS roomId, `rc`.`container_number`AS roomContDesc, `rc`.`occupancy` AS occupancy 
+			FROM `$table_name` as `rc` 
+			WHERE `rc`.`c_id` = '{$roomContID}'
+			GROUP BY `rc`.`c_id`";
 
 		$final = $wpdb->get_row( $sql, ARRAY_A );
 
