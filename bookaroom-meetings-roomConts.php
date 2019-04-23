@@ -111,10 +111,10 @@ class bookaroom_settings_roomConts {
 					*/
 					self::showRoomContEdit( $externals, $externals[ 'branchID' ], $roomContList, $roomList, $branchList, 'addCheck', 'Add' );
 				} else {
-					$info = self::addRoomCont( $externals, $roomList );
-					ob_start();
-					
+					self::addRoomCont( $externals, $roomList );
 					require( BOOKAROOM_PATH . 'templates/roomConts/addSuccess.php' );
+					// $info = self::addRoomCont( $externals, $roomList );
+					// ob_start();
 				}
 				break;
 
@@ -143,7 +143,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		$table_name = $wpdb->prefix . "room_container";
 
 		# make room list
 		# only use valid amenity ids and serialize
@@ -174,6 +174,7 @@ class bookaroom_settings_roomConts {
 
 			- If you select more than one room in the form, a separate individual query
 			will be sent PER room.
+
 		*/
 
 		$roomContID = $wpdb->insert_id;
@@ -187,7 +188,7 @@ class bookaroom_settings_roomConts {
 		foreach ($roomArrSQL as $query){
 			$wpdb->query( $query );	
 		}
-	
+		
 	}
 
 
@@ -253,7 +254,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		$table_name = $wpdb->prefix . "room_container";
 
 		/*
 			Kelvin: fix delete query
@@ -268,7 +269,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		$table_name = $wpdb->prefix . "room_container";
 
 		$roomContID = $externals[ 'roomContID' ];
 
@@ -290,18 +291,20 @@ class bookaroom_settings_roomConts {
 
 		/*
 			Kelvin: Fix update query
-
 		*/
 
 		$sql = "UPDATE `{$table_name}` SET `container_number` = '{$externals['roomContDesc']}', `occupancy` = '{$externals['occupancy']}' WHERE `c_id` = '{$roomContID}'";
+
 		$wpdb->query( $sql );
 
+		
 		/*
 			Kelvin: Fix delete query
 		*/
 
 		$sql = "DELETE FROM `{$table_name}` WHERE `c_id` = '{$roomContID}'";
 		$wpdb->query( $sql );
+
 
 		/*
 			Kelvin: Fix insert query
@@ -379,7 +382,7 @@ class bookaroom_settings_roomConts {
 			Kelvin: Remove roomCont_isPublic and roomCont_hideDaily from query
 		*/
 
-		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		$table_name = $wpdb->prefix . "room_container";
 
 		/*
 			Kelvin: fix select query
@@ -405,7 +408,7 @@ class bookaroom_settings_roomConts {
 		global $wpdb;
 		$roomContList = array();
 
-		$table_name = $wpdb->prefix . "dsol_booking_room_container";
+		$table_name = $wpdb->prefix . "room_container";
 
 		/*
 			Kelvin: delete $where variable
@@ -418,6 +421,7 @@ class bookaroom_settings_roomConts {
 		/*
 			Kelvin: Remove isPublic and hideDaily from query, remove $where from join
 		*/
+
 
 		/*
 			Kelvin: fix $sql query to match our dsol_booking db
