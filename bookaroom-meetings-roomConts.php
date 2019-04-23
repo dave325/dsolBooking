@@ -265,8 +265,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "bookaroom_roomConts";
-		$table_name_members = $wpdb->prefix . "bookaroom_roomConts_members";
+		$table_name = $wpdb->prefix . "dsol_booking_room_container";
 
 		$roomContID = $externals[ 'roomContID' ];
 
@@ -290,20 +289,16 @@ class bookaroom_settings_roomConts {
 			Kelvin: Fix update query
 
 		*/
-		
+
 		$sql = "UPDATE `{$table_name}` SET `container_number` = '{$externals['roomContDesc']}', `occupancy` = '{$externals['occupancy']}' WHERE `c_id` = '{$roomContID}'";
 
 		$wpdb->query( $sql );
 
-		foreach ( $roomArr as $val ) {
-			$roomArrSQL[] = "( '{$roomContID}', '{$val}' )";
-		}
-		$roomSQL_final = implode( ", ", $roomArrSQL );
+	
 
-		
 		$sql = "DELETE FROM `{$table_name_members}` WHERE `rcm_roomContID` = '{$roomContID}'";
-		$wpdb->query( $sql );
 
+		$wpdb->query( $sql );
 
 		/*
 			Kelvin: Fix insert query
@@ -311,7 +306,6 @@ class bookaroom_settings_roomConts {
 		*/
 
 		$roomArrSQL[] = array();
-		$roomContID = $wpdb->insert_id;
 
 		// Iterate through the $roomArr containing multiple room selections
 		for ($x=0; $x<sizeof($roomArr);$x++){
@@ -322,6 +316,7 @@ class bookaroom_settings_roomConts {
 		foreach ($roomArrSQL as $query){
 			$wpdb->query( $query );	
 		}
+
 
 	}
 
