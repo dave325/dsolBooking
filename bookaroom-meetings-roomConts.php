@@ -286,6 +286,11 @@ class bookaroom_settings_roomConts {
 		$isPublic = NULL;
 		$hideDaily = NULL;
 
+		/*
+			Kelvin: Fix update query
+
+		*/
+		
 		$sql = "UPDATE `{$table_name}` SET `container_number` = '{$externals['roomContDesc']}', `occupancy` = '{$externals['occupancy']}' WHERE `c_id` = '{$roomContID}'";
 
 		$wpdb->query( $sql );
@@ -295,12 +300,29 @@ class bookaroom_settings_roomConts {
 		}
 		$roomSQL_final = implode( ", ", $roomArrSQL );
 
+		
 		$sql = "DELETE FROM `{$table_name_members}` WHERE `rcm_roomContID` = '{$roomContID}'";
 		$wpdb->query( $sql );
 
 
-		$sql = "INSERT INTO `{$table_name_members}` ( `rcm_roomContID`, `rcm_roomID` ) VALUES {$roomSQL_final}";
-		$wpdb->query( $sql );
+		/*
+			Kelvin: Fix insert query
+
+		*/
+
+		$roomArrSQL[] = array();
+		$roomContID = $wpdb->insert_id;
+
+		// Iterate through the $roomArr containing multiple room selections
+		for ($x=0; $x<sizeof($roomArr);$x++){
+			$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomContID}, {$roomArr[$x]}, NULL, {$externals[ 'roomContDesc' ]}, {$externals[ 'occupancy']}";		
+			array_push($roomArrSQL, $sql);
+		}
+	
+		foreach ($roomArrSQL as $query){
+			$wpdb->query( $query );	
+		}
+
 	}
 
 	public static
