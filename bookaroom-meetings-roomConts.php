@@ -253,10 +253,13 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "bookaroom_roomConts";
+		$table_name = $wpdb->prefix . "dsol_booking_room_container";
 
-		$sql = "DELETE FROM `{$table_name}` WHERE `roomCont_ID` = '{$roomContID}' LIMIT 1";
-		$wpdb->query( $sql ); 
+		/*
+			Kelvin: fix delete query
+		*/
+		$sql = "DELETE FROM `{$table_name}` WHERE `c_id` = '{$roomContID}' LIMIT 1";
+		$wpdb->query( $sql );
 	}
 
 	public static
