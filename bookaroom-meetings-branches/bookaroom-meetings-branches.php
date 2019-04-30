@@ -15,12 +15,12 @@ class bookaroom_settings_branches
 
         switch ($externals['action']) {
             case 'deleteCheck': # check that there is an ID and it is valid
-                if (bookaroom_settings::checkID($externals['branchID'], $branchList) == false) {
+                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
                     require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
                 } else {
                     # show delete screen
-                    $branchInfo = self::getBranchInfo($externals['branchID']);
+                    $branchInfo = self::getBranchInfo($externals['b_id']);
                     $roomContList = bookaroom_settings_roomConts::getRoomContList();
                     $roomList = bookaroom_settings_rooms::getRoomList();
                     $container = self::makeRoomAndContList($branchInfo, $roomContList, $roomList);
@@ -31,13 +31,13 @@ class bookaroom_settings_branches
 
             case 'delete':
                 # check that there is an ID and it is valid
-                if (bookaroom_settings::checkID($externals['branchID'], $branchList) == false) {
+                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
                     require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
                 } else {
                     # show delete screen
 
-                    $branchInfo = self::getBranchInfo($externals['branchID']);
+                    $branchInfo = self::getBranchInfo($externals['b_id']);
                     $roomContList = bookaroom_settings_roomConts::getRoomContList();
                     $roomList = bookaroom_settings_rooms::getRoomList();
                     self::showBranchDelete($branchInfo, $roomContList, $roomList);
@@ -74,7 +74,7 @@ class bookaroom_settings_branches
                 $externals['errors'] = $errors;
 
                 # check that there is an ID and it is valid
-                if (bookaroom_settings::checkID($externals['branchID'], $branchList) == false) {
+                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
                     require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
                 } else {
@@ -88,12 +88,12 @@ class bookaroom_settings_branches
 
                 # check that there is an ID and it is valid
 
-                if (bookaroom_settings::checkID($externals['branchID'], $branchList) == false) {
+                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
                     require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
                 } else {
                     # show edit screen
-                    $branchInfo = self::getBranchInfo($externals['branchID']);
+                    $branchInfo = self::getBranchInfo($externals['b_id']);
 
                     self::showBranchEdit($branchInfo, 'editCheck', 'Edit', $externals);
                 }
@@ -163,21 +163,7 @@ class bookaroom_settings_branches
                  * 
                  * David -> Reflect for new time set up 
                  */
-                'branchDesc' => $externals['branchDesc'],
-                'branchOpen_0' => $finalTime['Open'][0],
-                'branchOpen_1' => $finalTime['Open'][1],
-                'branchOpen_2' => $finalTime['Open'][2],
-                'branchOpen_3' => $finalTime['Open'][3],
-                'branchOpen_4' => $finalTime['Open'][4],
-                'branchOpen_5' => $finalTime['Open'][5],
-                'branchOpen_6' => $finalTime['Open'][6],
-                'branchClose_0' => $finalTime['Close'][0],
-                'branchClose_1' => $finalTime['Close'][1],
-                'branchClose_2' => $finalTime['Close'][2],
-                'branchClose_3' => $finalTime['Close'][3],
-                'branchClose_4' => $finalTime['Close'][4],
-                'branchClose_5' => $finalTime['Close'][5],
-                'branchClose_6' => $finalTime['Close'][6]));
+                'b_name' => $externals['b_name']));
                 return $finalTime;
 
     }
@@ -318,14 +304,14 @@ class bookaroom_settings_branches
 
         /**
          * Jazmyn
-         * Deleted check for branchDesc
+         * Deleted check for b_name
          */
 
        
 
         # check dupe name 
-        // branchDesc needs to be handled here because I deleted it
-        if (bookaroom_settings::dupeCheck($branchList, $externals['branchDesc'], $externals['branchID']) == 1) {
+        // b_name needs to be handled here because I deleted it
+        if (bookaroom_settings::dupeCheck($branchList, $externals['b_name'], $externals['b_id']) == 1) {
             $error[] = 'That branch name is already in use. Please choose another.';
         }
 
@@ -346,7 +332,7 @@ class bookaroom_settings_branches
 
         $table_name = $wpdb->prefix . "bookaroom_branches";
 
-        $sql = "DELETE FROM `{$table_name}` WHERE `branchID` = '{$branchInfo['branchID']}' LIMIT 1";
+        $sql = "DELETE FROM `{$table_name}` WHERE `b_id` = '{$branchInfo['b_id']}' LIMIT 1";
         $wpdb->query($sql);
 
         $finalRooms = array();
@@ -446,56 +432,27 @@ class bookaroom_settings_branches
                  * removed isSocial and showSocial
                  * removed branchImageURL
                  * removed branchMapLink
-                 * removed branchDesc
+                 * removed b_name
                  * removed branch_hasNoLoc
                  * 
                  * David -> Reflect for new time set up
                  */
-                'branchDesc' => $externals['branchDesc'],
-                // 'branchAddress' => $externals['branchAddress'],
-                'branchOpen_0' => $finalTime['Open'][0],
-                'branchOpen_1' => $finalTime['Open'][1],
-                'branchOpen_2' => $finalTime['Open'][2],
-                'branchOpen_3' => $finalTime['Open'][3],
-                'branchOpen_4' => $finalTime['Open'][4],
-                'branchOpen_5' => $finalTime['Open'][5],
-                'branchOpen_6' => $finalTime['Open'][6],
-                'branchClose_0' => $finalTime['Close'][0],
-                'branchClose_1' => $finalTime['Close'][1],
-                'branchClose_2' => $finalTime['Close'][2],
-                'branchClose_3' => $finalTime['Close'][3],
-                'branchClose_4' => $finalTime['Close'][4],
-                'branchClose_5' => $finalTime['Close'][5],
-                'branchClose_6' => $finalTime['Close'][6]),
-            array('branchID' => $externals['branchID']),
-            array('%s', '%s', '%s', '%s', '%s', '%s',
-                $typeCast['Open'][0],
-                $typeCast['Open'][1],
-                $typeCast['Open'][2],
-                $typeCast['Open'][3],
-                $typeCast['Open'][4],
-                $typeCast['Open'][5],
-                $typeCast['Open'][6],
-                $typeCast['Close'][0],
-                $typeCast['Close'][1],
-                $typeCast['Close'][2],
-                $typeCast['Close'][3],
-                $typeCast['Close'][4],
-                $typeCast['Close'][5],
-                $typeCast['Close'][6]));
+                'b_name' => $externals['b_name']),
+            array('b_id' => $externals['b_id']),
+            array('%s', '%s', '%s', '%s', '%s', '%s'));
 
     }
 
    
 
-    public static function getBranchInfo($branchID)
+    public static function getBranchInfo($b_id)
     # get information about branch from database based on the ID
     {
         global $wpdb;
 
         $table_name = $wpdb->prefix . "bookaroom_branches";
 
-        $final = $wpdb->get_row($wpdb->prepare("SELECT * FROM `$table_name` WHERE `branchID` = %d", $branchID));
+        $final = $wpdb->get_row($wpdb->prepare("SELECT * FROM `$table_name` WHERE `b_id` = %d", $b_id));
 
         /*
         *
@@ -505,8 +462,8 @@ class bookaroom_settings_branches
         * also deleted branch_isPublic because it's not needed, branchImageURL, branchMapLink
         * branch_isSocial and showSocial
         */
-        $branchInfo = array('branchID' => $final->branchID);
-        $branchDesc = array('branchID' => $final->branchDesc);
+        $branchInfo = array('b_id' => $final->b_id);
+        $b_name = array('b_id' => $final->b_name);
 
 
 
@@ -573,7 +530,7 @@ class bookaroom_settings_branches
 
         * David -> Refactor for new time DB set up
         */
-        $sql = "SELECT `branchID`,`branchDesc`,`branchOpen_0`, `branchOpen_1`, `branchOpen_2`, `branchOpen_3`, `branchOpen_4`, `branchOpen_5`, `branchOpen_6`, `branchClose_0`, `branchClose_1`, `branchClose_2`, `branchClose_3`, `branchClose_4`, `branchClose_5`, `branchClose_6` FROM `$table_name` {$where}ORDER BY `branchDesc`";
+        $sql = "SELECT `b_id`,`b_name`,`branchOpen_0`, `branchOpen_1`, `branchOpen_2`, `branchOpen_3`, `branchOpen_4`, `branchOpen_5`, `branchOpen_6`, `branchClose_0`, `branchClose_1`, `branchClose_2`, `branchClose_3`, `branchClose_4`, `branchClose_5`, `branchClose_6` FROM `$table_name` {$where}ORDER BY `b_name`";
 
         $count = 0;
 
@@ -584,9 +541,9 @@ class bookaroom_settings_branches
 
         foreach ($cooked as $key => $val) {
             if ($full) {
-                $final[$val['branchID']] = $val;
+                $final[$val['b_id']] = $val;
             } else {
-                $final[$val['branchID']] = $val['branchDesc'];
+                $final[$val['b_id']] = $val['b_name'];
             }
         }
 
@@ -599,7 +556,7 @@ class bookaroom_settings_branches
         $final = array();
 
         # setup GET variables
-        $getArr = array('branchID' => FILTER_SANITIZE_STRING,
+        $getArr = array('b_id' => FILTER_SANITIZE_STRING,
             'action' => FILTER_SANITIZE_STRING);
         # pull in and apply to final
         if ($getTemp = filter_input_array(INPUT_GET, $getArr)) {
@@ -608,42 +565,14 @@ class bookaroom_settings_branches
 
         # setup POST variables
         $postArr = array('action' => FILTER_SANITIZE_STRING,
-            'branchID' => FILTER_SANITIZE_STRING,
+            'b_id' => FILTER_SANITIZE_STRING,
             /*
             * 
             * Deleted by: Jazmyn  
             *
             * Branch_isPublic, Branch_isSocial, Branch_showSocial, branchMapLink, branchImageURL, branch_hasNoLoc
             */
-            'branchDesc' => FILTER_SANITIZE_STRING,
-            'branchOpen_0' => FILTER_SANITIZE_STRING,
-            'branchOpen_0PM' => FILTER_SANITIZE_STRING,
-            'branchClose_0' => FILTER_SANITIZE_STRING,
-            'branchClose_0PM' => FILTER_SANITIZE_STRING,
-            'branchOpen_1' => FILTER_SANITIZE_STRING,
-            'branchOpen_1PM' => FILTER_SANITIZE_STRING,
-            'branchClose_1' => FILTER_SANITIZE_STRING,
-            'branchClose_1PM' => FILTER_SANITIZE_STRING,
-            'branchOpen_2' => FILTER_SANITIZE_STRING,
-            'branchOpen_2PM' => FILTER_SANITIZE_STRING,
-            'branchClose_2' => FILTER_SANITIZE_STRING,
-            'branchClose_2PM' => FILTER_SANITIZE_STRING,
-            'branchOpen_3' => FILTER_SANITIZE_STRING,
-            'branchOpen_3PM' => FILTER_SANITIZE_STRING,
-            'branchClose_3' => FILTER_SANITIZE_STRING,
-            'branchClose_3PM' => FILTER_SANITIZE_STRING,
-            'branchOpen_4' => FILTER_SANITIZE_STRING,
-            'branchOpen_4PM' => FILTER_SANITIZE_STRING,
-            'branchClose_4' => FILTER_SANITIZE_STRING,
-            'branchClose_4PM' => FILTER_SANITIZE_STRING,
-            'branchOpen_5' => FILTER_SANITIZE_STRING,
-            'branchOpen_5PM' => FILTER_SANITIZE_STRING,
-            'branchClose_5' => FILTER_SANITIZE_STRING,
-            'branchClose_5PM' => FILTER_SANITIZE_STRING,
-            'branchOpen_6' => FILTER_SANITIZE_STRING,
-            'branchOpen_6PM' => FILTER_SANITIZE_STRING,
-            'branchClose_6' => FILTER_SANITIZE_STRING,
-            'branchClose_6PM' => FILTER_SANITIZE_STRING);
+            'b_name' => FILTER_SANITIZE_STRING);
 
         # pull in and apply to final
         if ($postTemp = filter_input_array(INPUT_POST, $postArr)) {
@@ -678,7 +607,7 @@ class bookaroom_settings_branches
 
     public static function makeRoomAndContList($branchInfo, $roomContList, $roomList)
     {
-        $branchID = $branchInfo['branchID'];
+        $b_id = $branchInfo['b_id'];
         $container = array();
 
         # rooms and room containers
@@ -689,8 +618,8 @@ class bookaroom_settings_branches
         # first cycle containers
         $containers = array();
         $doneRoomList = array();
-        if (!empty($roomContList['names'][$branchID]) && count($roomContList['names'][$branchID]) !== 0) {
-            foreach ($roomContList['names'][$branchID] as $key => $val) {
+        if (!empty($roomContList['names'][$b_id]) && count($roomContList['names'][$b_id]) !== 0) {
+            foreach ($roomContList['names'][$b_id] as $key => $val) {
                 $container[$key]['name'] = $val;
                 $container[$key]['rooms'] = $roomContList['id'][$key]['rooms'];
                 $doneRoomList = array_merge($doneRoomList, $roomContList['id'][$key]['rooms']);
@@ -702,8 +631,8 @@ class bookaroom_settings_branches
 
         # check for any rooms not in final room list
         $allRoomsBranch = array();
-        if (!empty($roomList['room'][$branchID])) {
-            $allRoomsBranch = array_keys($roomList['room'][$branchID]);
+        if (!empty($roomList['room'][$b_id])) {
+            $allRoomsBranch = array_keys($roomList['room'][$b_id]);
         }
         $unknown = array_diff($allRoomsBranch, $doneRoomList);
 
