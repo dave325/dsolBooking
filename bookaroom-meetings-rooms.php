@@ -21,14 +21,14 @@ class bookaroom_settings_rooms {
 
 		switch ( $externals[ 'action' ] ) {
 			case 'deleteCheck':
-				if ( bookaroom_settings::checkID( $externals[ 'roomID' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
 					# delete room
 					$roomContList = bookaroom_settings_roomConts::getRoomContList();
 
-					self::deleteRoom( $externals[ 'roomID' ], $roomContList );
+					self::deleteRoom( $externals[ 'r_id' ], $roomContList );
 					require( 'templates/rooms/deleteSuccess.php' );
 				}
 
@@ -41,12 +41,12 @@ class bookaroom_settings_rooms {
 			*/
 
 				# check that there is an ID and it is valid
-				if ( bookaroom_settings::checkID( $externals[ 'roomID' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
 					# show delete screen
-					self::showRoomDelete( $externals[ 'roomID' ], $roomList, $branchList);
+					self::showRoomDelete( $externals[ 'r_id' ], $roomList, $branchList);
 				}
 				break;
 
@@ -56,7 +56,7 @@ class bookaroom_settings_rooms {
 					Kelvin: remove $amenityList
 			*/
 				# check entries
-				if ( ( $errors = self::checkEditRoom( $externals, $branchList, $roomList, $externals[ 'roomID' ] ) ) == NULL ) {
+				if ( ( $errors = self::checkEditRoom( $externals, $branchList, $roomList, $externals[ 'r_id' ] ) ) == NULL ) {
 					self::editRoom( $externals);
 					require( 'templates/rooms/editSuccess.php' );
 					break;
@@ -65,7 +65,7 @@ class bookaroom_settings_rooms {
 				$externals[ 'errors' ] = $errors;
 
 				# check that there is an ID and it is valid
-				if ( bookaroom_settings::checkID( $externals[ 'roomID' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
@@ -77,12 +77,12 @@ class bookaroom_settings_rooms {
 			case 'edit':
 				# check that there is an ID and it is valid
 
-				if ( bookaroom_settings::checkID( $externals[ 'roomID' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
 					# show edit screen
-					$roomInfo = self::getRoomInfo( $externals[ 'roomID' ] );
+					$roomInfo = self::getRoomInfo( $externals[ 'r_id' ] );
 					self::showRoomEdit( $roomInfo, $branchList, 'editCheck', 'Edit' );
 				}
 
@@ -134,14 +134,11 @@ class bookaroom_settings_rooms {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "bookaroom_rooms";
+		$table_name = $wpdb->prefix . "Room";
 
-		$amenityArr = NULL;
-		
 		$final = $wpdb->insert( $table_name,
-			array( 'room_desc' => $externals[ 'roomDesc' ],
-				'room_amenityArr' => $amenityArr,
-				'room_branchID' => $externals[ 'branch' ] ) );
+			array( 'room_number' => $externals[ 'room_Number' ],
+				'b_id' => $externals[ 'branch' ] ) );
 	}
 
 
@@ -151,16 +148,16 @@ class bookaroom_settings_rooms {
 */
 
 	public static
-	function checkEditRoom( $externals, $branchList, $roomList, $roomID )
+	function checkEditRoom( $externals, $branchList, $roomList, $r_id )
 	# check the room to make sure everything is filled out
-	# there are no dulicate names in the same branch
+	# there are no duplicate names in the same branch
 	# and the amenities are valid
 	{
 		$error = array();
 		$final = NULL;
 		# check name is filled and isn't duped in the same branch
 		# check for empty room name
-		if ( empty( $externals[ 'roomDesc' ] ) ) {
+		if ( empty( $externals[ 'room_Number' ] ) ) {
 			$error[] = __( 'You must enter a room name.', 'book-a-room' );
 		}
 
@@ -171,7 +168,7 @@ class bookaroom_settings_rooms {
 		} else {
 			# check dupe name FOR THAT BRANCH - first, are there any rooms?
 			if ( !empty( $roomList[ 'room' ] ) and array_key_exists( $externals[ 'branch' ], $roomList[ 'room' ] ) ) {
-				if ( bookaroom_settings::dupeCheck( $roomList[ 'room' ][ $externals[ 'branch' ] ], $externals[ 'roomDesc' ], $externals[ 'roomID' ] ) == 1 ) {
+				if ( bookaroom_settings::dupeCheck( $roomList[ 'room' ][ $externals[ 'branch' ] ], $externals[ 'room_Number' ], $externals[ 'r_id' ] ) == 1 ) {
 					$error[] = __( 'That room name is already in use at that branch. Please choose another.', 'book-a-room' );
 				}
 			}
@@ -185,21 +182,21 @@ class bookaroom_settings_rooms {
 	}
 
 	public static
-	function deleteRoom( $roomID, $roomContList )
+	function deleteRoom( $r_id, $roomContList )
 	# delete room
 	{
 		global $wpdb;
 		# Delete actual room
 		# ***
-		$table_name = $wpdb->prefix . "bookaroom_rooms";
+		$table_name = $wpdb->prefix . "Room";
 
-		$sql = "DELETE FROM `{$table_name}` WHERE `roomID` = '{$roomID}' LIMIT 1";
+		$sql = "DELETE FROM `{$table_name}` WHERE `r_id` = '{$r_id}' LIMIT 1";
 		$wpdb->query( $sql );
 
 		# Search containers for that room, remove
 		$table_name = $wpdb->prefix . "bookaroom_roomConts";
 
-		$sql = "DELETE FROM `{$table_name}` WHERE `rcm_roomID` = '{$roomID}'";
+		$sql = "DELETE FROM `{$table_name}` WHERE `rcm_r_id` = '{$r_id}'";
 		$wpdb->query( $sql );
 	}
 
@@ -214,16 +211,13 @@ class bookaroom_settings_rooms {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "bookaroom_rooms";
-
-		$amenityArr = NULL;
+		$table_name = $wpdb->prefix . "Room";
 	
 
 		$final = $wpdb->update( $table_name,
-			array( 'room_desc' => $externals[ 'roomDesc' ],
-				'room_amenityArr' => $amenityArr,
-				'room_branchID' => $externals[ 'branch' ] ),
-			array( 'roomID' => $externals[ 'roomID' ] ) );
+			array( 'room_number' => $externals[ 'room_Number' ],
+				'b_id' => $externals[ 'branch' ] ),
+			array( 'r_id' => $externals[ 'r_id' ] ) );
 	}
 
 	public static
@@ -233,7 +227,7 @@ class bookaroom_settings_rooms {
 		$final = array();
 
 		# setup GET variables
-		$getArr = array( 'roomID' => FILTER_SANITIZE_STRING,
+		$getArr = array( 'r_id' => FILTER_SANITIZE_STRING,
 			'action' => FILTER_SANITIZE_STRING );
 		# pull in and apply to final
 		if ( $getTemp = filter_input_array( INPUT_GET, $getArr ) ) {
@@ -245,9 +239,9 @@ class bookaroom_settings_rooms {
 			Kelvin: remove ammenities from $postArr
 		*/
 		$postArr = array( 'action' => FILTER_SANITIZE_STRING,
-						 'roomID' => FILTER_SANITIZE_STRING,
+						 'r_id' => FILTER_SANITIZE_STRING,
 						 'branch' => FILTER_SANITIZE_STRING,
-						 'roomDesc' => FILTER_SANITIZE_STRING
+						 'room_Number' => FILTER_SANITIZE_STRING
 						);
 
 		# pull in and apply to final
@@ -271,7 +265,7 @@ class bookaroom_settings_rooms {
 	}
 
 	public static
-	function getRoomInfo( $roomID )
+	function getRoomInfo( $r_id )
 	# get information about branch from daabase based on the ID
 	{
 
@@ -281,10 +275,10 @@ class bookaroom_settings_rooms {
 
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "bookaroom_rooms";
-		$final = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `$table_name` WHERE `roomID` = %d", $roomID ) );
-		$roomInfo = array( 'roomID' => $roomID, 'roomDesc' => $final->room_desc,
-			'branch' => $final->room_branchID );
+		$table_name = $wpdb->prefix . "Room";
+		$final = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `$table_name` WHERE `r_id` = %d", $r_id ) );
+		$roomInfo = array( 'r_id' => $r_id, 'room_Number' => $final->room_number,
+			'branch' => $final->b_id );
 
 		return $roomInfo;
 	}
@@ -298,8 +292,8 @@ class bookaroom_settings_rooms {
 		global $wpdb;
 		$roomList = array();
 
-		$table_name = $wpdb->prefix . "bookaroom_rooms";
-		$sql = "SELECT `roomID`, `room_desc`, `room_branchID` FROM `$table_name` ORDER BY `room_branchID`, `room_desc`";
+		$table_name = $wpdb->prefix . "Room";
+		$sql = "SELECT `r_id`, `room_number`, `b_id` FROM `$table_name` ORDER BY `b_id`, `room_number`";
 
 		$count = 0;
 
@@ -312,8 +306,8 @@ class bookaroom_settings_rooms {
 			return array();
 		}
 		foreach ( $cooked as $key => $val ) {
-			$roomList[ 'room' ][ $val[ 'room_branchID' ] ][ $val[ 'roomID' ] ] = $val[ 'room_desc' ];
-			$roomList[ 'id' ][ $val[ 'roomID' ] ] = array( 'branch' => $val[ 'room_branchID' ], 'desc' => $val[ 'room_desc' ] );
+			$roomList[ 'room' ][ $val[ 'b_id' ] ][ $val[ 'r_id' ] ] = $val[ 'room_number' ];
+			$roomList[ 'id' ][ $val[ 'r_id' ] ] = array( 'branch' => $val[ 'b_id' ], 'desc' => $val[ 'room_number' ] );
 		}
 		return $roomList;
 	}
@@ -336,7 +330,7 @@ class bookaroom_settings_rooms {
 */
 
 	public static
-	function showRoomDelete( $roomID, $roomList, $branchList)
+	function showRoomDelete( $r_id, $roomList, $branchList)
 	# show delete page
 	{
 		require( BOOKAROOM_PATH . 'templates/rooms/delete.php' );

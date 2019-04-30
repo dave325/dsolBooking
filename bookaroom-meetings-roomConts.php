@@ -2,7 +2,7 @@
 class bookaroom_settings_roomConts {
 	############################################
 	#
-	# Room Container managment
+	# Room RoomContainer managment
 	#
 	############################################
 	public static
@@ -143,7 +143,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "room_container";
+		$table_name = $wpdb->prefix . "RoomContainer";
 
 		# make room list
 		# only use valid amenity ids and serialize
@@ -254,7 +254,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "room_container";
+		$table_name = $wpdb->prefix . "RoomContainer";
 
 		/*
 			Kelvin: fix delete query
@@ -269,7 +269,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "room_container";
+		$table_name = $wpdb->prefix . "RoomContainer";
 
 		$roomContID = $externals[ 'roomContID' ];
 
@@ -382,7 +382,7 @@ class bookaroom_settings_roomConts {
 			Kelvin: Remove roomCont_isPublic and roomCont_hideDaily from query
 		*/
 
-		$table_name = $wpdb->prefix . "room_container";
+		$table_name = $wpdb->prefix . "RoomContainer";
 
 		/*
 			Kelvin: fix select query
@@ -408,7 +408,7 @@ class bookaroom_settings_roomConts {
 		global $wpdb;
 		$roomContList = array();
 
-		$table_name = $wpdb->prefix . "room_container";
+		$table_name = $wpdb->prefix . "RoomContainer";
 
 		/*
 			Kelvin: delete $where variable
