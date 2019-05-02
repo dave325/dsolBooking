@@ -1,5 +1,5 @@
 <?php
-class bookaroom_settings_rooms {
+class dsol_settings_rooms {
 	############################################
 	#
 	# Room managment
@@ -8,7 +8,7 @@ class bookaroom_settings_rooms {
 	public static
 	function bookaroom_admin_rooms() {
 		$roomList = self::getRoomList();
-		$branchList = bookaroom_settings_branches::getBranchList();
+		$branchList = dsol_settings_branches::getBranchList();
 		
 		/*
 			Kelvin: Remove $amenityList
@@ -21,12 +21,12 @@ class bookaroom_settings_rooms {
 
 		switch ( $externals[ 'action' ] ) {
 			case 'deleteCheck':
-				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
 					# delete room
-					$roomContList = bookaroom_settings_roomConts::getRoomContList();
+					$roomContList = dsol_settings_roomConts::getRoomContList();
 
 					self::deleteRoom( $externals[ 'r_id' ], $roomContList );
 					require( 'templates/rooms/deleteSuccess.php' );
@@ -41,7 +41,7 @@ class bookaroom_settings_rooms {
 			*/
 
 				# check that there is an ID and it is valid
-				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
@@ -65,7 +65,7 @@ class bookaroom_settings_rooms {
 				$externals[ 'errors' ] = $errors;
 
 				# check that there is an ID and it is valid
-				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
@@ -77,7 +77,7 @@ class bookaroom_settings_rooms {
 			case 'edit':
 				# check that there is an ID and it is valid
 
-				if ( bookaroom_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'r_id' ], $roomList[ 'room' ], TRUE ) == FALSE ) {
 					# show error page
 					require( 'templates/rooms/IDerror.php' );
 				} else {
@@ -134,7 +134,7 @@ class bookaroom_settings_rooms {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "Room";
+		$table_name = $wpdb->prefix . "dsol_booking_room";
 
 		$final = $wpdb->insert( $table_name,
 			array( 'room_number' => $externals[ 'room_Number' ],
@@ -168,7 +168,7 @@ class bookaroom_settings_rooms {
 		} else {
 			# check dupe name FOR THAT BRANCH - first, are there any rooms?
 			if ( !empty( $roomList[ 'room' ] ) and array_key_exists( $externals[ 'branch' ], $roomList[ 'room' ] ) ) {
-				if ( bookaroom_settings::dupeCheck( $roomList[ 'room' ][ $externals[ 'branch' ] ], $externals[ 'room_Number' ], $externals[ 'r_id' ] ) == 1 ) {
+				if ( dsol_settings::dupeCheck( $roomList[ 'room' ][ $externals[ 'branch' ] ], $externals[ 'room_Number' ], $externals[ 'r_id' ] ) == 1 ) {
 					$error[] = __( 'That room name is already in use at that branch. Please choose another.', 'book-a-room' );
 				}
 			}
@@ -188,7 +188,7 @@ class bookaroom_settings_rooms {
 		global $wpdb;
 		# Delete actual room
 		# ***
-		$table_name = $wpdb->prefix . "Room";
+		$table_name = $wpdb->prefix . "dsol_booking_room";
 
 		$sql = "DELETE FROM `{$table_name}` WHERE `r_id` = '{$r_id}' LIMIT 1";
 		$wpdb->query( $sql );
@@ -211,7 +211,7 @@ class bookaroom_settings_rooms {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "Room";
+		$table_name = $wpdb->prefix . "dsol_booking_room";
 	
 
 		$final = $wpdb->update( $table_name,
@@ -275,7 +275,7 @@ class bookaroom_settings_rooms {
 
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "Room";
+		$table_name = $wpdb->prefix . "dsol_booking_room";
 		$final = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `$table_name` WHERE `r_id` = %d", $r_id ) );
 		$roomInfo = array( 'r_id' => $r_id, 'room_Number' => $final->room_number,
 			'branch' => $final->b_id );
@@ -292,7 +292,7 @@ class bookaroom_settings_rooms {
 		global $wpdb;
 		$roomList = array();
 
-		$table_name = $wpdb->prefix . "Room";
+		$table_name = $wpdb->prefix . "dsol_booking_room";
 		$sql = "SELECT `r_id`, `room_number`, `b_id` FROM `$table_name` ORDER BY `b_id`, `room_number`";
 
 		$count = 0;
@@ -321,7 +321,7 @@ class bookaroom_settings_rooms {
 	# show a list of rooms with edit and delete links, or, if none 
 	# a message stating there are no branches
 	{
-		require( BOOKAROOM_PATH . 'templates/rooms/mainAdmin.php' );
+		require( DSOL_BOOKING_PATH . 'templates/rooms/mainAdmin.php' );
 	}
 
 
@@ -333,7 +333,7 @@ class bookaroom_settings_rooms {
 	function showRoomDelete( $r_id, $roomList, $branchList)
 	# show delete page
 	{
-		require( BOOKAROOM_PATH . 'templates/rooms/delete.php' );
+		require( DSOL_BOOKING_PATH . 'templates/rooms/delete.php' );
 	}
 
 /*
@@ -344,7 +344,7 @@ class bookaroom_settings_rooms {
 	function showRoomEdit( $roomInfo, $branchList, $action, $actionName )
 	# show edit page and fill with values
 	{
-		require( BOOKAROOM_PATH . 'templates/rooms/edit.php' );
+		require( DSOL_BOOKING_PATH . 'templates/rooms/edit.php' );
 	}
 }
 ?>

@@ -1,15 +1,15 @@
 <?php
-class bookaroom_settings_roomConts {
+class dsol_settings_roomConts {
 	############################################
 	#
 	# Room RoomContainer managment
 	#
 	############################################
 	public static
-	function bookaroom_admin_roomCont() {
+	function dsol_admin_roomCont() {
 		$roomContList = self::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-		$branchList = bookaroom_settings_branches::getBranchList();
+		$roomList = dsol_settings_rooms::getRoomList();
+		$branchList = dsol_settings_branches::getBranchList();
 		/*
 			Kelvin: Remove $amenityList
 		*/
@@ -21,25 +21,25 @@ class bookaroom_settings_roomConts {
 
 		switch ( $externals[ 'action' ] ) {
 			case 'deleteCheck':
-				if ( bookaroom_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
 					# show error page
-					require( BOOKAROOM_PATH . 'templates/roomConts/IDerror.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/IDerror.php' );
 				} else {
 					# delete room
 					self::deleteRoomCont( $externals[ 'roomContID' ] );
-					require( BOOKAROOM_PATH . 'templates/roomConts/deleteSuccess.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/deleteSuccess.php' );
 				}
 				break;
 			case 'delete':
 				# check that there is an ID and it is valid
-				if ( bookaroom_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
 					# show error page
-					require( BOOKAROOM_PATH . 'templates/roomConts/IDerror.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/IDerror.php' );
 					break;
 					# check for branch and make sure it is valid
 				} elseif ( empty( $roomContList[ 'id' ][ $externals[ 'roomContID' ] ][ 'branchID' ] ) or!in_array( $roomContList[ 'id' ][ $externals[ 'roomContID' ] ][ 'branchID' ], array_keys( $branchList ) ) ) {
 					# show error page
-					require( BOOKAROOM_PATH . 'templates/roomConts/noBranch.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/noBranch.php' );
 					break;
 				} else {
 					# show delete screen
@@ -54,21 +54,21 @@ class bookaroom_settings_roomConts {
 
 			case 'editCheck':
 				# check that there is an ID and it is valid
-				if ( bookaroom_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
 					# show error page
-					require( BOOKAROOM_PATH . 'templates/roomConts/IDerror.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/IDerror.php' );
 					break;
 					# check for branch and make sure it is valid
 				} elseif ( empty( $roomContList[ 'id' ][ $externals[ 'roomContID' ] ][ 'branchID' ] ) or!in_array( $roomContList[ 'id' ][ $externals[ 'roomContID' ] ][ 'branchID' ], array_keys( $branchList ) ) ) {
 					# show error page
-					require( BOOKAROOM_PATH . 'templates/roomConts/noBranch.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/noBranch.php' );
 					break;
 				}
 
 				# check entries
 				if ( ( $errors = self::checkEditRoomConts( $externals, $roomContList, $branchList, $roomList, $externals[ 'roomContID' ] ) ) == NULL ) {
 					self::editRoomCont( $externals, $roomList );
-					require( BOOKAROOM_PATH . 'templates/roomConts/editSuccess.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/editSuccess.php' );
 					break;
 				} else {
 					$externals[ 'errors' ] = $errors;
@@ -81,13 +81,13 @@ class bookaroom_settings_roomConts {
 				break;
 
 			case 'edit':
-				if ( bookaroom_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
+				if ( dsol_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
 					# show error page
-					require( BOOKAROOM_PATH . 'templates/roomConts/IDerror.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/IDerror.php' );
 					break;
 					# check for branch and make sure it's valid
 				} elseif ( empty( $roomContList[ 'id' ][ $externals[ 'roomContID' ] ][ 'branchID' ] ) or!in_array( $roomContList[ 'id' ][ $externals[ 'roomContID' ] ][ 'branchID' ], array_keys( $branchList ) ) ) {
-					require( BOOKAROOM_PATH . 'templates/roomConts/noBranch.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/noBranch.php' );
 					break;
 				}
 
@@ -100,7 +100,7 @@ class bookaroom_settings_roomConts {
 
 			case 'addCheck':
 				if ( empty( $externals[ 'branchID' ] ) or!in_array( $externals[ 'branchID' ], array_keys( $branchList ) ) ) {
-					require( BOOKAROOM_PATH . 'templates/roomConts/noBranch.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/noBranch.php' );
 					break;
 				}
 
@@ -112,7 +112,7 @@ class bookaroom_settings_roomConts {
 					self::showRoomContEdit( $externals, $externals[ 'branchID' ], $roomContList, $roomList, $branchList, 'addCheck', 'Add' );
 				} else {
 					self::addRoomCont( $externals, $roomList );
-					require( BOOKAROOM_PATH . 'templates/roomConts/addSuccess.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/addSuccess.php' );
 					// $info = self::addRoomCont( $externals, $roomList );
 					// ob_start();
 				}
@@ -120,7 +120,7 @@ class bookaroom_settings_roomConts {
 
 			case 'add':
 				if ( empty( $externals[ 'branchID' ] ) or!in_array( $externals[ 'branchID' ], array_keys( $branchList ) ) ) {
-					require( BOOKAROOM_PATH . 'templates/roomConts/noBranch.php' );
+					require( DSOL_BOOKING_PATH . 'templates/roomConts/noBranch.php' );
 					break;
 				}
 				/*
@@ -143,7 +143,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "RoomContainer";
+		$table_name = $wpdb->prefix . "dsol_booking_container";
 
 		# make room list
 		# only use valid amenity ids and serialize
@@ -208,7 +208,7 @@ class bookaroom_settings_roomConts {
 
 		# check dupe name FOR THAT CONTAINER - first, are there any containers?
 		if ( !empty( $roomContList[ 'names' ][ $externals[ 'branchID' ] ] ) ) {
-			if ( bookaroom_settings::dupeCheck( $roomContList[ 'names' ][ $externals[ 'branchID' ] ], $externals[ 'roomContDesc' ], $externals[ 'roomContID' ] ) == 1 ) {
+			if ( dsol_settings::dupeCheck( $roomContList[ 'names' ][ $externals[ 'branchID' ] ], $externals[ 'roomContDesc' ], $externals[ 'roomContID' ] ) == 1 ) {
 
 				$error[] = __( 'That room container name is already in use at that branch. Please choose another.', 'book-a-room' );
 			}
@@ -254,7 +254,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "RoomContainer";
+		$table_name = $wpdb->prefix . "dsol_booking_container";
 
 		/*
 			Kelvin: fix delete query
@@ -269,7 +269,7 @@ class bookaroom_settings_roomConts {
 	{
 		global $wpdb;
 
-		$table_name = $wpdb->prefix . "RoomContainer";
+		$table_name = $wpdb->prefix . "dsol_booking_container";
 
 		$roomContID = $externals[ 'roomContID' ];
 
@@ -382,7 +382,7 @@ class bookaroom_settings_roomConts {
 			Kelvin: Remove roomCont_isPublic and roomCont_hideDaily from query
 		*/
 
-		$table_name = $wpdb->prefix . "RoomContainer";
+		$table_name = $wpdb->prefix . "dsol_booking_container";
 
 		/*
 			Kelvin: fix select query
@@ -408,7 +408,7 @@ class bookaroom_settings_roomConts {
 		global $wpdb;
 		$roomContList = array();
 
-		$table_name = $wpdb->prefix . "RoomContainer";
+		$table_name = $wpdb->prefix . "dsol_booking_container";
 
 		/*
 			Kelvin: delete $where variable
@@ -456,7 +456,7 @@ class bookaroom_settings_roomConts {
 	function showRoomContDelete( $roomContID, $roomContList, $roomList, $branchList )
 	# show delete page
 	{
-		require( BOOKAROOM_PATH . 'templates/roomConts/delete.php' );
+		require( DSOL_BOOKING_PATH . 'templates/roomConts/delete.php' );
 	}
 	/*
 		Kelvin: Remove $amenityList from parameter
@@ -465,7 +465,7 @@ class bookaroom_settings_roomConts {
 	function showRoomContEdit( $roomContInfo, $branchID, $roomContList, $roomList, $branchList, $action, $actionName )
 	# show edit page and fill with values
 	{
-		require( BOOKAROOM_PATH . 'templates/roomConts/edit.php' );
+		require( DSOL_BOOKING_PATH . 'templates/roomConts/edit.php' );
 	}
 
 	/*
@@ -476,7 +476,7 @@ class bookaroom_settings_roomConts {
 	# show a list of rooms with edit and delete links, or, if none 
 	# a message stating there are no branches
 	{
-		require( BOOKAROOM_PATH . 'templates/roomConts/mainAdmin.php' );
+		require( DSOL_BOOKING_PATH . 'templates/roomConts/mainAdmin.php' );
 	}
 }
 ?>

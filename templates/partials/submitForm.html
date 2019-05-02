@@ -1,0 +1,72 @@
+<div>
+    <form name="form1" method="post">
+        <div id="topRow">
+            <div class="col">
+                <div class="instructionsSmooth">
+                    <span class="header">
+                        Step 6
+                    </span>
+                    <p>
+                        <em>
+                            Complete the registration form.<br />
+                            Reservation for ADD MEMBER INFO HERE
+                        </em>
+                    </p>
+                    <p><em><strong>Items marked with an asterisk* are required fields.</strong></em>
+                    </p>
+                </div>
+                <div class="options">
+                    <div id="formRow">
+                        <div class="wideCol">
+                            <div class="question">
+                                Branch and Room
+                            </div>
+                            <div class="formInput">
+                                <strong>
+                                    (ADD BRANCH INFORMATION HERE)
+                                </strong><br />
+                                <em>
+                                    (ADD ROOM INFORMATION HERE)
+                                </em>
+                            </div>
+                        </div>
+                        <div class="wideCol">
+                            <div class="question">
+                                Date (ADD DATE INFORMATION HERE)
+                            </div>
+                        </div>
+                        <div class="wideCol">
+                            <div class="question">
+                                'Requested times (ADD START AND END TIME INFORMATION HERE)
+                            </div>
+
+                        </div>
+                        <div class="wideCol">
+                            <div class="question">
+                                <label for="numAtend">
+                                    Number of attendees *</label>
+                            </div>
+                            <div class="formInput">
+                                <input name="numAttend" type="number" id="numAttend" ng-model="info.numAttend" size="3" maxlength="3" />
+                            </div>
+                        </div>
+                        <div class="wideCol">
+                            <div class="question">
+                                <label for="desc">
+                                    Purpose of meeting*</label>
+                            </div>
+                            <div class="formInput">
+                                <textarea name="desc" rows="3" id="desc"ng-model="info.desc"></textarea>
+                            </div>
+                        </div>
+                        <div class="wideCol">
+                            <div class="formInput">
+                                <input name="submit" type="submit" value="Submit" ng-click="submit()"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,5 +1,5 @@
 <?PHP
-class book_a_room_meetings
+class dsol_meetings
 {
 	############################################
 	#
@@ -42,7 +42,7 @@ class book_a_room_meetings
              * 
              * Removed $pendingList[ 'id' ]  from !array_key_exits(...)
              */
-			if ( !array_key_exists( $val) ) {
+			if ( !array_key_exists($pendingList[ 'id' ], $val) ) {
 				$final[ 'fail' ][] = $val;
 				# check if status is different
             } 
@@ -349,9 +349,9 @@ class book_a_room_meetings
 	{
 		global $wpdb;
 		
-		$roomContList = bookaroom_settings_roomConts::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-		$branchList = bookaroom_settings_branches::getBranchList( TRUE );
+		$roomContList = dsol_settings_roomConts::getRoomContList();
+		$roomList = dsol_settings_rooms::getRoomList();
+		$branchList = dsol_settings_branches::getBranchList( TRUE );
 		
 		$table_name = $wpdb->prefix . "bookaroom_times";
 		$table_nameRes = $wpdb->prefix . "bookaroom_reservations";
@@ -453,9 +453,9 @@ class book_a_room_meetings
 		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-public.php' );
 		
 		# vaiables from includes
-		$roomContList = bookaroom_settings_roomConts::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-        $branchList = bookaroom_settings_branches::getBranchList( TRUE );
+		$roomContList = dsol_settings_roomConts::getRoomContList();
+		$roomList = dsol_settings_rooms::getRoomList();
+        $branchList = dsol_settings_branches::getBranchList( TRUE );
         
         /**
          * Aung
@@ -494,9 +494,9 @@ class book_a_room_meetings
 		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-public.php' );
 		
 		# vaiables from includes
-		$roomContList = bookaroom_settings_roomConts::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-        $branchList = bookaroom_settings_branches::getBranchList( TRUE );
+		$roomContList = dsol_settings_roomConts::getRoomContList();
+		$roomList = dsol_settings_rooms::getRoomList();
+        $branchList = dsol_settings_branches::getBranchList( TRUE );
         
         /**
          * Aung
@@ -546,9 +546,9 @@ class book_a_room_meetings
 	#, $branchList, $roomContList, $roomList, $amenityList, $errorMSG = NULL, $res_id = NULL, $contents = NULL )
 	{
 
-		$roomContList = bookaroom_settings_roomConts::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-		$branchList = bookaroom_settings_branches::getBranchList( TRUE );
+		$roomContList = dsol_settings_roomConts::getRoomContList();
+		$roomList = dsol_settings_rooms::getRoomList();
+		$branchList = dsol_settings_branches::getBranchList( TRUE );
 
 		if ( empty( $res_id ) && !empty( $externals[ 'res_id' ] ) ) {
 			$res_id = $externals[ 'res_id' ];
@@ -627,9 +627,9 @@ class book_a_room_meetings
 		require_once( BOOKAROOM_PATH . '/bookaroom-meetings-public.php' );
 		
 		# vaiables from includes
-		$roomContList = bookaroom_settings_roomConts::getRoomContList();
-		$roomList = bookaroom_settings_rooms::getRoomList();
-        $branchList = bookaroom_settings_branches::getBranchList( TRUE );
+		$roomContList = dsol_settings_roomConts::getRoomContList();
+		$roomList = dsol_settings_rooms::getRoomList();
+        $branchList = dsol_settings_branches::getBranchList( TRUE );
         
         /**
          * Aung

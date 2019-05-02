@@ -1,5 +1,5 @@
 <?php
-class bookaroom_settings_branches
+class dsol_settings_branches
 {
     ############################################
     #
@@ -15,31 +15,31 @@ class bookaroom_settings_branches
 
         switch ($externals['action']) {
             case 'deleteCheck': # check that there is an ID and it is valid
-                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
+                if (dsol_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
-                    require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
+                    require DSOL_BOOKING_PATH . 'templates/branches/IDerror.php';
                 } else {
                     # show delete screen
                     $branchInfo = self::getBranchInfo($externals['b_id']);
-                    $roomContList = bookaroom_settings_roomConts::getRoomContList();
-                    $roomList = bookaroom_settings_rooms::getRoomList();
+                    $roomContList = dsol_settings_roomConts::getRoomContList();
+                    $roomList = dsol_settings_rooms::getRoomList();
                     $container = self::makeRoomAndContList($branchInfo, $roomContList, $roomList);
                     self::deleteBranch($branchInfo, $container);
-                    require BOOKAROOM_PATH . 'templates/branches/deleteSuccess.php';
+                    require DSOL_BOOKING_PATH . 'templates/branches/deleteSuccess.php';
                 }
                 break;
 
             case 'delete':
                 # check that there is an ID and it is valid
-                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
+                if (dsol_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
-                    require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
+                    require DSOL_BOOKING_PATH . 'templates/branches/IDerror.php';
                 } else {
                     # show delete screen
 
                     $branchInfo = self::getBranchInfo($externals['b_id']);
-                    $roomContList = bookaroom_settings_roomConts::getRoomContList();
-                    $roomList = bookaroom_settings_rooms::getRoomList();
+                    $roomContList = dsol_settings_roomConts::getRoomContList();
+                    $roomList = dsol_settings_rooms::getRoomList();
                     self::showBranchDelete($branchInfo, $roomContList, $roomList);
                 }
 
@@ -49,7 +49,7 @@ class bookaroom_settings_branches
                 # check entries
                 if (($errors = self::checkEditBranch($externals, $branchList)) == null) {
                     $hi =self::addBranch($externals);
-                    require BOOKAROOM_PATH . 'templates/branches/addSuccess.php';
+                    require DSOL_BOOKING_PATH . 'templates/branches/addSuccess.php';
                     break;
                 }
 
@@ -67,16 +67,16 @@ class bookaroom_settings_branches
                 # check entries
                 if (($errors = self::checkEditBranch($externals, $branchList)) == null) {
                     self::editBranch($externals);
-                    require BOOKAROOM_PATH . 'templates/branches/editSuccess.php';
+                    require DSOL_BOOKING_PATH . 'templates/branches/editSuccess.php';
                     break;
                 }
 
                 $externals['errors'] = $errors;
 
                 # check that there is an ID and it is valid
-                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
+                if (dsol_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
-                    require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
+                    require DSOL_BOOKING_PATH . 'templates/branches/IDerror.php';
                 } else {
                     # show edit screen
                     self::showBranchEdit($externals, 'editCheck', 'Edit', $externals);
@@ -88,9 +88,9 @@ class bookaroom_settings_branches
 
                 # check that there is an ID and it is valid
 
-                if (bookaroom_settings::checkID($externals['b_id'], $branchList) == false) {
+                if (dsol_settings::checkID($externals['b_id'], $branchList) == false) {
                     # show error page
-                    require BOOKAROOM_PATH . 'templates/branches/IDerror.php';
+                    require DSOL_BOOKING_PATH . 'templates/branches/IDerror.php';
                 } else {
                     # show edit screen
                     $branchInfo = self::getBranchInfo($externals['b_id']);
@@ -115,7 +115,7 @@ class bookaroom_settings_branches
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . "bookaroom_branches";
+        $table_name = $wpdb->prefix . "dsol_booking_branch";
 
         $finalTime = array();
 
@@ -311,7 +311,7 @@ class bookaroom_settings_branches
 
         # check dupe name 
         // b_name needs to be handled here because I deleted it
-        if (bookaroom_settings::dupeCheck($branchList, $externals['b_name'], $externals['b_id']) == 1) {
+        if (dsol_settings::dupeCheck($branchList, $externals['b_name'], $externals['b_id']) == 1) {
             $error[] = 'That branch name is already in use. Please choose another.';
         }
 
@@ -330,7 +330,7 @@ class bookaroom_settings_branches
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . "bookaroom_branches";
+        $table_name = $wpdb->prefix . "dsol_booking_branch";
 
         $sql = "DELETE FROM `{$table_name}` WHERE `b_id` = '{$branchInfo['b_id']}' LIMIT 1";
         $wpdb->query($sql);
@@ -368,7 +368,7 @@ class bookaroom_settings_branches
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . "bookaroom_branches";
+        $table_name = $wpdb->prefix . "dsol_booking_branch";
 
         $finalTime = array();
 
@@ -450,7 +450,7 @@ class bookaroom_settings_branches
     {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . "bookaroom_branches";
+        $table_name = $wpdb->prefix . "dsol_booking_branch";
 
         $final = $wpdb->get_row($wpdb->prepare("SELECT * FROM `$table_name` WHERE `b_id` = %d", $b_id));
 
@@ -520,7 +520,7 @@ class bookaroom_settings_branches
         global $wpdb;
         $final = array();
 
-        $table_name = $wpdb->prefix . "bookaroom_branches";
+        $table_name = $wpdb->prefix . "dsol_booking_branch";
         /** 
         *
         * Jazmyn Fuller
@@ -665,7 +665,7 @@ class bookaroom_settings_branches
             }
         }
 
-        require BOOKAROOM_PATH . 'templates/branches/delete.php';
+        require DSOL_BOOKING_PATH . 'templates/branches/delete.php';
     }
 
     public static function showBranchEdit($branchInfo, $action, $actionName, $externals = array())
@@ -677,14 +677,14 @@ class bookaroom_settings_branches
         * Removed if statements for Branch_isPublic, branch is social,
         * branch_showSocial, and branch_hasNoLoc 
         */
-        require BOOKAROOM_PATH . 'templates/branches/edit.php';
+        require DSOL_BOOKING_PATH . 'templates/branches/edit.php';
     }
 
     public static function showBranchList($branchList)
     # show a list of branches with edit and delete links, or, if none
     # a message stating there are no branches
     {
-        require BOOKAROOM_PATH . 'templates/branches/mainAdmin.php';
+        require DSOL_BOOKING_PATH . 'templates/branches/mainAdmin.php';
 
     }
 }
