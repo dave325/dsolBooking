@@ -6,7 +6,7 @@ class dsol_settings_branches
     # Branch Management
     #
     ############################################
-    public static function bookaroom_admin_branches()
+    public static function dsol_admin_branches()
     {
         $branchList = self::getBranchList();
         # figure out what to do
@@ -341,7 +341,7 @@ class dsol_settings_branches
         }
 
         if (!empty($finalRooms)) {
-            $table_name = $wpdb->prefix . "bookaroom_rooms";
+            $table_name = $wpdb->prefix . "dsol_booking_room";
 
             $finalRoomsImp = implode(',', $finalRooms);
             $sql = "DELETE FROM `{$table_name}` WHERE `roomID` IN ({$finalRoomsImp}) LIMIT 1";
@@ -353,7 +353,7 @@ class dsol_settings_branches
         $finalRoomConts = array_keys($container);
 
         if (!empty($finalRoomConts)) {
-            $table_name = $wpdb->prefix . "bookaroom_roomConts";
+            $table_name = $wpdb->prefix . "dsol_booking_container";
 
             $finalRoomsContsImp = implode(',', $finalRoomConts);
             $sql = "DELETE FROM `{$table_name}` WHERE `roomCont_ID` IN ({$finalRoomsContsImp}) LIMIT 1";
@@ -521,6 +521,7 @@ class dsol_settings_branches
         $final = array();
 
         $table_name = $wpdb->prefix . "dsol_booking_branch";
+        $table_nameSch = $wpdb->prefix . "dsol_booking_branch_schedule";
         /** 
         *
         * Jazmyn Fuller
@@ -530,7 +531,8 @@ class dsol_settings_branches
 
         * David -> Refactor for new time DB set up
         */
-        $sql = "SELECT `b_id`,`b_name`,`branchOpen_0`, `branchOpen_1`, `branchOpen_2`, `branchOpen_3`, `branchOpen_4`, `branchOpen_5`, `branchOpen_6`, `branchClose_0`, `branchClose_1`, `branchClose_2`, `branchClose_3`, `branchClose_4`, `branchClose_5`, `branchClose_6` FROM `$table_name` {$where}ORDER BY `b_name`";
+        $sql = "SELECT `b_id`,`b_name`,`open_time`, `open_time`
+                FROM `$table_name` AS B INNER JOIN  `$table_nameSch` AS BS ON B.id = BS.id ORDER BY `b_name`";
 
         $count = 0;
 
