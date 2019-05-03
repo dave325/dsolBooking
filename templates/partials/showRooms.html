@@ -29,8 +29,8 @@
           </div>
           <div class="panel-body" uib-collapse="isCollapsed">
             <div class="row justify-content-between" ng-repeat="room in rooms">
-              <div class="col-sm-12 col-md-3">Room: {{room.roomCont_desc}}</div>
-              <div class="col-sm-12 col-md-3"><a ng-click="selectRoom($index)">Occupation: {{room.roomCont_occ}}</a></div>
+              <div class="col-sm-12 col-md-3">Room: {{room.container_number}}</div>
+              <div class="col-sm-12 col-md-3"><a ng-click="selectRoom($index)">Occupancy: {{room.occupancy}}</a></div>
             </div>
           </div>
         </div>

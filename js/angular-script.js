@@ -7,6 +7,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         resolve: {
           TIMES: ['$http', function ($http) {
             return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { name: 'David ' }).then((res) => {
+              console.log(res)
               let reservations = res.data;
               let validTimes = [];
               const curDate = moment().hours(6).minute(0).seconds(0).milliseconds(0);
@@ -66,6 +67,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
               }
               let rooms;
               return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) =>{
+                console.log(res)
                 rooms = res.data;
                 return {
                   times: validTimes,
