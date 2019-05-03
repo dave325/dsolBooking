@@ -74,9 +74,13 @@ if (count($branchList) == 0) {
 							<tr>
 								<td colspan="2">
 									<?php _e('No rooms containers in this branch.', 'book-a-room'); ?>
+									<a href="?page=dsol_Settings_RoomCont&amp;action=add&branchID=<?php echo $b_key ?>">
+									<?php _e( 'Create a new container.', 'book-a-room' ); 
+									?>
 								</td>
 							</tr>
 						<?php
+						break;
 					} else {
 						?>
 							<tr>
@@ -87,14 +91,15 @@ if (count($branchList) == 0) {
 										?>
 									</strong>
 								</td>
-								<td width="250" class="subHeader" style="text-align: right"><a style="color: #FFF" href="?page=dsol_Settings_RoomCont&amp;&amp;roomContID=<?php echo $roomContList[$rc_key]['containerId']; ?>&amp;action=edit">Edit</a> | <a style="color: #FFF" href="?page=dsol_Settings_RoomCont&amp;&amp;roomContID=<?php echo $roomContList[$rc_key]['containerId']; ?>&amp;action=delete">Delete</a>
+								<td width="250" class="subHeader" style="text-align: right"><a style="color: #FFF" href="?page=dsol_Settings_RoomCont&amp;&amp;roomContID=<?php echo $roomContList[$rc_key]['containerId']; ?>&amp;action=edit&amp;branchID=<?php echo $b_key ?>">Edit</a> | <a style="color: #FFF" href="?page=dsol_Settings_RoomCont&amp;&amp;roomContID=<?php echo $roomContList[$rc_key]['containerId']; ?>&amp;action=delete&amp;branchID=<?php echo $b_key ?>">Delete</a>
 								</td>
 							</tr>
 							<?php
 							if ((is_array($roomList['id']) and is_array($roomContList['id'][$rc_val]['rooms'])) and (count(array_intersect(array_keys($roomList['id']), $roomContList['id'][$rc_val]['rooms'])) == 0)) {
 								?>
 								<tr>
-									<td colspan="2"><?php _e('This container has no rooms.', 'book-a-room'); ?></td>
+									<td colspan="2"><?php _e('This container has no rooms.', 'book-a-room'); ?>
+								</td>
 								</tr>
 
 								<!-- Kelvin: Remove display of $amenityList -->
