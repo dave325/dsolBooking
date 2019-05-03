@@ -163,11 +163,9 @@ class dsol_settings_roomConts {
 		$hideDaily = NULL;
 
 		$final = $wpdb->insert( $table_name,
-			array( 'roomCont_desc' => $externals[ 'roomContDesc' ],
-				'roomCont_branch' => $externals[ 'branchID' ],
-				'roomCont_isPublic' => $isPublic,
-				'roomCont_hideDaily' => $hideDaily,
-				'roomCont_occ' => $externals[ 'occupancy' ] ) );
+			array( 'container_number' => $externals[ 'roomContDesc' ],
+				'r_id' => $externals[ 'room' ][0],
+				'occupancy' => $externals[ 'occupancy' ] ) );
 
 		/*
 			Kelvin:
@@ -177,20 +175,11 @@ class dsol_settings_roomConts {
 
 		*/
 
-		$roomContID = $wpdb->insert_id;
-
-		// Iterate through the $roomArr containing multiple room selections
-		for ($x=0; $x<sizeof($roomArr);$x++){
-			$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomContID}, {$roomArr[$x]}, NULL, {$externals[ 'roomContDesc' ]}, {$externals[ 'occupancy']}";		
-			array_push($roomArrSQL, $sql);
-		}
-	
-		foreach ($roomArrSQL as $query){
-			$wpdb->query( $query );	
-		}
-		
 	}
 
+	public static function roomList(){
+		
+	}
 
 	public static
 	function checkEditRoomConts( $externals, $roomContList, $branchList, $roomList, $roomContID )
@@ -449,7 +438,7 @@ class dsol_settings_roomConts {
 
 		}
 
-		return $roomContList;
+		return $cooked;
 	}
 
 	public static

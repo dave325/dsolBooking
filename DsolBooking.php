@@ -17,6 +17,7 @@ define( 'DSOL_BOOKING_PATH', plugin_dir_path( __FILE__ ) );
 require_once( DSOL_BOOKING_PATH . 'bookaroom-meetings-public.php' );
 //require_once( DSOL_BOOKING_PATH . 'bookaroom-company-profile.php' );
 require_once( DSOL_BOOKING_PATH . 'sharedFunctions.php' );
+require_once(DSOL_BOOKING_PATH . 'rest_api.php');
 /**
  * Change init functions and class
  */

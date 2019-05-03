@@ -1,4 +1,4 @@
-<link href="<?php echo plugins_url(); ?>/book-a-room/css/bookaroom_meetings.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo plugins_url(); ?>/dsolBooking/css/dsol_meetings.css" rel="stylesheet" type="text/css"/>
 <div class="wrap">
 	<div id="icon-options-general" class="icon32"></div>
 	<h2>
@@ -32,19 +32,23 @@ if ( !empty( $roomInfo['errors'] ) ) {
 ?>
 <!-- Kelvin: Remove the display of adding or displaying ammenities from the form -->
 
-<form name="form1" method="post" action="?page=bookaroom_Settings_Rooms&action=<?php echo $action; ?>&roomID=<?php echo $roomInfo[ 'roomID' ]; ?>">
+<form name="form1" method="post" action="?page=dsol_Settings_Rooms&action=<?php echo $action; ?>&roomID=<?php echo $roomInfo[ 'roomID' ]; ?>">
 	<table class="tableMain">
 		<tr>
 			<td colspan="2"><?php _e( 'Room Information', 'book-a-room' ); ?></td>
 		</tr>
 		<tr>
-			<td><label for="roomDesc"><?php _e( 'Room Name', 'book-a-room' ); ?></label>
+			<td><label for="room_Number"><?php _e( 'Room Name', 'book-a-room' ); ?></label>
 			</td>
 			<td>
-				<input name="roomDesc" type="text" id="roomDesc" value="<?php echo $roomInfo[ 'roomDesc' ]; ?>" size="48" maxlength="64">
+				<input name="room_Number" type="text" id="room_Number" value="<?php echo $roomInfo[ 'room_Number' ]; ?>" size="48" maxlength="64">
 			</td>
 		</tr>
 		<tr>
+			<pre>
+				<?php print_r($branchList);
+				?>
+			</pre>
 			<td><label for="branch"><?php _e( 'Branch', 'book-a-room' ); ?></label>
 			</td>
 			<td>

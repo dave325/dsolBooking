@@ -99,7 +99,7 @@ if( !function_exists( "preme" ) ) {
 
 function makeLink_correctPermaLink() {
 	$permStruc = get_option( 'permalink_structure' );
-	$resURL = get_option( 'bookaroom_reservation_URL' );
+	$resURL = get_option( '_reservation_URL' );
 	if( empty( $permStruc ) ) {
 		return '?page_id=' . $resURL . '&';		
 	} else {

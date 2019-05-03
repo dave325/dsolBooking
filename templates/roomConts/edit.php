@@ -1,4 +1,4 @@
-<link href="<?php echo plugins_url(); ?>/book-a-room/css/bookaroom_meetings.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo plugins_url(); ?>/dsolBooking/css/dsol_meetings.css" rel="stylesheet" type="text/css"/>
 <div class="wrap">
 	<div id="icon-options-general" class="icon32"></div>
 	<h2>
@@ -33,7 +33,7 @@ if ( !empty( $roomContInfo['errors'] ) ) {
 <?php 
 }
 ?>
-<form name="form1" method="post" action="?page=bookaroom_Settings_RoomCont&action=<?php echo $action; ?>&roomContID=<?php echo $roomContInfo['roomContID']; ?>&branchID=<?php echo $branchID; ?>">
+<form name="form1" method="post" action="?page=dsol_Settings_RoomCont&action=<?php echo $action; ?>&roomContID=<?php echo $roomContInfo['roomContID']; ?>&branchID=<?php echo $branchID; ?>">
 	<table class="tableMain">
 		<tr>
 			<td colspan="2">
@@ -98,7 +98,7 @@ if ( !empty( $roomContInfo['errors'] ) ) {
 	</table>
 </form>
 <p>
-	<a href="?page=bookaroom_Settings_RoomCont">
+	<a href="?page=dsol_Settings_RoomCont">
 		<?php _e( 'Return to Room Container Home.', 'book-a-room' ); ?>
 	</a>
 </p>

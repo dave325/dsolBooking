@@ -119,7 +119,7 @@ if(isset($_GET['timestamp'])){
     $timestamp = current_time('timestamp');
 }
 ?>
-<div id="bookaroom_main_container">
+<div id="_main_container">
     <div id="topRow">
         <div class="col">
             <div class="instructions">
@@ -193,8 +193,8 @@ if (empty($roomContList['branch'][$branchID])) {
              </div>
 </div>
     <?php
-$reserveBuffer = get_option('bookaroom_reserveBuffer');
-$allowedBuffer = get_option('bookaroom_reserveAllowed');
+$reserveBuffer = get_option('_reserveBuffer');
+$allowedBuffer = get_option('_reserveAllowed');
 # get reservations
 if(isset($_GET['timestamp'])){
     $timestamp = $_GET['timestamp'];
@@ -203,7 +203,7 @@ if(isset($_GET['timestamp'])){
 }
 ?>
 
-    <form action="<?php echo makeLink_correctPermaLink(get_option('bookaroom_reservation_URL')); ?>action=reserve" method="post" id="hoursForm">
+    <form action="<?php echo makeLink_correctPermaLink(get_option('_reservation_URL')); ?>action=reserve" method="post" id="hoursForm">
        
                     <div id="topSubmit">  
                         <div>
@@ -217,13 +217,13 @@ if(isset($_GET['timestamp'])){
             </div>
             <?php
 $dayOfWeek = date_i18n('w', $timestamp);
-$baseIncrement = get_option('bookaroom_baseIncrement');
-$cleanupIncrements = get_option('bookaroom_cleanupIncrement');
+$baseIncrement = get_option('_baseIncrement');
+$cleanupIncrements = get_option('_cleanupIncrement');
 $closeTime = strtotime(date_i18n('Y-m-d ' . $branchList[$branchID]["branchClose_{$dayOfWeek}"], $timestamp));
 $closings = self::getClosings($roomID, $timestamp, $roomContList);
 $openTime = strtotime(date_i18n('Y-m-d ' . $branchList[$branchID]["branchOpen_{$dayOfWeek}"], $timestamp));
 $reservations = self::getReservations($roomID, $timestamp);
-$setupIncrements = get_option('bookaroom_setupIncrement');
+$setupIncrements = get_option('_setupIncrement');
 if(empty($setupIncrements)){
     $setupIncrements = 0;
 }
@@ -364,8 +364,8 @@ $count = 1;
                             }
                         }
                     } else {
-                        $validStart = strtotime(date_i18n('Y-m-d')) + (get_option('bookaroom_reserveBuffer') * 24 * 60 * 60);
-                        $validEnd = $validStart + (get_option('bookaroom_reserveAllowed') * 24 * 60 * 60); #reme();
+                        $validStart = strtotime(date_i18n('Y-m-d')) + (get_option('_reserveBuffer') * 24 * 60 * 60);
+                        $validEnd = $validStart + (get_option('_reserveAllowed') * 24 * 60 * 60); #reme();
                         $startTime = strtotime($resVal['ti_startTime']);
                         $endTime = strtotime($resVal['ti_endTime']);
                         
@@ -412,7 +412,7 @@ continue;
                 case 'setup':
                     # Setup
                     ?>
-                        <tr class="calHoursSetup" style="background: <?php echo get_option('bookaroom_setupColor'); ?>; color: <?php echo get_option('bookaroom_setupFont'); ?>">
+                        <tr class="calHoursSetup" style="background: <?php echo get_option('_setupColor'); ?>; color: <?php echo get_option('_setupFont'); ?>">
                             <td class="calCheckBox"><input id="hours_<?php echo $i; ?>" name="hours[]" type="hidden" value="" onchange="checkHours()"/>
                             </td>
                             <td class="calTime">
@@ -426,7 +426,7 @@ break;
                 case 'reserved':
                     # Reserved
                     ?>
-                        <tr class="calHoursReserved" style="background: <?php echo get_option('bookaroom_reservedColor'); ?>; color: <?php echo get_option('bookaroom_reservedFont'); ?>">
+                        <tr class="calHoursReserved" style="background: <?php echo get_option('_reservedColor'); ?>; color: <?php echo get_option('_reservedFont'); ?>">
                             <td class="calCheckBox"><input id="hours_<?php echo $i; ?>" name="hours[]" type="hidden" value="" onchange="checkHours()"/>
                             </td>
                             <td class="calTime">

@@ -48,7 +48,7 @@ class dsol_settings_branches
             case 'addCheck':
                 # check entries
                 if (($errors = self::checkEditBranch($externals, $branchList)) == null) {
-                    $hi =self::addBranch($externals);
+                    $hi = self::addBranch($externals);
                     require DSOL_BOOKING_PATH . 'templates/branches/addSuccess.php';
                     break;
                 }
@@ -104,7 +104,6 @@ class dsol_settings_branches
                 self::showBranchList($branchList);
                 break;
         }
-
     }
 
     # sub functions:
@@ -116,9 +115,10 @@ class dsol_settings_branches
         global $wpdb;
 
         $table_name = $wpdb->prefix . "dsol_booking_branch";
-
+        $table_name_sch = $wpdb->prefix . "dsol_booking_branch_schedule";
         $finalTime = array();
-
+        $query = "INSERT INTO {$table_name_sch} (b_id, open_time,close_time) VALUES ";
+        $place_holders = array();
         foreach (array('Open', 'Close') as $type) {
             for ($d = 0; $d <= 6; $d++) {
                 #open time
@@ -136,10 +136,11 @@ class dsol_settings_branches
                     }
 
                     $finalTime[$type][$d] = date('G:i:s', strtotime('1/1/2000 00:00:00') + ($timeVal * 60));
+                    //$place_holders[] = "('%s', '%d', '%d')";
                 }
-
             }
         }
+
 
         /*
         * Deleted by: Jazmyn  
@@ -153,7 +154,8 @@ class dsol_settings_branches
          * Deleted if statment from branch_hasNoLoc
          */
 
-        $final = $wpdb->insert($table_name,
+        $final = $wpdb->insert(
+            $table_name,
             array(
                 /**
                  * Jazmyn
@@ -163,9 +165,21 @@ class dsol_settings_branches
                  * 
                  * David -> Reflect for new time set up 
                  */
-                'b_name' => $externals['b_name']));
-                return $finalTime;
+                'b_name' => $externals['b_name']
+            )
+        );
+        $lastid = $wpdb->insert_id;
+        $values = [];
+        $i = 0;
+        for ($i; $i < 7; $i++) {
+            $temparray = array($lastid, $finalTime['Open'][$i], $finalTime["Close"][$i]);
+            array_push($values, $lastid, $finalTime['Open'][$i], $finalTime["Close"][$i]);
 
+            $place_holders[] = "('%s', '%d', '%d')";
+        }
+        $query .= implode(', ', $place_holders);
+        $wpdb->query($wpdb->prepare("$query ", $values));
+        return $values;
     }
 
     public static function checkEditBranch(&$externals, $branchList)
@@ -295,19 +309,19 @@ class dsol_settings_branches
         // if (empty($externals['branch_hasNoloc'])) {
         //     $error[] = 'You must choose if this branch is has a "No location" option.';
         // }
-        
 
-       /**
-        * Jazmyn
-        * Deleted check for branchMapLink
-        */
+
+        /**
+         * Jazmyn
+         * Deleted check for branchMapLink
+         */
 
         /**
          * Jazmyn
          * Deleted check for b_name
          */
 
-       
+
 
         # check dupe name 
         // b_name needs to be handled here because I deleted it
@@ -322,7 +336,6 @@ class dsol_settings_branches
         }
 
         return $final;
-
     }
 
     public static function deleteBranch($branchInfo, $container)
@@ -420,9 +433,10 @@ class dsol_settings_branches
         //     $branch_hasNoloc = 0;
         // }
 
-        
 
-        $final = $wpdb->update($table_name,
+
+        $final = $wpdb->update(
+            $table_name,
             array(
                 /*
                  * 
@@ -437,13 +451,14 @@ class dsol_settings_branches
                  * 
                  * David -> Reflect for new time set up
                  */
-                'b_name' => $externals['b_name']),
+                'b_name' => $externals['b_name']
+            ),
             array('b_id' => $externals['b_id']),
-            array('%s', '%s', '%s', '%s', '%s', '%s'));
-
+            array('%s', '%s', '%s', '%s', '%s', '%s')
+        );
     }
 
-   
+
 
     public static function getBranchInfo($b_id)
     # get information about branch from database based on the ID
@@ -492,9 +507,9 @@ class dsol_settings_branches
         */
 
         /**
-        * Deleted isSocial and showSocial if statements below because I deleted those
-        * variables above
-        */
+         * Deleted isSocial and showSocial if statements below because I deleted those
+         * variables above
+         */
 
         /*
         * Jazmyn Fuller
@@ -523,16 +538,16 @@ class dsol_settings_branches
         $table_name = $wpdb->prefix . "dsol_booking_branch";
         $table_nameSch = $wpdb->prefix . "dsol_booking_branch_schedule";
         /** 
-        *
-        * Jazmyn Fuller
-        *
-        * Deleted branch_hasNoLoc, branchMapLink, branchImageURL, branch_isPublic,
-        * branch_isSocial, and branch_showSocial
+         *
+         * Jazmyn Fuller
+         *
+         * Deleted branch_hasNoLoc, branchMapLink, branchImageURL, branch_isPublic,
+         * branch_isSocial, and branch_showSocial
 
-        * David -> Refactor for new time DB set up
-        */
-        $sql = "SELECT `b_id`,`b_name`,`open_time`, `open_time`
-                FROM `$table_name` AS B INNER JOIN  `$table_nameSch` AS BS ON B.id = BS.id ORDER BY `b_name`";
+         * David -> Refactor for new time DB set up
+         */
+        $sql = "SELECT `$table_name`.b_id, `$table_name`.b_name, `$table_nameSch`.open_time, `$table_nameSch`.close_time
+                FROM `$table_name` INNER JOIN  `$table_nameSch` ON `$table_name`.b_id = `$table_nameSch`.b_id ORDER BY `$table_name`.b_id, `$table_name`.b_name ";
 
         $count = 0;
 
@@ -558,15 +573,18 @@ class dsol_settings_branches
         $final = array();
 
         # setup GET variables
-        $getArr = array('b_id' => FILTER_SANITIZE_STRING,
-            'action' => FILTER_SANITIZE_STRING);
+        $getArr = array(
+            'b_id' => FILTER_SANITIZE_STRING,
+            'action' => FILTER_SANITIZE_STRING
+        );
         # pull in and apply to final
         if ($getTemp = filter_input_array(INPUT_GET, $getArr)) {
             $final += $getTemp;
         }
 
         # setup POST variables
-        $postArr = array('action' => FILTER_SANITIZE_STRING,
+        $postArr = array(
+            'action' => FILTER_SANITIZE_STRING,
             'b_id' => FILTER_SANITIZE_STRING,
             /*
             * 
@@ -574,7 +592,36 @@ class dsol_settings_branches
             *
             * Branch_isPublic, Branch_isSocial, Branch_showSocial, branchMapLink, branchImageURL, branch_hasNoLoc
             */
-            'b_name' => FILTER_SANITIZE_STRING);
+            'b_name' => FILTER_SANITIZE_STRING,
+            'branchOpen_0' => FILTER_SANITIZE_STRING,
+            'branchOpen_0PM' => FILTER_SANITIZE_STRING,
+            'branchClose_0' => FILTER_SANITIZE_STRING,
+            'branchClose_0PM' => FILTER_SANITIZE_STRING,
+            'branchOpen_1' => FILTER_SANITIZE_STRING,
+            'branchOpen_1PM' => FILTER_SANITIZE_STRING,
+            'branchClose_1' => FILTER_SANITIZE_STRING,
+            'branchClose_1PM' => FILTER_SANITIZE_STRING,
+            'branchOpen_2' => FILTER_SANITIZE_STRING,
+            'branchOpen_2PM' => FILTER_SANITIZE_STRING,
+            'branchClose_2' => FILTER_SANITIZE_STRING,
+            'branchClose_2PM' => FILTER_SANITIZE_STRING,
+            'branchOpen_3' => FILTER_SANITIZE_STRING,
+            'branchOpen_3PM' => FILTER_SANITIZE_STRING,
+            'branchClose_3' => FILTER_SANITIZE_STRING,
+            'branchClose_3PM' => FILTER_SANITIZE_STRING,
+            'branchOpen_4' => FILTER_SANITIZE_STRING,
+            'branchOpen_4PM' => FILTER_SANITIZE_STRING,
+            'branchClose_4' => FILTER_SANITIZE_STRING,
+            'branchClose_4PM' => FILTER_SANITIZE_STRING,
+            'branchOpen_5' => FILTER_SANITIZE_STRING,
+            'branchOpen_5PM' => FILTER_SANITIZE_STRING,
+            'branchClose_5' => FILTER_SANITIZE_STRING,
+            'branchClose_5PM' => FILTER_SANITIZE_STRING,
+            'branchOpen_6' => FILTER_SANITIZE_STRING,
+            'branchOpen_6PM' => FILTER_SANITIZE_STRING,
+            'branchClose_6' => FILTER_SANITIZE_STRING,
+            'branchClose_6PM' => FILTER_SANITIZE_STRING
+        );
 
         # pull in and apply to final
         if ($postTemp = filter_input_array(INPUT_POST, $postArr)) {
@@ -591,8 +638,8 @@ class dsol_settings_branches
         // if(strpos($num, 'PM') !== false) {
         //     date("h:i", strtotime($num));
         // } 
-        
-  
+
+
 
         $arrayCheck = array_unique(array_merge(array_keys($getArr), array_keys($postArr)));
 
@@ -687,6 +734,5 @@ class dsol_settings_branches
     # a message stating there are no branches
     {
         require DSOL_BOOKING_PATH . 'templates/branches/mainAdmin.php';
-
     }
 }

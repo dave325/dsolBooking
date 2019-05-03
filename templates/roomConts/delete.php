@@ -1,4 +1,4 @@
-<link href="<?php echo plugins_url(); ?>/book-a-room/css/bookaroom_meetings.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo plugins_url(); ?>/dsolBooking/css/dsol_meetings.css" rel="stylesheet" type="text/css"/>
 <div class="wrap">
 	<div id="icon-options-general" class="icon32"></div>
 	<h2>
@@ -66,5 +66,5 @@ $hideDaily = ( $roomContList['id'][$roomContID]['hideDaily'] ) ? 'Yes' : 'No';
 		?>
 </table>
 <p><?php _e( 'Deleting a room containeris permanent and cannot be undone.', 'book-a-room' ); ?></p>
-<p><a class="errorText" href="?page=bookaroom_Settings_RoomCont&amp;roomContID=<?php echo $roomContID; ?>&amp;action=deleteCheck"><?php _e( 'Click here to permanantly delete this room container.', 'book-a-room' ); ?></a></p>
-<p><a href="?page=bookaroom_Settings_RoomCont"><?php _e( 'Return to Room Container Home.', 'book-a-room' ); ?></a></p>
+<p><a class="errorText" href="?page=dsol_Settings_RoomCont&amp;roomContID=<?php echo $roomContID; ?>&amp;action=deleteCheck"><?php _e( 'Click here to permanantly delete this room container.', 'book-a-room' ); ?></a></p>
+<p><a href="?page=dsol_Settings_RoomCont"><?php _e( 'Return to Room Container Home.', 'book-a-room' ); ?></a></p>

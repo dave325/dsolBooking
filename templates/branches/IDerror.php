@@ -2,11 +2,11 @@
 <div class=wrap>
 	<div id="icon-options-general" class="icon32"></div>
 	<h2>
-		<?php _e( 'Book a Room Administration - Room Containers', 'book-a-room' ); ?>
+		<?php _e( 'Book a Room Administration - Branches', 'book-a-room' ); ?>
 	</h2>
 </div>
 <h2>
 	<?php _e( 'Error!', 'book-a-room' ); ?>
 </h2>
 <p><?php _e( 'Invalid ID.', 'book-a-room' ); ?></p>
-<p><a href="?page=dsol_Settings_RoomCont"><?php _e( 'Return to Room Container Home.', 'book-a-room' ); ?></a></p>
+<p><a href="?page=dsol_Settings_Branches"><?php _e( 'Please try again.', 'book-a-room' ); ?></a></p>

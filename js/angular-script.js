@@ -86,6 +86,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         templateUrl: localized.partials + '/submitForm.html',
         controller: 'SubmitForm'
       })
+      .when('/profile',{
+        templateUrl:  localized.partials + '/profile.html',
+        controller: 'profile'
+      })
   })
   .controller('Main', function ($scope, TIMES, $http, myFactory, $location) {
     $scope.oneAtATime = true;
@@ -343,4 +347,36 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       window.sessionStorage.removeItem('userData')
     }
     return service;
+  }).controller('profile', function ($scope, $http, myFactory) {
+    if (myFactory.retrieveInfo()) {
+      $scope.info = {
+        numAttend: myFactory.getData.numAttend,
+        desc: myFactory.getData.desc
+      }
+    } else {
+      $scope.info = {
+        numAttend: 0,
+        desc: ''
+      };
+    }
+    $scope.submit = function () {
+      if ($scope.info.desc &&
+        $scope.info.desc.length > 0 &&
+        $scope.info.numAttend &&
+        $scope.info.numAttend > 0
+      ) {
+        myFactory.setNumAttend($scope.info.numAttend);
+        myFactory.setDesc($scope.info.desc);
+        myFactory.storeInfo();
+        console.log(myFactory.retrieveInfo());
+        $http.post(localized.path + '/wp-json/dsol-booking/v1/parse', myFactory.retrieveInfo()).then(
+          (res) => {
+            console.log(res);
+            myFactory.removeData();
+          }, (err) => {
+            console.log(err);
+          }
+        )
+      }
+    }
   });
