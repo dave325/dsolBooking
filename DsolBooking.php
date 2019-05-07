@@ -109,7 +109,7 @@ class DsolBookingPluginHooks
         # create table for room
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_room (
 					r_id int(11) NOT NULL AUTO_INCREMENT,
-					room_number varcha(60) NOT NULL,
+					room_number varchar(60) NOT NULL,
 					b_id varchar(128) NOT NULL,
 					PRIMARY KEY (r_id)
 					);";
@@ -118,8 +118,8 @@ class DsolBookingPluginHooks
          # create table for time
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_time (
 					t_id int(11) NOT NULL AUTO_INCREMENT,
-				    start_time timestamp DEFAULT NULL,
-					end_time timestamp DEFAULT NULL,
+				    start_time timestamp,
+					end_time timestamp,
 					PRIMARY KEY  (t_id)
 					);";
 		dbDelta( $sql );
