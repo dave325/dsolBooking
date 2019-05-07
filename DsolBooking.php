@@ -90,7 +90,7 @@ class DsolBookingPluginHooks
         # create table for branches		
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branch (
 				  b_id int(10) NOT NULL AUTO_INCREMENT,
-				  branchName varchar(128) NOT NULL,
+				  b_name varchar(128) NOT NULL,
 				  PRIMARY KEY (b_id)
 				);";
 
