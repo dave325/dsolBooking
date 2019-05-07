@@ -69,7 +69,8 @@ if (count($branchList) == 0) {
 
 			foreach ($roomList['room'][$b_key] as $r_key => $r_val) {
 				foreach ($roomContList as $rc_key => $rc_val) {
-					if (empty($roomContList[$rc_key]['roomId'][$r_val])) {
+					if (is_null($roomContList[$rc_key]['roomId'][$r_val])) {
+						echo $roomContList[$rc_key]['roomId'][$r_val];
 						?>
 							<tr>
 								<td colspan="2">

@@ -90,6 +90,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         templateUrl:  localized.partials + '/profile.html',
         controller: 'profile'
       })
+      .when('/confirmation', {
+        templateUrl: localized.partials + '/confirmation.html',
+        controller: 'confirmation'
+      })
   })
   .controller('Main', function ($scope, TIMES, $http, myFactory, $location) {
     $scope.oneAtATime = true;
@@ -267,7 +271,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         $location.path('/submit');
       }
     }
-  }).controller('SubmitForm', function ($scope, $http, myFactory) {
+  }).controller('SubmitForm', function ($scope, $http, myFactory,$location) {
     if (myFactory.retrieveInfo()) {
       $scope.info = {
         numAttend: myFactory.getData.numAttend,
@@ -293,6 +297,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           (res) => {
             console.log(res);
            // myFactory.removeData();
+           $location.path('/confirmation');
           }, (err) => {
             console.log(err);
           }
@@ -331,6 +336,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       data.date = date;
     }
     function setNumAttend(numAttend) {
+      if(numAttend<=0) {
+        data.numAttend = 1;
+        return;
+      } 
       data.numAttend = numAttend;
     }
     function setDesc(desc) {
