@@ -2,6 +2,13 @@
     min-height:75vh !important;
 
 }
+
+#rooms {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  /* Tried almost all possible ways of letting this work, and the 
+  cursor isn't changing (.elementor a, a.ng-binding, #rooms a, .rooms, ...) */
+}
 .navbar{
     position: fixed; 
     top: 0; 
