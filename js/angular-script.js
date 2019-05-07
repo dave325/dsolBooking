@@ -7,7 +7,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         resolve: {
           TIMES: ['$http', function ($http) {
             return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { name: 'David ' }).then((res) => {
-              console.log(res)
               let reservations = res.data;
               let validTimes = [];
               const curDate = moment().hours(6).minute(0).seconds(0).milliseconds(0);
@@ -67,7 +66,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
               }
               let rooms;
               return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) =>{
-                console.log(res)
                 rooms = res.data;
                 return {
                   times: validTimes,
@@ -108,9 +106,12 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         }
       })
     }
+    $scope.$watch('dt',function(){
+      myFactory.setDate($scope.dt);
+    })
     $scope.selectRoom = function(idx){
-      myFactory.setRoom($scope.rooms[idx].roomCont_ID);
-      $scope.data.room = $scope.rooms[idx].roomCont_desc;
+      myFactory.setRoom($scope.rooms[idx].r_id);
+      $scope.data.room = $scope.rooms[idx].container_number;
       $scope.isCollapsed = true;
       console.log($scope.data);
     }
@@ -288,10 +289,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         myFactory.setDesc($scope.info.desc);
         myFactory.storeInfo();
         console.log(myFactory.retrieveInfo());
-        $http.post(localized.path + '/wp-json/dsol-booking/v1/parse', myFactory.retrieveInfo()).then(
+        $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers:{'X-WP-Nonce':localized.nonce}}).then(
           (res) => {
             console.log(res);
-            myFactory.removeData();
+           // myFactory.removeData();
           }, (err) => {
             console.log(err);
           }
@@ -308,7 +309,8 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         date: new Date(),
         numAttend: 0,
         desc: '',
-        room: ""
+        room: "",
+        nonce: localized.nonce
       };
     }
     var service = {

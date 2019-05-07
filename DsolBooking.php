@@ -65,7 +65,8 @@ function dSol_enqueuer() {
 	wp_localize_script('angular-script', 'localized',
             array(
 								'partials' => plugins_url( 'dsolBooking/templates/partials/' ),
-								"path" =>  get_site_url()
+								"path" =>  get_site_url(),
+								'nonce' => wp_create_nonce( 'wp_rest' )
                 )
     );
 	# languages
@@ -108,7 +109,7 @@ class DsolBookingPluginHooks
         # create table for room
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_room (
 					r_id int(11) NOT NULL AUTO_INCREMENT,
-					room_number int(11) NOT NULL,
+					room_number varcha(60) NOT NULL,
 					b_id varchar(128) NOT NULL,
 					PRIMARY KEY (r_id)
 					);";
@@ -117,8 +118,8 @@ class DsolBookingPluginHooks
          # create table for time
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_time (
 					t_id int(11) NOT NULL AUTO_INCREMENT,
-				    start_time time DEFAULT NULL,
-					end_time time DEFAULT NULL,
+				    start_time timestamp DEFAULT NULL,
+					end_time timestamp DEFAULT NULL,
 					PRIMARY KEY  (t_id)
 					);";
 		dbDelta( $sql );
@@ -127,7 +128,7 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_container (
 					c_id int(11) NOT NULL AUTO_INCREMENT,
 					r_id int(11)  NOT NULL,
-					container_number tinyint NOT NULL,
+					container_number varchar(255) NOT NULL,
 					occupancy int(10) NOT NULL,
 					PRIMARY KEY  (c_id)
 				);";
@@ -137,10 +138,10 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_reservation (
 					res_id int(11) NOT NULL AUTO_INCREMENT,
                     c_id int(11) NOT NULL, 
-					modified_by TIMESTAMP NOT NULL,
+					modified_by varchar(255) NOT NULL,
 					created_at TIMESTAMP NOT NULL,
 					modified_at TIMESTAMP NOT NULL,
-					created_by TIMESTAMP NOT NULL,
+					created_by varchar(255) NOT NULL,
 					company_name varchar(50) NOT NULL,
 					email varchar(60) NOT NULL,
 					attendance int(50) NOT NULL,
