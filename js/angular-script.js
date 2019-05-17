@@ -65,17 +65,17 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                 j++;
               }
               let rooms;
-              return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) =>{
+              return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) => {
                 rooms = res.data;
                 return {
                   times: validTimes,
                   reservations: reservations,
                   rooms: rooms
                 };
-              },(err) => {
+              }, (err) => {
                 console.log(err);
               });
-              
+
             }, (err) => {
               console.log(err);
             });
@@ -86,8 +86,8 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         templateUrl: localized.partials + '/submitForm.html',
         controller: 'SubmitForm'
       })
-      .when('/profile',{
-        templateUrl:  localized.partials + '/profile.html',
+      .when('/profile', {
+        templateUrl: localized.partials + '/profile.html',
         controller: 'profile'
       })
       .when('/confirmation', {
@@ -95,7 +95,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         controller: 'confirmation'
       })
   })
-  .controller('Main', function ($scope, TIMES, $http, myFactory, $location) {
+  .controller('Main', function ($scope, TIMES, $timeout, myFactory, $location) {
     $scope.oneAtATime = true;
 
     $scope.validTimes = TIMES.times;
@@ -103,17 +103,17 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     $scope.rooms = TIMES.rooms;
     $scope.isCollapsed = false;
     $scope.data = myFactory.getData;
-    $scope.togglePast = function(){
-      $scope.validTimes.forEach((ele)=>{
-        if(ele.past != undefined){
+    $scope.togglePast = function () {
+      $scope.validTimes.forEach((ele) => {
+        if (ele.past != undefined) {
           ele.past = !ele.past;
         }
       })
     }
-    $scope.$watch('dt',function(){
+    $scope.$watch('dt', function () {
       myFactory.setDate($scope.dt);
     })
-    $scope.selectRoom = function(idx){
+    $scope.selectRoom = function (idx) {
       myFactory.setRoom($scope.rooms[idx].r_id);
       $scope.data.room = $scope.rooms[idx].container_number;
       $scope.isCollapsed = true;
@@ -123,6 +123,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       /* are there only two checked boxes? */
       //alert();
       var hourChecks = document.getElementsByName('hours[]');
+      console.log(hourChecks);
       var boxArr = [];
       var boxCount = 0;
       var lastItem = false;
@@ -177,16 +178,16 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       }
       // If box has more than one item in it display the time 
       if (boxArr.length > 1) {
-       // let start = jQuery('#hours_' + [boxArr[0]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[0];
-       // let end = jQuery('#hours_' + [boxArr[boxArr.length - 1]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[1];
+        // let start = jQuery('#hours_' + [boxArr[0]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[0];
+        // let end = jQuery('#hours_' + [boxArr[boxArr.length - 1]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[1];
         $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
         $scope.data.arr[1] = $scope.validTimes[boxArr[boxArr.length - 1]];
-       // jQuery('#topSubmit').children('div').children('span').text('Time: ' + start + ' - ' + end);
+        // jQuery('#topSubmit').children('div').children('span').text('Time: ' + start + ' - ' + end);
       } else if (boxArr.length == 1) {
-       // let start = jQuery('#hours_' + [boxArr[0]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[0];
-       // let end = jQuery('#hours_' + [boxArr[0]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[1];
-       // jQuery('#topSubmit').children('div').children('span').text('Time: ' + start + ' - ' + end);
-       $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
+        // let start = jQuery('#hours_' + [boxArr[0]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[0];
+        // let end = jQuery('#hours_' + [boxArr[0]]).parent().parent().siblings('.calTime').children().text().trim().split('-')[1];
+        // jQuery('#topSubmit').children('div').children('span').text('Time: ' + start + ' - ' + end);
+        $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
       }
       console.log($scope.data.arr);
     }
@@ -271,7 +272,29 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         $location.path('/submit');
       }
     }
-  }).controller('SubmitForm', function ($scope, $http, myFactory,$location) {
+    //reset boxes if user reloads page
+    $scope.$on('$viewContentLoaded',
+      function () {
+        // call timeout so angularjs digrest waits for the next round after ngRepeat calls
+        $timeout(function () {
+          var hourChecks = document.getElementsByName('hours[]');
+          if ($scope.data.arr.length > 0) {
+            if ($scope.data.arr.length === 1) {
+              hourChecks[$scope.data.arr[0].place].checked = true;
+              $scope.validTimes[$scope.data.arr[0].place].selected = true;
+            } else {
+              for (var s = $scope.data.arr[0].place, e = $scope.data.arr[$scope.data.arr.length - 1].place; s <= e; s++) {
+                hourChecks[s].checked = true;
+                $scope.validTimes[s].selected = true;
+
+              }
+            }
+          }
+
+        }, 0)
+      }
+    );
+  }).controller('SubmitForm', function ($scope, $http, myFactory, $location) {
     if (myFactory.retrieveInfo()) {
       $scope.info = {
         numAttend: myFactory.getData.numAttend,
@@ -293,11 +316,11 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         myFactory.setDesc($scope.info.desc);
         myFactory.storeInfo();
         console.log(myFactory.retrieveInfo());
-        $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers:{'X-WP-Nonce':localized.nonce}}).then(
+        $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
           (res) => {
             console.log(res);
-           // myFactory.removeData();
-           $location.path('/confirmation');
+            // myFactory.removeData();
+            $location.path('/confirmation');
           }, (err) => {
             console.log(err);
           }
@@ -327,7 +350,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       setRoom: setRoom,
       storeInfo: storeInfo,
       retrieveInfo: retrieveInfo,
-      removeData:removeData
+      removeData: removeData
     };
     function setArr(arr) {
       data.arr = arr;
@@ -336,17 +359,17 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       data.date = date;
     }
     function setNumAttend(numAttend) {
-      if(numAttend<=0) {
+      if (numAttend <= 0) {
         data.numAttend = 1;
         return;
-      } 
+      }
       data.numAttend = numAttend;
     }
     function setDesc(desc) {
       data.desc = desc;
     }
 
-    function setRoom(room){
+    function setRoom(room) {
       data.room = room;
     }
 

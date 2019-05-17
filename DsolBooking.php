@@ -138,6 +138,7 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_reservation (
 					res_id int(11) NOT NULL AUTO_INCREMENT,
                     c_id int(11) NOT NULL, 
+					t_id int(11) NOT NULL, 
 					modified_by varchar(255) NOT NULL,
 					created_at TIMESTAMP NOT NULL,
 					modified_at TIMESTAMP NOT NULL,
