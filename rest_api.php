@@ -142,38 +142,38 @@ class My_REST_Posts_Controller
             $data = $request->get_json_params();
             $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
             $table_name_time = $wpdb->prefix . 'dsol_booking_time';
-            $start_time = $data["arr"][0]["start_time"];
-            $end_time = $data["arr"][sizeOf($data["arr"]) - 1]["end_time"];
+            $start_time = date('Y-m-d H:i:s', $data["arr"][0]["start_time"]);
+            $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]["end_time"]);
 
             $wpdb->insert($table_name_time, array(
                 "start_time" => $start_time,
                 "end_time" => $end_time
             ));
             $insert_id = $wpdb->insert_id;
-            if($wpdb->last_error !== '') {
+            if ($wpdb->last_error !== '') {
                 return rest_ensure_response($wpdb->last_result);
             }
             $wpdb->insert($table_name_reservation, array(
                 "c_id" => $data["room"],
                 "t_id" => $insert_id,
-                "modified_by" => date('U'),
-                "created_at" => date('U'),
-                "modified_at" => date('U'),
+                "modified_by" => wp_get_current_user()->display_name,
+                "created_at" => current_time('mysql', 1),
+                "modified_at" => current_time('mysql', 1),
                 "created_by" => wp_get_current_user()->user_email,
                 "company_name" => wp_get_current_user()->display_name,
                 "email" => wp_get_current_user()->user_email,
                 "attendance" => $data["numAttend"],
                 "notes" => $data["desc"]
             ));
-            if($wpdb->last_error !== '') {
+            if ($wpdb->last_error !== '') {
                 $wpdb->print_error();
             }
-            return rest_ensure_response($wpdb->last_error);
-        }else{
+            return rest_ensure_response(array($start_time,$end_time));
+        } else {
             return rest_ensure_response(wp_get_current_user());
         }
         // Return all of our comment response data.
-       
+
     }
 
     /**

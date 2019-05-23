@@ -6,7 +6,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         controller: 'Main',
         resolve: {
           TIMES: ['$http', function ($http) {
-            return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { name: 'David ' }).then((res) => {
+            return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { name: 'David ' },  { headers: { 'X-WP-Nonce': localized.nonce } } ).then((res) => {
               let reservations = res.data;
               let validTimes = [];
               const curDate = moment().hours(6).minute(0).seconds(0).milliseconds(0);
@@ -23,8 +23,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                   reservations.forEach((el, idx) => {
                     if (m.isBetween(moment(el.start_time).subtract(1, "hours"), el.end_time, "minute")) {
                       validTimes.push({
-                        start_time: m.format('h:mm ss A'),
-                        end_time: tempDate.format('h:mm ss A'),
+                        //start_time: m.format('h:mm ss A'),
+                        //end_time: tempDate.format('h:mm ss A'),
+                        start_time: m.unix(),
+                        end_time: tempDate.unix(),
                         available: false,
                         reservation: idx,
                         place: j,
@@ -39,8 +41,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                    */
                   if (!hasAdded) {
                     validTimes.push({
-                      start_time: m.format('h:mm A'),
-                      end_time: tempDate.format('h:mm A'),
+                      //start_time: m.format('h:mm ss A'),
+                      //end_time: tempDate.format('h:mm ss A'),
+                      start_time: m.unix(),
+                      end_time: tempDate.unix(),
                       available: true,
                       place: j,
                       selected: false
@@ -50,8 +54,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                   hasAdded = false;
                 } else {
                   validTimes.push({
-                    start_time: m.format('h:mm A'),
-                    end_time: tempDate.format('h:mm A'),
+                    //start_time: m.format('h:mm ss A'),
+                    //end_time: tempDate.format('h:mm ss A'),
+                    start_time: m.unix(),
+                    end_time: tempDate.unix(),
                     available: false,
                     place: j,
                     selected: false,
@@ -65,7 +71,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                 j++;
               }
               let rooms;
-              return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) => {
+              return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo', {  headers: { 'X-WP-Nonce': localized.nonce } }).then((res) => {
                 rooms = res.data;
                 return {
                   times: validTimes,
@@ -91,8 +97,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         controller: 'profile'
       })
       .when('/confirmation', {
-        templateUrl: localized.partials + '/confirmation.html',
-        controller: 'confirmation'
+        templateUrl: localized.partials + '/confirmation.html'
       })
   })
   .controller('Main', function ($scope, TIMES, $timeout, myFactory, $location) {
@@ -405,7 +410,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         myFactory.setDesc($scope.info.desc);
         myFactory.storeInfo();
         console.log(myFactory.retrieveInfo());
-        $http.post(localized.path + '/wp-json/dsol-booking/v1/parse', myFactory.retrieveInfo()).then(
+        $http.post(localized.path + '/wp-json/dsol-booking/v1/parse', myFactory.retrieveInfo(), { headers: { 'X-WP-Nonce': localized.nonce } }).then(
           (res) => {
             console.log(res);
             myFactory.removeData();

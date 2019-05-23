@@ -1,8 +1,10 @@
 <nav class="navbar">
   <div class="row justify-content-center">
-    <div class="col-md-3">Room: {{data.room}}  </div>
-    <div class="col-md-3" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time}} - {{data.arr[1].end_time}}</div>
-    <div class="col-md-3" ng-if="data.arr.length == 1">Time: {{data.arr[0].start_time}} - {{data.arr[0].end_time}}</div>
+    <div class="col-md-3">Room: {{data.room}} </div>
+    <div class="col-md-3" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+      {{data.arr[data.arr.length - 1].end_time* 1000 | date:'shortTime'}}</div>
+    <div class="col-md-3" ng-if="data.arr.length == 1">Time: {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+      {{data.arr[0].end_time * 1000| date:'shortTime'}}</div>
     <div class="col-md-3">Date: {{data.date | date:shortTime }}</div>
     <div class="row justify-content-between" id="nav-btns">
       <a class="btn btn-primary" ng-click="submit()">Submit</a>
@@ -21,7 +23,7 @@
       <div id="collapseOne" class="col-sm-12 col-md-6">
         <div class="panel panel-default">
           <div class="panel-heading col-sm-12">
-            <div class="panel-title col-sm-12"  ng-click="isCollapsed = !isCollapsed">
+            <div class="panel-title col-sm-12" ng-click="isCollapsed = !isCollapsed">
               <h4 class="col-sm-12">
                 Room List
               </h4>
@@ -61,7 +63,7 @@
           <td><input type="checkbox" aria-label="Checkbox for following text input" ng-show="time.available"
               value="{{$index}}" name="hours[]" ng-change="check(time.place)" id="hours_{{time.place}}" ng-model="hour">
           </td>
-          <td>{{time.start_time | date:shortTime}} - {{time.end_time | date:shortTime}}</td>
+          <td>{{time.start_time * 1000 | date:'shortTime'}} - {{time.end_time* 1000 | date:'shortTime'}}</td>
           <td ng-if="time.available">Availabile</td>
           <td ng-if="!time.available && time.reservation">{{reservations[time.reservation].company_name}}</td>
           <td ng-if="!time.available && !time.reservation">Unavilable</td>
