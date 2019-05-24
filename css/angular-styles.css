@@ -49,9 +49,11 @@ h6{
 
 .available{
     background-color:red !important;
+    color:#FFF;
 }
 .hasReservation{
     background-color:green !important;
+    color:#FFF;
 }
 
 #angular-nav{

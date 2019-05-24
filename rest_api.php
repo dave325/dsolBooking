@@ -75,7 +75,7 @@ class My_REST_Posts_Controller
                         {$table_name_reservation}.email,
                         {$table_name_reservation}.attendance,
                         {$table_name_reservation}.notes,
-                        {$table_name_branch}.container_number,
+                        {$table_name_container}.container_number,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
                         {$table_name_time}.start_time,
@@ -83,10 +83,10 @@ class My_REST_Posts_Controller
         FROM {$table_name_branch}
         LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
-        LEFT JOIN {$table_name_reservation} ON {$table_name_branch}.c_id = {$table_name_reservation}.c_id
+        LEFT JOIN {$table_name_reservation} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
         LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
         WHERE {$table_name_reservation}.res_id IS NOT NULL
-        GROUP BY {$table_name_reservation}.res_id,{$table_name_reservation}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name 
+        GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name 
         ORDER BY {$table_name_time}.start_time;";
         $final = $wpdb->get_results($sql, ARRAY_A);
         // Return all of our comment response data.

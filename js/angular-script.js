@@ -5,17 +5,28 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         templateUrl: localized.partials + '/showRooms.html',
         controller: 'Main',
         resolve: {
-          TIMES: ['$http', function ($http) {
-            return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { name: 'David ' },  { headers: { 'X-WP-Nonce': localized.nonce } } ).then((res) => {
+          TIMES: ['restapi', function (restapi) {
+            return restapi.times(Date.now()).then(
+              (res) => {
+                console.log(res);
+                return res;
+              },
+              (err) => {
+                console.log(err);
+              }
+            );
+            return;
+            return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { name: 'David ' }, { headers: { 'X-WP-Nonce': localized.nonce } }).then((res) => {
               let reservations = res.data;
               let validTimes = [];
+              console.log(res);
               const curDate = moment().hours(6).minute(0).seconds(0).milliseconds(0);
               let j = 0;
               const tempDate = moment().hours(6).minute(0).seconds(0).milliseconds(0)
-              for (var m = curDate; m.isSame(Date.now(), "day"); m.add(30, 'minutes')) {
+              for (var m = curDate; m.isSame(curDate, "day"); m.add(30, 'minutes')) {
                 tempDate.add(30, "minutes");
                 let hasAdded = false;
-                if (m.isSameOrAfter(Date.now(), "minute")) {
+                if (m.isSameOrAfter(curDate, "minute")) {
                   /**
                    * Loop through reservations and check if time is avilable
                    * If it is in reesrvation, flip boolean and add reservation idx
@@ -71,7 +82,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                 j++;
               }
               let rooms;
-              return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo', {  headers: { 'X-WP-Nonce': localized.nonce } }).then((res) => {
+              return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) => {
                 rooms = res.data;
                 return {
                   times: validTimes,
@@ -100,14 +111,15 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         templateUrl: localized.partials + '/confirmation.html'
       })
   })
-  .controller('Main', function ($scope, TIMES, $timeout, myFactory, $location) {
+  .controller('Main', function ($scope, TIMES, $timeout, myFactory, $location, restapi) {
     $scope.oneAtATime = true;
-
     $scope.validTimes = TIMES.times;
     $scope.reservations = TIMES.reservations;
     $scope.rooms = TIMES.rooms;
     $scope.isCollapsed = false;
+    console.log($scope.validTimes);
     $scope.data = myFactory.getData;
+    $scope.roomShow;
     $scope.togglePast = function () {
       $scope.validTimes.forEach((ele) => {
         if (ele.past != undefined) {
@@ -117,10 +129,20 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     }
     $scope.$watch('dt', function () {
       myFactory.setDate($scope.dt);
+      restapi.times(new Date($scope.dt)).then(
+        (res) => {
+          console.log(res.times);
+          $scope.validTimes = res.times;
+        },
+        (err) => {
+          console.log(err);
+        }
+      )
     })
+
     $scope.selectRoom = function (idx) {
-      myFactory.setRoom($scope.rooms[idx].r_id);
-      $scope.data.room = $scope.rooms[idx].container_number;
+      myFactory.setRoom($scope.rooms[idx].c_id);
+      $scope.roomShow = $scope.rooms[idx].container_number;
       $scope.isCollapsed = true;
       console.log($scope.data);
     }
@@ -128,7 +150,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       /* are there only two checked boxes? */
       //alert();
       var hourChecks = document.getElementsByName('hours[]');
-      console.log(hourChecks);
       var boxArr = [];
       var boxCount = 0;
       var lastItem = false;
@@ -324,7 +345,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
           (res) => {
             console.log(res);
-            // myFactory.removeData();
+            myFactory.removeData();
             $location.path('/confirmation');
           }, (err) => {
             console.log(err);
@@ -420,4 +441,109 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         )
       }
     }
-  });
+  }).factory('restapi', function ($http) {
+
+    function getTimes(date) {
+      var givenDate = new Date();
+      if (!moment().isSame(date, "day")) {
+        givenDate = date;
+      }
+      const curDate = moment(givenDate).hours(6).minute(0).seconds(0).milliseconds(0);
+      const tempDate = moment(givenDate).hours(6).minute(0).seconds(0).milliseconds(0)
+      return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { name: 'David ' }, { headers: { 'X-WP-Nonce': localized.nonce } }).then((res) => {
+        let reservations = res.data;
+        let validTimes = [];
+        let j = 0;
+        for (var m = curDate; m.isSame(givenDate, "day"); m.add(30, 'minutes')) {
+          tempDate.add(30, "minutes");
+          let hasAdded = false;
+          console.log
+          if (m.isSameOrAfter(givenDate, "minute")) {
+            /**
+             * Loop through reservations and check if time is avilable
+             * If it is in reesrvation, flip boolean and add reservation idx
+             */
+            reservations.forEach((el, idx) => {
+              if (m.isSame(el.start_time, "day") && m.isBetween(moment(el.start_time).subtract(1, "hours"), el.end_time, "minute")) {
+                validTimes.push({
+                  //start_time: m.format('h:mm ss A'),
+                  //end_time: tempDate.format('h:mm ss A'),
+                  start_time: m.unix(),
+                  end_time: tempDate.unix(),
+                  available: false,
+                  reservation: idx,
+                  place: j,
+                  selected: true
+                });
+                hasAdded = true;
+                return;
+              }
+            });
+            /**
+             * If not in reservations, add to valid times with no idx
+             */
+            if (!hasAdded) {
+              validTimes.push({
+                //start_time: m.format('h:mm ss A'),
+                //end_time: tempDate.format('h:mm ss A'),
+                start_time: m.unix(),
+                end_time: tempDate.unix(),
+                available: true,
+                place: j,
+                selected: false
+              });
+
+            }
+            hasAdded = false;
+          } else {
+            if (m.isSame(Date.now(), "day")) {
+              validTimes.push({
+                //start_time: m.format('h:mm ss A'),
+                //end_time: tempDate.format('h:mm ss A'),
+                start_time: m.unix(),
+                end_time: tempDate.unix(),
+                available: false,
+                place: j,
+                selected: false,
+                past: true
+              });
+            } else {
+              validTimes.push({
+                //start_time: m.format('h:mm ss A'),
+                //end_time: tempDate.format('h:mm ss A'),
+                start_time: m.unix(),
+                end_time: tempDate.unix(),
+                available: true,
+                place: j,
+                selected: false
+              });
+            }
+          }
+          // Safety net in case moment calculates date wrong 
+          if (j > 40) {
+            break;
+          }
+          j++;
+        }
+        let rooms;
+        return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) => {
+          rooms = res.data;
+          return {
+            times: validTimes,
+            reservations: reservations,
+            rooms: rooms
+          };
+        }, (err) => {
+          console.log(err);
+        });
+
+      }, (err) => {
+        console.log(err);
+      });
+    }
+    var service = {
+      times: getTimes
+    };
+
+    return service;
+  })

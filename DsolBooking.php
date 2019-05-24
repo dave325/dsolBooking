@@ -53,6 +53,7 @@ function dSol_enqueuer() {
 	wp_enqueue_style('bootstrap-css', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");
 	wp_enqueue_script('bootstrap-js',"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js","","",false);
 	wp_enqueue_style( 'jquery_ui_css', "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" );
+	wp_enqueue_style('angular-style',plugins_url( 'dsolBooking/css/angular-styles.css' ));
 	wp_enqueue_script( 'dsol_booking_path_js', plugins_url( 'dsolBooking/js/jstree/jquery.jstree.js' ), false );
 	wp_enqueue_script( 'jquery_ui', "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js", 'jquery','',false );
 	wp_enqueue_script( 'angular', "https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js", '','',false );
@@ -100,8 +101,8 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branch_schedule (
 					bs_id int(11) NOT NULL AUTO_INCREMENT,
 					b_id int(10) NOT NULL,
-					open_time time DEFAULT NULL,
-					close_time time DEFAULT NULL,
+					open_time timestamp DEFAULT NULL,
+					close_time timestamp DEFAULT NULL,
 					PRIMARY KEY  (bs_id)
 					);";
         dbDelta( $sql );
