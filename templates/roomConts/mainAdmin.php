@@ -39,11 +39,6 @@ if (count($branchList) == 0) {
 <?php
 } else {
 	?>
-	<pre>
-					<?php print_r($roomContList);
-					print_r($roomList);
-					?>
-				</pre>
 	<table class="tableMain">
 		<tr>
 			<td colspan="2"><?php _e('Branch List', 'book-a-room'); ?></td>
@@ -52,7 +47,9 @@ if (count($branchList) == 0) {
 		foreach ($branchList as $b_key => $b_val) {
 			?>
 			<tr>
-				<td colspan="2" class="subHeader"><?php echo $b_val; ?></td>
+				<td colspan="2" class="subHeader"><?php echo $b_val; ?><a href="?page=dsol_Settings_RoomCont&amp;action=add&b_id=<?php echo $b_key ?>">
+							<?php _e('Create a new container.', 'book-a-room');
+							?></td>
 			</tr>
 			<?php
 			if (empty($roomList['room'][$b_key])) {
@@ -69,21 +66,22 @@ if (count($branchList) == 0) {
 
 			foreach ($roomList['room'][$b_key] as $r_key => $r_val) {
 				foreach ($roomContList as $rc_key => $rc_val) {
+
 					if (is_null($roomContList[$rc_key]['roomId'][$r_val])) {
 						echo $roomContList[$rc_key]['roomId'][$r_val];
 						?>
 							<tr>
 								<td colspan="2">
 									<?php _e('No rooms containers in this branch.', 'book-a-room'); ?>
-									<a href="?page=dsol_Settings_RoomCont&amp;action=add&branchID=<?php echo $b_key ?>">
-									<?php _e( 'Create a new container.', 'book-a-room' ); 
-									?>
+									<a href="?page=dsol_Settings_RoomCont&amp;action=add&b_id=<?php echo $b_key ?>">
+										<?php _e('Create a new container.', 'book-a-room');
+										?>
 								</td>
 							</tr>
-						<?php
-						break;
-					} else {
-						?>
+							<?php
+							break;
+						} else {
+							?>
 							<tr>
 								<td class="subHeader">
 									<strong>
@@ -100,7 +98,7 @@ if (count($branchList) == 0) {
 								?>
 								<tr>
 									<td colspan="2"><?php _e('This container has no rooms.', 'book-a-room'); ?>
-								</td>
+									</td>
 								</tr>
 
 								<!-- Kelvin: Remove display of $amenityList -->

@@ -1,22 +1,28 @@
-<nav class="navbar">
+<nav class="navbar col-12 col-md-2">
   <div class="row justify-content-center">
-    <div class="col-md-3">Room: {{roomShow}} </div>
-    <div class="col-md-3" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+    <div class="col-12">Room: {{roomShow}} </div>
+    <div class="col-12" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
       {{data.arr[data.arr.length - 1].end_time* 1000 | date:'shortTime'}}</div>
-    <div class="col-md-3" ng-if="data.arr.length == 1">Time: {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+    <div class="col-12" ng-if="data.arr.length == 1">Time: {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
       {{data.arr[0].end_time * 1000| date:'shortTime'}}</div>
-    <div class="col-md-3">Date: {{data.date | date:shortTime }}</div>
-    <div class="row justify-content-between" id="nav-btns">
-      <a class="btn btn-primary" ng-click="submit()">Submit</a>
-      <div class="col-md-6"><button type="button" class="btn btn-secondary">Reset</button></div>
+    <div class="col-12">Date: {{data.date | date:shortTime }}</div>
+    <div class="col-12">
+      <label>
+        Repeat:
+        <select name="repeatSelect" id="resRepeat" ng-model="resRepeat" class="form-control"
+          ng-options="option.name for option in selectData.availableOptions track by option.id"
+          ng-change="selectDataChange()">
+        </select>
+      </label>
     </div>
+    <a class="btn btn-primary col-md-offset-6" ng-click="submit()" ng-disabled="isDisabled">Submit</a>
   </div>
 </nav>
 
 <h1>Book a Room</h1>
 
 <div class="row-fluid">
-  <div class="full-border col-md-10">
+  <div class="full-border col-md-9">
     <div class="row justify-content-between" id="room-and-date">
 
 
@@ -61,7 +67,8 @@
             hasReservation: !time.available && time.reservation, 
             'animate-show-hide': time.past != undefined}]" ng-hide="time.past">
           <td><input type="checkbox" aria-label="Checkbox for following text input" ng-show="time.available"
-              value="{{$index}}" name="hours[]" ng-change="check(time.place)" id="hours_{{time.place}}" ng-model="hour">
+              value="{{$index}}" name="hours[]" [checked]="time.selected" ng-change="check(time)"
+              id="hours_{{time.place}}" ng-model="hour">
           </td>
           <td>{{time.start_time * 1000 | date:'shortTime'}} - {{time.end_time* 1000 | date:'shortTime'}}</td>
           <td ng-if="time.available">Availabile</td>

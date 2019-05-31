@@ -9,4 +9,5 @@
 	<?php _e( 'Error!', 'book-a-room' ); ?>
 </h2>
 <p><?php _e( 'Invalid ID.', 'book-a-room' ); ?></p>
+<pre><?php print_r($branchList) ?></pre>
 <p><a href="?page=dsol_Settings_Branches"><?php _e( 'Please try again.', 'book-a-room' ); ?></a></p>

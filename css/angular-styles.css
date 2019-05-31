@@ -3,6 +3,12 @@
 
 }
 
+.page-id-22 .container{
+  padding:0px !important;
+  margin:0px !important;
+  width:100%;
+}
+
 #rooms {
   pointer-events: auto !important;
   cursor: pointer !important;
@@ -10,12 +16,15 @@
   cursor isn't changing (.elementor a, a.ng-binding, #rooms a, .rooms, ...) */
 }
 .navbar{
-    position: fixed; 
-    top: 0; 
-    width: 100vw; 
-    background-color:#3f3f3f;
-    color: #fff;
+    position: fixed !important;
+    top: 150px !important; 
+    right:0px !important;
+    border:1px solid#3f3f3f;
+    background-color:#FFF;
+    color: #000;
+    z-index:999999 !important;
 }
+
 
 #nav-btns{
     padding: 3%;
@@ -52,10 +61,14 @@ h6{
     color:#FFF;
 }
 .hasReservation{
-    background-color:green !important;
+    background-color:red !important;
     color:#FFF;
 }
 
+.selected{
+  background-color:green !important;
+  color:#FFF;
+}
 #angular-nav{
     position: absolute;
     font-family: sans-serif;

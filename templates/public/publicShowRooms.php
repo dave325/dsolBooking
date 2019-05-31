@@ -123,6 +123,6 @@
         }
     }
 </script>
-<div id="dsol-book-room"class="container-fluid" ng-app="wp">
+<div id="dsol-book-room" class="container-fluid" ng-app="wp">
     <div id="view-container"ng-view></div>
 </div>

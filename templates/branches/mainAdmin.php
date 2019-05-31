@@ -46,6 +46,11 @@ if ( is_null( $branchList ) ) {
 				<?php _e( 'Actions', 'book-a-room' ); ?>
 			</td>
 		</tr>
+		<pre>
+			<?php 
+				print_r($branchList)
+			?>
+		</pre>
 		<?php 
 		foreach ( $branchList as $key => $val ) {
 		?>
@@ -54,10 +59,10 @@ if ( is_null( $branchList ) ) {
 				<?php echo $val; ?>
 			</td>
 			<td width="100" align="right">
-				<a href="?page=dsol_Settings_Branches&amp;branchID=<?php echo $key; ?>&amp;action=edit">
+				<a href="?page=dsol_Settings_Branches&amp;b_id=<?php echo $key; ?>&amp;action=edit">
 					<?php _e( 'Edit', 'book-a-room' ); ?>
 				</a> |
-				<a href="?page=dsol_Settings_Branches&amp;branchID=<?php echo $key; ?>&amp;action=delete">
+				<a href="?page=dsol_Settings_Branches&amp;b_id=<?php echo $key; ?>&amp;action=delete">
 					<?php _e( 'Delete', 'book-a-room' ); ?>
 				</a>
 			</td>

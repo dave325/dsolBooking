@@ -32,7 +32,12 @@ if ( !empty( $branchInfo[ 'errors' ] ) ) {
 <?php
 }
 ?>
-<form id="form1" name="form1" method="post" action="?page=dsol_Settings_Branches&branchID=<?PHP echo $branchInfo['branchID']; ?>&action=<?php echo $action; ?>">
+<pre>
+	<?php
+		print_r($branchInfo)
+	?>
+</pre>
+<form id="form1" name="form1" method="post" action="?page=dsol_Settings_Branches&b_id=<?PHP echo $branchInfo['b_id']; ?>&action=<?php echo $action; ?>">
 	<table class="tableMain">
 		<tr>
 			<td>

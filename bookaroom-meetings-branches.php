@@ -466,9 +466,10 @@ class dsol_settings_branches
         global $wpdb;
 
         $table_name = $wpdb->prefix . "dsol_booking_branch";
+        $table_name_sch = $wpdb->prefix . "dsol_booking_branch_schedule";
 
         $final = $wpdb->get_row($wpdb->prepare("SELECT * FROM `$table_name` WHERE `b_id` = %d", $b_id));
-
+        $schedule = $wpdb->get_results($wpdb->prepare("SELECT * FROM `$table_name_sch` WHERE `b_id` = %d", $b_id), ARRAY_A);
         /*
         *
         * Jazmyn Fuller
@@ -477,10 +478,17 @@ class dsol_settings_branches
         * also deleted branch_isPublic because it's not needed, branchImageURL, branchMapLink
         * branch_isSocial and showSocial
         */
-        $branchInfo = array('b_id' => $final->b_id);
-        $b_name = array('b_id' => $final->b_name);
+        $branchInfo = array(
+            'b_id' => $final->b_id,
+            'b_name' => $final->b_name,
+            'schedule' => $schedule
+        );
+
+        //$branchInfo['b_name'] = array('b_id' => $final->b_name);
 
 
+        /*
+            David took out -> Using information present in db instead
 
         # parse the times and convert from 24:00:00 to a 12:00 with a bit for PM
         foreach ($final as $key => $val) {
@@ -500,7 +508,7 @@ class dsol_settings_branches
                 // print_r($branchInfo);
             }
         }
-
+*/
         /*
         * Deleted by: Jazmyn  
         * Branch_isPublic isn't needed

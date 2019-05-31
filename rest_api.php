@@ -34,6 +34,14 @@ class My_REST_Posts_Controller
 
             )
         ));
+
+        register_rest_route($this->namespace, '/checkParams', array(
+            // Here we register the readable endpoint for collections.
+            array(
+                'methods'   => 'POST',
+                'callback'  => array($this, 'param')
+            )
+        ));
     }
 
     /**
@@ -47,6 +55,16 @@ class My_REST_Posts_Controller
             return new WP_Error('rest_forbidden', esc_html__('You cannot view the post resource.'), array('status' => $this->authorization_status_code()));
         }
         return true;
+    }
+
+    /**
+     * Check permissions for the posts.f
+     *
+     * @param WP_REST_Request $request Current request.
+     */
+    public function param(WP_REST_Request $request)
+    {
+        return rest_ensure_response($request->get_body());
     }
 
     /**
@@ -68,14 +86,19 @@ class My_REST_Posts_Controller
         $table_name_container = $wpdb->prefix . 'dsol_booking_container';
         $table_name_time = $wpdb->prefix . 'dsol_booking_time';
         $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
-
+        $room =  $request->get_json_params();
+        if (isset($room['room']) && $room['room'] > 0) {
+            $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL AND {$table_name_reservation}.c_id = {$room['room']}";
+        } else {
+            $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL";
+        }
         $sql = "SELECT {$table_name_reservation}.res_id,
                         {$table_name_reservation}.company_name,
-                        {$table_name_reservation}.email,
                         {$table_name_reservation}.email,
                         {$table_name_reservation}.attendance,
                         {$table_name_reservation}.notes,
                         {$table_name_container}.container_number,
+                        {$table_name_container}.c_id,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
                         {$table_name_time}.start_time,
@@ -85,7 +108,7 @@ class My_REST_Posts_Controller
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
         LEFT JOIN {$table_name_reservation} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
         LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
-        WHERE {$table_name_reservation}.res_id IS NOT NULL
+        {$where}
         GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name 
         ORDER BY {$table_name_time}.start_time;";
         $final = $wpdb->get_results($sql, ARRAY_A);
@@ -136,7 +159,6 @@ class My_REST_Posts_Controller
      */
     public function bookRoom(WP_REST_Request $request)
     {
-
         global $wpdb;
         if (is_user_logged_in()) {
             $data = $request->get_json_params();
@@ -144,36 +166,123 @@ class My_REST_Posts_Controller
             $table_name_time = $wpdb->prefix . 'dsol_booking_time';
             $start_time = date('Y-m-d H:i:s', $data["arr"][0]["start_time"]);
             $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]["end_time"]);
+            $contNum = $data['room'];
+            $timeCheck = "SELECT *
+            FROM `$table_name_time`
+            LEFT JOIN `$table_name_reservation` ON `$table_name_time`.t_id = `$table_name_reservation`.t_id
+            WHERE `$table_name_reservation`=`$contNum` AND  date BETWEEN `$start_time` AND `$end_time` ";
+            $res = $wpdb->get_results($timeCheck);
+            if (sizeof($res) == 0) {
+                if ($data['repeat']['id'] > 0) {
+                    $values = array();
+                    $place_holders = array();
+                    $res_values = array();
+                    $res_placeholders = array();
+                    $time_sql = "INSERT INTO `$table_name_time` (start_time, end_time) VALUES ";
+                    $res_sql = "INSERT INTO `$table_name_reservation` ('c_id','t_id'.'modified_by','created_at','created_by','company_name','email','attendance','notes') VALUES ";
+                    try {
+                        //return rest_ensure_response( strtotime($start_time)  );
+                        //$d = new DateTime(date('Y-m-d H:i:s', $start_time));
+                        //return rest_ensure_response($d);
+                        //$d->createFromFormat('Y-m-d H:i:s', $start_time);
+                        switch ($data['repeat']['id']) {
+                            case 1:
+                                $i = 0;
+                                $X = date('t', strtotime($start_time . ' + 2 days')) - date('d', strtotime($start_time . ' + 2 days'));
+                                $start_time = date('Y-m-d H:i:s', strtotime($start_time . "+1 days"));
+                                $end_time = date('Y-m-d H:i:s', strtotime($end_time . "+1 days"));
+                                array_push($values, $start_time, $end_time);
+                                $place_holders[] = "('%s', '%s')";
+                                while ($i <= $X) {
+                                    $i++;
+                                    $start_time = date('Y-m-d H:i:s', strtotime($start_time . "+1 days"));
+                                    $end_time = date('Y-m-d H:i:s', strtotime($end_time . "+1 days"));
+                                    $wpdb->insert($table_name_time, array(
+                                        "start_time" => $start_time,
+                                        "end_time" => $end_time
+                                    ));
+                                    $insert_id = $wpdb->insert_id;
+                                    if ($wpdb->last_error !== '') {
+                                        return rest_ensure_response($wpdb->last_result);
+                                    }
+                                    $wpdb->insert($table_name_reservation, array(
+                                        "c_id" => $data["room"]["c_id"],
+                                        "t_id" => $insert_id,
+                                        "modified_by" => wp_get_current_user()->display_name,
+                                        "created_at" => current_time('mysql', 1),
+                                        "modified_at" => current_time('mysql', 1),
+                                        "created_by" => wp_get_current_user()->user_email,
+                                        "company_name" => wp_get_current_user()->display_name,
+                                        "email" => wp_get_current_user()->user_email,
+                                        "attendance" => $data["numAttend"],
+                                        "notes" => $data["desc"]
+                                    ));
+                                    if ($wpdb->last_error !== '') {
+                                        $wpdb->print_error();
+                                    }
+                                }
+                                break;
+                            case 2:
+                                $i = 0;
+                                $X = floor((date('t', strtotime($start_time . ' + 2 days')) - date('d', strtotime($start_time . ' + 2 days'))) / 7);
+                                while ($i < $X) {
+                                    $i++;
+                                    $start = date('Y-m-d H:i:s', strtotime($start_time . "+1 weeks"));
+                                    $end = date('Y-m-d H:i:s', strtotime($end_time . "+1 weeks"));
+                                    array_push($values, $start, $end);
+                                }
+                                break;
+                            case 3:
+                                $i = 0;
+                                $X = floor((date('t', strtotime(' + 2 days', $start_time)) - date('d', strtotime(' + 2 days', $start_time))) / 7);
+                                while ($i < $X) {
+                                    $i += 2;
+                                    $start = date('Y-m-d H:i:s', strtotime($start_time . "+2 weeks"));
+                                    $end = date('Y-m-d H:i:s', strtotime($end_time . "+2 weeks"));
+                                    array_push($values, $start, $end);
+                                }
+                                break;
+                            default:
 
-            $wpdb->insert($table_name_time, array(
-                "start_time" => $start_time,
-                "end_time" => $end_time
-            ));
-            $insert_id = $wpdb->insert_id;
-            if ($wpdb->last_error !== '') {
-                return rest_ensure_response($wpdb->last_result);
+                                break;
+                        }
+                    } catch (\UnexpectedValueException $e) {
+                        return rest_ensure_response($e);
+                    }
+                    return rest_ensure_response(array("values" => $values, "week" => $X));
+                    $wpdb->insert($table_name_time, array(
+                        "start_time" => $start_time,
+                        "end_time" => $end_time
+                    ));
+                    $insert_id = $wpdb->insert_id;
+                    if ($wpdb->last_error !== '') {
+                        return rest_ensure_response($wpdb->last_result);
+                    }
+                    $wpdb->insert($table_name_reservation, array(
+                        "c_id" => $data["room"]["c_id"],
+                        "t_id" => $insert_id,
+                        "modified_by" => wp_get_current_user()->display_name,
+                        "created_at" => current_time('mysql', 1),
+                        "modified_at" => current_time('mysql', 1),
+                        "created_by" => wp_get_current_user()->user_email,
+                        "company_name" => wp_get_current_user()->display_name,
+                        "email" => wp_get_current_user()->user_email,
+                        "attendance" => $data["numAttend"],
+                        "notes" => $data["desc"]
+                    ));
+                    if ($wpdb->last_error !== '') {
+                        $wpdb->print_error();
+                    }
+                    return rest_ensure_response(array($start_time, $end_time));
+                } else {
+                    return new WP_Error(400, ('The Time is already taken'), array($res, $timeCheck));
+                }
+            } else {
+                return rest_ensure_response(wp_get_current_user());
             }
-            $wpdb->insert($table_name_reservation, array(
-                "c_id" => $data["room"],
-                "t_id" => $insert_id,
-                "modified_by" => wp_get_current_user()->display_name,
-                "created_at" => current_time('mysql', 1),
-                "modified_at" => current_time('mysql', 1),
-                "created_by" => wp_get_current_user()->user_email,
-                "company_name" => wp_get_current_user()->display_name,
-                "email" => wp_get_current_user()->user_email,
-                "attendance" => $data["numAttend"],
-                "notes" => $data["desc"]
-            ));
-            if ($wpdb->last_error !== '') {
-                $wpdb->print_error();
-            }
-            return rest_ensure_response(array($start_time,$end_time));
-        } else {
-            return rest_ensure_response(wp_get_current_user());
+            // Return all of our comment response data.
+
         }
-        // Return all of our comment response data.
-
     }
 
     /**

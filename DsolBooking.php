@@ -67,7 +67,8 @@ function dSol_enqueuer() {
             array(
 								'partials' => plugins_url( 'dsolBooking/templates/partials/' ),
 								"path" =>  get_site_url(),
-								'nonce' => wp_create_nonce( 'wp_rest' )
+								'nonce' => wp_create_nonce( 'wp_rest' ),
+								'username' => wp_get_current_user()->display_name
                 )
     );
 	# languages
@@ -101,8 +102,8 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branch_schedule (
 					bs_id int(11) NOT NULL AUTO_INCREMENT,
 					b_id int(10) NOT NULL,
-					open_time timestamp DEFAULT NULL,
-					close_time timestamp DEFAULT NULL,
+					open_time timestamp,
+					close_time timestamp,
 					PRIMARY KEY  (bs_id)
 					);";
         dbDelta( $sql );

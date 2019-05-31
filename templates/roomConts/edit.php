@@ -75,7 +75,6 @@ if (!empty($roomContInfo['errors'])) {
 			</td>
 		</tr>
 		<pre>
-		<?php print_r($roomContInfo) ?>
 		
 </pre>
 		<?php
