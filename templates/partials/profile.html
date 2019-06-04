@@ -1,4 +1,4 @@
-<h1>Username Here</h1>
+<h1>{{user.data.display_name}}</h1>
 
 <table class="table profile">
     <thead class="thead-dark">
@@ -11,26 +11,16 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row"><input type="checkbox"></th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>Mark</td>
-        <td>Otto</td>
-      </tr>
-      <tr>
-        <th scope="row"><input type="checkbox"></th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>Mark</td>
-        <td>Otto</td>
-      </tr>
-      <tr>
-        <th scope="row"><input type="checkbox"></th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>Mark</td>
-        <td>Otto</td>
+      <tr ng-repeat="reservation in data track by $index">
+        <td scope="row"><input type="checkbox" value="{{$index}}" name="selected[]"></td>
+        <td>{{reservation.container_number}}</td>
+        <td>
+            {{reservation.start_time * 1000 | date: 'shortDate'}} <br>
+          {{reservation.start_time * 1000 | date: 'shortTime'}} - {{reservation.end_time* 1000  | date: 'shortTime'}}
+        </td>
+        <td>{{reservation.company_name}}<br >
+            {{reservation.email}}</td>
+        <td>{{reservation.notes}}</td>
       </tr>
     </tbody>
   </table>

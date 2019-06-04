@@ -31,11 +31,33 @@
                             Date
                         </div>
                         <div class="formInput">
-                            <em>
-                                {{data.arr[0].start_time* 1000 | date: 'shortDate'}}
-                            </em>
+                            <ng-container ng-if="data.repeat.id < 1">
+                                <em>
+                                    {{data.arr[0].start_time* 1000 | date: 'shortDate'}}
+                                </em>
+                            </ng-container>
+                            <ng-container ng-if="data.repeat.id > 0">
+                                <em>Dates already taken:</em>
+                                <p ng-repeat="date in invalidDates">
+                                    {{date * 1000 | date:'shortDate'}}
+                                </p>
+                            </ng-container>
                         </div>
                     </div>
+                    <div class="wideCol">
+                            <div class="question">
+                            </div>
+                            <div class="formInput">
+                                <ng-container ng-if="data.repeat.id > 0">
+                                    <em>Dates Available:</em>
+                                    <ul>
+                                        <li ng-repeat="date in data.multipleDates" class="col-12 col-md-4">
+                                            {{date * 1000 | date:'shortDate'}}
+                                        </li>
+                                    </ul>
+                                </ng-container>
+                            </div>
+                        </div>
                     <div class="wideCol">
                         <div class="question">
                             Requested times

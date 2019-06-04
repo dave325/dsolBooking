@@ -39,7 +39,7 @@ add_action( 'admin_menu', array( 'dsol_settings', 'add_settingsPage' ) );
 function dSol_enqueuer() {
 	// Prefix later on
 	add_shortcode( 'meetingRooms',	array( 'dsol_public', 'mainForm' ) );
-	//add_shortcode( 'profile',	array( 'dsol_company_profile', 'showBookings' ) );
+	add_shortcode( 'dsol_profile',	array( 'dsol_company_profile', 'showBookings' ) );
 	$width = get_option( 'dsol_booking_path_screenWidth' );
 
 	if( !empty( $width ) || $width == 1 ) {
@@ -68,7 +68,7 @@ function dSol_enqueuer() {
 								'partials' => plugins_url( 'dsolBooking/templates/partials/' ),
 								"path" =>  get_site_url(),
 								'nonce' => wp_create_nonce( 'wp_rest' ),
-								'username' => wp_get_current_user()->display_name
+								'username' => wp_get_current_user()
                 )
     );
 	# languages
