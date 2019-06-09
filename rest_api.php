@@ -220,8 +220,13 @@ class My_REST_Posts_Controller
                         return rest_ensure_response($e);
                     }
                     //return rest_ensure_response(array("values" => $time_insert_arr));
+                    $wpdb->query('START TRANSACTION');
                     foreach ($time_insert_arr as $time) {
                         $wpdb->insert($table_name_time, $time);
+                        if ($wpdb->last_error !== '') {
+                            $wpdb->query('ROLLBACK');
+                            return new WP_Error(400, ('Error adding time'));
+                        }
                         $temp_insert_id = $wpdb->insert_id;
                         $wpdb->insert($table_name_reservation, array(
                             "c_id" => $data["room"]["c_id"],
@@ -235,6 +240,10 @@ class My_REST_Posts_Controller
                             "attendance" => $data["numAttend"],
                             "notes" => $data["desc"]
                         ));
+                        if ($wpdb->last_error !== '') {
+                            $wpdb->query('ROLLBACK');
+                            return new WP_Error(400, ('Error adding time'));
+                        }
                     }
                     /*
                     $wpdb->insert($table_name_time, array(
@@ -294,13 +303,15 @@ class My_REST_Posts_Controller
             {$table_name_reservation}.notes,
             {$table_name_container}.container_number,
             {$table_name_container}.c_id,
+            {$table_name_container}.r_id,
+            {$table_name_container}.occupancy,
             {$table_name_time}.start_time,
             {$table_name_time}.end_time
             FROM {$table_name_reservation} 
             LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
             LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
-            WHERE {$table_name_reservation}.email = '{$userEmail}'
-            GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number
+            WHERE {$table_name_reservation}.email = '{$userEmail}' AND {$table_name_container}.r_id IS NOT NULL
+            GROUP BY {$table_name_reservation}.res_id, {$table_name_container}.container_number
             ORDER BY {$table_name_time}.start_time DESC;";
             $final = $wpdb->get_results($sql, ARRAY_A);
             if ($wpdb->last_error !== '') {
@@ -321,30 +332,41 @@ class My_REST_Posts_Controller
         $table_name_container = $wpdb->prefix . 'dsol_booking_container';
         $table_name_time = $wpdb->prefix . 'dsol_booking_time';
         $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
+        $start_time = date('Y-m-d H:i:s', $data["arr"][0]["start_time"]);
+        $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]["end_time"]);
         if (is_user_logged_in()) {
             $data = $request->get_json_params();
-            $userEmail = $data['user']['data']['user_email'];
-            $sql = "SELECT {$table_name_reservation}.res_id,
-            {$table_name_reservation}.company_name,
-            {$table_name_reservation}.email,
-            {$table_name_reservation}.attendance,
-            {$table_name_reservation}.notes,
-            {$table_name_container}.container_number,
-            {$table_name_container}.c_id,
-            {$table_name_time}.start_time,
-            {$table_name_time}.end_time
-            FROM {$table_name_reservation} 
-            LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
-            LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
-            WHERE {$table_name_reservation}.email = '{$userEmail}'
-            GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number
-            ORDER BY {$table_name_time}.start_time DESC;";
-            $final = $wpdb->get_results($sql, ARRAY_A);
+            $resId = $data['info']['res_id'];
+            $sql = "SELECT t_id FROM {$table_name_reservation} WHERE res_id = {$resId}";
+            $res = $wpdb->get_results($sql);
+            $time_id = $res[0]->t_id;
+            $time = array(
+                "start_time" => $start_time,
+                "end_time" => $end_time
+            );
+            $wpdb->update($table_name_time, $time, array("t_id" => $time_id));
             if ($wpdb->last_error !== '') {
-                return rest_ensure_response($wpdb->last_result);
+                $wpdb->query('ROLLBACK');
+                return new WP_Error(400, ('Error adding time'));
+            }
+            $wpdb->update($table_name_reservation, array(
+                "c_id" => $data["room"]["c_id"],
+                "t_id" => $time_id,
+                "modified_by" => wp_get_current_user()->display_name,
+                "created_at" => current_time('mysql', 1),
+                "modified_at" => current_time('mysql', 1),
+                "created_by" => wp_get_current_user()->user_email,
+                "company_name" => wp_get_current_user()->display_name,
+                "email" => wp_get_current_user()->user_email,
+                "attendance" => $data["numAttend"],
+                "notes" => $data["desc"]
+            ), array("res_id" => $resId));
+            if ($wpdb->last_error !== '') {
+                $wpdb->query('ROLLBACK');
+                return new WP_Error(400, ('Error adding time'));
             }
             // Return all of our comment response data.
-            return rest_ensure_response($final);
+
         } else {
             return new WP_Error(403, ('User not found'));
         }
@@ -360,28 +382,18 @@ class My_REST_Posts_Controller
         $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
         if (is_user_logged_in()) {
             $data = $request->get_json_params();
-            $userEmail = $data['user']['data']['user_email'];
-            $sql = "SELECT {$table_name_reservation}.res_id,
-            {$table_name_reservation}.company_name,
-            {$table_name_reservation}.email,
-            {$table_name_reservation}.attendance,
-            {$table_name_reservation}.notes,
-            {$table_name_container}.container_number,
-            {$table_name_container}.c_id,
-            {$table_name_time}.start_time,
-            {$table_name_time}.end_time
+            $items = implode(',', $data['items']);
+            $sql = "DELETE {$table_name_reservation},
+            {$table_name_time}
             FROM {$table_name_reservation} 
-            LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
-            LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
-            WHERE {$table_name_reservation}.email = '{$userEmail}'
-            GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number
-            ORDER BY {$table_name_time}.start_time DESC;";
-            $final = $wpdb->get_results($sql, ARRAY_A);
+            INNER JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
+            WHERE {$table_name_reservation}.res_id IN ({$items});";
+            $wpdb->query($sql);
             if ($wpdb->last_error !== '') {
-                return rest_ensure_response($wpdb->last_result);
+                return new WP_Error(403, ('User not found'), $wpdb->last_result);
             }
             // Return all of our comment response data.
-            return rest_ensure_response($final);
+            return rest_ensure_response("Success");
         } else {
             return new WP_Error(403, ('User not found'));
         }
