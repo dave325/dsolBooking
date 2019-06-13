@@ -72,7 +72,7 @@
           </td>
           <td>{{time.start_time * 1000 | date:'shortTime'}} - {{time.end_time* 1000 | date:'shortTime'}}</td>
           <td ng-if="time.available">Availabile</td>
-          <td ng-if="!time.available && time.reservation">{{reservations[time.reservation].company_name}}</td>
+          <td ng-if="!time.available && time.reservation">{{reservations[time.reservation].company_name}} {{time.reservation}}</td>
           <td ng-if="!time.available && !time.reservation">Unavilable</td>
         </tr>
       </tbody>

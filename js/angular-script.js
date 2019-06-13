@@ -6,51 +6,56 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         templateUrl: localized.partials + '/showRooms.html',
         controller: 'Main',
         resolve: {
-          TIMES: ['restapi', 
-          /**
-           * 
-           * @param {*} restapi 
-           * @returns res object {times, reservations, rooms}
-           */
-          function (restapi) {
-            
-            return restapi.times(Date.now()).then(
-              (res) => {
-                // Store user information from php passed object 
-                // php object recieved from wp_localized_script
-                res.user = localized.username;
-                return res;
-              },
-              (err) => {
-                console.error(err);
+          TIMES: ['restapi', 'myFactory',
+            /**
+             * 
+             * @param {*} restapi 
+             * @param {*} myFactory 
+             * @returns res object {times, reservations, rooms}
+             */
+            function (restapi, myFactory) {
+
+              let date = Date.now();
+              if (myFactory.getData.arr.length > 0) {
+                date = new Date(myFactory.getData.date);
               }
-            );
-          }],
-          USERDATA: ["restapi", "$location", 
-          /**
-           * 
-           * @param {*} restapi 
-           * @param {*} $location 
-           * @returns res object {times}
-           */
-          function (restapi, $location) {
-            // Checks to see if query parameter exists and then make api call
-            if ($location.search().hasOwnProperty("action") && $location.search()['action'] == "profile") {
-              return restapi.getUserReservations().then(
+              return restapi.times(date).then(
                 (res) => {
-                  // Loop through returned data and transform each start and end date to unix
-                  res.data.forEach((el, idx) => {
-                    el.start_time = moment(el.start_time).unix();
-                    el.end_time = moment(el.end_time).unix();
-                  });
-                  return res.data;
+                  // Store user information from php passed object 
+                  // php object recieved from wp_localized_script
+                  res.user = localized.username;
+                  return res;
                 },
                 (err) => {
-                  console.error(err)
+                  console.error(err);
                 }
-              )
-            }
-          }]
+              );
+            }],
+          USERDATA: ["restapi", "$location",
+            /**
+             * 
+             * @param {*} restapi 
+             * @param {*} $location 
+             * @returns res object {times}
+             */
+            function (restapi, $location) {
+              // Checks to see if query parameter exists and then make api call
+              if ($location.search().hasOwnProperty("action") && $location.search()['action'] == "profile") {
+                return restapi.getUserReservations().then(
+                  (res) => {
+                    // Loop through returned data and transform each start and end date to unix
+                    res.data.forEach((el, idx) => {
+                      el.start_time = moment(el.start_time).unix();
+                      el.end_time = moment(el.end_time).unix();
+                    });
+                    return res.data;
+                  },
+                  (err) => {
+                    console.error(err)
+                  }
+                )
+              }
+            }]
         }
       })
       .when('/submit', {
@@ -70,7 +75,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
 
   })
 
-  .controller('Main',['$scope', 'TIMES', '$timeout', 'myFactory', '$location', 'restapi', function ($scope, TIMES, $timeout, myFactory, $location, restapi) {
+  .controller('Main', ['$scope', 'TIMES', '$timeout', 'myFactory', '$location', 'restapi', function ($scope, TIMES, $timeout, myFactory, $location, restapi) {
 
     //$scope.oneAtATime = true;
     // Stores the valid Times from the resolved object in the route
@@ -82,6 +87,8 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     // Set the current user and reservations to a factory object for reuse
     myFactory.setUser(TIMES.user);
     myFactory.setReservations(TIMES.reservations);
+    console.log($scope.reservations)
+    console.log($scope.validTimes)
     // Sets the collapsable dropdown of room
     $scope.isCollapsed = false;
     // store the data from factory into local scope variable
@@ -96,7 +103,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       ]
     };
     // If query aparamete res_id does not exist, then reset room info and valid times
-    if (!$location.search().hasOwnProperty("res_id")) {
+    if (!$location.search().hasOwnProperty("res_id") || myFactory.getData.arr.length == 0) {
       if (!myFactory.getData.room.c_id) {
         $scope.resRepeat = { id: '0', name: 'No Repeat' };
         $scope.roomShow = $scope.rooms[0].container_number;
@@ -131,6 +138,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           (res) => {
             // change valid times and reset selected times 
             $scope.validTimes = res.times;
+            console.log(res)
             $scope.data.arr = [];
           },
           (err) => {
@@ -158,6 +166,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         (res) => {
           // change valid times and reset selected times 
           $scope.validTimes = res.times;
+          console.log(res);
           $scope.data.arr = [];
         },
         (err) => {
@@ -230,9 +239,11 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
             alert("Error!\nI'm sorry, but there is already a reservation in the time you've selected. Please make sure your reservation times don't overlap someone else's reservation.");
             break;
           } else {
-            hourChecks[s].checked = true;
-            $scope.validTimes[s].selected = true;
-            angular.element('#hours_' + s).parent().parent().addClass('selected');
+            if ($scope.validTimes[s].available) {
+              hourChecks[s].checked = true;
+              $scope.validTimes[s].selected = true;
+              angular.element('#hours_' + s).parent().parent().addClass('selected');
+            }
           }
         }
       }
@@ -263,7 +274,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       //set date to current date
       let date = new Date();
       // If the user is editing, store date as given time
-      if ($location.search().hasOwnProperty("res_id")) {
+      if ($location.search().hasOwnProperty("res_id") || myFactory.getData.arr.length > 0) {
         date = new Date(myFactory.getData.date);
       }
       // Store date for calendar and 
@@ -357,7 +368,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         myFactory.setDate($scope.dt);
         myFactory.storeInfo();
         // Send to submit page
-        $location.path('/?action=submit');
+        $location.path('/').search('action', 'submit');
       }
     }
 
@@ -366,7 +377,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       function () {
         // call timeout so angularjs digrest waits for the next round after ngRepeat calls
         $timeout(function () {
-          if (myFactory.getData.room.c_id) {
+          if (myFactory.getData.arr.length > 0) {
             // Set data 
             let resId = -1;
             let date = new Date();
@@ -374,9 +385,13 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
             if ($location.search().hasOwnProperty('res_id')) {
               // set resId to query parameter and date
               resId = $location.search()['res_id'];
-              date = myFactory.getData.date;
+
             } else {
-              $scope.data.arr = [];
+              if (myFactory.getData.arr.length == 0) {
+                $scope.data.arr = [];
+              } else {
+                date = myFactory.getData.date;
+              }
             }
             // Call api with given date, room, and reservation id
             restapi.times(date, myFactory.getData.room.c_id, resId).then(
@@ -411,9 +426,11 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                       $timeout(function () {
                         // Loop through array and select all relevant boxes
                         for (var s = myFactory.getData.arr[0].place, e = myFactory.getData.arr[$scope.data.arr.length - 1].place; s <= e; s++) {
-                          hourChecks[s].checked = true;
-                          $scope.validTimes[s].selected = true;
-                          angular.element('#hours_' + s).parent().parent().addClass('selected');
+                          if ($scope.validTimes[s].available) {
+                            hourChecks[s].checked = true;
+                            $scope.validTimes[s].selected = true;
+                            angular.element('#hours_' + s).parent().parent().addClass('selected');
+                          }
                         }
                       }, 500);
                     }
@@ -431,9 +448,11 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                       for (m = curDate, i = 0; m.isBefore(resEndTimestamp); m.add(30, 'minutes')) {
                         // Check if current moment is between the 2 times and then select validTimes
                         if (m.isBetween(resStartTimestamp.subtract(1, "minutes"), resEndTimestamp)) {
-                          hourChecks[i].checked = true;
-                          $scope.validTimes[i].selected = true;
-                          angular.element('#hours_' + i).parent().parent().addClass('selected');
+                          if ($scope.validTimes[s].available) {
+                            hourChecks[i].checked = true;
+                            $scope.validTimes[i].selected = true;
+                            angular.element('#hours_' + i).parent().parent().addClass('selected');
+                          }
                         }
                         if (m.isAfter(resEndTimestamp)) {
                           break;
@@ -515,7 +534,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         $scope.info.numAttend &&
         $scope.info.numAttend > 0 &&
         $scope.info.numAttend <= myFactory.getData.room.occupancy
-      ) {button
+      ) {
         // Disbale submit 
         $scope.isDisabled = true;
         // set factory data
@@ -527,10 +546,12 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           // Make api call to book room
           $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
             (res) => {
+              console.log(res);
+              return;
               // remove data from factory
               myFactory.removeData();
               // send page to confirmation
-              $location.path('/?action=confirmation');
+              $location.path('/').search('action', 'confirmation');
             }, (err) => {
               console.error(err);
             }
@@ -750,7 +771,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
      * @param {*} repeatType 
      */
     function checkRepeatReservations(startTime, endTime, room, repeatType) {
-
       let validDates = [],
         invalidDates = [];
       const curDate = moment.unix(startTime)
@@ -781,7 +801,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                 canAdd = false;
                 break;
               } else if (
-                 // Check if m is not the same day as starttime, 
+                // Check if m is not the same day as starttime, 
                 // room is came, m is between start and end time
                 // and tempDate is between the start and end time
                 // set can Add to false
@@ -816,7 +836,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
             for (let i = 0; i < myFactory.getData.reservations.length; i++) {
               let el = myFactory.getData.reservations[i];
               if (
-                 // Check if m is the same day as starttime, 
+                // Check if m is the same day as starttime, 
                 // room is came, m is between start and end time
                 // and tempDate is between the start and end time
                 // set can Add to false
@@ -828,7 +848,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                 canAdd = false;
                 break;
               } else if (
-                 // Check if m is not the same day as starttime, 
+                // Check if m is not the same day as starttime, 
                 // room is came, m is between start and end time
                 // and tempDate is between the start and end time
                 // set can Add to false
@@ -844,7 +864,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
               }
 
             }
-            if (canAdd) {
+            if (!canAdd) {
               invalidDates.push(m.unix(startTime));
             } else {
               validDates.push(m.unix(startTime));
@@ -879,7 +899,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
               }
 
             }
-            if (canAdd) {
+            if (!canAdd) {
               invalidDates.push(m.unix(startTime));
             } else {
               validDates.push(m.unix(startTime));
@@ -904,7 +924,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       if (resid && resid > -1) {
         residEdit = resid;
       }
-      if (!moment().isSame(date, "day")) {
+      if (!moment().isSame(date)) {
         givenDate = date;
       }
       const curDate = moment(givenDate).hours(6).minute(0).seconds(0).milliseconds(0);
@@ -927,7 +947,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
              */
 
             reservations.forEach((el, idx) => {
-              if (resid && el.res_id == residEdit) {
+              if (resid && resid > -1 && el.res_id == residEdit) {
                 validTimes.push({
                   //start_time: m.format('h:mm ss A'),
                   //end_time: tempDate.format('h:mm ss A'),
@@ -1075,21 +1095,17 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       switch ($location.search()['action']) {
 
         case 'profile':
-          console.log($location.search())
           next.$$route.controller = "profile"
           next.templateUrl = localized.partials + '/profile.html';
           break;
-        case 'submitForm':
-          console.log($location.search())
+        case 'submit':
           next.$$route.controller = "SubmitForm"
-          next.templateUrl = localized.partials + '/submit.html';
+          next.templateUrl = localized.partials + '/submitForm.html';
           break;
         case 'confirmation':
-          console.log($location.search())
           next.templateUrl = localized.partials + '/confirmation.html';
           break;
         default:
-          console.log($location.search())
           next.$$route.controller = "Main"
           next.templateUrl = localized.partials + '/showRooms.html';
           break;

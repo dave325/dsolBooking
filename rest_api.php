@@ -219,6 +219,8 @@ class My_REST_Posts_Controller
                     } catch (\UnexpectedValueException $e) {
                         return rest_ensure_response($e);
                     }
+
+                    return rest_ensure_response($time_insert_arr);
                     //return rest_ensure_response(array("values" => $time_insert_arr));
                     $wpdb->query('START TRANSACTION');
                     foreach ($time_insert_arr as $time) {
@@ -272,10 +274,33 @@ class My_REST_Posts_Controller
                     */
                     return rest_ensure_response(array($start_time, $end_time));
                 } else {
-                    return new WP_Error(400, ('The Time is already taken'), array($res, $timeCheck));
+                    return rest_ensure_response(array($start_time, $end_time));
+                    $wpdb->insert($table_name_time, array(
+                        "start_time" => $start_time,
+                        "end_time" => $end_time
+                    ));
+                    $insert_id = $wpdb->insert_id;
+                    if ($wpdb->last_error !== '') {
+                        return rest_ensure_response($wpdb->last_result);
+                    }
+                    $wpdb->insert($table_name_reservation, array(
+                        "c_id" => $data["room"]["c_id"],
+                        "t_id" => $insert_id,
+                        "modified_by" => wp_get_current_user()->display_name,
+                        "created_at" => current_time('mysql', 1),
+                        "modified_at" => current_time('mysql', 1),
+                        "created_by" => wp_get_current_user()->user_email,
+                        "company_name" => wp_get_current_user()->display_name,
+                        "email" => wp_get_current_user()->user_email,
+                        "attendance" => $data["numAttend"],
+                        "notes" => $data["desc"]
+                    ));
+                    if ($wpdb->last_error !== '') {
+                        return rest_ensure_response($wpdb->last_result);
+                    }
                 }
             } else {
-                return rest_ensure_response(wp_get_current_user());
+                return new WP_Error(400, ('The Time is already taken'), array($res, $timeCheck));
             }
             // Return all of our comment  res ponse data.
 
