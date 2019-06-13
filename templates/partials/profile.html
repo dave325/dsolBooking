@@ -29,8 +29,8 @@
           ng-model="reservation.selected"></td>
       <td>{{reservation.container_number}}</td>
       <td>
-        {{reservation.start_time * 1000 | date: 'shortDate'}} <br>
-        {{reservation.start_time * 1000 | date: 'shortTime'}} - {{reservation.end_time* 1000  | date: 'shortTime'}}
+        {{reservation.start_time[0] * 1000 | date: 'shortDate'}} <br>
+        {{reservation.start_time[0] * 1000 | date: 'shortTime'}} - {{reservation.start_time[reservation.start_time.length - 2] + (30 * 60 * 1000)  | date: 'shortTime'}}
       </td>
       <td>{{reservation.company_name}}<br>
         {{reservation.email}}</td>

@@ -117,8 +117,7 @@ class My_REST_Posts_Controller
                         {$table_name_container}.c_id,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
-                        {$table_name_time}.start_time,
-                        {$table_name_time}.end_time
+                        {$table_name_time}.start_time
         FROM {$table_name_branch}
         LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
@@ -180,8 +179,8 @@ class My_REST_Posts_Controller
             $data = $request->get_json_params();
             $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
             $table_name_time = $wpdb->prefix . 'dsol_booking_time';
-            $start_time = date('Y-m-d H:i:s', $data["arr"][0]["start_time"]);
-            $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]["end_time"]);
+            $start_time = date('Y-m-d H:i:s', $data["arr"][0]);
+            $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]);
             $contNum = $data['room'];
             $timeCheck = "SELECT *
             FROM `$table_name_time`
@@ -204,25 +203,48 @@ class My_REST_Posts_Controller
                         $time_insert_arr = array();
                         foreach ($data["multipleDates"] as $value) {
                             $temp_date = date("Y-m-d", $value);
-                            $temp_end_time = date("H:i:s", strtotime($end_time));
+                            //$temp_end_time = date("H:i:s", strtotime($end_time));
                             $temp_start_time = date("H:i:s", strtotime($start_time));
-                            $final_end_date = $temp_date . " " . $temp_end_time;
+                            //$final_end_date = $temp_date . " " . $temp_end_time;
                             $final_start_date = $temp_date . " " . $temp_start_time;
-                            $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                            //$temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
                             $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
-                            $time_sql .= "($temp_start, $temp_end) ";
+                            $time_sql .= "{$temp_start},";
+                            /*
                             $time_insert_arr[] = array(
-                                "start_time" => $temp_start,
-                                "end_time" => $temp_end
-                            );
+                                "start_time" => $temp_start
+                            );*/
                         }
                     } catch (\UnexpectedValueException $e) {
                         return rest_ensure_response($e);
                     }
 
-                    return rest_ensure_response($time_insert_arr);
+                    return rest_ensure_response($time_sql);
                     //return rest_ensure_response(array("values" => $time_insert_arr));
                     $wpdb->query('START TRANSACTION');
+                    $wpdb->insert($table_name_time, array(
+                        "start_time" => $time_sql
+                    ));
+                    $insert_id = $wpdb->insert_id;
+                    if ($wpdb->last_error !== '') {
+                        return rest_ensure_response($wpdb->last_result);
+                    }
+                    $wpdb->insert($table_name_reservation, array(
+                        "c_id" => $data["room"]["c_id"],
+                        "t_id" => $insert_id,
+                        "modified_by" => wp_get_current_user()->display_name,
+                        "created_at" => current_time('mysql', 1),
+                        "modified_at" => current_time('mysql', 1),
+                        "created_by" => wp_get_current_user()->user_email,
+                        "company_name" => wp_get_current_user()->display_name,
+                        "email" => wp_get_current_user()->user_email,
+                        "attendance" => $data["numAttend"],
+                        "notes" => $data["desc"]
+                    ));
+                    if ($wpdb->last_error !== '') {
+                        return rest_ensure_response($wpdb->last_result);
+                    }
+                    /*
                     foreach ($time_insert_arr as $time) {
                         $wpdb->insert($table_name_time, $time);
                         if ($wpdb->last_error !== '') {
@@ -246,7 +268,7 @@ class My_REST_Posts_Controller
                             $wpdb->query('ROLLBACK');
                             return new WP_Error(400, ('Error adding time'));
                         }
-                    }
+                    }*/
                     /*
                     $wpdb->insert($table_name_time, array(
                         "start_time" => $start_time,
@@ -272,12 +294,27 @@ class My_REST_Posts_Controller
                         $wpdb->print_error();
                     }
                     */
+
+                    $wpdb->query('COMMIT');
                     return rest_ensure_response(array($start_time, $end_time));
                 } else {
-                    return rest_ensure_response(array($start_time, $end_time));
+                    $time_sql = "";
+                    $i = 0;
+                    if (sizeOf($data['arr']) > 1) {
+                        foreach ($data['arr'] as $time) {
+
+                            if ($i == 0) {
+                                $time_sql .= $time["start_time"];
+                            } else {
+                                $time_sql .= "," . $time["start_time"];
+                            }
+                            $i++;
+                        }
+                    } else {
+                        $time_sql .= $data['arr'][0]["start_time"];
+                    }
                     $wpdb->insert($table_name_time, array(
-                        "start_time" => $start_time,
-                        "end_time" => $end_time
+                        "start_time" => $time_sql
                     ));
                     $insert_id = $wpdb->insert_id;
                     if ($wpdb->last_error !== '') {
@@ -298,6 +335,7 @@ class My_REST_Posts_Controller
                     if ($wpdb->last_error !== '') {
                         return rest_ensure_response($wpdb->last_result);
                     }
+                    return rest_ensure_response("Successful");
                 }
             } else {
                 return new WP_Error(400, ('The Time is already taken'), array($res, $timeCheck));
@@ -330,8 +368,7 @@ class My_REST_Posts_Controller
             {$table_name_container}.c_id,
             {$table_name_container}.r_id,
             {$table_name_container}.occupancy,
-            {$table_name_time}.start_time,
-            {$table_name_time}.end_time
+            {$table_name_time}.start_time
             FROM {$table_name_reservation} 
             LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
             LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id

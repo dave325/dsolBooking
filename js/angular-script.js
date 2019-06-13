@@ -45,8 +45,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                   (res) => {
                     // Loop through returned data and transform each start and end date to unix
                     res.data.forEach((el, idx) => {
-                      el.start_time = moment(el.start_time).unix();
-                      el.end_time = moment(el.end_time).unix();
+                      /**
+                       * Need to update and check fo multiple columns
+                       */
+                      el.start_time = el.start_time.split(",")
                     });
                     return res.data;
                   },
@@ -87,8 +89,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     // Set the current user and reservations to a factory object for reuse
     myFactory.setUser(TIMES.user);
     myFactory.setReservations(TIMES.reservations);
-    console.log($scope.reservations)
-    console.log($scope.validTimes)
     // Sets the collapsable dropdown of room
     $scope.isCollapsed = false;
     // store the data from factory into local scope variable
@@ -249,10 +249,11 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       }
       // If box has more than one item in it display the time 
       if (boxArr.length > 1) {
-        $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
-        $scope.data.arr[1] = $scope.validTimes[boxArr[boxArr.length - 1]];
+        $scope.data.arr[0] = $scope.validTimes[boxArr[0]].start_time;
+        $scope.data.arr[1] = $scope.validTimes[boxArr[boxArr.length - 1]].end_time;
       } else if (boxArr.length == 1) {
-        $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
+        $scope.data.arr[0] = $scope.validTimes[boxArr[0]].start_time;
+        $scope.data.arr[1] = $scope.validTimes[boxArr[0]].end_time;
       }
     }
 
@@ -273,6 +274,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     $scope.today = function () {
       //set date to current date
       let date = new Date();
+      console.log(myFactory.getData)
       // If the user is editing, store date as given time
       if ($location.search().hasOwnProperty("res_id") || myFactory.getData.arr.length > 0) {
         date = new Date(myFactory.getData.date);
@@ -377,6 +379,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       function () {
         // call timeout so angularjs digrest waits for the next round after ngRepeat calls
         $timeout(function () {
+          console.log(myFactory.getData)
           if (myFactory.getData.arr.length > 0) {
             // Set data 
             let resId = -1;
@@ -438,9 +441,9 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                     return;
                   } else {
                     // Store moment variables from factory data
-                    let curDate = moment.unix(myFactory.getData.arr[0].start_time).hours(6).minute(0).seconds(0).milliseconds(0);
-                    let resStartTimestamp = moment.unix(myFactory.getData.arr[0].start_time);
-                    let resEndTimestamp = moment.unix(myFactory.getData.arr[0].end_time);
+                    let curDate = moment.unix(myFactory.getData.arr[0]).hours(6).minute(0).seconds(0).milliseconds(0);
+                    let resStartTimestamp = moment.unix(myFactory.getData.arr[0]);
+                    let resEndTimestamp = moment.unix(myFactory.getData.arr[myFactory.getData.arr.length -2]);
                     let i, m = curDate;
                     // Call timeout to wait for digest
                     $timeout(function () {
@@ -448,7 +451,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                       for (m = curDate, i = 0; m.isBefore(resEndTimestamp); m.add(30, 'minutes')) {
                         // Check if current moment is between the 2 times and then select validTimes
                         if (m.isBetween(resStartTimestamp.subtract(1, "minutes"), resEndTimestamp)) {
-                          if ($scope.validTimes[s].available) {
+                          if ($scope.validTimes[i].available) {
                             hourChecks[i].checked = true;
                             $scope.validTimes[i].selected = true;
                             angular.element('#hours_' + i).parent().parent().addClass('selected');
@@ -535,6 +538,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         $scope.info.numAttend > 0 &&
         $scope.info.numAttend <= myFactory.getData.room.occupancy
       ) {
+        console.log(myFactory.getData)
         // Disbale submit 
         $scope.isDisabled = true;
         // set factory data
@@ -546,8 +550,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           // Make api call to book room
           $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
             (res) => {
-              console.log(res);
-              return;
               // remove data from factory
               myFactory.removeData();
               // send page to confirmation
@@ -640,15 +642,12 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         "occupancy": $scope.data[$scope.lastCheck].occupancy
       };
       // Set temp Time variable
-      let tempEditUserTime = [{
-        "start_time": parseInt($scope.data[$scope.lastCheck].start_time),
-        "end_time": parseInt($scope.data[$scope.lastCheck].end_time)
-      }];
+      let tempEditUserTime = $scope.data[$scope.lastCheck].start_time;
 
       // Set factory information and store information
       myFactory.setArr(tempEditUserTime);
       myFactory.setRoom(tempRoom);
-      myFactory.setDate(new Date($scope.data[$scope.lastCheck].start_time * 1000));
+      myFactory.setDate(new Date($scope.data[$scope.lastCheck].start_time[0] * 1000));
       myFactory.setNumAttend(parseInt($scope.data[$scope.lastCheck].attendance));
       myFactory.setRepeat({ id: '0', name: 'No Repeat' });
       myFactory.setDesc($scope.data[$scope.lastCheck].notes);
@@ -919,7 +918,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       if (room) {
         room = room;
       } else {
-        room = -1
+        room = -1;
       }
       if (resid && resid > -1) {
         residEdit = resid;
@@ -930,92 +929,47 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       const curDate = moment(givenDate).hours(6).minute(0).seconds(0).milliseconds(0);
       const tempDate = moment(givenDate).hours(6).minute(0).seconds(0).milliseconds(0);
       return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { room: room }, { headers: { 'X-WP-Nonce': localized.nonce } }).then((res) => {
-        let reservations = res.data;
-        if (room < 0) {
-          room = reservations[0].c_id;
-        }
-        let validTimes = [];
-        let j = 0;
-        for (var m = curDate; m.isSame(givenDate, "day"); m.add(30, 'minutes')) {
-          tempDate.add(30, "minutes");
-          let hasAdded = false;
 
-          if (m.isSameOrAfter(givenDate, "minute")) {
-            /**
-             * Loop through reservations and check if time is avilable
-             * If it is in reesrvation, flip boolean and add reservation idx
-             */
+        let rooms;
+        return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((roomData) => {
+          rooms = roomData.data;
+          let reservations = res.data;
+          if (room < 0) {
+            room = rooms[0].c_id;
+          }
+          let validTimes = [];
+          let j = 0;
+          for (var m = curDate; m.isSame(givenDate, "day"); m.add(30, 'minutes')) {
+            tempDate.add(30, "minutes");
+            let hasAdded = false;
 
-            reservations.forEach((el, idx) => {
-              if (resid && resid > -1 && el.res_id == residEdit) {
-                validTimes.push({
-                  //start_time: m.format('h:mm ss A'),
-                  //end_time: tempDate.format('h:mm ss A'),
-                  start_time: m.unix(),
-                  end_time: tempDate.unix(),
-                  available: true,
-                  place: j,
-                  selected: false
-                });
-                hasAdded = true;
-                return;
-              }
-              if (m.isSame(el.start_time, "day") && m.isBetween(moment(el.start_time).subtract(1, "m"), moment(el.end_time).subtract(1, "m"))
-                && el.c_id == room
-              ) {
-                validTimes.push({
-                  start_time: m.unix(),
-                  end_time: tempDate.unix(),
-                  available: false,
-                  reservation: idx,
-                  place: j,
-                  selected: true
-                });
-                hasAdded = true;
-                return;
-              }
-            });
-            /**
-             * If not in reservations, add to valid times with no idx
-             */
-            if (!hasAdded) {
-              validTimes.push({
-                //start_time: m.format('h:mm ss A'),
-                //end_time: tempDate.format('h:mm ss A'),
-                start_time: m.unix(),
-                end_time: tempDate.unix(),
-                available: true,
-                place: j,
-                selected: false
-              });
-
-            }
-            hasAdded = false;
-          } else {
-            if (m.isSame(Date.now(), "day")) {
-              validTimes.push({
-                //start_time: m.format('h:mm ss A'),
-                //end_time: tempDate.format('h:mm ss A'),
-                start_time: m.unix(),
-                end_time: tempDate.unix(),
-                available: false,
-                place: j,
-                selected: false,
-                past: true
-              });
-            } else {
+            if (m.isSameOrAfter(givenDate, "minute")) {
               /**
-             * Loop through reservations and check if time is avilable
-             * If it is in reesrvation, flip boolean and add reservation idx
-             */
-              reservations.forEach((el, idx) => {
+               * Loop through reservations and check if time is avilable
+               * If it is in reesrvation, flip boolean and add reservation idx
+               */
 
-                if (m.isSame(el.start_time, "day") && m.isBetween(moment(el.start_time).subtract(1, "m"), moment(el.end_time).subtract(1, "m"))
-                  && el.c_id === room
-                ) {
+              reservations.forEach((el, idx) => {
+                if (resid && resid > -1 && el.res_id == residEdit) {
                   validTimes.push({
                     //start_time: m.format('h:mm ss A'),
                     //end_time: tempDate.format('h:mm ss A'),
+                    start_time: m.unix(),
+                    end_time: tempDate.unix(),
+                    available: true,
+                    place: j,
+                    selected: false
+                  });
+                  hasAdded = true;
+                  return;
+                }
+                /*
+                  if (m.isSame(el.start_time, "day") && m.isBetween(moment(el.start_time).subtract(1, "m"), moment(el.end_time).subtract(1, "m"))
+                    && el.c_id == room
+                  )
+                  */
+                if (el.start_time.split(",").includes(m.unix().toString()) && el.c_id == room) {
+                  validTimes.push({
                     start_time: m.unix(),
                     end_time: tempDate.unix(),
                     available: false,
@@ -1027,6 +981,9 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                   return;
                 }
               });
+              /**
+               * If not in reservations, add to valid times with no idx
+               */
               if (!hasAdded) {
                 validTimes.push({
                   //start_time: m.format('h:mm ss A'),
@@ -1037,19 +994,68 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                   place: j,
                   selected: false
                 });
+
               }
+              hasAdded = false;
+            } else {
+              if (m.isSame(Date.now(), "day")) {
+                validTimes.push({
+                  //start_time: m.format('h:mm ss A'),
+                  //end_time: tempDate.format('h:mm ss A'),
+                  start_time: m.unix(),
+                  end_time: tempDate.unix(),
+                  available: false,
+                  place: j,
+                  selected: false,
+                  past: true
+                });
+              } else {
+                /**
+               * Loop through reservations and check if time is avilable
+               * If it is in reesrvation, flip boolean and add reservation idx
+               */
+                reservations.forEach((el, idx) => {
+
+                  /*
+                if (m.isSame(el.start_time, "day") && m.isBetween(moment(el.start_time).subtract(1, "m"), moment(el.end_time).subtract(1, "m"))
+                  && el.c_id == room
+                )
+                */
+                  if (el.start_time.split(",").includes(m.unix().toString()) && el.c_id == room) {
+                    validTimes.push({
+                      //start_time: m.format('h:mm ss A'),
+                      //end_time: tempDate.format('h:mm ss A'),
+                      start_time: m.unix(),
+                      end_time: tempDate.unix(),
+                      available: false,
+                      reservation: idx,
+                      place: j,
+                      selected: true
+                    });
+                    hasAdded = true;
+                    return;
+                  }
+                });
+                if (!hasAdded) {
+                  validTimes.push({
+                    //start_time: m.format('h:mm ss A'),
+                    //end_time: tempDate.format('h:mm ss A'),
+                    start_time: m.unix(),
+                    end_time: tempDate.unix(),
+                    available: true,
+                    place: j,
+                    selected: false
+                  });
+                }
+              }
+              hasAdded - false;
             }
-            hasAdded - false;
+            // Safety net in case moment calculates date wrong 
+            if (j > 40) {
+              break;
+            }
+            j++;
           }
-          // Safety net in case moment calculates date wrong 
-          if (j > 40) {
-            break;
-          }
-          j++;
-        }
-        let rooms;
-        return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then((res) => {
-          rooms = res.data;
           return {
             times: validTimes,
             reservations: reservations,
