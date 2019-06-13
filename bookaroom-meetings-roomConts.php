@@ -53,6 +53,9 @@ class dsol_settings_roomConts {
 				break;
 
 			case 'editCheck':
+			/**
+			 * Redo this check
+			 *
 				# check that there is an ID and it is valid
 				if ( dsol_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
 					# show error page
@@ -64,7 +67,7 @@ class dsol_settings_roomConts {
 					require( DSOL_BOOKING_PATH . 'templates/roomConts/noBranch.php' );
 					break;
 				}
-
+				*/
 				# check entries
 				if ( ( $errors = self::checkEditRoomConts( $externals, $roomContList, $branchList, $roomList, $externals[ 'roomContID' ] ) ) == NULL ) {
 					self::editRoomCont( $externals, $roomList );
@@ -81,7 +84,8 @@ class dsol_settings_roomConts {
 				break;
 
 			case 'edit':
-				if ( dsol_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
+			/**
+			 * if ( dsol_settings::checkID( $externals[ 'roomContID' ], $roomContList[ 'id' ] ) == FALSE ) {
 					# show error page
 					require( DSOL_BOOKING_PATH . 'templates/roomConts/IDerror.php' );
 					break;
@@ -90,6 +94,7 @@ class dsol_settings_roomConts {
 					require( DSOL_BOOKING_PATH . 'templates/roomConts/noBranch.php' );
 					break;
 				}
+			 */
 
 				$roomContInfo = self::getRoomContInfo( $externals[ 'roomContID' ] );
 				/*
@@ -163,11 +168,9 @@ class dsol_settings_roomConts {
 		$hideDaily = NULL;
 
 		$final = $wpdb->insert( $table_name,
-			array( 'roomCont_desc' => $externals[ 'roomContDesc' ],
-				'roomCont_branch' => $externals[ 'branchID' ],
-				'roomCont_isPublic' => $isPublic,
-				'roomCont_hideDaily' => $hideDaily,
-				'roomCont_occ' => $externals[ 'occupancy' ] ) );
+			array( 'container_number' => $externals[ 'roomContDesc' ],
+				'r_id' => $externals[ 'room' ][0],
+				'occupancy' => $externals[ 'occupancy' ] ) );
 
 		/*
 			Kelvin:
@@ -177,20 +180,11 @@ class dsol_settings_roomConts {
 
 		*/
 
-		$roomContID = $wpdb->insert_id;
-
-		// Iterate through the $roomArr containing multiple room selections
-		for ($x=0; $x<sizeof($roomArr);$x++){
-			$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomContID}, {$roomArr[$x]}, NULL, {$externals[ 'roomContDesc' ]}, {$externals[ 'occupancy']}";		
-			array_push($roomArrSQL, $sql);
-		}
-	
-		foreach ($roomArrSQL as $query){
-			$wpdb->query( $query );	
-		}
-		
 	}
 
+	public static function roomList(){
+		
+	}
 
 	public static
 	function checkEditRoomConts( $externals, $roomContList, $branchList, $roomList, $roomContID )
@@ -293,29 +287,21 @@ class dsol_settings_roomConts {
 			Kelvin: Fix update query
 		*/
 
+		if($externals['action'])
 		$sql = "UPDATE `{$table_name}` SET `container_number` = '{$externals['roomContDesc']}', `occupancy` = '{$externals['occupancy']}' WHERE `c_id` = '{$roomContID}'";
 
 		$wpdb->query( $sql );
-
-		
-		/*
-			Kelvin: Fix delete query
-		*/
-
-		$sql = "DELETE FROM `{$table_name}` WHERE `c_id` = '{$roomContID}'";
-		$wpdb->query( $sql );
-
 
 		/*
 			Kelvin: Fix insert query
 
 		*/
-
+/* 
 		$roomArrSQL[] = array();
 
 		// Iterate through the $roomArr containing multiple room selections
 		for ($x=0; $x<sizeof($roomArr);$x++){
-			$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 't_id', 'container_number', 'occupancy' ) VALUES ({$roomContID}, {$roomArr[$x]}, NULL, {$externals[ 'roomContDesc' ]}, {$externals[ 'occupancy']}";		
+			$sql = "INSERT INTO `{$table_name}` ( 'c_id', 'r_id', 'container_number', 'occupancy' ) VALUES ({$roomContID}, {$roomArr[$x]}, '{$externals[ 'roomContDesc' ]}', {$externals[ 'occupancy']}";		
 			array_push($roomArrSQL, $sql);
 		}
 	
@@ -323,7 +309,7 @@ class dsol_settings_roomConts {
 			$wpdb->query( $query );	
 		}
 
-
+ */
 	}
 
 	public static
@@ -383,12 +369,14 @@ class dsol_settings_roomConts {
 		*/
 
 		$table_name = $wpdb->prefix . "dsol_booking_container";
+		$table_name_room = $wpdb->prefix . "dsol_booking_room";
 
 		/*
 			Kelvin: fix select query
 		*/
-		$sql = "SELECT `rc`.`c_id`, `rc`.`r_id` AS roomId, `rc`.`container_number`AS roomContDesc, `rc`.`occupancy` AS occupancy 
+		$sql = "SELECT `r`.`b_id`,`rc`.`c_id`, `rc`.`r_id` AS roomId, `rc`.`container_number`AS roomContDesc, `rc`.`occupancy` AS occupancy 
 			FROM `$table_name` as `rc` 
+			INNER JOIN `$table_name_room` as `r` ON `r`.`r_id`=`rc`.`r_id`
 			WHERE `rc`.`c_id` = '{$roomContID}'
 			GROUP BY `rc`.`c_id`";
 
@@ -397,7 +385,7 @@ class dsol_settings_roomConts {
 		/*
 			Kelvin: Remove isPublic and hideDaily from the $roomContInfo array
 		*/
-		$roomContInfo = array( 'roomContID' => $roomContID, 'roomContDesc' => $final[ 'roomCont_desc' ], 'branchID' => $final[ 'roomCont_branch' ], 'room' => explode( ',', $final[ 'roomCont_roomArr' ] ), 'occupancy' => $final[ 'roomCont_occ' ]);
+		$roomContInfo = array( 'roomContID' => $roomContID, 'roomContDesc' => $final[ 'roomContDesc' ], 'branchID' => $final[ 'b_id' ], 'room' => explode( ',', $final[ 'roomId' ] ), 'occupancy' => $final[ 'occupancy' ]);
 		return $roomContInfo;
 	}
 
@@ -449,7 +437,7 @@ class dsol_settings_roomConts {
 
 		}
 
-		return $roomContList;
+		return $cooked;
 	}
 
 	public static

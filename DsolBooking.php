@@ -17,6 +17,7 @@ define( 'DSOL_BOOKING_PATH', plugin_dir_path( __FILE__ ) );
 require_once( DSOL_BOOKING_PATH . 'bookaroom-meetings-public.php' );
 //require_once( DSOL_BOOKING_PATH . 'bookaroom-company-profile.php' );
 require_once( DSOL_BOOKING_PATH . 'sharedFunctions.php' );
+require_once(DSOL_BOOKING_PATH . 'rest_api.php');
 /**
  * Change init functions and class
  */
@@ -38,7 +39,7 @@ add_action( 'admin_menu', array( 'dsol_settings', 'add_settingsPage' ) );
 function dSol_enqueuer() {
 	// Prefix later on
 	add_shortcode( 'meetingRooms',	array( 'dsol_public', 'mainForm' ) );
-	//add_shortcode( 'profile',	array( 'dsol_company_profile', 'showBookings' ) );
+	add_shortcode( 'dsol_profile',	array( 'dsol_company_profile', 'showBookings' ) );
 	$width = get_option( 'dsol_booking_path_screenWidth' );
 
 	if( !empty( $width ) || $width == 1 ) {
@@ -52,6 +53,7 @@ function dSol_enqueuer() {
 	wp_enqueue_style('bootstrap-css', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css");
 	wp_enqueue_script('bootstrap-js',"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js","","",false);
 	wp_enqueue_style( 'jquery_ui_css', "https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" );
+	wp_enqueue_style('angular-style',plugins_url( 'dsolBooking/css/angular-styles.css' ));
 	wp_enqueue_script( 'dsol_booking_path_js', plugins_url( 'dsolBooking/js/jstree/jquery.jstree.js' ), false );
 	wp_enqueue_script( 'jquery_ui', "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js", 'jquery','',false );
 	wp_enqueue_script( 'angular', "https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js", '','',false );
@@ -64,7 +66,9 @@ function dSol_enqueuer() {
 	wp_localize_script('angular-script', 'localized',
             array(
 								'partials' => plugins_url( 'dsolBooking/templates/partials/' ),
-								"path" =>  get_site_url()
+								"path" =>  get_site_url(),
+								'nonce' => wp_create_nonce( 'wp_rest' ),
+								'username' => wp_get_current_user()
                 )
     );
 	# languages
@@ -88,7 +92,7 @@ class DsolBookingPluginHooks
         # create table for branches		
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branch (
 				  b_id int(10) NOT NULL AUTO_INCREMENT,
-				  branchName varchar(128) NOT NULL,
+				  b_name varchar(128) NOT NULL,
 				  PRIMARY KEY (b_id)
 				);";
 
@@ -98,8 +102,8 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branch_schedule (
 					bs_id int(11) NOT NULL AUTO_INCREMENT,
 					b_id int(10) NOT NULL,
-					open_time time DEFAULT NULL,
-					close_time time DEFAULT NULL,
+					open_time timestamp,
+					close_time timestamp,
 					PRIMARY KEY  (bs_id)
 					);";
         dbDelta( $sql );
@@ -107,7 +111,7 @@ class DsolBookingPluginHooks
         # create table for room
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_room (
 					r_id int(11) NOT NULL AUTO_INCREMENT,
-					room_number int(11) NOT NULL,
+					room_number varchar(60) NOT NULL,
 					b_id varchar(128) NOT NULL,
 					PRIMARY KEY (r_id)
 					);";
@@ -116,8 +120,8 @@ class DsolBookingPluginHooks
          # create table for time
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_time (
 					t_id int(11) NOT NULL AUTO_INCREMENT,
-				    start_time time DEFAULT NULL,
-					end_time time DEFAULT NULL,
+				    start_time timestamp,
+					end_time timestamp,
 					PRIMARY KEY  (t_id)
 					);";
 		dbDelta( $sql );
@@ -126,7 +130,7 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_container (
 					c_id int(11) NOT NULL AUTO_INCREMENT,
 					r_id int(11)  NOT NULL,
-					container_number tinyint NOT NULL,
+					container_number varchar(255) NOT NULL,
 					occupancy int(10) NOT NULL,
 					PRIMARY KEY  (c_id)
 				);";
@@ -136,10 +140,11 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_reservation (
 					res_id int(11) NOT NULL AUTO_INCREMENT,
                     c_id int(11) NOT NULL, 
-					modified_by TIMESTAMP NOT NULL,
+					t_id int(11) NOT NULL, 
+					modified_by varchar(255) NOT NULL,
 					created_at TIMESTAMP NOT NULL,
 					modified_at TIMESTAMP NOT NULL,
-					created_by TIMESTAMP NOT NULL,
+					created_by varchar(255) NOT NULL,
 					company_name varchar(50) NOT NULL,
 					email varchar(60) NOT NULL,
 					attendance int(50) NOT NULL,

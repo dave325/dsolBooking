@@ -123,6 +123,11 @@
         }
     }
 </script>
-<div id="dsol-book-room"class="container-fluid" ng-app="wp">
-    <div id="view-container"ng-view></div>
+<div id="dsol-book-room" class="container-fluid" ng-app="wp">
+    <div id="view-container" ng-view></div>
 </div>
+
+<script type="text/javascript">
+    //angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" /!#>'));
+    angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
+</script> 

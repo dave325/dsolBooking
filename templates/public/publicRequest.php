@@ -1,4 +1,4 @@
-<div id="bookaroom_main_container">
+<div id="_main_container">
     <form name="form1" method="post">
         <div id="topRow">
             <div class="col">

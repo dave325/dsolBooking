@@ -6,7 +6,7 @@ class dsol_settings_rooms {
 	#
 	############################################
 	public static
-	function bookaroom_admin_rooms() {
+	function dsol_admin_rooms() {
 		$roomList = self::getRoomList();
 		$branchList = dsol_settings_branches::getBranchList();
 		
@@ -194,7 +194,7 @@ class dsol_settings_rooms {
 		$wpdb->query( $sql );
 
 		# Search containers for that room, remove
-		$table_name = $wpdb->prefix . "bookaroom_roomConts";
+		$table_name = $wpdb->prefix . "dsol_booking_container";
 
 		$sql = "DELETE FROM `{$table_name}` WHERE `rcm_r_id` = '{$r_id}'";
 		$wpdb->query( $sql );

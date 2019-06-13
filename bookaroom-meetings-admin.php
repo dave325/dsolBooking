@@ -6,7 +6,7 @@ class dsol_settings_admin
 	# Amenity managment
 	#
 	############################################
-	public static function bookaroom_admin_admin()
+	public static function dsol_admin_admin()
 	{
 		
 		# first, is there an action?
@@ -33,72 +33,72 @@ class dsol_settings_admin
 	
 	public static function updateSettings( $externals )
 	{
-		update_option( 'bookaroom_baseIncrement', 					$externals['bookaroom_baseIncrement'] );
-		update_option( 'bookaroom_setupIncrement', 					$externals['bookaroom_setupIncrement'] );
-		update_option( 'bookaroom_cleanupIncrement', 				$externals['bookaroom_cleanupIncrement'] );
-		update_option( 'bookaroom_reservation_URL', 				$externals['bookaroom_reservation_URL'] );
-		update_option( 'bookaroom_setupColor', 			strtoupper(	$externals['bookaroom_setupColor'] ) );
-		update_option( 'bookaroom_setupFont',			strtoupper(	$externals['bookaroom_setupFont'] ) );
-		update_option( 'bookaroom_reservedColor',		strtoupper(	$externals['bookaroom_reservedColor'] ) );
-		update_option( 'bookaroom_reservedFont',		strtoupper(	$externals['bookaroom_reservedFont'] ) );
-		update_option( 'bookaroom_reserveBuffer',		strtoupper(	$externals['bookaroom_reserveBuffer'] ) );
-		update_option( 'bookaroom_reserveAllowed',		strtoupper(	$externals['bookaroom_reserveAllowed'] ) );
-		update_option( 'bookaroom_defaultEmailDaily',	strtolower(	$externals['bookaroom_defaultEmailDaily'] ) );
-		update_option( 'bookaroom_daysBeforeRemind', 	strtolower(	$externals['bookaroom_daysBeforeRemind'] ) );
+		update_option( 'dsol_baseIncrement', 					$externals['dsol_baseIncrement'] );
+		update_option( 'dsol_setupIncrement', 					$externals['dsol_setupIncrement'] );
+		update_option( 'dsol_cleanupIncrement', 				$externals['dsol_cleanupIncrement'] );
+		update_option( 'dsol_reservation_URL', 				$externals['dsol_reservation_URL'] );
+		update_option( 'dsol_setupColor', 			strtoupper(	$externals['dsol_setupColor'] ) );
+		update_option( 'dsol_setupFont',			strtoupper(	$externals['dsol_setupFont'] ) );
+		update_option( 'dsol_reservedColor',		strtoupper(	$externals['dsol_reservedColor'] ) );
+		update_option( 'dsol_reservedFont',		strtoupper(	$externals['dsol_reservedFont'] ) );
+		update_option( 'dsol_reserveBuffer',		strtoupper(	$externals['dsol_reserveBuffer'] ) );
+		update_option( 'dsol_reserveAllowed',		strtoupper(	$externals['dsol_reserveAllowed'] ) );
+		update_option( 'dsol_defaultEmailDaily',	strtolower(	$externals['dsol_defaultEmailDaily'] ) );
+		update_option( 'dsol_daysBeforeRemind', 	strtolower(	$externals['dsol_daysBeforeRemind'] ) );
 		
-		update_option( 'bookaroom_waitingListDefault', 				$externals['bookaroom_waitingListDefault'] );
-		update_option( 'bookaroom_profitDeposit', 					$externals['bookaroom_profitDeposit'] );
-		update_option( 'bookaroom_nonProfitDeposit', 				$externals['bookaroom_nonProfitDeposit'] );
-		update_option( 'bookaroom_profitIncrementPrice', 			$externals['bookaroom_profitIncrementPrice'] );
+		update_option( 'dsol_waitingListDefault', 				$externals['dsol_waitingListDefault'] );
+		update_option( 'dsol_profitDeposit', 					$externals['dsol_profitDeposit'] );
+		update_option( 'dsol_nonProfitDeposit', 				$externals['dsol_nonProfitDeposit'] );
+		update_option( 'dsol_profitIncrementPrice', 			$externals['dsol_profitIncrementPrice'] );
 		
-		update_option( 'bookaroom_nonProfitIncrementPrice',			$externals['bookaroom_nonProfitIncrementPrice'] );
-		update_option( 'bookaroom_eventLink',						$externals['bookaroom_eventLink'] );
-		update_option( 'bookaroom_paymentLink', 					$externals['bookaroom_paymentLink'] );
-		update_option( 'bookaroom_libcardRegex', 					$externals['bookaroom_libcardRegex'] );
-		update_option( 'bookaroom_obfuscatePublicNames', 			$externals['bookaroom_obfuscatePublicNames'] );
+		update_option( 'dsol_nonProfitIncrementPrice',			$externals['dsol_nonProfitIncrementPrice'] );
+		update_option( 'dsol_eventLink',						$externals['dsol_eventLink'] );
+		update_option( 'dsol_paymentLink', 					$externals['dsol_paymentLink'] );
+		update_option( 'dsol_libcardRegex', 					$externals['dsol_libcardRegex'] );
+		update_option( 'dsol_obfuscatePublicNames', 			$externals['dsol_obfuscatePublicNames'] );
 		
-		update_option( 'bookaroom_hide_contract', 					$externals['bookaroom_hide_contract'] );
+		update_option( 'dsol_hide_contract', 					$externals['dsol_hide_contract'] );
 		
 		
-		if( !empty( $externals['bookaroom_screenWidth'] ) ) {
-			update_option( 'bookaroom_screenWidth', 1 );
+		if( !empty( $externals['dsol_screenWidth'] ) ) {
+			update_option( 'dsol_screenWidth', 1 );
 		} else {
-			update_option( 'bookaroom_screenWidth', 0 );
+			update_option( 'dsol_screenWidth', 0 );
 		}		
 	}
 	
 	public static function getDefaults()
 	{
 		$option = array();
-		$option['bookaroom_baseIncrement']				= get_option( 'bookaroom_baseIncrement' );
-		$option['bookaroom_setupIncrement']				= get_option( 'bookaroom_setupIncrement' );
-		$option['bookaroom_cleanupIncrement']			= get_option( 'bookaroom_cleanupIncrement' );
-		$option['bookaroom_reservation_URL']			= get_option( 'bookaroom_reservation_URL' );
-		$option['bookaroom_daysBeforeRemind']			= get_option( 'bookaroom_daysBeforeRemind' );
-		$option['bookaroom_setupColor']					= get_option( 'bookaroom_setupColor' );
-		$option['bookaroom_setupFont']					= get_option( 'bookaroom_setupFont' );
-		$option['bookaroom_reservedColor']				= get_option( 'bookaroom_reservedColor' );
-		$option['bookaroom_reservedFont']				= get_option( 'bookaroom_reservedFont' );
-		$option['bookaroom_reserveBuffer']				= get_option( 'bookaroom_reserveBuffer' );
-		$option['bookaroom_reserveAllowed']				= get_option( 'bookaroom_reserveAllowed' );
-		$option['bookaroom_alertEmail']					= get_option( 'bookaroom_alertEmail' );
-		$option['bookaroom_defaultEmailDaily']			= get_option( 'bookaroom_defaultEmailDaily' );
-		$option['bookaroom_waitingListDefault']			= get_option( 'bookaroom_waitingListDefault' );
+		$option['dsol_baseIncrement']				= get_option( 'dsol_baseIncrement' );
+		$option['dsol_setupIncrement']				= get_option( 'dsol_setupIncrement' );
+		$option['dsol_cleanupIncrement']			= get_option( 'dsol_cleanupIncrement' );
+		$option['dsol_reservation_URL']			= get_option( 'dsol_reservation_URL' );
+		$option['dsol_daysBeforeRemind']			= get_option( 'dsol_daysBeforeRemind' );
+		$option['dsol_setupColor']					= get_option( 'dsol_setupColor' );
+		$option['dsol_setupFont']					= get_option( 'dsol_setupFont' );
+		$option['dsol_reservedColor']				= get_option( 'dsol_reservedColor' );
+		$option['dsol_reservedFont']				= get_option( 'dsol_reservedFont' );
+		$option['dsol_reserveBuffer']				= get_option( 'dsol_reserveBuffer' );
+		$option['dsol_reserveAllowed']				= get_option( 'dsol_reserveAllowed' );
+		$option['dsol_alertEmail']					= get_option( 'dsol_alertEmail' );
+		$option['dsol_defaultEmailDaily']			= get_option( 'dsol_defaultEmailDaily' );
+		$option['dsol_waitingListDefault']			= get_option( 'dsol_waitingListDefault' );
 
-		$option['bookaroom_profitDeposit']				= get_option( 'bookaroom_profitDeposit' );
-		$option['bookaroom_nonProfitDeposit']			= get_option( 'bookaroom_nonProfitDeposit' );
-		$option['bookaroom_profitIncrementPrice']		= get_option( 'bookaroom_profitIncrementPrice' );
-		$option['bookaroom_nonProfitIncrementPrice']	= get_option( 'bookaroom_nonProfitIncrementPrice' );
-		$option['bookaroom_eventLink']					= get_option( 'bookaroom_eventLink' );
+		$option['dsol_profitDeposit']				= get_option( 'dsol_profitDeposit' );
+		$option['dsol_nonProfitDeposit']			= get_option( 'dsol_nonProfitDeposit' );
+		$option['dsol_profitIncrementPrice']		= get_option( 'dsol_profitIncrementPrice' );
+		$option['dsol_nonProfitIncrementPrice']	= get_option( 'dsol_nonProfitIncrementPrice' );
+		$option['dsol_eventLink']					= get_option( 'dsol_eventLink' );
 		
-		$option['bookaroom_screenWidth']				= get_option( 'bookaroom_screenWidth' );
+		$option['dsol_screenWidth']				= get_option( 'dsol_screenWidth' );
 		
-		$option['bookaroom_paymentLink']				= get_option( 'bookaroom_paymentLink' );
-		$option['bookaroom_libcardRegex']				= get_option( 'bookaroom_libcardRegex' );
-		$option['bookaroom_obfuscatePublicNames']		= get_option( 'bookaroom_obfuscatePublicNames' );		
-		$option['bookaroom_addressType']				= get_option( 'bookaroom_addressType' );
+		$option['dsol_paymentLink']				= get_option( 'dsol_paymentLink' );
+		$option['dsol_libcardRegex']				= get_option( 'dsol_libcardRegex' );
+		$option['dsol_obfuscatePublicNames']		= get_option( 'dsol_obfuscatePublicNames' );		
+		$option['dsol_addressType']				= get_option( 'dsol_addressType' );
 		
-		$option['bookaroom_hide_contract']				= get_option( 'bookaroom_hide_contract' );
+		$option['dsol_hide_contract']				= get_option( 'dsol_hide_contract' );
 				
 		return $option;
 	}
@@ -109,8 +109,8 @@ class dsol_settings_admin
 		$error = array();
 		$final = NULL;
 		
-		$checkArray = array( 'bookaroom_reservation_URL' => 'Reservation URL', 'bookaroom_setupColor' => 'Setup Background Color ', 'bookaroom_setupFont' => 'Setup Font Color', 'bookaroom_reservedColor' => 'Reserved Background Color', 'bookaroom_reservedFont' => 'Reserved Font Color' );
-        # , 'bookaroom_daysBeforeRemind' => 'Days before meeting to send reminders'
+		$checkArray = array( 'dsol_reservation_URL' => 'Reservation URL', 'dsol_setupColor' => 'Setup Background Color ', 'dsol_setupFont' => 'Setup Font Color', 'dsol_reservedColor' => 'Reserved Background Color', 'dsol_reservedFont' => 'Reserved Font Color' );
+        # , 'dsol_daysBeforeRemind' => 'Days before meeting to send reminders'
 		foreach( $checkArray as $key => $val ) {
 			if( is_null( $externals[$key] ) ) {
 				$error[] = sprintf( __( 'Please enter a value for the <strong>%s</strong>', 'book-a-room' ), $val );
@@ -118,7 +118,7 @@ class dsol_settings_admin
 		}
 		
 		# check colors
-		$checkArray = array( 'bookaroom_setupColor' => 'Setup Background Color ', 'bookaroom_setupFont' => 'Setup Font Color', 'bookaroom_reservedColor' => 'Reserved Background Color', 'bookaroom_reservedFont' => 'Reserved Font Color');
+		$checkArray = array( 'dsol_setupColor' => 'Setup Background Color ', 'dsol_setupFont' => 'Setup Font Color', 'dsol_reservedColor' => 'Reserved Background Color', 'dsol_reservedFont' => 'Reserved Font Color');
 		foreach( $checkArray as $key => $val ) {
 			if( !is_null( $externals[$key] ) and !preg_match('/^#[a-f0-9]{6}$/i', $externals[$key] ) and !preg_match('/^#[a-f0-9]{3}$/i', $externals[$key] ) ) {
 				$error[] = sprintf( __( 'Please enter a valid HEX value for the <strong>%s</strong>', 'book-a-room' ), $val );
@@ -127,18 +127,18 @@ class dsol_settings_admin
 		
 		# numbers
 		$checkArray = array(	
-							'bookaroom_baseIncrement'				=> __( 'Base Increment', 'book-a-room' ), 
-							'bookaroom_setupIncrement'				=> __( 'Setup Increment', 'book-a-room' ), 
-							'bookaroom_cleanupIncrement'			=> __( 'Cleanup Increment', 'book-a-room' ), 
-							'bookaroom_reserveBuffer'				=> __( 'Days Buffer for Reserve', 'book-a-room' ), 
-							'bookaroom_reserveAllowed'				=> __( 'Days Allowed for Reserve', 'book-a-room' ), 
-							'bookaroom_profitDeposit'				=> __( 'For Profit Room Deposit', 'book-a-room' ), 
-							'bookaroom_nonProfitDeposit'			=> __( 'Non-profit Room Deposit', 'book-a-room' ), 
-							'bookaroom_profitIncrementPrice'		=> __( 'For Profit price per increment', 'book-a-room' ), 
-							'bookaroom_nonProfitIncrementPrice'		=> __( 'Non-profit price per increment', 'book-a-room' ), 
-							'bookaroom_waitingListDefault'			=> __( 'Waiting list default', 'book-a-room' ), 
-							'bookaroom_screenWidth'					=> __( 'Screen width', 'book-a-room' ), 
-							'bookaroom_paymentLink'					=> __( 'Credit card payment link' )
+							'dsol_baseIncrement'				=> __( 'Base Increment', 'book-a-room' ), 
+							'dsol_setupIncrement'				=> __( 'Setup Increment', 'book-a-room' ), 
+							'dsol_cleanupIncrement'			=> __( 'Cleanup Increment', 'book-a-room' ), 
+							'dsol_reserveBuffer'				=> __( 'Days Buffer for Reserve', 'book-a-room' ), 
+							'dsol_reserveAllowed'				=> __( 'Days Allowed for Reserve', 'book-a-room' ), 
+							'dsol_profitDeposit'				=> __( 'For Profit Room Deposit', 'book-a-room' ), 
+							'dsol_nonProfitDeposit'			=> __( 'Non-profit Room Deposit', 'book-a-room' ), 
+							'dsol_profitIncrementPrice'		=> __( 'For Profit price per increment', 'book-a-room' ), 
+							'dsol_nonProfitIncrementPrice'		=> __( 'Non-profit price per increment', 'book-a-room' ), 
+							'dsol_waitingListDefault'			=> __( 'Waiting list default', 'book-a-room' ), 
+							'dsol_screenWidth'					=> __( 'Screen width', 'book-a-room' ), 
+							'dsol_paymentLink'					=> __( 'Credit card payment link' )
 						   );
 		foreach( $checkArray as $key => $val ) {
 			if( !empty( $externals[$key] ) and !is_numeric( $externals[$key] ) ) {
@@ -146,7 +146,7 @@ class dsol_settings_admin
 			}
 		}
 		
-		if( !empty( $externals['bookaroom_defaultEmailDaily'] ) && !filter_var( $externals['bookaroom_defaultEmailDaily'], FILTER_VALIDATE_EMAIL ) ) {
+		if( !empty( $externals['dsol_defaultEmailDaily'] ) && !filter_var( $externals['dsol_defaultEmailDaily'], FILTER_VALIDATE_EMAIL ) ) {
 			$error[] = __( 'Please enter a valid email address for the <strong>Default Email for Daily Reservations</strong> field.', 'book-a-room' );
 		}
 		
@@ -183,29 +183,29 @@ class dsol_settings_admin
 
 		# setup POST variables
 		$postArr = array(	'action'								=> FILTER_SANITIZE_STRING, 
-							'bookaroom_baseIncrement'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_cleanupIncrement'			=> FILTER_SANITIZE_STRING, 
-							'bookaroom_paymentLink'					=> FILTER_SANITIZE_STRING, 
-							'bookaroom_libcardRegex'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_obfuscatePublicNames'		=> FILTER_SANITIZE_STRING, 
-							'bookaroom_daysBeforeRemind'			=> FILTER_SANITIZE_STRING, 
-							'bookaroom_defaultEmailDaily'			=> FILTER_SANITIZE_STRING, 
-							'bookaroom_nonProfitDeposit'			=> FILTER_SANITIZE_STRING, 
-							'bookaroom_nonProfitIncrementPrice'		=> FILTER_SANITIZE_STRING, 
-							'bookaroom_profitDeposit'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_profitIncrementPrice'		=> FILTER_SANITIZE_STRING, 
-							'bookaroom_reservation_URL'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_reserveAllowed'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_reserveBuffer'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_reservedColor'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_reservedFont'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_screenWidth'					=> FILTER_SANITIZE_STRING, 
-							'bookaroom_setupColor'					=> FILTER_SANITIZE_STRING, 
-							'bookaroom_setupFont'					=> FILTER_SANITIZE_STRING, 
-							'bookaroom_setupIncrement'				=> FILTER_SANITIZE_STRING, 
-							'bookaroom_waitingListDefault'			=> FILTER_SANITIZE_STRING,
-							'bookaroom_eventLink'					=> FILTER_SANITIZE_STRING,
-						 	'bookaroom_hide_contract'				=> FILTER_SANITIZE_STRING,
+							'dsol_baseIncrement'				=> FILTER_SANITIZE_STRING, 
+							'dsol_cleanupIncrement'			=> FILTER_SANITIZE_STRING, 
+							'dsol_paymentLink'					=> FILTER_SANITIZE_STRING, 
+							'dsol_libcardRegex'				=> FILTER_SANITIZE_STRING, 
+							'dsol_obfuscatePublicNames'		=> FILTER_SANITIZE_STRING, 
+							'dsol_daysBeforeRemind'			=> FILTER_SANITIZE_STRING, 
+							'dsol_defaultEmailDaily'			=> FILTER_SANITIZE_STRING, 
+							'dsol_nonProfitDeposit'			=> FILTER_SANITIZE_STRING, 
+							'dsol_nonProfitIncrementPrice'		=> FILTER_SANITIZE_STRING, 
+							'dsol_profitDeposit'				=> FILTER_SANITIZE_STRING, 
+							'dsol_profitIncrementPrice'		=> FILTER_SANITIZE_STRING, 
+							'dsol_reservation_URL'				=> FILTER_SANITIZE_STRING, 
+							'dsol_reserveAllowed'				=> FILTER_SANITIZE_STRING, 
+							'dsol_reserveBuffer'				=> FILTER_SANITIZE_STRING, 
+							'dsol_reservedColor'				=> FILTER_SANITIZE_STRING, 
+							'dsol_reservedFont'				=> FILTER_SANITIZE_STRING, 
+							'dsol_screenWidth'					=> FILTER_SANITIZE_STRING, 
+							'dsol_setupColor'					=> FILTER_SANITIZE_STRING, 
+							'dsol_setupFont'					=> FILTER_SANITIZE_STRING, 
+							'dsol_setupIncrement'				=> FILTER_SANITIZE_STRING, 
+							'dsol_waitingListDefault'			=> FILTER_SANITIZE_STRING,
+							'dsol_eventLink'					=> FILTER_SANITIZE_STRING,
+						 	'dsol_hide_contract'				=> FILTER_SANITIZE_STRING,
 						 
 							);
 

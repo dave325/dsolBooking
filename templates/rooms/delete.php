@@ -1,4 +1,4 @@
-<link href="<?php echo plugins_url(); ?>/book-a-room/css/bookaroom_meetings.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo plugins_url(); ?>/dsolBooking/css/dsol_meetings.css" rel="stylesheet" type="text/css"/>
 <div class=wrap>
 	<div id="icon-options-general" class="icon32"></div>
 	<h2>
@@ -28,6 +28,6 @@
 
 </table>
 <p><?php _e( 'Deleting a room is permanent and cannot be undone.', 'book-a-room' ); ?></p>
-<p><a class="errorText" href="?page=bookaroom_Settings_Rooms&amp;roomID=<?php echo $roomID; ?>&amp;action=deleteCheck"><?php _e( 'Click here to permanantly delete this room.', 'book-a-room' ); ?></a></p> 
+<p><a class="errorText" href="?page=dsol_Settings_Rooms&amp;roomID=<?php echo $roomID; ?>&amp;action=deleteCheck"><?php _e( 'Click here to permanantly delete this room.', 'book-a-room' ); ?></a></p> 
 </form>
-<p><a href="?page=bookaroom_Settings_Rooms"><?php _e( 'Return to Rooms Home.', 'book-a-room' ); ?></a></p>
+<p><a href="?page=dsol_Settings_Rooms"><?php _e( 'Return to Rooms Home.', 'book-a-room' ); ?></a></p>
