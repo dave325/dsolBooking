@@ -102,8 +102,8 @@ class DsolBookingPluginHooks
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_branch_schedule (
 					bs_id int(11) NOT NULL AUTO_INCREMENT,
 					b_id int(10) NOT NULL,
-					open_time timestamp,
-					close_time timestamp,
+					open_time time,
+					close_time time,
 					PRIMARY KEY  (bs_id)
 					);";
         dbDelta( $sql );
@@ -120,8 +120,7 @@ class DsolBookingPluginHooks
          # create table for time
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_time (
 					t_id int(11) NOT NULL AUTO_INCREMENT,
-				    start_time timestamp,
-					end_time timestamp,
+				    start_time varchar(255),
 					PRIMARY KEY  (t_id)
 					);";
 		dbDelta( $sql );

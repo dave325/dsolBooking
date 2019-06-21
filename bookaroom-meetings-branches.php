@@ -178,8 +178,8 @@ class dsol_settings_branches
             $place_holders[] = "('%s', '%d', '%d')";
         }
         $query .= implode(', ', $place_holders);
-        $wpdb->query($wpdb->prepare("$query ", $values));
-        return $values;
+        $wpdb->query($wpdb->prepare("{$query}", $values));
+        return $finalTime;
     }
 
     public static function checkEditBranch(&$externals, $branchList)
@@ -390,11 +390,11 @@ class dsol_settings_branches
                 #open time
                 $name = "branch{$type}_{$d}";
                 $pmName = $name . 'PM';
-                if (empty($externals[$name])) {
+                if (empty($externals["schedule"][$d])) {
                     $finalTime[$type][$d] = null;
                     $typeCast[$type][$d] = null;
                 } else {
-                    list($h, $m) = explode(":", $externals[$name]);
+                    list($h, $m) = explode(":", $externals["schedule"][$d]);
                     # check for noon
                     $timeVal = ($h * 60) + $m;
                     if ($type != 'Open') {

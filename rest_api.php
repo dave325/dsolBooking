@@ -102,12 +102,16 @@ class My_REST_Posts_Controller
         $table_name_container = $wpdb->prefix . 'dsol_booking_container';
         $table_name_time = $wpdb->prefix . 'dsol_booking_time';
         $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
+        // Get information from frontend POST request
         $room =  $request->get_json_params();
+        // If the room value is set and the room is valid check for specific value
         if (isset($room['room']) && $room['room'] > 0) {
             $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL AND {$table_name_reservation}.c_id = {$room['room']}";
         } else {
             $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL";
         }
+        $curMonth = date('M');
+        // $where .= " AND month(JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]')) = {$curMonth})";
         $sql = "SELECT {$table_name_reservation}.res_id,
                         {$table_name_reservation}.company_name,
                         {$table_name_reservation}.email,
@@ -117,16 +121,38 @@ class My_REST_Posts_Controller
                         {$table_name_container}.c_id,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
-                        {$table_name_time}.start_time
+                        JSON_ARRAYAGG({$table_name_time}.start_time) AS start_time,
+                        JSON_ARRAYAGG({$table_name_time}.end_time) AS end_time
         FROM {$table_name_branch}
         LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
         LEFT JOIN {$table_name_reservation} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
-        LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
+        LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
         {$where}
-        GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name 
-        ORDER BY {$table_name_time}.start_time;";
+        GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
+        ORDER BY JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]');";
+        // Return the sql query as an associative array
         $final = $wpdb->get_results($sql, ARRAY_A);
+        if ($wpdb->last_error !== '') {
+            return new WP_Error(400, ($wpdb->last_error));
+        }
+        // Loop through each result set
+        for ($i = 0; $i < count($final); $i++) {
+            // temp variable to store time array
+            $temp_time = array();
+            // decode results saved from json array in query
+            $decode_end_time = json_decode($final[$i]['end_time']);
+            $decode_start_time = json_decode($final[$i]['start_time']);
+            // Store start and end time in appropriate pairings
+            for ($j = 0; $j < sizeof($decode_start_time); $j++) {
+                array_push($temp_time, array(
+                    "start_time" => $decode_start_time[$j],
+                    "end_time" => $decode_end_time[$j]
+                ));
+            }
+            // Push filtered array set to official time set
+            $final[$i]['time'] = $temp_time;
+        }
         // Return all of our comment response data.
         return rest_ensure_response($final);
     }
@@ -175,16 +201,17 @@ class My_REST_Posts_Controller
     public function bookRoom(WP_REST_Request $request)
     {
         global $wpdb;
+        $wpdb->show_errors();
         if (is_user_logged_in()) {
             $data = $request->get_json_params();
             $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
             $table_name_time = $wpdb->prefix . 'dsol_booking_time';
-            $start_time = date('Y-m-d H:i:s', $data["arr"][0]);
-            $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]);
+            $start_time = date('Y-m-d H:i:s', $data["arr"][0]["start_time"]);
+            $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]["end_time"]);
             $contNum = $data['room'];
             $timeCheck = "SELECT *
             FROM `$table_name_time`
-            LEFT JOIN `$table_name_reservation` ON `$table_name_time`.t_id = `$table_name_reservation`.t_id
+            LEFT JOIN `$table_name_reservation` ON `$table_name_time`.res_id = `$table_name_reservation`.res_id
             WHERE `$table_name_reservation`=`$contNum` AND  date BETWEEN `$start_time` AND `$end_time` ";
             $res = $wpdb->get_results($timeCheck);
             if (sizeof($res) == 0) {
@@ -193,7 +220,7 @@ class My_REST_Posts_Controller
                     $place_holders = array();
                     $res_values = array();
                     $res_placeholders = array();
-                    $time_sql = "INSERT INTO `$table_name_time` (start_time, end_time) VALUES ";
+                    $time_sql = "";
                     $res_sql = "INSERT INTO `$table_name_reservation` ('c_id','t_id'.'modified_by','created_at','created_by','company_name','email','attendance','notes') VALUES ";
                     try {
                         //return rest_ensure_response( strtotime($start_time)  );
@@ -201,37 +228,76 @@ class My_REST_Posts_Controller
                         //return rest_ensure_response($d);
                         //$d->createFromFormat('Y-m-d H:i:s', $start_time);
                         $time_insert_arr = array();
+                        $i = 0;
                         foreach ($data["multipleDates"] as $value) {
-                            $temp_date = date("Y-m-d", $value);
-                            //$temp_end_time = date("H:i:s", strtotime($end_time));
-                            $temp_start_time = date("H:i:s", strtotime($start_time));
-                            //$final_end_date = $temp_date . " " . $temp_end_time;
-                            $final_start_date = $temp_date . " " . $temp_start_time;
-                            //$temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
-                            $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
-                            $time_sql .= "{$temp_start},";
+                            if ($data["isSeperate"] == 0) {
+                                $temp_date = date("Y-m-d", $value);
+                                $temp_end_time = date("H:i:s", strtotime($end_time));
+                                $temp_start_time = date("H:i:s", strtotime($start_time));
+                                $final_end_date = $temp_date . " " . $temp_end_time;
+                                $final_start_date = $temp_date . " " . $temp_start_time;
+                                $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                                $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
+                                $time_insert_arr[] = array(
+                                    "start_time" => $temp_start,
+                                    "end_time" => $temp_end
+                                );
+                            } else {
+                                for ($i = 0; $i < sizeOf($data["seperateIndexes"]); $i++) {
+
+                                    if ($i == (sizeOf($data['seperateIndexes']) - 1)) {
+                                        $temp_date = date("Y-m-d", $value);
+                                        $temp_start_time = date("H:i:s", $data["arr"][$data['seperateIndexes'][$i]]["start_time"]);
+                                        $temp_end_time = date("H:i:s", strtotime($end_time));
+                                        $final_end_date = $temp_date . " " . $temp_end_time;
+                                        $final_start_date = $temp_date . " " . $temp_start_time;
+                                        $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                                        $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
+                                    } else {
+                                        $indexLength = $data["seperateIndexes"][$i + 1] - $data["seperateIndexes"][$i];
+                                        if ($indexLength == 1) {
+                                            $indexLength -= 1;
+                                        }
+                                        $temp_date = date("Y-m-d", $value);
+                                        $temp_start_time = date("H:i:s", $data["arr"][$data['seperateIndexes'][$i]]["start_time"]);
+                                        $temp_end_time = date("H:i:s", $data["arr"][$indexLength]["end_time"]);
+                                        $final_end_date = $temp_date . " " . $temp_end_time;
+                                        $final_start_date = $temp_date . " " . $temp_start_time;
+                                        $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                                        $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
+                                    }
+
+                                    $time_insert_arr[] = array(
+                                        "start_time" => $temp_start,
+                                        "end_time" => $temp_end
+                                    );
+                                }
+                            }
+                            $i++;
                             /*
-                            $time_insert_arr[] = array(
-                                "start_time" => $temp_start
-                            );*/
+                                Holds else statement for previous if $data['arr'] > 0
+                            } else {
+                                $temp_date = date("Y-m-d", $value);
+                                $temp_end_time = date("H:i:s", strtotime($end_time));
+                                $temp_start_time = date("H:i:s", strtotime($start_time));
+                                $final_end_date = $temp_date . " " . $temp_end_time;
+                                $final_start_date = $temp_date . " " . $temp_start_time;
+                                $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                                $temp_start = date('U', strtotime("$final_start_date"));
+                                $time_insert_arr[] = array(
+                                    "start_time" => $temp_start,
+                                    "end_time" => $temp_end
+                                );
+                            }
+                            */
                         }
                     } catch (\UnexpectedValueException $e) {
-                        return rest_ensure_response($e);
+                        return rest_ensure_response(array("error", $e));
                     }
 
-                    return rest_ensure_response($time_sql);
-                    //return rest_ensure_response(array("values" => $time_insert_arr));
-                    $wpdb->query('START TRANSACTION');
-                    $wpdb->insert($table_name_time, array(
-                        "start_time" => $time_sql
-                    ));
-                    $insert_id = $wpdb->insert_id;
-                    if ($wpdb->last_error !== '') {
-                        return rest_ensure_response($wpdb->last_result);
-                    }
+
                     $wpdb->insert($table_name_reservation, array(
                         "c_id" => $data["room"]["c_id"],
-                        "t_id" => $insert_id,
                         "modified_by" => wp_get_current_user()->display_name,
                         "created_at" => current_time('mysql', 1),
                         "modified_at" => current_time('mysql', 1),
@@ -242,33 +308,19 @@ class My_REST_Posts_Controller
                         "notes" => $data["desc"]
                     ));
                     if ($wpdb->last_error !== '') {
-                        return rest_ensure_response($wpdb->last_result);
+                        $wpdb->query('ROLLBACK');
+                        return new WP_Error(400, ('Error adding time'));
                     }
-                    /*
+                    $temp_insert_id = $wpdb->insert_id;
                     foreach ($time_insert_arr as $time) {
+
+                        $time['res_id'] = $temp_insert_id;
                         $wpdb->insert($table_name_time, $time);
                         if ($wpdb->last_error !== '') {
                             $wpdb->query('ROLLBACK');
                             return new WP_Error(400, ('Error adding time'));
                         }
-                        $temp_insert_id = $wpdb->insert_id;
-                        $wpdb->insert($table_name_reservation, array(
-                            "c_id" => $data["room"]["c_id"],
-                            "t_id" => $temp_insert_id,
-                            "modified_by" => wp_get_current_user()->display_name,
-                            "created_at" => current_time('mysql', 1),
-                            "modified_at" => current_time('mysql', 1),
-                            "created_by" => wp_get_current_user()->user_email,
-                            "company_name" => wp_get_current_user()->display_name,
-                            "email" => wp_get_current_user()->user_email,
-                            "attendance" => $data["numAttend"],
-                            "notes" => $data["desc"]
-                        ));
-                        if ($wpdb->last_error !== '') {
-                            $wpdb->query('ROLLBACK');
-                            return new WP_Error(400, ('Error adding time'));
-                        }
-                    }*/
+                    }
                     /*
                     $wpdb->insert($table_name_time, array(
                         "start_time" => $start_time,
@@ -295,34 +347,68 @@ class My_REST_Posts_Controller
                     }
                     */
 
-                    $wpdb->query('COMMIT');
-                    return rest_ensure_response(array($start_time, $end_time));
+                    return rest_ensure_response(array($data, $time_insert_arr));
                 } else {
                     $time_sql = "";
                     $i = 0;
-                    if (sizeOf($data['arr']) > 1) {
-                        foreach ($data['arr'] as $time) {
+                    try {
+                        if (sizeOf($data['arr']) > 1) {
 
-                            if ($i == 0) {
-                                $time_sql .= $time["start_time"];
+                            if ($data["isSeperate"] == 0) {
+                                $temp_date = date("Y-m-d", strtotime($start_time));
+                                $temp_end_time = date("H:i:s", strtotime($end_time));
+                                $temp_start_time = date("H:i:s", strtotime($start_time));
+                                $final_end_date = $temp_date . " " . $temp_end_time;
+                                $final_start_date = $temp_date . " " . $temp_start_time;
+                                $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                                $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
+                                $time_insert_arr[] = array(
+                                    "start_time" => $temp_start,
+                                    "end_time" => $temp_end
+                                );
                             } else {
-                                $time_sql .= "," . $time["start_time"];
+                                for ($i = 0; $i < sizeOf($data["seperateIndexes"]); $i++) {
+
+                                    if ($i == (sizeOf($data['seperateIndexes']) - 1)) {
+                                        $temp_date = date("Y-m-d", strtotime($start_time));
+                                        $temp_start_time = date("H:i:s", $data["arr"][$data['seperateIndexes'][$i]]["start_time"]);
+                                        $temp_end_time = date("H:i:s", strtotime($end_time));
+                                        $final_end_date = $temp_date . " " . $temp_end_time;
+                                        $final_start_date = $temp_date . " " . $temp_start_time;
+                                        $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                                        $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
+                                    } else {
+                                        $indexLength = $data["seperateIndexes"][$i + 1] - $data["seperateIndexes"][$i];
+                                        if ($indexLength == 1) {
+                                            $indexLength -= 1;
+                                        }
+                                        $temp_date = date("Y-m-d", strtotime($start_time));
+                                        $temp_start_time = date("H:i:s", $data["arr"][$data['seperateIndexes'][$i]]["start_time"]);
+                                        $temp_end_time = date("H:i:s", $data["arr"][$indexLength]["end_time"]);
+                                        $final_end_date = $temp_date . " " . $temp_end_time;
+                                        $final_start_date = $temp_date . " " . $temp_start_time;
+                                        $temp_end = date('Y-m-d H:i:s', strtotime("$final_end_date"));
+                                        $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
+                                    }
+
+                                    $time_insert_arr[] = array(
+                                        "start_time" => $temp_start,
+                                        "end_time" => $temp_end
+                                    );
+                                }
                             }
-                            $i++;
+                        } else {
+                            $time_insert_arr[] = array(
+                                "start_time" => $start_time,
+                                "end_time" => $end_time
+                            );
                         }
-                    } else {
-                        $time_sql .= $data['arr'][0]["start_time"];
+                    } catch (Exceptions $e) {
+                        return rest_ensure_response($e);
                     }
-                    $wpdb->insert($table_name_time, array(
-                        "start_time" => $time_sql
-                    ));
-                    $insert_id = $wpdb->insert_id;
-                    if ($wpdb->last_error !== '') {
-                        return rest_ensure_response($wpdb->last_result);
-                    }
+                    //return rest_ensure_response(array($data, $time_insert_arr, sizeOf($data['seperateIndexes'])));
                     $wpdb->insert($table_name_reservation, array(
                         "c_id" => $data["room"]["c_id"],
-                        "t_id" => $insert_id,
                         "modified_by" => wp_get_current_user()->display_name,
                         "created_at" => current_time('mysql', 1),
                         "modified_at" => current_time('mysql', 1),
@@ -335,7 +421,22 @@ class My_REST_Posts_Controller
                     if ($wpdb->last_error !== '') {
                         return rest_ensure_response($wpdb->last_result);
                     }
-                    return rest_ensure_response("Successful");
+                    $insert_id = $wpdb->insert_id;
+                    $temp_insert_id = $wpdb->insert_id;
+                    foreach ($time_insert_arr as $time) {
+
+                        $time['res_id'] = $temp_insert_id;
+                        $wpdb->insert($table_name_time, $time);
+                        if ($wpdb->last_error !== '') {
+                            $wpdb->query('ROLLBACK');
+                            return new WP_Error(400, ('Error adding time'));
+                        }
+                    }
+                    $insert_id = $wpdb->insert_id;
+                    if ($wpdb->last_error !== '') {
+                        return rest_ensure_response($wpdb->last_result);
+                    }
+                    return rest_ensure_response($data);
                 }
             } else {
                 return new WP_Error(400, ('The Time is already taken'), array($res, $timeCheck));
@@ -371,7 +472,7 @@ class My_REST_Posts_Controller
             {$table_name_time}.start_time
             FROM {$table_name_reservation} 
             LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
-            LEFT JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
+            LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
             WHERE {$table_name_reservation}.email = '{$userEmail}' AND {$table_name_container}.r_id IS NOT NULL
             GROUP BY {$table_name_reservation}.res_id, {$table_name_container}.container_number
             ORDER BY {$table_name_time}.start_time DESC;";
@@ -448,7 +549,7 @@ class My_REST_Posts_Controller
             $sql = "DELETE {$table_name_reservation},
             {$table_name_time}
             FROM {$table_name_reservation} 
-            INNER JOIN {$table_name_time} ON {$table_name_time}.t_id = {$table_name_reservation}.t_id
+            INNER JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
             WHERE {$table_name_reservation}.res_id IN ({$items});";
             $wpdb->query($sql);
             if ($wpdb->last_error !== '') {
