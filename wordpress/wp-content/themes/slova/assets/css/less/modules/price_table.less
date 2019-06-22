@@ -1,0 +1,115 @@
+.ro-price-table-wrap {
+	position: relative;
+	max-width: 270px;
+	margin: 0 auto 30px !important;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	overflow: hidden;
+	.ro-header {
+		position: relative;
+		width: 100%;
+		height: 250px;
+		background: url('assets/images/bg_price.jpg');
+		.ro-header-inner {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			padding: 40px;
+			.ro-title {
+				.easing-animation;
+				font-size: @font-size-4;
+				line-height: 40px;
+				color: @blue-color;
+				text-align: center;
+				margin-bottom: 32px;
+			}
+			.ro-price {
+				.easing-animation;
+				font-size: 70px;
+				font-weight: @fw-ultra-bold;
+				line-height: 40px;
+				margin-bottom: 0;
+				> span {
+					.easing-animation;
+					display: inline-block;
+					&.ro-unit {
+						font-size: @font-size-2;
+						line-height: 40px;
+						vertical-align: text-top;
+					}
+					&.ro-per-time {
+						.easing-animation;
+						font-size: @font-size-6;
+						font-weight: @fw-normal;
+						line-height: 40px;
+						color: @gray-color;
+						vertical-align: sub;
+						margin-left: -30px;
+					}
+				}
+			}
+		}
+		&:before {
+			.easing-animation;
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			.bg-gradient-vertical (@startColor: @secondary-color, @endColor: @main-color, @transparent : 25);
+			display: block;
+			opacity: 0;
+		}
+	}
+	.ro-content {
+		text-align: center;
+		padding: 40px 30px;
+		border-left: 1px solid fadeout(@dark-color, 93);
+		border-bottom: 4px solid fadeout(@dark-color, 93);
+		border-right: 1px solid fadeout(@dark-color, 93);
+		ul {
+			margin: 0 0 30px;
+			padding: 0;
+			li {
+				font-size: @font-size-6;
+				line-height: 40px;
+				list-style: outside none none;
+			}
+		}
+		.ro-order {
+			display: inline-block;
+			.ro-btn(@padding-v: 12px, @padding-h: 30px);
+			.ro-btn-bd(@bd-width: 1px, @bd-style: solid, @bd-color: @dark-color, @transparent: 85, @bd-radius: 30px);
+			font-size: @font-size-6;
+			line-height: @font-size-6;
+			&:hover {
+				color: @light-color;
+				.bg-gradient-horizontal (@startColor: @secondary-color, @endColor: @main-color, @transparent : 25);
+			}
+		}
+		> p {
+			margin: 0;
+		}
+	}
+	&:hover, &.ro-active {
+		cursor: pointer;
+		.ro-header {
+			.ro-title, .ro-price, .ro-price > span.ro-per-time {
+				color: @light-color;
+			}
+			&:before {
+				opacity: 1;
+			}
+		}
+		.ro-content {
+			.ro-order {
+				color: @light-color;
+				.bg-gradient-horizontal (@startColor: @secondary-color, @endColor: @main-color, @transparent : 25);
+			}
+		}
+	}
+}

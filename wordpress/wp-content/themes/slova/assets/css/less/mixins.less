@@ -1,0 +1,234 @@
+.bg-gradient-vertical (@startColor: @main-color, @endColor: @secondary-color, @transparent : 0) {
+	.easing-animation;
+	background: fadeout( @startColor, @transparent );
+	background: -moz-linear-gradient(top, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, fadeout( @startColor, @transparent )), color-stop(100%, fadeout( @endColor, @transparent )));
+	background: -webkit-linear-gradient(top, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: -o-linear-gradient(top, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: -ms-linear-gradient(top, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: linear-gradient(to bottom, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+}
+
+.bg-gradient-horizontal (@startColor: @main-color, @endColor: @secondary-color, @transparent : 0) {
+	.easing-animation;
+	background: fadeout( @startColor, @transparent );
+	background: -moz-linear-gradient(left, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: -webkit-gradient(left top, right top, color-stop(0%, fadeout( @startColor, @transparent )), color-stop(100%, fadeout( @endColor, @transparent )));
+	background: -webkit-linear-gradient(left, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: -o-linear-gradient(left, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: -ms-linear-gradient(left, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+	background: linear-gradient(to right, fadeout( @startColor, @transparent ) 0%, fadeout( @endColor, @transparent ) 100%);
+}
+
+////////////////////////////////////ANIMATION///////////////////////////////////
+
+.easing-animation {
+    transition: all @duration-time;
+}
+
+.easing-animation-long {
+    transition: all @duration-longtime;
+}
+
+.hover(@color, @bg, @border) {
+    .easing-animation;
+    &:hover, &:focus {
+		color: @color;
+		background-color: @bg;
+		border-color: @border;
+    }
+}
+
+.hover-color(@thiscolor) {
+    .easing-animation;
+
+    &:hover, &:focus {
+        color: @thiscolor;
+    }
+}
+
+.hover-bg(@thiscolor) {
+    .easing-animation;
+
+    &:hover, &:focus {
+        background: @thiscolor;
+    }
+}
+
+.hover-border(@thiscolor) {
+    .easing-animation;
+
+    &:hover, &:focus {
+        border: @thiscolor;
+    }
+}
+
+.btn-process-h(@bgc) {
+    z-index: 1;
+
+    &:before {
+        .easing-animation;
+        content: " ";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0;
+        height: 100%;
+        background-color: @bgc;
+        z-index: -1;
+    }
+
+    &:hover:before {
+        width: 100%;
+    }
+}
+
+.all-class(@class) {
+    [class^="#{@class}"],
+
+    [class*="#{@class}"] {
+        @content;
+    }
+}
+
+.special-zoom-in {
+    animation: SpecialZoomIn 8s forwards;
+    transform-origin: 30% 0%;
+}
+
+.special-zoom-out {
+    animation: SpecialZoomOut 8s forwards;
+    transform-origin: 30% 0%;
+}
+
+//////////////////////////////////////DIV/////////////////////////////////////////
+
+.size(@width, @height) {
+    width: @width;
+    height: @height;
+}
+
+.square(@size) {
+    .size(@size, @size);
+}
+
+.clearfix {
+    &:before,
+    &:after {
+        content: " ";
+        // 1
+        display: table;
+        // 2
+   
+    }
+
+    &:after {
+        clear: both;
+    }
+}
+
+.overlay(@z-index) {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: @z-index;
+}
+
+.layer-before-on-bg(@after-bg: rgba(0, 0, 0, 0.6)) {
+    position: relative;
+
+    &:before {
+        content: " ";
+        position: absolute;
+        display: block;
+        background: @after-bg;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+}
+
+.layer-after-on-bg(@after-bg: rgba(0, 0, 0, 0.6)) {
+    position: relative;
+    z-index: 1;
+
+    &:after {
+        content: " ";
+        position: absolute;
+        display: block;
+        background: @after-bg;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.col-nopadding {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.center-block {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.middle {
+    position: relative;
+    display: block;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.center {
+    .middle;
+    .center-block;
+}
+
+.bottom {
+    position: relative;
+    display: block;
+    top: 100%;
+	-webkit-transform: translateY(-100%);
+    -moz-transform: translateY(-100%);
+    -o-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    transform: translateY(-100%);
+}
+
+.ab-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    .clearfix;
+}
+
+.ab-bottom {
+    position: absolute;
+    top: 100%;
+    -webkit-transform: translateY(-100%);
+    -moz-transform: translateY(-100%);
+    -o-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    transform: translateY(-100%);
+    .clearfix;
+}

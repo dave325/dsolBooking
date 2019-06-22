@@ -1,0 +1,28 @@
+.mce-i-play-mce-icon:before{
+	content: "\f234";
+	font-family: dashicons;
+}
+.import-message{
+	box-shadow: none;
+	border: none;
+	margin: 0;
+	padding: 0;
+    position: relative;
+    width: 600px;
+}
+.import-message .loading {
+	width: 32px;
+	height: 32px;
+	left: 80px;
+    position: absolute;
+    top: -35px;
+	background-image: url('../images/loading.gif');
+}
+.import-message .completed {
+	width: 32px;
+	height: 32px;
+	left: 80px;
+    position: absolute;
+    top: -35px;
+	background-image: url('../images/completed.png');
+}

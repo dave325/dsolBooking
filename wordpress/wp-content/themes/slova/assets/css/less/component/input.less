@@ -1,0 +1,74 @@
+input[type="text"],input[type="email"],input[type="search"], textarea, select {
+    .easing-animation;
+	font-size: @font-size-6;
+	line-height: @base-line-height;
+    width: 100%;
+    outline: none;
+    background-color: @light-color;
+    padding: 12px 20px;
+	margin-bottom: 30px;
+	box-shadow: none;
+	border: 1px solid @gray-color-1;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+    &:focus {
+        border-color: @secondary-color;
+    }
+}
+
+.input-submit {
+	.easing-animation;
+    display: inline-block;
+	font-size: @font-size-6;
+	font-weight: @fw-bold;
+	line-height: @base-line-height;
+    text-align: center;
+    padding: 12px 30px;
+	margin-bottom: 30px;
+    background-color: transparent;
+    border: 1px solid transparent;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+}
+input[type="submit"] {
+    .input-submit;
+    background-color: @main-color;
+    color: @light-color;
+	margin-bottom: 30px;
+    &:hover, &:focus, &:active {
+        background-color: @secondary-color;
+        color:@light-color;
+    }
+}
+
+select {
+    height: 42px;
+	margin-bottom: 30px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+}
+
+textarea {
+    resize: none;
+    height: 115px;
+	margin-bottom: 30px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+}
+
+.ro-contact-us {
+	input, select, textarea {
+		color: @dark-color-3;
+		text-transform: uppercase;
+	}
+	input[type="submit"] {
+		.easing-animation;
+		color: @light-color;
+		.bg-gradient-horizontal (@startColor: @secondary-color, @endColor: @main-color, @transparent : 0);
+		width: 100%;
+	}
+}

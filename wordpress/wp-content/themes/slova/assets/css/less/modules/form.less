@@ -1,0 +1,393 @@
+.ro-appointment-calendar {
+	text-align: center;
+	.icon-calentar {
+		font-size: @font-size-1;
+		color: @secondary-color;
+		padding-bottom: 20px;
+	}
+	h5 {
+		color: @light-color;
+		line-height: 28px;
+	}
+}
+@media (min-width: @screen-lg) {
+	.ro-appointment-calendar {
+		&:before {
+			background: @bg-color-5;
+			content: "";
+			height: 100%;
+			left: -140% !important;
+			position: absolute;
+			top: 0;
+			width: 440px;
+		}
+	}
+}
+@media (min-width: @screen-md) {
+	.ro-appointment-section {
+		.wpcf7-form {
+			padding-left: 15px;
+		}
+	}
+	.ro-appointment-calendar {
+		&:before {
+			background: @bg-color-5;
+			content: "";
+			height: 100%;
+			left: -160%;
+			position: absolute;
+			top: 0;
+			width: 440px;
+		}
+	}
+}
+
+.ro-appointment {
+	::-webkit-input-placeholder { color: @light-color; }
+	::-moz-placeholder { color: @light-color; } /* firefox 19+ */
+	:-ms-input-placeholder { color: @light-color; } /* ie */
+	input:-moz-placeholder { color: @light-color; }
+	
+	input, select {
+		font-weight: 400;
+		margin-bottom: 20px;
+		padding: 12px 20px;
+		color: @light-color;
+		background: @bg-color-5;
+		border: 1px solid @bg-color-5;
+		border-radius: none;
+		box-shadow: none;
+		width: 100%;
+		min-height: 50px;
+		
+		&:hover, &:focus {
+			background: transparent;
+			border-color: @light-color;
+		}
+		&.ro-doctor {
+			width: 99.9%;
+			option {
+				padding: 12px 20px;
+				background: @bg-color-5;
+			}
+		}
+		&.ro-submit {
+			.ro-btn;
+			padding: 16px 10px;
+			background-color: @light-color;
+			color:@dark-color;
+			&:hover, &:focus, &:active {
+				background-color: @secondary-color;
+				color:@light-color;
+			}
+		}
+	}
+}
+
+.ro-appointment2 {
+	h5 {
+		color: @main-color;
+	}
+	p {
+		margin: 0;
+	}
+	label {
+		line-height: 50px;
+		margin-bottom: 20px;
+	}
+	input, select, textarea {
+		font-weight: 400;
+		margin-bottom: 20px;
+		padding: 12px 20px;
+		border: 1px solid @lightgray-color-1;
+		border-radius: 0;
+		width: 100%;
+		min-height: 50px;
+		&:hover, &:focus {
+			border-color: @main-color;
+		}
+	}
+	textarea {
+		min-height: 220px;
+		border-radius: 0;
+		&.ro-content {
+			min-height: 280px;
+		}
+		&.ro-remarks {
+			min-height: 220px;
+		}
+	}
+	.ro-checkboxes {
+		display: block;
+		margin-bottom: 40px;
+		.wpcf7-list-item {
+			position: relative;
+			display: inline-block;
+			min-width: 300px;
+			margin: 0 0 20px 0;
+			padding-left: 26px;
+			input {
+				position: absolute;
+				top: 4px;
+				left: 0;
+				width: 20px;
+				height: 20px;
+				min-height: 20px;
+				margin: 0;
+				cursor: pointer;
+				opacity: 0;
+				z-index: 99;
+			}
+			.wpcf7-list-item-label {
+				&:before {
+					.easing-animation;
+					content: "";
+					position: absolute;
+					top: 4px;
+					left: 0;
+					width: 20px;
+					height: 20px;
+					font-family: medicare;
+					line-height: 16px;
+					text-align: center;
+					color: @light-color;
+					background: @light-color;
+					border: 1px solid @lightgray-color-0;
+					z-index: 9;
+				}
+			}
+			input:checked + .wpcf7-list-item-label:before {
+				content: "\e00f";
+				color: @light-color;
+				background: @main-color;
+				border-color: @main-color;
+			}
+		}
+	}
+	[type="submit"] {
+		.ro-btn;
+		font-style: normal;
+		color: @light-color;
+		background: @secondary-color;
+		width: auto;
+		-webkit-border-radius: 30px;
+		-moz-border-radius: 30px;
+		border-radius: 30px;
+		&:hover, &:focus {
+			background: @main-color;
+		}
+		
+	}
+}
+
+.ro-faq, .ro-testimonial {
+	::-webkit-input-placeholder { color: @dark-color; }
+	::-moz-placeholder { color: @dark-color; } /* firefox 19+ */
+	:-ms-input-placeholder { color: @dark-color; } /* ie */
+	input:-moz-placeholder { color: @dark-color; }
+	input, select, textarea {
+		font-size: @font-size-6;
+		font-weight: 500;
+		margin-bottom: 40px;
+		padding: 10px 20px;
+		color: @dark-color;
+		border: 1px solid @gray-color;
+		width: 100%;
+		min-height: 50px;
+		&:hover, &:focus {
+			border-color: @main-color;
+		}
+	}
+	.ro-full-name span, .ro-email-adress span {
+		&:after {
+			font-family: medicare;
+			font-size: 24px;
+			line-height: 50px;
+			color: @main-color;
+			content: "\e0f0";
+			position: absolute;
+			right: 20px;
+			top: 0;
+		}
+	}
+	.ro-email-adress span {
+		&:after {
+			content: "\e083";
+		}
+	}
+	p {
+		font-size: @font-size-6;
+		font-weight: 400;
+	}
+	textarea {
+		min-height: 280px;
+	}
+	[type="submit"] {
+		.ro-btn;
+		display: block;
+		margin: auto;
+		color: @light-color;
+		background: @secondary-color;
+		width: auto;
+		-webkit-border-radius: 30px;
+		-moz-border-radius: 30px;
+		border-radius: 30px;
+		&:hover, &:focus {
+			background: @main-color;
+		}
+		
+	}
+}
+
+.ro-comment-wrapper > h4, .ro-leave-comment-wrapper > h4 {
+	font-size: @font-size-4;
+	font-weight: @fw-ultra-bold;
+	position: relative;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+	&:after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 50px;
+		height: 1px;
+		.bg-gradient-horizontal (@startColor: @secondary-color, @endColor: @main-color, @transparent : 0);
+	}
+}
+
+.ro-comment-item {
+	border-top: 1px solid @lightgray-color-1;
+	padding: 30px 0; 
+	&.parent {
+		padding-bottom: 0;
+	}
+	&.depth-1 {
+		padding-left: 0; 
+		&.thread-even {
+			border: none;
+		}
+	}
+	&.depth-2, &.depth-3, &.depth-4 {
+		padding-left: 110px; 
+	}
+	.ro-avatar {
+		width: 80px;
+		float: left; 
+	}
+	.ro-comment {
+		margin-left: 110px;
+		.ro-info {
+			margin-bottom: 25px;
+			a {
+				color: @main-color; 
+				text-transform: uppercase;
+			}
+		}
+		.ro-name {
+			color: @dark-color-1;
+			font-weight: @fw-bold;
+			text-transform: uppercase;
+		}
+		.ro-time {
+			color: @gray-color;
+			margin-right: 30px; 
+		}
+		.comment-reply-link {
+			float: right;
+			font-size: @font-size-7;
+			font-weight: @fw-bold;
+			line-height: @base-line-height;
+			color: @dark-color-1;
+			padding: 2px 15px;
+			border: 1px solid fadeout(@dark-color-1, 85);
+			-webkit-border-radius: 20px;
+			-moz-border-radius: 20px;
+			border-radius: 20px;
+			&:hover {
+				color: @light-color;
+				border: none;
+				.bg-gradient-horizontal (@startColor: @secondary-color, @endColor: @main-color, @transparent : 0);
+			}
+		}
+	}
+}
+
+/*Comment Form*/
+.comment-respond {
+	.comment-reply-title {
+		font-size: @font-size-4;
+		font-weight: @fw-ultra-bold;
+		text-transform: uppercase;
+		position: relative;
+		padding-bottom: 20px;
+		margin-bottom: 20px;
+		&:after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 50px;
+			height: 1px;
+			.bg-gradient-horizontal (@startColor: @secondary-color, @endColor: @main-color, @transparent : 0);
+		}
+	}
+	.comment-form {
+		label {
+			font-weight: @fw-bold;
+			line-height: 30px;
+			> span {
+				color: @secondary-color;
+				margin-left: 5px;
+			}
+		}
+		input, select, textarea {
+			font-weight: 400;
+			margin-bottom: 30px;
+			padding: 10px 30px;
+			color: @dark-color;
+			border: 1px solid @gray-color-3;
+			width: 100%;
+			min-height: 45px;
+			&:hover, &:focus {
+				border-color: @main-color;
+			}
+			&.submit {
+				font-size: @font-size-5;
+				font-weight: @fw-bold;
+				color: @light-color;
+				.bg-gradient-horizontal (@startColor: @secondary-color, @endColor: @main-color, @transparent : 0);
+				margin-bottom: 0;
+				border: none;
+				&:hover, &:focus {
+					border: 1px solid fadeout(@dark-color-1, 85);
+					color: @dark-color-1;
+					background: transparent;
+				}
+			}
+		}
+		textarea {
+			min-height: 200px;
+		}
+		.comment-form-author {
+			padding-left: 0;
+		}
+		.comment-form-email {
+			padding-right: 0;
+		}
+		.form-submit  {
+			margin-bottom: 0;
+			.submit {
+				width: auto;				
+			}
+		}
+	}
+}
+/* Responsive Comment Form */
+@media (max-width: 991px) {
+	.comment-respond{
+		.comment-form-author, .comment-form-email {
+			padding: 0;
+		}
+	} 
+}

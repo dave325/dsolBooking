@@ -1,0 +1,325 @@
+.bg-gradient-box-icon (@iconColor: @main-color, @startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color) {
+	.easing-animation;
+	color: @secondary-color;
+	background: fadeout( @startColor, 50 );
+	background: -moz-linear-gradient(60deg, fadeout( @startColor, 50 ) 0%, fadeout( @startColor, 49 ) 1%, fadeout( @middleColor, 35 ) 50%, fadeout( @endColor, 0 ) 100%);
+	background: -webkit-gradient(left bottom, right top, color-stop(0%, fadeout( @startColor, 50 )), color-stop(1%, fadeout( @startColor, 49 )), color-stop(50%, fadeout( @middleColor, 35 )), color-stop(100%, fadeout( @endColor, 0 )));
+	background: -webkit-linear-gradient(60deg, fadeout( @startColor, 50 ) 0%, fadeout( @startColor, 49 ) 1%, fadeout( @middleColor, 35 ) 50%, fadeout( @endColor, 0 ) 100%);
+	background: -o-linear-gradient(60deg, fadeout( @startColor, 50 ) 0%, fadeout( @startColor, 49 ) 1%, fadeout( @middleColor, 35 ) 50%, fadeout( @endColor, 0 ) 100%);
+	background: -ms-linear-gradient(60deg, fadeout( @startColor, 50 ) 0%, fadeout( @startColor, 49 ) 1%, fadeout( @middleColor, 35 ) 50%, fadeout( @endColor, 0 ) 100%);
+	background: linear-gradient(60deg, fadeout( @startColor, 50 ) 0%, fadeout( @startColor, 49 ) 1%, fadeout( @middleColor, 35 ) 50%, fadeout( @endColor, 0 ) 100%);
+}
+
+.bd-gradient-box-icon (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color) {
+	.easing-animation;
+	position: relative;
+	.bg-gradient-box-icon (@iconColor: @main-color, @startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	&:before {
+		.easing-animation;
+		content: "";
+		position: absolute;
+		top: 1px;
+		left: 1px;
+		background: @light-color;
+		-webkit-border-radius: 9px;
+		-moz-border-radius: 9px;
+		border-radius: 9px;
+	}
+}
+
+.bd-gradient-box-icon-medium (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color) {
+	.bd-gradient-box-icon (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+	width: 100px;
+	height: 100px;
+	&:before {
+		width: 98px;
+		height: 98px;
+	}
+}
+.bd-gradient-box-icon-small (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color) {
+	.bd-gradient-box-icon (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+	width: 60px;
+	height: 60px;
+	&:before {
+		width: 58px;
+		height: 58px;
+	}
+}
+
+.ro-service-wrap {
+	&.style1 {
+		max-width: 290px;
+		margin: auto;
+		text-align: center;
+		.ro-icon {
+			.easing-animation;
+			.bd-gradient-box-icon-medium (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+			margin: 0 auto 50px;
+			> i {
+				font-size: 36px;
+				line-height: @base-line-height;
+			}
+			.ro-icon-gradient {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				-webkit-transform: translateX(-50%) translateY(-50%);
+				-moz-transform: translateX(-50%) translateY(-50%);
+				-o-transform: translateX(-50%) translateY(-50%);
+				-ms-transform: translateX(-50%) translateY(-50%);
+				transform: translateX(-50%) translateY(-50%);
+				.ro-text-gradient{
+					.easing-animation;
+					font-family: FontAwesome;
+					font-size: 36px;
+					&.ro-active {
+						opacity: 0;
+					}
+				}
+			}
+		}
+		.ro-title {
+			position: relative;
+			font-size: @font-size-5;
+			line-height: @base-line-height;
+			margin-bottom: 30px;
+			padding-bottom: 30px;
+			&:after {
+				.easing-animation;
+				content: "";
+				position: absolute;
+				bottom: 0;
+				left: 50%;
+				width: 50px;
+				height: 1px;
+				.bg-gradient-horizontal (@startColor: @main-color, @endColor: @secondary-color, @transparent : 0);
+				-webkit-transform: translateX(-50%);
+				-moz-transform: translateX(-50%);
+				-o-transform: translateX(-50%);
+				-ms-transform: translateX(-50%);
+				transform: translateX(-50%);
+			}
+		}
+		.ro-content {
+			
+		}
+		&:hover {
+			.ro-icon {
+				color: @light-color;
+				.bg-gradient-vertical (@startColor: @main-color, @endColor: @secondary-color, @transparent : 0);
+				&:before {
+					background: transparent;
+				}
+				.ro-icon-gradient {
+					.ro-text-gradient{
+						opacity: 0;
+						&.ro-active {
+							opacity: 1;
+						}
+					}
+				}
+			}
+			.ro-title {
+				&:after {
+					width: 100px;
+				}
+			}
+		}
+	}
+	&.style2 {
+		position: relative;
+		padding-left: 80px;
+		.ro-icon {
+			.easing-animation;
+			.bd-gradient-box-icon-small (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+			position: absolute;
+			top: 5px;
+			left: 0;
+			> i {
+				font-size: @font-size-4;
+				line-height: @base-line-height;
+			}
+			.ro-icon-gradient {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				-webkit-transform: translateX(-50%) translateY(-50%);
+				-moz-transform: translateX(-50%) translateY(-50%);
+				-o-transform: translateX(-50%) translateY(-50%);
+				-ms-transform: translateX(-50%) translateY(-50%);
+				transform: translateX(-50%) translateY(-50%);
+				.ro-text-gradient{
+					.easing-animation;
+					font-family: FontAwesome;
+					font-size: 18px;
+					&.ro-active {
+						opacity: 0;
+					}
+				}
+			}
+		}
+		.ro-title {
+			font-size: @font-size-5;
+			line-height: @base-line-height;
+			margin-bottom: 10px;
+		}
+		.ro-content {
+			
+		}
+		&:hover {
+			.ro-icon {
+				color: @light-color;
+				.bg-gradient-vertical (@startColor: @main-color, @endColor: @secondary-color, @transparent : 0);
+				&:before {
+					background: transparent;
+				}
+				.ro-icon-gradient {
+					.ro-text-gradient{
+						opacity: 0;
+						&.ro-active {
+							opacity: 1;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.bd-gradient-circle-icon (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color) {
+	.easing-animation;
+	position: relative;
+	width: 50px;
+	height: 50px;
+	.bg-gradient-box-icon (@iconColor: @main-color, @startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	&:before {
+		.easing-animation;
+		content: "";
+		position: absolute;
+		top: 1px;
+		left: 1px;
+		width: 48px;
+		height: 48px;
+		background: @light-color;
+		-webkit-border-radius: 50%;
+		-moz-border-radius: 50%;
+		border-radius: 50%;
+	}
+}
+
+.ro-feature-wrap {
+	padding: 5px 0;
+	background: @light-color;
+	white-space: nowrap;
+	.ro-icon {
+		position: relative;
+		font-size: @font-size-6;
+		line-height: @base-line-height;
+		.bd-gradient-circle-icon (@startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+		display: inline-block;
+		vertical-align: middle;
+		margin-right: 20px;
+		> i {
+			font-size: @font-size-4;
+			line-height: @font-size-4;
+			margin: 0;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			-webkit-transform: translateX(-50%) translateY(-50%);
+			-moz-transform: translateX(-50%) translateY(-50%);
+			-o-transform: translateX(-50%) translateY(-50%);
+			-ms-transform: translateX(-50%) translateY(-50%);
+			transform: translateX(-50%) translateY(-50%);
+		}
+		.ro-icon-gradient {
+			margin-bottom: 10px;
+			.ro-text-gradient{
+				.easing-animation;
+				font-family: FontAwesome;
+				font-size: 50px;
+				&.ro-active {
+					opacity: 0;
+				}
+			}
+		}
+		&.ro-right {
+			margin-left: 20px;
+			margin-right: 0;
+		}
+	}
+	.ro-content {
+		color: @dark-color-1;
+		font-size: @font-size-6;
+		line-height: 50px !important;
+	}
+	&.ro-icon-right {
+		
+	}
+	&:hover {
+		.ro-icon {
+			color: @light-color;
+			.bg-gradient-vertical (@startColor: @main-color, @endColor: @secondary-color, @transparent : 0);
+			&:before {
+				background: transparent;
+			}
+		}
+	}
+}
+
+.ro-info-box {
+	position: relative;
+	display: block;
+	margin: 0 auto 30px !important;
+	.bg-gradient-box-icon (@iconColor: @main-color, @startColor: @light-color-1, @middleColor: @main-color, @endColor: @secondary-color);
+	width: 302px;
+	height: 302px;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	.ro-inner {
+		position: absolute;
+		top: 1px;
+		left: 1px;
+		width: 300px;
+		height: 300px;
+		text-align: center;
+		background: @light-color;
+		padding: 45px;
+		-webkit-border-radius: 50%;
+		-moz-border-radius: 50%;
+		border-radius: 50%;
+		h5 {
+			color: @dark-color-3;
+			margin-bottom: 20px;
+		}
+		i {
+			font-size: 50px;
+			color: @secondary-color;
+			margin-bottom: 20px;
+		}
+		.ro-icon-gradient {
+			margin-bottom: 10px;
+			.ro-text-gradient{
+				.easing-animation;
+				font-family: FontAwesome;
+				font-size: 50px;
+				&.ro-active {
+					opacity: 0;
+				}
+			}
+		}
+		.ro-content {
+			font-size: @font-size-5;
+			line-height: 30px;
+			color: @dark-color-3;
+		}
+		
+	}
+}

@@ -1,0 +1,33 @@
+.ro-client-logo-wrap {
+	max-width: 150px;
+	.ro-client-logo {
+		position: relative;
+		width: 150px;
+		height: 150px;
+		overflow: hidden;
+		> img {
+			.easing-animation;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 150px;
+			height: auto;
+			&:first-child {
+				opacity: 1;
+			}
+			&:last-child {
+				opacity: 0;
+			}
+		}
+		&:hover {
+			> img {
+				&:first-child {
+					opacity: 0;
+				}
+				&:last-child {
+					opacity: 1;
+				}
+			}
+		}
+	}
+}

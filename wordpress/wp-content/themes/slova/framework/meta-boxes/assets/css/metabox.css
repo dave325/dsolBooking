@@ -1,0 +1,157 @@
+.vc_element-icon.tb-icon-for-vc{
+	background-image: url("../images/el_icon.png")!important;
+	height: 36px!important;
+}
+li.active{
+	border: 1px solid #dfdfdf!important;
+	border-bottom-color: #fdfdfd!important;
+	background-color: #fdfdfd!important;
+}
+li.tb-tab{
+	padding: 3px 10px 7px!important;
+} 
+li.tb-tab a.active{
+	color: black;
+}
+.tb-tabs-panel{
+	min-height: 42px;
+	padding: 0 .9em;
+	border: solid 1px #dfdfdf;
+	background-color: #fdfdfd;
+}
+.tb-tabs-panel .tb-title-mb{
+	border-bottom: 1px solid #ddd;
+    font-weight: bold;
+    padding: 20px 0 5px;
+}
+.tb-tabs-panel .tb-title-mb:first-child{
+	padding-top: 0;
+}
+.tb-tabs-panel .tb-title-mb i{
+	padding-right: 5px;
+}
+#tb-list-widget{
+	float: left;
+}
+.tb-widget{
+	padding: 5px;
+	margin: 5px;
+	border: solid 1px #dfdfdf;
+	cursor: pointer;
+}
+#tb-content{
+	display: table;
+	margin: 0 auto;
+	padding-top: 10%;
+}
+.tb-widget-content{
+
+}
+.tb-widget-left{
+	float:left;
+	min-width: 50px;
+	min-height: 100px;
+	max-width: 100px;
+	border: dashed 1px #dfdfdf;
+	background: #F3F3F3;
+}
+.tb-widget-center{
+	text-align: center;
+	color: #ddd;
+	float:left;
+	width: 100px;
+	height: 100px;
+	margin: 13px 5px 5px 5px;
+	border: dashed 1px #6B4386;
+}
+.tb-widget-rigth{
+	float:left;
+	min-width: 50px;
+	min-height: 100px;
+	max-width: 100px;
+	border: dashed 1px #dfdfdf;
+	background: #F3F3F3;
+}
+div.tb-content li.tb-widget{
+	text-align : center;
+	background-color: #582F85;
+	color: white;
+	font-size: 10px;
+	line-height: 10px;
+	text-transform: uppercase;
+}
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.clearfix {
+    display: inline-block;
+}
+
+html[xmlns] .clearfix {
+    display: block;
+}
+
+* html .clearfix {
+    height: 1%;
+}
+
+/***** Meta Box Option ****/
+.meta-box-sortables .tb_metabox_field {
+	display: table;
+	width: 100%;
+	margin-bottom: 15px;
+}
+.meta-box-sortables .tb_metabox_field label, .meta-box-sortables .tb_metabox_field .field {
+	display: table-cell;
+	vertical-align: top;
+}
+.meta-box-sortables .tb_metabox_field label {
+	width: 30%;
+}
+.meta-box-sortables .tb_metabox_field .field {
+	width: 70%;
+}
+.meta-box-sortables .tb_metabox_field .field input,
+.meta-box-sortables .tb_metabox_field .field select,
+.meta-box-sortables .tb_metabox_field .field textarea {
+	min-width: 400px;
+}
+.meta-box-sortables .tb_metabox_field .field p {
+	font-style: italic;
+}
+.meta-box-sortables .tb-tab a {
+	color: #888;
+	outline: none;
+}
+.meta-box-sortables .tb-tab a.active {
+	font-weight: bold;
+	color: #333;
+}
+.meta-box-sortables [id^="tabs-"], .meta-box-sortables [id^="tabs-"] {
+	margin-top: 25px;
+}
+.meta-box-sortables .tb_upload_button {
+	margin-left: 20px;
+	min-width: 100px !important;
+}
+
+.meta-box-sortables select[multiple]{
+	width: 100%;
+	height: 150px;
+}
+
+@media (max-width:1170px) {
+	.meta-box-sortables .tb_metabox_field {
+		margin-bottom: 0;
+	}
+	.meta-box-sortables .tb_metabox_field label, .meta-box-sortables .tb_metabox_field .field {
+		display: block;
+		margin-bottom: 10px;
+	}
+}

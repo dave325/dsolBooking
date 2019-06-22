@@ -1,0 +1,210 @@
+$border-radius-base: 3px !default;
+$white: #fff !default;
+$black: #000 !default;
+$grey: #F5F5F5 !default;
+$red: #ff786d !default;
+
+$border-color: #dedede !default;
+$text-color: #313131 !default;
+
+// Loading spinner
+@keyframes ep-rotate {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(359deg);
+	}
+}
+
+@mixin spinner(
+	$color: $white,
+	$opacity: .35,
+	$size: 40px,
+	$border-size: 6px
+) {
+	border: $border-size solid rgba($color, $opacity);
+	border-top-color: rgba($color, $opacity * 2.5);
+	border-radius: 100%;
+	height: $size;
+	width: $size;
+	animation: ep-rotate .8s infinite linear;
+}
+
+@mixin text-reset {
+	text-decoration: none;
+	text-transform: none;
+	font-style: normal;
+	font-weight: normal;
+	font-family: sans-serif;
+	line-height: normal;
+	text-shadow: none;
+	letter-spacing: 0;
+}
+
+.element-search-form-wrap {
+	width: 100%;
+	display: block;
+}
+
+.element-search-form {
+	display: flex;
+	align-items: center;
+	height: 40px;
+	position: relative;
+	width: 100%;
+
+	.element-search-category-select {
+		@include text-reset;
+		max-width: 27%;
+		height: 100%;
+		appearance: none;
+		background-clip: padding-box;
+		background-size: 9px;
+		background-position: right .75rem center;
+		background-repeat: no-repeat;
+		padding: 10px 28px 10px 10px;
+		margin: 0;
+		box-shadow: none;
+		background-color: $white;
+		background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23333' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+		color: $text-color;
+		font-size: 16px;
+		border-radius: $border-radius-base 0 0 $border-radius-base;
+		border: 1px solid $border-color;
+		border-right: 0;
+	}
+
+	.element-search-input-wrap {
+		height: 100%;
+		flex: auto;
+		position: relative;
+		line-height: normal;
+		margin: 0;
+		padding: 0;
+	}
+
+	.element-search-input {
+		@include text-reset;
+		height: 100%;
+		width: 100% !important;
+		font-size: 16px;
+		border-radius: 0;
+		border: 1px solid $border-color;
+		margin: 0;
+		padding: 10px;
+		box-shadow: none;
+
+		&:hover,
+		&:focus {
+			box-shadow: none;
+			outline: 0;
+			border-width: 1px;
+			border-color: inherit;
+		}
+	}
+
+	.element-search-spinner {
+		@include spinner($color: $black, $size: 18px, $border-size: 3px);
+		position: absolute;
+		right: 10px;
+		top: 11px;
+		opacity: 0;
+
+		&.visible {
+			opacity: 0.4;
+		}
+	}
+
+	.element-search-results {
+		position: absolute;
+		list-style: none;
+		top: 100%;
+		left: 0;
+		width: 100%;
+		background: $white;
+		border-radius: 0 0 $border-radius-base $border-radius-base;
+		margin: 1px 0 0;
+		border-top: 1px solid rgba($white, .3);
+		padding: 10px 0;
+		box-shadow: 0 3px 6px rgba($black, .1);
+		z-index: 125;
+		display: none;
+		font-family: sans-serif;
+	}
+
+	.element-search-results-item {
+		margin: 0;
+		font-size: 13px;
+
+		a {
+			@include text-reset;
+			padding: 15px;
+			display: block;
+			color: $text-color;
+			text-decoration: none !important;
+			border: 0;
+			box-shadow: none;
+
+			&:hover {
+				background-color: $grey;
+				border: 0;
+				box-shadow: none;
+			}
+		}
+
+		.element-search-results-item-title {
+			display: block;
+			font-size: 16px;
+			font-weight: bold;
+			margin: 0 0 5px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		.element-search-results-item-excerpt {
+			margin: 0;
+			opacity: 0.8;
+
+			&:empty {
+				display: none;
+			}
+		}
+
+		&.highlighted {
+			a {
+				background-color: $grey;
+			}
+		}
+
+		&.error {
+			a {
+				color: $red;
+			}
+		}
+	}
+
+	button.element-search-btn {
+		@include text-reset;
+		height: 100%;
+		flex: none;
+		font-size: 16px;
+		padding: 10px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0 $border-radius-base $border-radius-base 0;
+		border: 1px solid $border-color;
+		border-left: 0;
+		background: none;
+		box-shadow: none;
+		margin: 0;
+	}
+
+	.element-search-all-results {
+		text-align: center;
+	}
+}
