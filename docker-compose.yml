@@ -2,7 +2,8 @@ version: '3.3'
 
 services:
    db:
-     image: mysql:5.7
+     build: ./database
+     image: dataramdevelopment/bookingplugindatabase:initial
      volumes:
        - db_data:/var/lib/mysql
      restart: always
