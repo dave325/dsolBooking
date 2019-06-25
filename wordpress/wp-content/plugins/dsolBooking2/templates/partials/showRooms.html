@@ -1,0 +1,83 @@
+<nav class="navbar col-12 col-md-2">
+  <div class="row justify-content-center">
+    <div class="col-12">Room: {{roomShow}} </div>
+    <div class="col-12" ng-if="data.arr.length > 1">Time: {{data.arr[0] * 1000 | date:'shortTime'}} -
+      {{data.arr[data.arr.length - 1] * 1000 | date:'shortTime'}}</div>
+    <div class="col-12" ng-if="data.arr.length == 1">Time: {{data.arr[0]* 1000 | date:'shortTime'}}
+      {{data.arr[1] * 1000| date:'shortTime'}}</div>
+    <div class="col-12">Date: {{data.date | date:shortTime }}</div>
+    <div class="col-12">
+      <label>
+        Repeat:
+        <select name="repeatSelect" id="resRepeat" ng-model="resRepeat" class="form-control"
+          ng-options="option.name for option in selectData.availableOptions track by option.id"
+          ng-change="selectDataChange()">
+        </select>
+      </label>
+    </div>
+    <a class="btn btn-primary col-md-offset-6" ng-click="submit()" ng-disabled="isDisabled">Submit</a>
+  </div>
+</nav>
+
+<h1>Book a Room</h1>
+
+<div class="row-fluid">
+  <div class="full-border col-md-9">
+    <div class="row justify-content-between" id="room-and-date">
+
+
+      <div id="collapseOne" class="col-sm-12 col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading col-sm-12">
+            <div class="panel-title col-sm-12" ng-click="isCollapsed = !isCollapsed">
+              <h4 class="col-sm-12">
+                Room List
+              </h4>
+            </div>
+          </div>
+          <div class="panel-body" uib-collapse="isCollapsed" id="rooms">
+            <div class="row justify-content-between" ng-repeat="room in rooms">
+              <div class="col-sm-12 col-md-3">Room: {{room.container_number}}</div>
+              <div class="col-sm-12 col-md-3"><a ng-click="selectRoom($index)">Occupancy: {{room.occupancy}}</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-2-md">
+        <div style="display:inline-block; min-height:290px;">
+          <div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options"></div>
+        </div>
+      </div>
+
+    </div>
+    <button class="btn btn-primary" ng-click="togglePast()">Show past bookings</button>
+    <table class="table table-borderless table-striped justify-content-center" id="schedules">
+      <thead>
+        <tr>
+          <th scope="col-2-md"> </th>
+          <th scope="col-5-md">Time</th>
+          <th scope="col-5-md">Availabilty</th>
+        </tr>
+      </thead>
+      <tbody class="">
+        <tr ng-repeat="time in validTimes" ng-class="[{available:!time.available && !time.reservation, 
+            hasReservation: !time.available && time.reservation, 
+            'animate-show-hide': time.past != undefined}]" ng-hide="time.past">
+          <td><input type="checkbox" aria-label="Checkbox for following text input" ng-show="time.available"
+              value="{{$index}}" name="hours[]" [checked]="time.selected" ng-change="check(time)"
+              id="hours_{{time.place}}" ng-model="hour">
+          </td>
+          <td>{{time.start_time * 1000 | date:'shortTime'}} - {{time.end_time* 1000 | date:'shortTime'}}</td>
+          <td ng-if="time.available">Availabile</td>
+          <td ng-if="!time.available && time.reservation">{{reservations[time.reservation].company_name}}
+            {{time.reservation}}</td>
+          <td ng-if="!time.available && !time.reservation">Unavilable</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
