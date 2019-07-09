@@ -372,9 +372,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           myFactory.getData.seperateIndexes.push(j)
           i = info[j].place;
         }
-        console.log("i: " + i);
-        console.log("j: " + j);
-        console.log("place: " + info[j].place);
       }
       console.log(myFactory.getData);
       // Check if times field is stores
@@ -792,15 +789,17 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     function checkRepeatReservations(startTime, endTime, room, repeatType) {
       let validDates = [],
         invalidDates = [];
-      const curDate = moment.unix(startTime)
+      const curDate = moment.unix(new Date())
       const m = moment.unix(startTime)
-      const tempDate = moment.unix(endTime)
+      const tempDate = moment.unix(endTime);
+      const checkDate = moment(new Date()).add('1','months');
       // Check id of repeat
       switch (repeatType.id) {
         // if daily
         case "1":
           // Check if currend date is the same as m
-          while (m.isSame(curDate, "month")) {
+          while (m.isSame(curDate, "month") ||(m.isSame(checkDate,'month') && m.date() <= 7)) {
+            console.log(m.date())
             // boolean variable to see if adding things 
             let canAdd = false;
             // Loop through each reservation
@@ -850,7 +849,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         // Check weekly
         case "2":
           // Loop while m is in same month
-          while (m.isSame(curDate, "month")) {
+          while (m.isSame(curDate, "month") ||(m.isSame(checkDate,'month') && m.date() <= 7)) {
             let canAdd = false;
             for (let i = 0; i < myFactory.getData.reservations.length; i++) {
               let el = myFactory.getData.reservations[i];
@@ -893,7 +892,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           }
           break;
         case "3":
-          while (m.isSame(curDate, "month")) {
+          while (m.isSame(curDate, "month")||(m.isSame(checkDate,'month') && m.date() <= 7)) {
             let canAdd = false;
             for (let i = 0; i < myFactory.getData.reservations.length; i++) {
               let el = myFactory.getData.reservations[i];
