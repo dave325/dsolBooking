@@ -11,8 +11,10 @@
     <p>No items selected</p>
   </div>
 </div>
-<button type="button" class="btn btn-danger" ng-disabled="items.length == 0" ng-click="deleteUserReservation()">Delete selected items</button>
-<button type="button" class="btn btn-primary" ng-disabled="items.length > 1 || items.length == 0" ng-click="editUserReservation()">Edit selected items</button>
+<button type="button" class="btn btn-danger" ng-disabled="items.length == 0" ng-click="deleteUserReservation()">Delete
+  selected items</button>
+<button type="button" class="btn btn-primary" ng-disabled="items.length > 1 || items.length == 0"
+  ng-click="editUserReservation()">Edit selected items</button>
 <table class="table profile">
   <thead class="thead-dark">
     <tr>
@@ -29,8 +31,12 @@
           ng-model="reservation.selected"></td>
       <td>{{reservation.container_number}}</td>
       <td>
-        {{reservation.start_time[0] * 1000 | date: 'shortDate'}} <br>
-        {{reservation.start_time[0] * 1000 | date: 'shortTime'}} - {{reservation.start_time[reservation.start_time.length - 2] + (30 * 60 * 1000)  | date: 'shortTime'}}
+        <div ng-repeat="time in reservation.time">
+          {{time.start_time | date: 'shortDate'}} <br>
+          {{time.start_time  | date: 'shortTime'}} -
+          {{time.end_time  | date: 'shortTime'}}
+        </div>
+
       </td>
       <td>{{reservation.company_name}}<br>
         {{reservation.email}}</td>

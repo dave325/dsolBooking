@@ -244,6 +244,23 @@ class dsol_meetingsSearch
         GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
         ORDER BY JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]');";
 		$cooked = $wpdb->get_results($sql, ARRAY_A);
+		 // Loop through each result set
+		 for ($i = 0; $i < count($cooked); $i++) {
+			// temp variable to store time array
+			$temp_time = array();
+			// decode results saved from json array in query
+			$decode_end_time = json_decode($cooked[$i]['end_time']);
+			$decode_start_time = json_decode($cooked[$i]['start_time']);
+			// Store start and end time in appropriate pairings
+			for ($j = 0; $j < sizeof($decode_start_time); $j++) {
+				array_push($temp_time, array(
+					"start_time" => $decode_start_time[$j],
+					"end_time" => $decode_end_time[$j]
+				));
+			}
+			// Push filtered array set to official time set
+			$cooked[$i]['time'] = $temp_time;
+		}
 		$t = $wpdb->last_query;
 		require(DSOL_BOOKING_PATH . 'templates/meetings/searchPending.php');
 	}

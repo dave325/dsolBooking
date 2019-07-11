@@ -49,7 +49,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                       /**
                        * Need to update and check fo multiple columns
                        */
-                      el.start_time = el.start_time.split(",")
+                      el.time.forEach((time) => {
+                        time.start_time = new Date(time.start_time);
+                        time.end_time = new Date(time.end_time);
+                      })
                     });
                     return res.data;
                   },
@@ -102,6 +105,8 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         { id: '3', name: 'Biweekly' }
       ]
     };
+
+    $scope.info = null;
     // If query aparamete res_id does not exist, then reset room info and valid times
     if (!$location.search().hasOwnProperty("res_id") || myFactory.getData.arr.length == 0) {
       if (!myFactory.getData.room.c_id) {
@@ -131,7 +136,9 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       // I the same data is selected, do nothing
       if (moment(myFactory.getData.date).isSame(moment($scope.dt))) {
         console.error("same");
+        $scope.info = "Room already selected";
       } else {
+        $scope.info = null
         myFactory.setDate($scope.dt);
         // make api call with new date in mind
         restapi.times(new Date($scope.dt)).then(
@@ -143,6 +150,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           },
           (err) => {
             console.error(err);
+            $scope.info = "Error switching dates";
           }
         )
       }
@@ -155,8 +163,10 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       // Check if data in factory is same as selected room and do nothing
       if (myFactory.getData.room.c_id == $scope.rooms[idx].c_id) {
         console.warn("same room");
+        $scope.info = "Room already selecteds";
         return;
       }
+      $scope.info = null;
       // Set room in factory
       myFactory.setRoom($scope.rooms[idx]);
       // Set info that is displayed to users
@@ -171,6 +181,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         },
         (err) => {
           console.error(err);
+          $scope.info = "There is an issue";
         }
       )
       // Collapse room selection box
@@ -188,7 +199,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       var lastItem = false;
       const curChecked = obj.place;
       for (var t = 0, checkLength = hourChecks.length; t < checkLength; t++) {
-        if ((hourChecks[t].type == 'checkbox') && hourChecks[t].checked == true) {
+        if ((hourChecks[t].type == 'checkbox') && hourChecks[t].checked == true ) {
           boxArr[boxCount++] = t;
           // Id time is available then select it and set class
           if ($scope.validTimes[t].available) {
@@ -198,6 +209,8 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           }
         }
       }
+      console.log("P");
+      console.log(boxArr)
 
       // is this unchecking - clear under
       if (hourChecks[curChecked].checked == false && curChecked < boxArr[0]) {
@@ -208,13 +221,16 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
 
         for (var t = curChecked, checkLength = hourChecks.length; t < checkLength; t++) {
           // Check if box array contains still contains the invalid checkmarks and remove them
-          if (boxArr.indexOf(t) == -1) {
+          if (boxArr.indexOf(t) > -1) {
+            console.log(t)
+            console.log("Index: " + boxArr.indexOf(t))
             boxArr.splice(boxArr.indexOf(t), 1);
           }
           $scope.validTimes[t].selected = false;
           hourChecks[t].checked = false;
           angular.element('#hours_' + t).parent().parent().removeClass('selected');
         }
+        console.log(boxArr)
         // is checked box higher? clear underneath (after first)
       } else if (hourChecks[curChecked].checked == true && boxArr[1] > curChecked) {
         var chkstat = true;
@@ -259,6 +275,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
         $scope.data.arr[1] = $scope.validTimes[boxArr[0]];
       }
+      console.log(boxArr);
     }
 
     /**
@@ -365,15 +382,19 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         }
         return false;
       })
+      if (info.length < 1) {
+        $scope.info = "No times selected";
+        return;
+      }
       myFactory.getData.seperateIndexes = [0];
-      for(let i = info[0].place, j = 0; j < info.length; i++, j++){
-        if(info[j].place != i){
+      for (let i = info[0].place, j = 0; j < info.length; i++ , j++) {
+        if (info[j].place != i) {
           myFactory.getData.isSeperate = 1;
           myFactory.getData.seperateIndexes.push(j)
           i = info[j].place;
         }
       }
-      console.log(myFactory.getData);
+      // console.log(myFactory.getData);
       // Check if times field is stores
       if (info.length > 0) {
         // Disable submit button
@@ -392,7 +413,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       function () {
         // call timeout so angularjs digrest waits for the next round after ngRepeat calls
         $timeout(function () {
-          console.log(myFactory.getData)
           if (myFactory.getData.arr.length > 0) {
             // Set data 
             let resId = -1;
@@ -451,6 +471,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                       }, 500);
                     }
                   } else if (myFactory.getData.arr.length == 0) {
+                    $scope.info = "Error getting information";
                     return;
                   } else {
                     // Store moment variables from factory data
@@ -481,6 +502,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
               },
               (err) => {
                 console.error(err);
+                $scope.info = "Issue loading information";
               }
             )
           } else {
@@ -603,6 +625,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     $scope.items = [];
     // Set lastCheck for editRes info
     $scope.lastCheck;
+    console.log($scope.data);
     /**
      * @params idx
      */
@@ -765,7 +788,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         multipleDates: [],
         nonce: localized.nonce,
         user: {},
-        isSeperate:0
+        isSeperate: 0
       };
     }
     return service;
@@ -792,13 +815,13 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       const curDate = moment.unix(new Date())
       const m = moment.unix(startTime)
       const tempDate = moment.unix(endTime);
-      const checkDate = moment(new Date()).add('1','months');
+      const checkDate = moment(new Date()).add('1', 'months');
       // Check id of repeat
       switch (repeatType.id) {
         // if daily
         case "1":
           // Check if currend date is the same as m
-          while (m.isSame(curDate, "month") ||(m.isSame(checkDate,'month') && m.date() <= 7)) {
+          while (m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7)) {
             console.log(m.date())
             // boolean variable to see if adding things 
             let canAdd = false;
@@ -849,7 +872,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         // Check weekly
         case "2":
           // Loop while m is in same month
-          while (m.isSame(curDate, "month") ||(m.isSame(checkDate,'month') && m.date() <= 7)) {
+          while (m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7)) {
             let canAdd = false;
             for (let i = 0; i < myFactory.getData.reservations.length; i++) {
               let el = myFactory.getData.reservations[i];
@@ -892,7 +915,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           }
           break;
         case "3":
-          while (m.isSame(curDate, "month")||(m.isSame(checkDate,'month') && m.date() <= 7)) {
+          while (m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7)) {
             let canAdd = false;
             for (let i = 0; i < myFactory.getData.reservations.length; i++) {
               let el = myFactory.getData.reservations[i];

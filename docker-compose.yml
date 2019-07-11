@@ -11,20 +11,10 @@ services:
        MYSQL_DATABASE: wordpress
        MYSQL_USER: wordpress
        MYSQL_PASSWORD: wordpress
+     networks: 
+       - dbNet 
 
-   wordpress:
-     depends_on:
-       - db
-     build: ./wordpress
-     image: dataramdevelopment/bookingplugin:initial
-     ports:
-       - "3000:80"
-     restart: always
-     environment:
-       WORDPRESS_DB_HOST: db:3306
-       WORDPRESS_DB_USER: wordpress
-       WORDPRESS_DB_PASSWORD: wordpress
-       WORDPRESS_DB_NAME: wordpress
+
    phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
@@ -34,5 +24,10 @@ services:
     environment:
       MYSQL_USER: wordpress
       MYSQL_ROOT_PASSWORD: wordpress
+    networks: 
+      - dbNet 
 volumes:
   db_data: {}
+networks:
+  dbNet:
+    external: true

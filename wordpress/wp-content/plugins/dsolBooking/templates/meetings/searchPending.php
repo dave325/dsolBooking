@@ -49,11 +49,6 @@
 		<?php _e('Book a Room - Search Reservations', 'book-a-room'); ?>
 	</h2>
 </div>
-<pre>
-	<?php print_r($cooked);
-	echo $sql;
-	 ?>
-</pre>
 <form action="?page=bookaroom_meetings_search" method="post" name="form" id="form">
 	<br />
 	<table width="100%" class="tableMain">
@@ -206,7 +201,6 @@ if (empty($cooked)) {
 				<td><?php _e('Created', 'book-a-room'); ?></td>
 				<td><?php _e('Event Name', 'book-a-room'); ?></td>
 				<td><?php _e('Contact Name', 'book-a-room'); ?></td>
-				<td><?php _e('Contact', 'book-a-room'); ?></td>
 				<td><?php _e('Purpose of meeting', 'book-a-room'); ?></td>
 			</tr>
 			<?php
@@ -219,10 +213,16 @@ if (empty($cooked)) {
 				<tr>
 					<td><input name="res_id[]" type="checkbox" id="res_id[<?php echo $val['res_id']; ?>]" value="<?php echo $val['res_id']; ?>" />
 					</td>
-					<td><strong><?php echo $branchList[$roomContList['id'][$val['ti_roomID']]['branchID']]['branchDesc']; ?></strong><br /><?php echo $roomContList['id'][$val['ti_roomID']]['desc']; ?>
+					<td><strong><?php echo "Room #" . $val["room_number"] ?>
 					</td>
-					<td nowrap="nowrap"><?php echo date('M. jS, Y', strtotime($val['ti_startTime'])); ?><br /><?php echo date('g:i a', strtotime($val['start_time'][0])) . ' - ' . date('g:i a', strtotime($val['end_time'][0])); ?></td>
-					<td nowrap="nowrap"><?php echo date('M. jS, Y', strtotime($val['ti_created'])); ?><br /><?php echo date('g:i a', strtotime($val['ti_created'])); ?>
+					<td nowrap="nowrap">
+						<?php 
+								for($j = 0; $j < count($val["time"]); $j++){
+							echo date('M. jS, Y', strtotime($val["time"][$j]['start_time'])); ?>
+							<br />
+							<?php echo date('g:i a', strtotime($val["time"][$j]['start_time'])) . ' - ' . date('g:i a', strtotime($val["time"][$j]['end_time'])); }?><br />
+
+						</td>
 					</td>
 					<td><?php echo  $val['notes'] ?></td>
 					<td><a class="btn" data-popup-open="popup-<?php echo $count; ?>" href="#"><?php echo $val['company_name']; ?></a> (<?php echo $notes; ?>)

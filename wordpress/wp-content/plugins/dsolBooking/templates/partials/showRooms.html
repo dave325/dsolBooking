@@ -1,6 +1,6 @@
 <nav class="navbar col-12 col-md-2">
   <div class="row justify-content-center">
-    <div class="col-12">Room: {{roomShow}} </div>
+    <div class="col-12">Room1: {{roomShow}} </div>
     <div class="col-12" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time * 1000 | date:'shortTime'}} -
       {{data.arr[data.arr.length - 1].end_time * 1000 | date:'shortTime'}}</div>
     <div class="col-12" ng-if="data.arr.length == 1">Time: {{data.arr[0].start_time * 1000 | date:'shortTime'}}
@@ -15,7 +15,8 @@
         </select>
       </label>
     </div>
-    <a class="btn btn-primary col-md-offset-6" ng-click="submit()" ng-disabled="isDisabled">Submit</a>
+    <p></p>
+    <a class="btn btn-primary col-md-offset-6" ng-click="isDisabled || submit()" ng-disabled="isDisabled || data.arr.length == 0">Submit</a>
   </div>
 </nav>
 
@@ -67,7 +68,7 @@
             hasReservation: !time.available && time.reservation, 
             'animate-show-hide': time.past != undefined}]" ng-hide="time.past">
           <td><input type="checkbox" aria-label="Checkbox for following text input" ng-show="time.available"
-              value="{{$index}}" name="hours[]" [checked]="time.selected" ng-change="check(time)"
+              value="{{$index}}" name="hours[]" [checked]="time.selected" ng-click="check(time)"
               id="hours_{{time.place}}" ng-model="hour">
           </td>
           <td>{{time.start_time * 1000 | date:'shortTime'}} - {{time.end_time* 1000 | date:'shortTime'}}</td>

@@ -1,5 +1,5 @@
 <?php
-class My_REST_Posts_Controller
+class Dsol_Posts_Controller
 {
     // Here initialize our namespace and resource name.
     public function __construct()
@@ -467,6 +467,7 @@ class My_REST_Posts_Controller
         $table_name_container = $wpdb->prefix . 'dsol_booking_container';
         $table_name_time = $wpdb->prefix . 'dsol_booking_time';
         $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
+        $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL";
         if (is_user_logged_in()) {
             $data = $request->get_json_params();
             $userEmail = $data['user']['data']['user_email'];
@@ -479,16 +480,34 @@ class My_REST_Posts_Controller
             {$table_name_container}.c_id,
             {$table_name_container}.r_id,
             {$table_name_container}.occupancy,
-            {$table_name_time}.start_time
+            JSON_ARRAYAGG({$table_name_time}.start_time) AS start_time,
+            JSON_ARRAYAGG({$table_name_time}.end_time) AS end_time
             FROM {$table_name_reservation} 
             LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
             LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
             WHERE {$table_name_reservation}.email = '{$userEmail}' AND {$table_name_container}.r_id IS NOT NULL
             GROUP BY {$table_name_reservation}.res_id, {$table_name_container}.container_number
-            ORDER BY {$table_name_time}.start_time DESC;";
+            ORDER BY JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]') DESC;";
             $final = $wpdb->get_results($sql, ARRAY_A);
             if ($wpdb->last_error !== '') {
                 return rest_ensure_response($wpdb->last_result);
+            }
+            // Loop through each result set
+            for ($i = 0; $i < count($final); $i++) {
+                // temp variable to store time array
+                $temp_time = array();
+                // decode results saved from json array in query
+                $decode_end_time = json_decode($final[$i]['end_time']);
+                $decode_start_time = json_decode($final[$i]['start_time']);
+                // Store start and end time in appropriate pairings
+                for ($j = 0; $j < sizeof($decode_start_time); $j++) {
+                    array_push($temp_time, array(
+                        "start_time" => $decode_start_time[$j],
+                        "end_time" => $decode_end_time[$j]
+                    ));
+                }
+                // Push filtered array set to official time set
+                $final[$i]['time'] = $temp_time;
             }
             // Return all of our comment response data.
             return rest_ensure_response($final);
@@ -671,10 +690,10 @@ class My_REST_Posts_Controller
 }
 
 // Function to register our new routes from the controller.
-function prefix_register_my_rest_routes()
+function dsol_register_my_rest_routes()
 {
-    $controller = new My_REST_Posts_Controller();
+    $controller = new Dsol_Posts_Controller();
     $controller->register_routes();
 }
 
-add_action('rest_api_init', 'prefix_register_my_rest_routes');
+add_action('rest_api_init', 'dsol_register_my_rest_routes');
