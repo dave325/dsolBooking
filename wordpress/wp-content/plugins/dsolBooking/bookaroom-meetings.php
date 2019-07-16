@@ -682,8 +682,7 @@ class dsol_meetings
 
 	}	
 	
-	public static
-	function showChangeReservationMeeting( $externals, $errorMSG = NULL, $res_id = NULL )
+	public static function showChangeReservationMeeting( $externals, $errorMSG = NULL, $res_id = NULL )
 	#, $branchList, $roomContList, $roomList, $amenityList, $errorMSG = NULL, $res_id = NULL, $contents = NULL )
 	{
 
@@ -1038,3 +1037,4 @@ class dsol_meetings
 	}
 
 }
+?>

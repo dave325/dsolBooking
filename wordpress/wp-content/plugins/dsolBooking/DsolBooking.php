@@ -84,9 +84,8 @@ class DsolBookingPluginHooks
     public static function on_activate( $dbOnly = false )
 	# this is only run when hooked by activating plugin
     {
-		
 		global $wpdb;
-		global $dsol_booking_path_db_version;
+		global $dsol_booking_version;
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         
 		// my edit starts here
@@ -121,7 +120,9 @@ class DsolBookingPluginHooks
          # create table for time
 		$sql = "CREATE TABLE {$wpdb->prefix}dsol_booking_time (
 					t_id int(11) NOT NULL AUTO_INCREMENT,
-				    start_time varchar(255),
+				    start_time timestamp,
+					end_time timestamp,
+					res_id int(11),
 					PRIMARY KEY  (t_id)
 					);";
 		dbDelta( $sql );
@@ -204,7 +205,7 @@ class DsolBookingPluginHooks
 		
 		$lb = "\n";
 		# +--------------------------------------------------------------------
-		
+		$transAlert = '';
 		$transAlert = '<h3>' . __( 'Confirmation of Meeting Room Request', 'book-a-room' ) . '</h3>' . $lb . $lb . 
 		__( "Thank you. Your request has been submitted. This is just a confirmation that you have submitted a request", 'book-a-room' ) . $lb . $lb . 
 		'<strong>' . __( 'Branch Name', 'book-a-room' ) . ":</strong> {branchName}" . $lb . 
@@ -284,7 +285,7 @@ class DsolBookingPluginHooks
 		# +--------------------------------------------------------------------
 		
 		add_option( 'dsol_requestReminder_body', __( "Request Reminder body", 'book-a-room' ) );
-	
+		
 	}
 
 	public static function plugin_activation_message()
@@ -345,7 +346,6 @@ class DsolBookingPluginHooks
 		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_roomConts_members" );
 		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_rooms" );
 		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_times" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_times_deleted" );
 				
 		delete_option( "dsol_db_version" );
 		delete_option( "dsol_alertEmail" );

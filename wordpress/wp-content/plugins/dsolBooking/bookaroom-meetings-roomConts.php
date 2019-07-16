@@ -427,7 +427,7 @@ class dsol_settings_roomConts {
 
 		/*
 			Kelvin: edit roomContList by removing isPublic and hideDaily from cooked
-		*/
+		*
 		foreach ( $cooked as $key => $val ) {
 			# check for rooms
 			$roomsGood = ( empty( $val[ 'roomCont_roomArr' ] ) ) ? NULL : explode( ',', $val[ 'roomCont_roomArr' ] );
@@ -436,7 +436,7 @@ class dsol_settings_roomConts {
 			$roomContList[ 'branch' ][ $val[ 'roomCont_branch' ] ][] = $val[ 'roomCont_ID' ];
 
 		}
-
+		*/
 		return $cooked;
 	}
 

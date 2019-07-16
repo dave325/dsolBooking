@@ -719,3 +719,4 @@ class dsol_public
         return nl2br($contents);
     }
 }
+?>

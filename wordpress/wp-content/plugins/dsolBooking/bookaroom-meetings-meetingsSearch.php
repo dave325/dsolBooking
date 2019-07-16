@@ -265,3 +265,4 @@ class dsol_meetingsSearch
 		require(DSOL_BOOKING_PATH . 'templates/meetings/searchPending.php');
 	}
 }
+?>

@@ -744,3 +744,4 @@ class dsol_settings_branches
         require DSOL_BOOKING_PATH . 'templates/branches/mainAdmin.php';
     }
 }
+?>

@@ -9,5 +9,13 @@
 5. Make sure tables are populated in the wordpress database now
 6. Check the [wordpress site](http://localhost:3000)
 
+
+Go to the wp-admin and sign in
+Go to the all in one plugin and upload the file I shared with you on google drive (this will add stuff to db)
+to run docker better, do the following: 
+    docker create network dbNet
+    docker-compose up
+    docker run --name=dataramdevelopment\testinc1 -v /Users/daviddataram/Docker\ Applications/test/wordpress/:/var/www/html/ --network dbNet -p 3000:80  wordpress:php7.1-apache 
+
 davedataram@gmail.com
 Dave32594!
