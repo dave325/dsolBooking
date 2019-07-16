@@ -13,7 +13,7 @@
 Go to the wp-admin and sign in
 Go to the all in one plugin and upload the file I shared with you on google drive (this will add stuff to db)
 to run docker better, do the following: 
-    docker create network dbNet
+    docker network create dbNet
     docker-compose up
     docker run --name=dataramdevelopment\testinc1 -v /Users/daviddataram/Docker\ Applications/test/wordpress/:/var/www/html/ --network dbNet -p 3000:80  wordpress:php7.1-apache 
 
