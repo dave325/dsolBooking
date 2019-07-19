@@ -26,17 +26,19 @@ USE wordpress;
         FROM incubator_bookaroom_times bt
         INNER JOIN incubator_bookaroom_reservations res
         ON res.res_id = bt.ti_extID
-        INNER JOIN incubator_bookaroom_roomConts_members m 
-        ON bt.ti_roomID = m.rcm_roomID;
+        RIGHT JOIN incubator_bookaroom_roomConts_members m 
+        ON bt.ti_roomID = m.rcm_roomID
+        WHERE res.me_numAttend > 0 AND LENGTH(res.me_contactEmail) > 0 AND LENGTH(res.me_desc) > 0;
     
 -- 5. bookroom_dsol_booking_reservation
-INSERT INTO incubator_dsol_booking_reservation (c_id, t_id, modified_by, created_at, modified_at, created_by, company_name, email, attendance, notes) 
-	SELECT m.rcm_roomContID, t.ti_id, res.me_contactEmail, res.res_created, CURRENT_TIMESTAMP, res.me_contactName, res.me_contactName, res.me_contactEmail, res.me_numAttend, res.me_notes
+INSERT INTO incubator_dsol_booking_reservation (res_id, c_id, modified_by, created_at, modified_at, created_by, company_name, email, attendance, notes) 
+	SELECT res.res_id, m.rcm_roomContID, res.me_contactEmail, res.res_created, CURRENT_TIMESTAMP, res.me_contactName, res.me_contactName, res.me_contactEmail, res.me_numAttend, res.me_desc
     FROM incubator_bookaroom_reservations res
     INNER JOIN  incubator_bookaroom_times t
     ON res.res_id = t.ti_extID
-    INNER JOIN incubator_bookaroom_roomConts_members m 
-    ON  t.ti_roomID = m.rcm_roomID;
+    JOIN incubator_bookaroom_roomConts_members m 
+    ON  t.ti_roomID = m.rcm_roomID
+    WHERE res.me_numAttend > 0 AND LENGTH(res.me_contactEmail) > 0 AND LENGTH(res.me_desc) > 0;
     
         
 

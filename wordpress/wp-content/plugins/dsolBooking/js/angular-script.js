@@ -19,7 +19,6 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
               if (myFactory.getData.arr.length > 0) {
                 date = new Date(myFactory.getData.date);
               }
-              console.log('reach')
               return restapi.times(date).then(
                 (res) => {
                   // Store user information from php passed object 
@@ -92,6 +91,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
     // Set the current user and reservations to a factory object for reuse
     myFactory.setUser(TIMES.user);
     myFactory.setReservations(TIMES.reservations);
+    console.log($scope.reservations);
     // Sets the collapsable dropdown of room
     $scope.isCollapsed = false;
     // store the data from factory into local scope variable
@@ -145,6 +145,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           (res) => {
             // change valid times and reset selected times 
             $scope.validTimes = res.times;
+            $scope.reservations = res.reservations;
             console.log(res)
             $scope.data.arr = [];
           },
@@ -176,6 +177,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
         (res) => {
           // change valid times and reset selected times 
           $scope.validTimes = res.times;
+          $scope.reservations = res.reservations;
           console.log(res);
           $scope.data.arr = [];
         },
@@ -394,6 +396,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
           i = info[j].place;
         }
       }
+      console.log(myFactory.getData);
       // console.log(myFactory.getData);
       // Check if times field is stores
       if (info.length > 0) {
@@ -555,6 +558,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
       let dates = restapi.checkRepeatReservations($scope.data.arr[0].start_time, $scope.data.arr[$scope.data.arr.length - 1].end_time, $scope.data.room.c_id, $scope.data.repeat);
       myFactory.setMultipleDates(dates.validDates);
       $scope.invalidDates = dates.invalidDates;
+      console.log(dates)
     } else {
       // Store valid dates if repeat is selecteds
       let dates = restapi.checkRepeatReservations($scope.data.arr[0].start_time, $scope.data.arr[0].end_time, $scope.data.room.c_id, $scope.data.repeat);
@@ -1013,7 +1017,7 @@ angular.module('wp', ['ngRoute', 'ui.bootstrap', 'ngAnimate'])
                       if (el.time.length > 1) {
                         for (let resTime = 0; resTime < el.time.length; resTime++) {
                           let resCurTime = el.time[resTime];
-                          if (m.isSame(resCurTime.start_time, "day") && m.isBetween(moment(resCurTime.start_time).subtract(1, "m"), moment(resCurTime.end_time).subtract(1, "m"))
+                          if (moment(resCurTime.startTime) != undefined && m.isSame(resCurTime.start_time, "day") && m.isBetween(moment(resCurTime.start_time).subtract(1, "m"), moment(resCurTime.end_time).subtract(1, "m"))
                             && el.c_id == room
                           ) {
                             validTimes.push({

@@ -102,6 +102,10 @@ class Dsol_Posts_Controller
         $table_name_container = $wpdb->prefix . 'dsol_booking_container';
         $table_name_time = $wpdb->prefix . 'dsol_booking_time';
         $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
+        $timestamp = strtotime('2014-10-03');
+        $daysRemaining = (int)date('t', $timestamp) - (int)date('j', $timestamp) + 7;
+        $endTime = date('Y-m-d', strtotime(date('Y-m-d'). ' + ' .$daysRemaining . ' days'));
+        $startTime = date('Y-m-01');
         // Get information from frontend POST request
         $room =  $request->get_json_params();
         // If the room value is set and the room is valid check for specific value
@@ -128,7 +132,8 @@ class Dsol_Posts_Controller
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
         LEFT JOIN {$table_name_reservation} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
         LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
-        {$where}  
+        {$where} AND
+        start_time BETWEEN '{$startTime} 00:00:01' AND '{$endTime} 23:59:59'
         GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
         ORDER BY JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]');";
         // Return the sql query as an associative array
@@ -136,6 +141,7 @@ class Dsol_Posts_Controller
         if ($wpdb->last_error !== '') {
             return new WP_Error(400, ($wpdb->last_error));
         }
+        $last = $wpdb->last_query;
         // Loop through each result set
         for ($i = 0; $i < count($final); $i++) {
             // temp variable to store time array
@@ -697,5 +703,3 @@ function dsol_register_my_rest_routes()
 }
 
 add_action('rest_api_init', 'dsol_register_my_rest_routes');
-
-?>
