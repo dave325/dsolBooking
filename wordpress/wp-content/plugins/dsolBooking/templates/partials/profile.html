@@ -32,9 +32,9 @@
       <td>{{reservation.container_number}}</td>
       <td>
         <div ng-repeat="time in reservation.time">
-          {{time.start_time | date: 'shortDate'}} <br>
-          {{time.start_time  | date: 'shortTime'}} -
-          {{time.end_time  | date: 'shortTime'}}
+          {{time.start_time * 1000 | date: 'shortDate'}} <br>
+          {{time.start_time  * 1000 | date: 'shortTime'}} -
+          {{time.end_time * 1000  | date: 'shortTime'}}
         </div>
 
       </td>

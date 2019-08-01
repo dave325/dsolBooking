@@ -1,0 +1,4 @@
+[20-Jun-2019 08:45:03 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get_header() in /home/qcleadco/techincubatorqc.com/wp-content/themes/twentyfifteen/404.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/qcleadco/techincubatorqc.com/wp-content/themes/twentyfifteen/404.php on line 10

@@ -35,6 +35,12 @@ if ( is_null( $roomList ) or!is_array( $roomList ) or count( $roomList ) == 0 ) 
 	<?php
 } else {
 	?>
+	<pre>
+		<?php
+			print_r($roomList[ 'room' ]);
+		?>
+	</pre>
+
 	<table class="tableMain">
 		<tr>
 			<td colspan="2"><?php _e( 'Branch List', 'book-a-room' ); ?></td>
@@ -43,7 +49,7 @@ if ( is_null( $roomList ) or!is_array( $roomList ) or count( $roomList ) == 0 ) 
 		foreach ( $branchList as $b_key => $b_val ) {
 			?>
 		<tr>
-			<td colspan="2" class="subHeader"><?php echo $b_val; ?></td>
+			<td colspan="2" class="subHeader"><?php echo $b_val['b_name']; ?></td>
 		</tr>
 		<?php
 			if ( empty( $roomList[ 'room' ][ $b_key ] ) ) {

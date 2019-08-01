@@ -7,7 +7,7 @@
  * 
  */
 
-
+class Authentication{
 
   /**
    * Check permissions for the posts.f
@@ -35,15 +35,19 @@
   /**
    *  Sets up the proper HTTP status code for authorization.
    */
-  function authorization_status_code()
+  public static function authorization_status_code()
   {
 
       $status = 401;
 
-      if (is_user_logged_in()) {
+      if (!is_user_logged_in()) {
           $status = 403;
+      }else{
+          $statud = 2000;
       }
 
       return $status;
   }
 
+}
+?>

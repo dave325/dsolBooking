@@ -44,20 +44,20 @@
                             </ng-container>
                         </div>
                     </div>
-                    <div class="wideCol">
-                            <div class="question">
-                            </div>
-                            <div class="formInput">
-                                <ng-container ng-if="data.repeat.id > 0">
-                                    <em>Dates Available:</em>
-                                    <ul>
-                                        <li ng-repeat="date in data.multipleDates" class="col-12 col-md-4">
-                                            {{date * 1000 | date:'shortDate'}}
-                                        </li>
-                                    </ul>
-                                </ng-container>
-                            </div>
+                    <div class="wideCol" ng-if="data.multipleDates.length > 0">
+                        <div class="question">
                         </div>
+                        <div class="formInput">
+                            <ng-container ng-if="data.repeat.id > 0">
+                                <em>Dates Available:</em>
+                                <ul>
+                                    <li ng-repeat="date in data.multipleDates" class="col-12 col-md-4">
+                                        {{date * 1000 | date:'shortDate'}}
+                                    </li>
+                                </ul>
+                            </ng-container>
+                        </div>
+                    </div>
                     <div class="wideCol">
                         <div class="question">
                             Requested times
@@ -82,6 +82,7 @@
                     <div class="question">
                         <label for="numAtend">
                             Number of attendees *</label>
+
                     </div>
                     <div class="formInput">
                         <input name="numAttend" type="number" id="numAttend" ng-model="info.numAttend" size="3"
@@ -99,6 +100,15 @@
                 </div>
                 <div class="wideCol">
                     <div class="formInput">
+                        <div 
+                            ng-class="{'bg-warning':error.desc.length > 0 || error.numAttend.length > 0}" 
+                            class="col-xs-12"
+                            ng-if="error.desc || error.numAttend > -1"
+                            >
+                            <h3>Please Correct the Following Errors:</h3>
+                            <p ng-if="error.desc">{{error.desc}}</p>
+                            <p ng-if="error.numAttend">{{error.numAttend}}</p>
+                        </div>
                         <input name="submit" type="submit" value="Submit" ng-click="submit()"
                             ng-disabled="isDisabled" />
                     </div>

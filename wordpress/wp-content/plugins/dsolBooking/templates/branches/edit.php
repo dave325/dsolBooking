@@ -66,12 +66,12 @@ if ( !empty( $branchInfo[ 'errors' ] ) ) {
 			<td>
 				<?php echo $dayName; ?>
 			</td>
-			<td><input name="branchOpen_<?php echo $num; ?>" type="text" id="branchOpen_<?php echo $num; ?>" value="<?php echo $branchInfo["branchOpen_{$num}"]; ?>" size="5" maxlength="5"/>
-				<input type="checkbox" name="branchOpen_<?php echo $num; ?>PM" id="branchOpen_<?php echo $num; ?>PM" />
+			<td><input name="branchOpen_<?php echo $num; ?>" type="text" id="branchOpen_<?php echo $num; ?>" value="<?php echo $branchInfo['schedule'][$num]["open_time"]; ?>" size="5" maxlength="5"/>
+			<input type="checkbox" name="branchOpen_<?php echo $num; ?>PM" id="branchOpen_<?php echo $num; ?>PM" />
 				<?php _e( 'PM', 'book-a-room' ); ?>
 			</td>
-			<td><input name="branchClose_<?php echo $num; ?>" type="text" id="branchClose_<?php echo $num; ?>" value="<?php echo $branchInfo["branchClose_{$num}"]; ?>" size="5" maxlength="5"/>
-				<input type="checkbox" name="branchClose_<?php echo $num; ?>PM" id="branchClose_<?php echo $num; ?>PM" <?php echo ( !empty( $branchInfo[ "branchClose_{$num}PM"] ) ) ? ' checked="checked"' : null; ?> />
+			<td><input name="branchClose_<?php echo $num; ?>" type="text" id="branchClose_<?php echo $num; ?>" value="<?php echo $branchInfo['schedule'][$num]["close_time"]; ?>" size="5" maxlength="5"/>
+			<input type="checkbox" name="branchClose_<?php echo $num; ?>PM" id="branchClose_<?php echo $num; ?>PM" />
 				<?php _e( 'PM', 'book-a-room' ); ?>
 			</td>
 		</tr>

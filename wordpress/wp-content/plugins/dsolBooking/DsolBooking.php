@@ -39,6 +39,7 @@ add_action( 'admin_menu', array( 'dsol_settings', 'add_settingsPage' ) );
 function dSol_enqueuer() {
 	// Prefix later on
 	add_shortcode( 'meetingRooms',	array( 'dsol_public', 'mainForm' ) );
+	add_shortcode( 'dsol_submitPage',	array( 'dsol_public', 'showSubmitPage' ) );
 	add_shortcode( 'dsol_profile',	array( 'dsol_company_profile', 'showBookings' ) );
 	$width = get_option( 'dsol_booking_path_screenWidth' );
 
@@ -69,7 +70,8 @@ function dSol_enqueuer() {
 								'partials' => plugins_url( 'dsolBooking/templates/partials/' ),
 								"path" =>  get_site_url(),
 								'nonce' => wp_create_nonce( 'wp_rest' ),
-								'username' => wp_get_current_user()
+								'username' => wp_get_current_user(),
+								'assets' =>plugins_url('dsolBooking')
                 )
     );
 	# languages
@@ -154,6 +156,39 @@ class DsolBookingPluginHooks
         dbDelta( $sql );
 		// my edit ends here (Aung)
 
+		$sql = "INSERT INTO {$wpdb->prefix}dsol_booking_branch (b_name) SELECT branchDesc FROM {$wpdb->prefix}bookaroom_branches;";
+		dbDelta($sql);
+
+		$sql = "INSERT INTO {$wpdb->prefix}dsol_booking_room (b_id, room_number) SELECT room_branchID, room_desc  FROM {$wpdb->prefix}bookaroom_rooms;";
+		dbDelta($sql);
+
+		$sql = "INSERT INTO {$wpdb->prefix}dsol_booking_container (r_id, container_number, occupancy) 
+			SELECT m.rcm_roomID, rc.roomCont_desc, rc.roomCont_occ 
+			FROM {$wpdb->prefix}bookaroom_roomConts rc 
+			INNER JOIN {$wpdb->prefix}bookaroom_roomConts_members m 
+			ON rc.roomCont_ID = m.rcm_roomContID;";
+		dbDelta($sql);
+
+		$sql = "INSERT INTO {$wpdb->prefix}dsol_booking_time (start_time, end_time, res_id) 
+        SELECT bt.ti_startTime, bt.ti_endTime, res.res_id
+        FROM {$wpdb->prefix}bookaroom_times bt
+        INNER JOIN {$wpdb->prefix}bookaroom_reservations res
+        ON res.res_id = bt.ti_extID
+        RIGHT JOIN {$wpdb->prefix}bookaroom_roomConts_members m 
+        ON bt.ti_roomID = m.rcm_roomID
+		WHERE res.me_numAttend > 0 AND LENGTH(res.me_contactEmail) > 0 AND LENGTH(res.me_desc) > 0;";
+		dbDelta($sql);
+
+		$sql = "INSERT INTO {$wpdb->prefix}dsol_booking_reservation (res_id, c_id, modified_by, created_at, modified_at, created_by, company_name, email, attendance, notes) 
+		SELECT res.res_id, m.rcm_roomContID, res.me_contactEmail, res.res_created, CURRENT_TIMESTAMP, res.me_contactName, res.me_contactName, res.me_contactEmail, res.me_numAttend, res.me_desc
+		FROM {$wpdb->prefix}bookaroom_reservations res
+		INNER JOIN  {$wpdb->prefix}bookaroom_times t
+		ON res.res_id = t.ti_extID
+		JOIN {$wpdb->prefix}bookaroom_roomConts_members m 
+		ON  t.ti_roomID = m.rcm_roomID
+		WHERE res.me_numAttend > 0 AND LENGTH(res.me_contactEmail) > 0 AND LENGTH(res.me_desc) > 0;";
+		dbDelta($sql);
+		
 		if( $dbOnly ) {
 			update_option( "dsol_booking_version", $dsol_booking_version );
 			return true;

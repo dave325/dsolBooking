@@ -37,6 +37,11 @@ if ( is_null( $branchList ) ) {
 <?php
 } else {
 	?>
+		<pre>
+			<?php 
+				print_r($branchList)
+			?>
+		</pre>
 	<table class="tableMain">
 		<tr>
 			<td>
@@ -46,23 +51,19 @@ if ( is_null( $branchList ) ) {
 				<?php _e( 'Actions', 'book-a-room' ); ?>
 			</td>
 		</tr>
-		<pre>
-			<?php 
-				print_r($branchList)
-			?>
-		</pre>
+	
 		<?php 
 		foreach ( $branchList as $key => $val ) {
 		?>
 		<tr>
 			<td>
-				<?php echo $val; ?>
+				<?php echo $branchList[$key]['b_name']; ?>
 			</td>
 			<td width="100" align="right">
-				<a href="?page=dsol_Settings_Branches&amp;b_id=<?php echo $key; ?>&amp;action=edit">
+				<a href="?page=dsol_Settings_Branches&amp;b_id=<?php echo $branchList[$key]['b_id']; ?>&amp;action=edit">
 					<?php _e( 'Edit', 'book-a-room' ); ?>
 				</a> |
-				<a href="?page=dsol_Settings_Branches&amp;b_id=<?php echo $key; ?>&amp;action=delete">
+				<a href="?page=dsol_Settings_Branches&amp;b_id=<?php echo $branchList[$key]['b_id']; ?>&amp;action=delete">
 					<?php _e( 'Delete', 'book-a-room' ); ?>
 				</a>
 			</td>

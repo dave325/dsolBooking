@@ -2,7 +2,9 @@
     min-height:75vh !important;
 
 }
-
+body{
+  overflow-x:hidden;
+}
 .page-id-22 .container{
   padding:0px !important;
   margin:0px !important;
@@ -79,6 +81,7 @@ h6{
     background-color: #F6D565;
 }
 
+/*
 #view-container.ng-enter, #view-container.ng-leave {
     position: absolute;
     left: 0;
@@ -105,7 +108,7 @@ h6{
   
   #view-container.ng-leave {
     opacity: 1;
-    /*padding-left: 0px;*/  
+    /*padding-left: 0px;*
     -webkit-transform:translate3d(0, 0, 0);
     -moz-transform:translate3d(0, 0, 0);
     transform:translate3d(0, 0, 0);
@@ -113,7 +116,7 @@ h6{
   
   #view-container.ng-leave-active {
     opacity: 0;
-    /*padding-left: 100px;*/
+    /*padding-left: 100px;*
     -webkit-transform:translate3d(100px, 0, 0);
     -moz-transform:translate3d(100px, 0, 0);
     transform:translate3d(100px, 0, 0);
@@ -127,8 +130,12 @@ h6{
   .animate-show-hide.ng-hide-remove {
     transition: all linear 0.5s;
   }
+*/
 
-  .sticky-top{
-    position:sticky !important;
-    top:120px;
+  .panel-title{
+    cursor:pointer;
+  }
+
+  .loading{
+    height:38px;
   }

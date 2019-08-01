@@ -1,12 +1,14 @@
-<nav class="navbar col-12 col-md-2">
-  <div class="row justify-content-center">
-    <div class="col-12">Room1: {{roomShow}} </div>
-    <div class="col-12" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time * 1000 | date:'shortTime'}} -
+<h1>Book a Room</h1>
+
+<div class="row-fluid">
+  <nav class="navbar col-12 col-md-3 row" ng-class="{'bg-warning':info, 'bg-primary':loading}">
+    <div class="col-xs-12">Room1: {{roomShow}} </div>
+    <div class="col-xs-12" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time * 1000 | date:'shortTime'}} -
       {{data.arr[data.arr.length - 1].end_time * 1000 | date:'shortTime'}}</div>
-    <div class="col-12" ng-if="data.arr.length == 1">Time: {{data.arr[0].start_time * 1000 | date:'shortTime'}}
-      {{data.arr[1].end_time * 1000| date:'shortTime'}}</div>
-    <div class="col-12">Date: {{data.date | date:shortTime }}</div>
-    <div class="col-12">
+    <div class="col-xs-12" ng-if="data.arr.length == 1">Time: {{data.arr[0].start_time * 1000 | date:'shortTime'}}
+      {{data.arr[0].end_time * 1000| date:'shortTime'}}</div>
+    <div class="col-xs-12">Date: {{data.date | date:shortTime }}</div>
+    <div class="col-xs-12">
       <label>
         Repeat:
         <select name="repeatSelect" id="resRepeat" ng-model="resRepeat" class="form-control"
@@ -15,14 +17,13 @@
         </select>
       </label>
     </div>
-    <p></p>
-    <a class="btn btn-primary col-md-offset-6" ng-click="isDisabled || submit()" ng-disabled="isDisabled || data.arr.length == 0">Submit</a>
-  </div>
-</nav>
+    <p ng-if="info"  class="col-xs-12">{{info}}</p>
+    <!--<img ng-src="{{gif}}"class="col-xs-12 loading" ng-if="loading"> -->
+    <P ng-if="loading" class="col-xs-12">Loading..</P>
+    <a class="btn btn-primary col-md-offset-6" ng-click="isDisabled || submit()"
+      ng-disabled="isDisabled || data.arr.length == 0">Submit</a>
+  </nav>
 
-<h1>Book a Room</h1>
-
-<div class="row-fluid">
   <div class="full-border col-md-9">
     <div class="row justify-content-between" id="room-and-date">
 
@@ -49,7 +50,8 @@
 
       <div class="col-2-md">
         <div style="display:inline-block; min-height:290px;">
-          <div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options"></div>
+          <div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options" ng-click="changeDate()">
+          </div>
         </div>
       </div>
 
@@ -73,8 +75,9 @@
           </td>
           <td>{{time.start_time * 1000 | date:'shortTime'}} - {{time.end_time* 1000 | date:'shortTime'}}</td>
           <td ng-if="time.available">Availabile</td>
-          <td ng-if="!time.available && time.reservation">{{reservations[time.reservation].company_name}} {{time.reservation}}</td>
-          <td ng-if="!time.available && !time.reservation">Unavilable</td>
+          <td ng-if="!time.available && time.reservation != undefined">{{reservations[time.reservation].company_name}}
+            {{time.reservation}}</td>
+          <td ng-if="!time.available && time.reservation == undefined">Unavilable</td>
         </tr>
       </tbody>
     </table>

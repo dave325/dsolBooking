@@ -525,19 +525,34 @@ class dsol_public
         return $final;
     }
 
-    protected static function showRooms($branchList, $roomContList, $roomList )
+    public static function showRooms($branchList, $roomContList, $roomList )
     {
         ob_start();
         // Initial page that will show a list of rooms available to book
         // Need to change some of the info on this file
         // e.g. remove amenities and things like that
-        require DSOL_BOOKING_PATH . 'templates/public/publicShowRooms.php';
+        require DSOL_BOOKING_PATH . 'templates/public/publicShowRooms.html';
         $final = ob_get_contents();
         ob_end_clean();
 
         return $final;
 
     }
+
+    public static function showSubmitPage($branchList, $roomContList, $roomList )
+    {
+        ob_start();
+        // Initial page that will show a list of rooms available to book
+        // Need to change some of the info on this file
+        // e.g. remove amenities and things like that
+        require DSOL_BOOKING_PATH . 'templates/public/submitPage.html';
+        $final = ob_get_contents();
+        ob_end_clean();
+
+        return $final;
+
+    }
+
     public static function showRooms_day($roomID, $branchID, $timestamp, $branchList, $roomContList, $roomList)
     {
         # get branch and room

@@ -571,8 +571,7 @@ class dsol_settings_branches
                 $final[$val['b_id']] = $val['b_name'];
             }
         }
-
-        return $final;
+        return $cooked;
     }
 
     public static function getExternalsBranch()

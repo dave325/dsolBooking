@@ -1,0 +1,121 @@
+<div id="dsol-book-room" class="container-fluid col-12" ng-app="wp">
+    <div id="view-container" ng-controller="SubmitForm" autoscroll="true">
+        <form name="form1" method="post">
+            <div id="row topRow">
+                <div class="col-12 col-md-10 col-md-offset-1">
+                    <div class="instructionsSmooth">
+                        <span class="header">
+                            Step 6
+                        </span>
+                        <p>
+                            <em>
+                                Complete the registration form.<br />
+                                Reservation for {{username}}
+                            </em>
+                        </p>
+                        <p><em><strong>Items marked with an asterisk* are required fields.</strong></em>
+                        </p>
+                    </div>
+                    <div class="options">
+                        <div id="formRow">
+                            <div class="wideCol">
+                                <div class="question">
+                                    Branch and Room
+                                </div>
+                                <div class="formInput">
+                                    <em>
+                                        Room # {{data.room.container_number}}
+                                    </em>
+                                </div>
+                            </div>
+                            <div class="wideCol">
+                                <div class="question">
+                                    Date
+                                </div>
+                                <div class="formInput">
+                                    <ng-container ng-if="data.repeat.id < 1">
+                                        <em>
+                                            {{data.arr[0].start_time* 1000 | date: 'shortDate'}}
+                                        </em>
+                                    </ng-container>
+                                    <ng-container ng-if="data.repeat.id > 0">
+                                        <em>Dates already taken:</em>
+                                        <p ng-repeat="date in invalidDates">
+                                            {{date * 1000 | date:'shortDate'}}
+                                        </p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="wideCol" ng-if="data.multipleDates.length > 0">
+                                <div class="question">
+                                </div>
+                                <div class="formInput">
+                                    <ng-container ng-if="data.repeat.id > 0">
+                                        <em>Dates Available:</em>
+                                        <ul>
+                                            <li ng-repeat="date in data.multipleDates" class="col-12 col-md-4">
+                                                {{date * 1000 | date:'shortDate'}}
+                                            </li>
+                                        </ul>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="wideCol">
+                                <div class="question">
+                                    Requested times
+                                </div>
+                                <div class="formInput">
+                                    <em ng-if="data.arr.length > 1"> {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+                                        {{data.arr[data.arr.length - 1].end_time* 1000 | date:'shortTime'}}</em>
+                                    <em ng-if="data.arr.length == 1">{{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+                                        {{data.arr[0].end_time * 1000| date:'shortTime'}}</em>
+                                </div>
+                            </div>
+                            <div class="wideCol">
+                                <div class="question">
+                                    Repeat
+                                </div>
+                                <div class="formInput">
+                                    {{data.repeat.name}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wideCol">
+                            <div class="question">
+                                <label for="numAtend">
+                                    Number of attendees *</label>
+
+                            </div>
+                            <div class="formInput">
+                                <input name="numAttend" type="number" id="numAttend" ng-model="info.numAttend" size="3" maxlength="3" min="0" max="{{data.room.occupancy}}" />
+                            </div>
+                        </div>
+                        <div class="wideCol">
+                            <div class="question">
+                                <label for="desc">
+                                    Purpose of meeting*</label>
+                            </div>
+                            <div class="formInput">
+                                <textarea name="desc" rows="3" id="desc" ng-model="info.desc"></textarea>
+                            </div>
+                        </div>
+                        <div class="wideCol">
+                            <div class="formInput">
+                                <div ng-class="{'bg-warning':error.desc.length > 0 || error.numAttend.length > 0}" class="col-xs-12" ng-if="error.desc || error.numAttend > -1">
+                                    <h3>Please Correct the Following Errors:</h3>
+                                    <p ng-if="error.desc">{{error.desc}}</p>
+                                    <p ng-if="error.numAttend">{{error.numAttend}}</p>
+                                </div>
+                                <input name="submit" type="submit" value="Submit" ng-click="submit()" ng-disabled="isDisabled" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" /!#>'));
+    angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
+</script>
