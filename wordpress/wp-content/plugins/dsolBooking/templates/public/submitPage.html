@@ -106,6 +106,9 @@
                                     <p ng-if="error.desc">{{error.desc}}</p>
                                     <p ng-if="error.numAttend">{{error.numAttend}}</p>
                                 </div>
+                                <div ng-class="{'bg-info':submitting}" class="col-xs-12" ng-if="submitting">
+                                    <h3>Submitting...:</h3>
+                                </div>
                                 <input name="submit" type="submit" value="Submit" ng-click="submit()" ng-disabled="isDisabled" />
                             </div>
                         </div>

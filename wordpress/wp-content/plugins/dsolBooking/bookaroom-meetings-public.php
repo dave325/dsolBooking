@@ -553,6 +553,20 @@ class dsol_public
 
     }
 
+    public static function showProfilePage($branchList, $roomContList, $roomList )
+    {
+        ob_start();
+        // Initial page that will show a list of rooms available to book
+        // Need to change some of the info on this file
+        // e.g. remove amenities and things like that
+        require DSOL_BOOKING_PATH . 'templates/public/profile.html';
+        $final = ob_get_contents();
+        ob_end_clean();
+
+        return $final;
+
+    }
+
     public static function showRooms_day($roomID, $branchID, $timestamp, $branchList, $roomContList, $roomList)
     {
         # get branch and room

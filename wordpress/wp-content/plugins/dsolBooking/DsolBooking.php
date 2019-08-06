@@ -40,7 +40,7 @@ function dSol_enqueuer() {
 	// Prefix later on
 	add_shortcode( 'meetingRooms',	array( 'dsol_public', 'mainForm' ) );
 	add_shortcode( 'dsol_submitPage',	array( 'dsol_public', 'showSubmitPage' ) );
-	add_shortcode( 'dsol_profile',	array( 'dsol_company_profile', 'showBookings' ) );
+	add_shortcode( 'dsol_profile',	array( 'dsol_public', 'showProfilePage' ) );
 	$width = get_option( 'dsol_booking_path_screenWidth' );
 
 	if( !empty( $width ) || $width == 1 ) {

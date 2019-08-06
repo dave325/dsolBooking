@@ -1,0 +1,56 @@
+<div id="dsol-book-room" class="container-fluid col-12" ng-app="wp">
+  <div id="view-container" ng-controller="profile" autoscroll="true">
+    <h1>{{user.data.display_name}}</h1>
+    <div class="alert alert-info sticky-top col-xs-12" role="alert">
+      <div ng-if="items.length > 0">
+        <p>Items selected</p>
+        <span ng-repeat="item in items track by $index">
+          <ng-container ng-if="items.length == 1 || $index == 0">{{item}}</ng-container>
+          <ng-container ng-if="items.length > 1 && $index > 0">, {{item}} </ng-container>
+        </span>
+      </div>
+      <div ng-if="items.length == 0">
+        <p>No items selected</p>
+      </div>
+    </div>
+    <button type="button" class="btn btn-danger" ng-disabled="items.length == 0"
+      ng-click="deleteUserReservation()">Delete
+      selected items</button>
+    <button type="button" class="btn btn-primary" ng-disabled="items.length > 1 || items.length == 0"
+      ng-click="editUserReservation()">Edit selected items</button>
+    <table class="table profile">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col"> </th>
+          <th scope="col">Branch & Room</th>
+          <th scope="col">Date & Time</th>
+          <th scope="col">Created</th>
+          <th scope="col">Event Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="reservation in data track by $index">
+          <td scope="row"><input type="checkbox" value="{{$index}}" name="selected[]" ng-change="selectedBox($index)"
+              ng-model="reservation.selected"></td>
+          <td>{{reservation.container_number}}</td>
+          <td>
+            <div ng-repeat="time in reservation.time">
+              {{time.start_time * 1000 | date: 'shortDate'}} <br>
+              {{time.start_time  * 1000 | date: 'shortTime'}} -
+              {{time.end_time * 1000  | date: 'shortTime'}}
+            </div>
+
+          </td>
+          <td>{{reservation.company_name}}<br>
+            {{reservation.email}}</td>
+          <td>{{reservation.notes}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script type="text/javascript">
+  //angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" /!#>'));
+  angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
+</script>

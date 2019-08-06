@@ -123,12 +123,12 @@
         }
     }
 </script>
-<div id="dsol-book-room" class="container-fluid col-12" ng-app="wp">
+<div id="dsol-book-room" class="container-fluid col-xs-12" ng-app="wp">
     <div id="view-container" ng-controller="Main" autoscroll="true">
         <h1>Book a Room</h1>
 
-        <div class="row-fluid">
-            <nav class="navbar col-12 col-md-3 row" ng-class="{'bg-warning':info, 'bg-primary':loading}">
+        <div class="row-fluid loading-view" id="booking-view">
+            <nav class="navbar col-xs-12 col-md-2 row" ng-class="{'bg-warning':info, 'bg-primary':loading}">
                 <div class="col-xs-12">Room: {{roomShow}} </div>
                 <div class="col-xs-12" ng-if="data.arr.length > 1">Time: {{data.arr[0].start_time * 1000 | date:'shortTime'}} -
                     {{data.arr[data.arr.length - 1].end_time * 1000 | date:'shortTime'}}</div>
@@ -138,14 +138,14 @@
                 <div class="col-xs-12">
                     <label>
                         Repeat:
-                        <select name="repeatSelect" id="resRepeat" ng-model="resRepeat" class="form-control" ng-options="option.name for option in selectData.availableOptions track by option.id" ng-change="selectDataChange()">
+                        <select name="repeatSelect" ng-disabled="isEdit" id="resRepeat" ng-model="resRepeat" class="form-control" ng-options="option.name for option in selectData.availableOptions track by option.id" ng-change="selectDataChange()">
                         </select>
                     </label>
                 </div>
                 <p ng-if="info" class="col-xs-12">{{info}}</p>
                 <!--<img ng-src="{{gif}}"class="col-xs-12 loading" ng-if="loading"> -->
                 <P ng-if="loading" class="col-xs-12">Loading..</P>
-                <a class="btn btn-primary col-md-offset-6" ng-click="isDisabled || submit()" ng-disabled="isDisabled || data.arr.length == 0">Submit</a>
+                <a class="btn btn-primary col-md-6 col-xs-12" ng-click="isDisabled || submit()" ng-disabled="isDisabled || data.arr.length == 0">Submit</a>
             </nav>
 
             <div class="full-border col-md-9">

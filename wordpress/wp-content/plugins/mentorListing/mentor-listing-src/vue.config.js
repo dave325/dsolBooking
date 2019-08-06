@@ -1,4 +1,4 @@
 module.exports = {
-    publicPath: '/mentor',
+    publicPath: '',
     runtimeCompiler: true
 }

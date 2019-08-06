@@ -115,24 +115,30 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       ]
     };
 
+    $scope.isEdit;
+
     $scope.info = null;
     function init() {
       $scope.loading = true;
       let resId = -1;
       let date = Date.now();
       let room = 1;
-      console.log(myFactory.getData)
+      
       if (myFactory.getData.arr.length > 0) {
         // Set data 
-        
+
         let date = new Date();
+
+        var urlParams = new URLSearchParams(window.location.search);
         // If user is editing post
-        if ($location.search().hasOwnProperty('res_id')) {
+        if (urlParams.get('res_id')) {
           // set resId to query parameter and date
-          resId = $location.search()['res_id'];
+          resId = urlParams.get('res_id');
+          $scope.isEdit = true;
           date = myFactory.getData.date;
           room = myFactory.getData.room.c_id;
         } else {
+          $scope.isEdit = false;
           if (myFactory.getData.arr.length == 0) {
             $scope.data.arr = [];
           } else {
@@ -153,8 +159,8 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
           $scope.rooms = res.rooms;
           myFactory.setReservations(res.reservations);
           console.log($scope.rooms.length)
-          console.log( myFactory.getData.arr.length)
-          if(myFactory.getData.arr.length > 0){
+          console.log(myFactory.getData.arr.length)
+          if (myFactory.getData.arr.length > 0) {
 
             console.log(res.reservations);
             // Use timeout for angular digest and wait for content to load before executing
@@ -180,7 +186,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                 }
                 if (moment().isAfter(moment.unix(myFactory.getData.arr[0].start_time))) {
                   $scope.data.arr = [];
-                  myFactory.getData.arr = [];
+                  myFactory.removeData();
                   myFactory.storeInfo();
                   $scope.info = "Selected time is before current date and time";
                   return;
@@ -196,10 +202,10 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                         $scope.validTimes[myFactory.getData.arr[0].place].available = true;
                         angular.element('#hours_' + myFactory.getData.arr[0].place).parent().parent().addClass('selected');
                       } else {
-                        hourChecks[res.data.selectedTimes[0]].checked = true;
-                        $scope.validTimes[res.data.selectedTimes[0]].selected = true;
-                        $scope.validTimes[res.data.selectedTimes[0]].available = true;
-                        angular.element('#hours_' + res.data.selectedTimes[0]).parent().parent().addClass('selected');
+                        hourChecks[res.selectedTimes[0]].checked = true;
+                        $scope.validTimes[res.selectedTimes[0]].selected = true;
+                        $scope.validTimes[res.selectedTimes[0]].available = true;
+                        angular.element('#hours_' + res.selectedTimes[0]).parent().parent().addClass('selected');
                       }
                     });
                   } else {
@@ -212,7 +218,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                         endPoint = myFactory.getData.arr[$scope.data.arr.length - 1].place;
                       } else {
                         startPoint = res.selectedTimes[0];
-                        endPoint = res.selectedTimes[res.data.selectedTimes.length - 1];
+                        endPoint = res.selectedTimes[res.selectedTimes.length - 1];
                       }
                       // Loop through array and select all relevant boxes
                       for (var s = startPoint, e = endPoint; s <= e; s++) {
@@ -257,8 +263,9 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                       }
                       i++;
                     }*/
+                    console.log(hourChecks)
                     for (i = 0; i < res.selectedTimes.length; i++) {
-                      hourChecks[res.selectedTimes].checked = true;
+                      hourChecks[res.selectedTimes[i]].checked = true;
                       $scope.validTimes[res.selectedTimes[i]].selected = true;
                       $scope.validTimes[res.selectedTimes[i]].available = true;
                       angular.element('#hours_' + res.selectedTimes[i]).parent().parent().addClass('selected');
@@ -288,7 +295,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                   }
                 })
               }
-            }else{
+            } else {
               $scope.roomShow = myFactory.getData.room.container_number;
               $scope.togglePast = function () {
                 $scope.validTimes.forEach((ele) => {
@@ -310,11 +317,12 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
           console.error(err);
         }
       );
+      //document.getElementById('booking-view').classList.remove('loading-view')
     }
 
     // Call init function 
     init();
-    
+
     // Change the factory repeat when user changes the dropdown
     $scope.selectDataChange = function () {
       $scope.data.repeat = $scope.resRepeat;
@@ -366,6 +374,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
           }
         )
       }
+
     }
 
     /**
@@ -500,6 +509,8 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       if (boxArr.length > 1) {
         $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
         $scope.data.arr[1] = $scope.validTimes[boxArr[boxArr.length - 1]];
+      } else if (boxArr.length == 1) {
+        $scope.data.arr[0] = $scope.validTimes[boxArr[0]];
       } else {
         $scope.data.arr = [];
       }
@@ -602,6 +613,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
      * Function when user clicks submit button
      */
     $scope.submit = function () {
+      $scope.loading = true;
       // Filter results of user data to all avialable times
       let info = $scope.validTimes.filter((item) => {
         if (item.selected === true && item.available) {
@@ -632,179 +644,22 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         myFactory.storeInfo();
         // Send to submit page
         //$location.path('/').search('action', 'submit');
-        window.location.href = localized.path + '/submit-page';
+        var urlParams = new URLSearchParams(window.location.search);
+        let id = urlParams.get("res_id");
+        if (id) {
+          window.location.href = localized.path + '/submit-page?res_id=' + id;
+        } else {
+          window.location.href = localized.path + '/submit-page';
+        }
       }
     }
 
-    //reset boxes if user reloads page
-    $scope.$on('$viewContentLoaded',
-      function () {
-        // call timeout so angularjs digrest waits for the next round after ngRepeat calls
-        $timeout(function () {
-          console.log(myFactory.getData)
-          if (myFactory.getData.arr.length > 0) {
-            // Set data 
-            let resId = -1;
-            let date = new Date();
-            // If user is editing post
-            if ($location.search().hasOwnProperty('res_id')) {
-              // set resId to query parameter and date
-              resId = $location.search()['res_id'];
-              date = myFactory.getData.date;
-            } else {
-              if (myFactory.getData.arr.length == 0) {
-                $scope.data.arr = [];
-              } else {
-                date = myFactory.getData.date;
-              }
-            }
-
-            // Call api with given date, room, and reservation id
-            restapi.times(date, myFactory.getData.room.c_id, resId).then(
-              (res) => {
-                console.log(res.reservations)
-                // set room
-                myFactory.setRoom(myFactory.getData.room);
-                myFactory.setReservations(res.reservations);
-                $scope.roomShow = myFactory.getData.room.container_number;
-                $scope.resRepeat = myFactory.getData.repeat;
-                $scope.validTimes = res.times;
-                $scope.reservations = res.reservations;
-                $scope.rooms = res.rooms;
-                $scope.data = myFactory.getData;
-                // Call timeout to wait for digest to render times with new $scope data
-                $timeout(() => {
-                  let hourChecks = document.getElementsByName('hours[]');
-                  $scope.togglePast = function () {
-                    $scope.validTimes.forEach((ele) => {
-                      if (ele.past != undefined) {
-                        ele.past = !ele.past;
-                      }
-                    })
-                  }
-                  if (moment().isAfter(moment.unix(myFactory.getData.arr[0].start_time))) {
-                    $scope.data.arr = [];
-                    myFactory.getData.arr = [];
-                    myFactory.storeInfo();
-                    $scope.info = "Selected time is before current date and time";
-                    return;
-                  }
-                  // If user is not editing or has no times selected
-                  else if (myFactory.getData.arr.length > 0 && resId < 0) {
-                    if (myFactory.getData.arr.length === 1) {
-                      // Call timeout to wait for digest one more time
-                      $timeout(function () {
-                        if (resId == -1) {
-                          hourChecks[myFactory.getData.arr[0].place].checked = true;
-                          $scope.validTimes[myFactory.getData.arr[0].place].selected = true;
-                          $scope.validTimes[myFactory.getData.arr[0].place].available = true;
-                          angular.element('#hours_' + myFactory.getData.arr[0].place).parent().parent().addClass('selected');
-                        } else {
-                          hourChecks[res.data.selectedTimes[0]].checked = true;
-                          $scope.validTimes[res.data.selectedTimes[0]].selected = true;
-                          $scope.validTimes[res.data.selectedTimes[0]].available = true;
-                          angular.element('#hours_' + res.data.selectedTimes[0]).parent().parent().addClass('selected');
-                        }
-                      });
-                    } else {
-                      // Call time out to wait for digest one more time
-                      $timeout(() => {
-                        let startPoint, endPoint;
-                        if (resId == -1) {
-                          startPoint = myFactory.getData.arr[0].place;
-                          endPoint = myFactory.getData.arr[$scope.data.arr.length - 1].place;
-                        } else {
-                          startPoint = res.selectedTimes[0];
-                          endPoint = res.selectedTimes[res.data.selectedTimes.length - 1];
-                        }
-                        // Loop through array and select all relevant boxes
-                        for (var s = startPoint, e = endPoint; s <= e; s++) {
-                          if ($scope.validTimes[s].available) {
-                            hourChecks[s].checked = true;
-                            $scope.validTimes[s].selected = true;
-                            $scope.validTimes[s].available = true;
-                            angular.element('#hours_' + s).parent().parent().addClass('selected');
-                          }
-                        }
-                      });
-                    }
-                  } else if (myFactory.getData.arr.length == 0) {
-                    $scope.info = "Error getting information";
-                    return;
-                  } else {
-                    /*
-                    // Store moment variables from factory data
-                    let curDate = moment.unix(myFactory.getData.arr[0]).hours(6).minute(0).seconds(0).milliseconds(0);
-                    let resStartTimestamp = moment.unix(myFactory.getData.arr[0]);
-                    let resEndTimestamp = moment.unix(myFactory.getData.arr[myFactory.getData.arr.length - 1]);
-                    */
-                    // let i, m = curDate;
-                    let i;
-
-                    // Call timeout to wait for digest
-                    $timeout(() => {
-                      console.log(res)
-                      /*
-                      // Using momentjs, loop through the current time and increment by 30 minuets
-                      for (m = curDate, i = 0; m.isBefore(resEndTimestamp); m.add(30, 'minutes')) {
-                        // Check if current moment is between the 2 times and then select validTimes
-                        if (m.isBetween(resStartTimestamp.subtract(1, "minutes"), resEndTimestamp)) {
-                          if ($scope.validTimes[i].available) {
-                            hourChecks[i].checked = true;
-                            $scope.validTimes[i].selected = true;
-                            angular.element('#hours_' + i).parent().parent().addClass('selected');
-                          }
-                        }
-                        if (m.isAfter(resEndTimestamp)) {
-                          break;
-                        }
-                        i++;
-                      }*/
-                      for (i = 0; i < res.selectedTimes.length; i++) {
-                        hourChecks[res.selectedTimes].checked = true;
-                        $scope.validTimes[res.selectedTimes[i]].selected = true;
-                        $scope.validTimes[res.selectedTimes[i]].available = true;
-                        angular.element('#hours_' + res.selectedTimes[i]).parent().parent().addClass('selected');
-                      }
-
-                    });
-                  }
-                }, 1000);
-              },
-              (err) => {
-                console.error(err);
-                $scope.info = "Issue loading information";
-              }
-            )
-          } else {
-            var hourChecks = document.getElementsByName('hours[]');
-            if ($scope.data.arr.length > 0) {
-              if ($scope.data.arr.length === 1) {
-                $timeout(function () {
-                  hourChecks[$scope.data.arr[0].place].checked = true;
-                  $scope.validTimes[$scope.data.arr[0].place].selected = true;
-                  angular.element('#hours_' + myFactory.getData.arr[0].place).parent().parent().addClass('selected');
-                }, 500);
-              } else if ($scope.data.arr.length > 0) {
-                $timeout(function () {
-                  for (var s = $scope.data.arr[0].place, e = $scope.data.arr[$scope.data.arr.length - 1].place; s <= e; s++) {
-                    hourChecks[s].checked = true;
-                    $scope.validTimes[s].selected = true;
-                    angular.element('#hours_' + s).parent().parent().addClass('selected');
-                  }
-                }, 500);
-              }
-            }
-          }
-        }, 0)
-      }
-    );
   }])
 
   .controller('SubmitForm', function ($scope, $http, myFactory, $location, restapi) {
     if (myFactory.getData.arr.length == 0) {
-      $location.search('action', null)
-      $location.path('/');
+      window.location.href = localized.path + "/members";
+      //$location.path('/');
     } else {
       // Store factory data in scope
       $scope.data = myFactory.getData;
@@ -815,6 +670,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         desc: '',
         numAttend: -1
       };
+      $scope.submitting = false;
       // Check if factory data is set 
       if (myFactory.retrieveInfo()) {
         $scope.info = {
@@ -828,6 +684,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         };
       }
       $scope.invalidDates;
+      console.log(myFactory.getData)
       // Check if data time length is greater than 1
       if ($scope.data.arr.length > 1) {
         // Store valid dates if repeat is selected
@@ -846,6 +703,9 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
      * Submite form
      */
     $scope.submit = function () {
+      console.log($scope.info.numAttend <= myFactory.getData.room.occupancy)
+      console.log(myFactory.getData)
+      $scope.submitting = true;
       // Check if user data fields are added
       if ($scope.info.desc &&
         $scope.info.desc.length > 0 &&
@@ -864,36 +724,48 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         myFactory.setNumAttend($scope.info.numAttend);
         myFactory.setDesc($scope.info.desc);
         myFactory.storeInfo();
+        var urlParams = new URLSearchParams(window.location.search);
+        let id = urlParams.get("res_id");
         // Check if res_id is not selected and make new api call
-        if (!$location.search().hasOwnProperty('res_id')) {
+        if (!id) {
           // Make api call to book room
           $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
             (res) => {
+              $scope.submitting = false;
               console.log(res);
               // remove data from factory
               myFactory.removeData();
+              alert("Successfully booked!");
+              window.location.href = localized.path + "/members";
               // send page to confirmation
-              $location.path('/').search('action', 'confirmation');
+              //$location.path('/').search('action', 'confirmation');
             }, (err) => {
-              console.error(err);
+              $scope.info = "There was an error with the booking. Please try again or contact the admin.";
+              $scope.submitting = false;
             }
           )
         } else {
+          $scope.submitting = false;
           // Add edit route
-          myFactory.getData.res_id = parseInt($location.search()['res_id']);
+          myFactory.getData.res_id = parseInt(id);
           // Make edit call
-          restapi.editUserReservation(myFactory.getData).then(
+          $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
             (res) => {
+              $scope.submitting = false;
               myFactory.removeData();
-              $location.path('/?action=confirmation');
+              alert("Successfully booked!");
+              window.location.href = localized.path + "/members";
+              //$location.path('/?action=confirmation');
             }, (err) => {
-              console.error(err);
+              $scope.info = "There was an error with the booking. Please try again or contact the admin.";
+              $scope.submitting = false;
               myFactory.setRoom($scope.data.room);
             }
           )
         }
       } else {
         console.log($scope.info.desc.length)
+        $scope.submitting = false;
         if ($scope.info.desc.length == 0) {
           $scope.error.desc = "Please include a description";
         } else {
@@ -911,18 +783,36 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
     }
   })
 
-  .controller('profile', function ($scope, USERDATA, restapi, $location, myFactory) {
+  .controller('profile', function ($scope, restapi, $location, myFactory) {
     // Set user 
     myFactory.setUser(localized.username);
     // Store user in local scope
     $scope.user = localized.username;
-    // Store data from resolve provider
-    $scope.data = USERDATA;
-    // Store current res_id from checkboxes
-    $scope.items = [];
-    // Set lastCheck for editRes info
-    $scope.lastCheck;
-    console.log($scope.data);
+    restapi.getUserReservations().then(
+      (res) => {
+        // Loop through returned data and transform each start and end date to unix
+        res.data.forEach((el, idx) => {
+          /**
+           * Need to update and check fo multiple columns
+           */
+          el.time.forEach((time) => {
+            time.start_time = new Date(time.start_time).getTime() / 1000;
+            time.end_time = new Date(time.end_time).getTime() / 1000;
+          })
+        });
+        $scope.data = res.data;
+        console.log($scope.data)
+        // Store current res_id from checkboxes
+        $scope.items = [];
+        // Set lastCheck for editRes info
+        $scope.lastCheck;
+      },
+      (err) => {
+        console.error(err)
+      }
+    );
+
+
     /**
      * @params idx
      */
@@ -985,11 +875,12 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       myFactory.setRepeat({ id: '0', name: 'No Repeat' });
       myFactory.setDesc($scope.data[$scope.lastCheck].notes);
       myFactory.setReservations($scope.data);
+      myFactory.getData.t_id = parseInt($scope.data[$scope.lastCheck].t_id);
       myFactory.storeInfo();
 
       // Remove action info and semd to book page
-      $location.search('action', null);
-      $location.path('/').search('res_id', $scope.items[0]);
+      window.location.href = localized.path + "/members?res_id=" + $scope.items[0];
+      //$location.path('/').search('res_id', $scope.items[0]);
     }
   })
 
@@ -1471,7 +1362,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                                 place: j,
                                 selected: true
                               });
-                              if (resid == resCurTime.res_id) {
+                              if (resid == el.res_id) {
 
                                 selectedresIdx.push(j);
                               }
@@ -1491,7 +1382,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                               place: j,
                               selected: true
                             });
-                            if (resid > -1) {
+                            if (resid == el.res_id) {
                               selectedresIdx.push(j);
                             }
                             hasAdded = true;

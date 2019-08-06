@@ -1,4 +1,7 @@
 <?php
+
+use Braintree\Exception;
+
 class Dsol_Posts_Controller
 {
     // Here initialize our namespace and resource name.
@@ -126,8 +129,8 @@ class Dsol_Posts_Controller
                         {$table_name_container}.c_id,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
-                        JSON_ARRAYAGG({$table_name_time}.start_time) AS start_time,
-                        JSON_ARRAYAGG({$table_name_time}.end_time) AS end_time
+                        Json_Array({$table_name_time}.start_time) AS start_time,
+                        Json_Array({$table_name_time}.end_time) AS end_time
         FROM {$table_name_branch}
         LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
@@ -136,7 +139,7 @@ class Dsol_Posts_Controller
         {$where} AND 
         start_time BETWEEN '{$room['date']} 00:00:01' AND '{$room['date']} 23:59:59'
         GROUP BY {$table_name_reservation}.res_id, {$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
-        ORDER BY JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]');";
+        ORDER BY JSON_EXTRACT(Json_Array({$table_name_time}.start_time) , '$[0]');";
         // Return the sql query as an associative array
         $final = $wpdb->get_results($sql, ARRAY_A);
         if ($wpdb->last_error !== '') {
@@ -314,30 +317,51 @@ class Dsol_Posts_Controller
                     return rest_ensure_response(array("error", $e));
                 }
 
-
-                $wpdb->insert($table_name_reservation, array(
-                    "c_id" => $data["room"]["c_id"],
-                    "modified_by" => wp_get_current_user()->display_name,
-                    "created_at" => current_time('mysql', 1),
-                    "modified_at" => current_time('mysql', 1),
-                    "created_by" => wp_get_current_user()->user_email,
-                    "company_name" => wp_get_current_user()->display_name,
-                    "email" => wp_get_current_user()->user_email,
-                    "attendance" => $data["numAttend"],
-                    "notes" => $data["desc"]
-                ));
-                if ($wpdb->last_error !== '') {
-                    $wpdb->query('ROLLBACK');
-                    return new WP_Error(400, ('Error adding time'));
-                }
-                $temp_insert_id = $wpdb->insert_id;
-                foreach ($time_insert_arr as $time) {
-
-                    $time['res_id'] = $temp_insert_id;
-                    $wpdb->insert($table_name_time, $time);
+                if (isset($data['res_id'])) {
+                    $resId = $data['res_id'];
+                    foreach ($time_insert_arr as $time) {
+                        $time = array(
+                            "start_time" => $start_time,
+                            "end_time" => $end_time,
+                        );
+                        $wpdb->update($table_name_time, $time, array("t_id" => $data['t_id']));
+                    }
+                    $wpdb->update($table_name_reservation, array(
+                        "c_id" => $data["room"]["c_id"],
+                        "modified_by" => wp_get_current_user()->display_name,
+                        "created_at" => current_time('mysql', 1),
+                        "modified_at" => current_time('mysql', 1),
+                        "created_by" => wp_get_current_user()->user_email,
+                        "company_name" => wp_get_current_user()->display_name,
+                        "email" => wp_get_current_user()->user_email,
+                        "attendance" => $data["numAttend"],
+                        "notes" => $data["desc"]
+                    ), array("res_id" => $resId));
+                } else {
+                    $wpdb->insert($table_name_reservation, array(
+                        "c_id" => $data["room"]["c_id"],
+                        "modified_by" => wp_get_current_user()->display_name,
+                        "created_at" => current_time('mysql', 1),
+                        "modified_at" => current_time('mysql', 1),
+                        "created_by" => wp_get_current_user()->user_email,
+                        "company_name" => wp_get_current_user()->display_name,
+                        "email" => wp_get_current_user()->user_email,
+                        "attendance" => $data["numAttend"],
+                        "notes" => $data["desc"]
+                    ));
                     if ($wpdb->last_error !== '') {
                         $wpdb->query('ROLLBACK');
                         return new WP_Error(400, ('Error adding time'));
+                    }
+                    $temp_insert_id = $wpdb->insert_id;
+                    foreach ($time_insert_arr as $time) {
+
+                        $time['res_id'] = $temp_insert_id;
+                        $wpdb->insert($table_name_time, $time);
+                        if ($wpdb->last_error !== '') {
+                            $wpdb->query('ROLLBACK');
+                            return new WP_Error(400, ('Error adding time'));
+                        }
                     }
                 }
                 /*
@@ -409,7 +433,7 @@ class Dsol_Posts_Controller
                                         $temp_start = date('Y-m-d H:i:s', strtotime("$final_start_date"));
                                     }
 
-                                    array_push($time_insert_arr,array(
+                                    array_push($time_insert_arr, array(
                                         "start_time" => $temp_start,
                                         "end_time" => $temp_end
                                     ));
@@ -425,37 +449,59 @@ class Dsol_Posts_Controller
                 } catch (Exceptions $e) {
                     return rest_ensure_response($e);
                 }
-                //return rest_ensure_response(array($data, $time_insert_arr, sizeOf($data['seperateIndexes'])));
-                $wpdb->insert($table_name_reservation, array(
-                    "c_id" => $data["room"]["c_id"],
-                    "modified_by" => wp_get_current_user()->display_name,
-                    "created_at" => current_time('mysql', 1),
-                    "modified_at" => current_time('mysql', 1),
-                    "created_by" => wp_get_current_user()->user_email,
-                    "company_name" => wp_get_current_user()->display_name,
-                    "email" => wp_get_current_user()->user_email,
-                    "attendance" => $data["numAttend"],
-                    "notes" => $data["desc"]
-                ));
-                if ($wpdb->last_error !== '') {
-                    return rest_ensure_response($wpdb->last_result);
-                }
-                $insert_id = $wpdb->insert_id;
-                $temp_insert_id = $wpdb->insert_id;
-                foreach ($time_insert_arr as $time) {
-
-                    $time['res_id'] = $temp_insert_id;
-                    $wpdb->insert($table_name_time, $time);
+                if (isset($data['res_id'])) {
+                    $resId = $data['res_id'];
+                    foreach ($time_insert_arr as $time) {
+                        $time = array(
+                            "start_time" => $start_time,
+                            "end_time" => $end_time,
+                        );
+                        $wpdb->update($table_name_time, $time, array("t_id" => $data['t_id']));
+                    }
+                    $wpdb->update($table_name_reservation, array(
+                        "c_id" => $data["room"]["c_id"],
+                        "modified_by" => wp_get_current_user()->display_name,
+                        "created_at" => current_time('mysql', 1),
+                        "modified_at" => current_time('mysql', 1),
+                        "created_by" => wp_get_current_user()->user_email,
+                        "company_name" => wp_get_current_user()->display_name,
+                        "email" => wp_get_current_user()->user_email,
+                        "attendance" => $data["numAttend"],
+                        "notes" => $data["desc"]
+                    ), array("res_id" => $resId));
+                } else {
+                    //return rest_ensure_response(array($data, $time_insert_arr, sizeOf($data['seperateIndexes'])));
+                    $wpdb->insert($table_name_reservation, array(
+                        "c_id" => $data["room"]["c_id"],
+                        "modified_by" => wp_get_current_user()->display_name,
+                        "created_at" => current_time('mysql', 1),
+                        "modified_at" => current_time('mysql', 1),
+                        "created_by" => wp_get_current_user()->user_email,
+                        "company_name" => wp_get_current_user()->display_name,
+                        "email" => wp_get_current_user()->user_email,
+                        "attendance" => $data["numAttend"],
+                        "notes" => $data["desc"]
+                    ));
                     if ($wpdb->last_error !== '') {
-                        $wpdb->query('ROLLBACK');
-                        return new WP_Error(400, ($wpdb->last_result));
+                        return rest_ensure_response($wpdb->last_result);
+                    }
+                    $insert_id = $wpdb->insert_id;
+                    $temp_insert_id = $wpdb->insert_id;
+                    foreach ($time_insert_arr as $time) {
+
+                        $time['res_id'] = $temp_insert_id;
+                        $wpdb->insert($table_name_time, $time);
+                        if ($wpdb->last_error !== '') {
+                            $wpdb->query('ROLLBACK');
+                            return new WP_Error(400, ($wpdb->last_result));
+                        }
+                    }
+                    $insert_id = $wpdb->insert_id;
+                    if ($wpdb->last_error !== '') {
+                        return rest_ensure_response($wpdb->last_result);
                     }
                 }
-                $insert_id = $wpdb->insert_id;
-                if ($wpdb->last_error !== '') {
-                    return rest_ensure_response($wpdb->last_result);
-                }
-                return rest_ensure_response(array("Success"=> true));
+                return rest_ensure_response(array("Success" => true));
             }
         } else {
             return new WP_Error(400, ('The Time is already taken'), array($time_insert_arr));
@@ -489,14 +535,15 @@ class Dsol_Posts_Controller
             {$table_name_container}.c_id,
             {$table_name_container}.r_id,
             {$table_name_container}.occupancy,
-            JSON_ARRAYAGG({$table_name_time}.start_time) AS start_time,
-            JSON_ARRAYAGG({$table_name_time}.end_time) AS end_time
+            {$table_name_time}.t_id,
+            {$table_name_time}.start_time,
+            {$table_name_time}.end_time
             FROM {$table_name_reservation} 
             LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
             LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
             WHERE {$table_name_reservation}.email = '{$userEmail}' AND {$table_name_container}.r_id IS NOT NULL
-            GROUP BY {$table_name_reservation}.res_id, {$table_name_container}.container_number
-            ORDER BY JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]') DESC;";
+            GROUP BY {$table_name_time}.t_id,{$table_name_reservation}.res_id, {$table_name_container}.container_number
+            ORDER BY {$table_name_time}.start_time DESC;";
             $final = $wpdb->get_results($sql, ARRAY_A);
             if ($wpdb->last_error !== '') {
                 return rest_ensure_response($wpdb->last_result);
@@ -505,16 +552,10 @@ class Dsol_Posts_Controller
             for ($i = 0; $i < count($final); $i++) {
                 // temp variable to store time array
                 $temp_time = array();
-                // decode results saved from json array in query
-                $decode_end_time = json_decode($final[$i]['end_time']);
-                $decode_start_time = json_decode($final[$i]['start_time']);
-                // Store start and end time in appropriate pairings
-                for ($j = 0; $j < sizeof($decode_start_time); $j++) {
-                    array_push($temp_time, array(
-                        "start_time" => $decode_start_time[$j],
-                        "end_time" => $decode_end_time[$j]
-                    ));
-                }
+                array_push($temp_time, array(
+                    "start_time" => $final[$i]['start_time'],
+                    "end_time" => $final[$i]['end_time']
+                ));
                 // Push filtered array set to official time set
                 $final[$i]['time'] = $temp_time;
             }
@@ -528,6 +569,7 @@ class Dsol_Posts_Controller
     public function editUserReservation($request)
     {
         global $wpdb;
+        $data = $request->get_json_params();
         $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
         $table_name_room = $wpdb->prefix . 'dsol_booking_room';
         $table_name_container = $wpdb->prefix . 'dsol_booking_container';
@@ -536,38 +578,43 @@ class Dsol_Posts_Controller
         $start_time = date('Y-m-d H:i:s', $data["arr"][0]["start_time"]);
         $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]["end_time"]);
         if (is_user_logged_in()) {
-            $data = $request->get_json_params();
-            $resId = $data['info']['res_id'];
-            $sql = "SELECT t_id FROM {$table_name_reservation} WHERE res_id = {$resId}";
-            $res = $wpdb->get_results($sql);
-            $time_id = $res[0]->t_id;
-            $time = array(
-                "start_time" => $start_time,
-                "end_time" => $end_time
-            );
-            $wpdb->update($table_name_time, $time, array("t_id" => $time_id));
-            if ($wpdb->last_error !== '') {
-                $wpdb->query('ROLLBACK');
-                return new WP_Error(400, ('Error adding time'));
-            }
-            $wpdb->update($table_name_reservation, array(
-                "c_id" => $data["room"]["c_id"],
-                "t_id" => $time_id,
-                "modified_by" => wp_get_current_user()->display_name,
-                "created_at" => current_time('mysql', 1),
-                "modified_at" => current_time('mysql', 1),
-                "created_by" => wp_get_current_user()->user_email,
-                "company_name" => wp_get_current_user()->display_name,
-                "email" => wp_get_current_user()->user_email,
-                "attendance" => $data["numAttend"],
-                "notes" => $data["desc"]
-            ), array("res_id" => $resId));
-            if ($wpdb->last_error !== '') {
-                $wpdb->query('ROLLBACK');
-                return new WP_Error(400, ('Error adding time'));
-            }
-            // Return all of our comment response data.
+            try {
 
+                $resId = $data['res_id'];
+                $sql = "SELECT t_id FROM {$table_name_time} WHERE res_id = {$resId}";
+                $res = $wpdb->get_results($sql);
+                $time_id = $res[0]->t_id;
+                $time = array(
+                    "start_time" => $start_time,
+                    "end_time" => $end_time,
+                    "res_id" => $resId
+                );
+                $wpdb->update($table_name_time, $time, array("t_id" => $time_id));
+                if ($wpdb->last_error !== '') {
+                    $wpdb->query('ROLLBACK');
+                    return new WP_Error(400, ('Error adding time'));
+                }
+                $wpdb->update($table_name_reservation, array(
+                    "c_id" => $data["room"]["c_id"],
+                    "modified_by" => wp_get_current_user()->display_name,
+                    "created_at" => current_time('mysql', 1),
+                    "modified_at" => current_time('mysql', 1),
+                    "created_by" => wp_get_current_user()->user_email,
+                    "company_name" => wp_get_current_user()->display_name,
+                    "email" => wp_get_current_user()->user_email,
+                    "attendance" => $data["numAttend"],
+                    "notes" => $data["desc"]
+                ), array("res_id" => $resId));
+                if ($wpdb->last_error != '') {
+                    $wpdb->query('ROLLBACK');
+                    return new WP_Error(400, ("Error adding time"));
+                }
+                // Return all of our comment response data.
+                $wpdb->query("COMMIT");
+            } catch (Exception $e) {
+                return new WP_Error(400, ($e));
+            }
+            return rest_ensure_response(array("Success" => true));
         } else {
             return new WP_Error(403, ('User not found'));
         }
