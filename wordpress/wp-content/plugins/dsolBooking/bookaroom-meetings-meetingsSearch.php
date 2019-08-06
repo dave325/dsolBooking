@@ -232,8 +232,8 @@ class dsol_meetingsSearch
                         {$table_name_container}.c_id,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
-                        JSON_ARRAYAGG({$table_name_time}.start_time) AS start_time,
-                        JSON_ARRAYAGG({$table_name_time}.end_time) AS end_time
+                        Json_Array({$table_name_time}.start_time) AS start_time,
+                        Json_Array({$table_name_time}.end_time) AS end_time
         FROM {$table_name_branch}
         LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
@@ -242,7 +242,7 @@ class dsol_meetingsSearch
         WHERE ({$table_name_reservation}.res_id IS NOT NULL) AND
 		(MONTH({$table_name_time}.start_time) = {$curMonth})
         GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
-        ORDER BY JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]');";
+        ORDER BY JSON_EXTRACT(Json_Array({$table_name_time}.start_time) , '$[0]');";
 		$cooked = $wpdb->get_results($sql, ARRAY_A);
 		 // Loop through each result set
 		 for ($i = 0; $i < count($cooked); $i++) {
@@ -261,7 +261,6 @@ class dsol_meetingsSearch
 			// Push filtered array set to official time set
 			$cooked[$i]['time'] = $temp_time;
 		}
-		$t = $wpdb->last_query;
 		require(DSOL_BOOKING_PATH . 'templates/meetings/searchPending.php');
 	}
 }

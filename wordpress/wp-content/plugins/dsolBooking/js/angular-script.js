@@ -1,95 +1,7 @@
 angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
-  /*
-    .config(function ($routeProvider, $locationProvider, $locationProvider) {
-      $locationProvider.html5Mode(true);
-      $routeProvider
-        .when('/', {
-          templateUrl: localized.partials + '/showRooms.html',
-          controller: 'Main',
-          resolve: {
-            TIMES: ['restapi', 'myFactory', '$location',
-              /**
-               * 
-               * @param {*} restapi 
-               * @param {*} myFactory 
-               * @returns res object {times, reservations, rooms}
-               *
-              function (restapi, myFactory, $location) {
-                /**
-                 * 
-                 *
-                console.log($location.search().hasOwnProperty('res_id'))
-                if (!$location.search().hasOwnProperty('res_id')) {
-                  let date = Date.now();
-                  if (myFactory.getData.arr.length > 0) {
-                    date = new Date(myFactory.getData.date);
-                  }
-                  return restapi.times(date).then(
-                    (res) => {
-                      // Store user information from php passed object 
-                      // php object recieved from wp_localized_script
-                      res.user = localized.username;
-                      return res;
-                    },
-                    (err) => {
-                      console.error(err);
-                    }
-                  );
-                }
-                *
-                return {}
-              }],
-            USERDATA: ["restapi", "$location",
-              /**
-               * 
-               * @param {*} restapi 
-               * @param {*} $location 
-               * @returns res object {times}
-               *
-              function (restapi, $location) {
-                // Checks to see if query parameter exists and then make api call
-                if ($location.search().hasOwnProperty("action") && $location.search()['action'] == "profile") {
-                  return restapi.getUserReservations().then(
-                    (res) => {
-                      // Loop through returned data and transform each start and end date to unix
-                      res.data.forEach((el, idx) => {
-                        /**
-                         * Need to update and check fo multiple columns
-                         *
-                        el.time.forEach((time) => {
-                          time.start_time = new Date(time.start_time).getTime() / 1000;
-                          time.end_time = new Date(time.end_time).getTime() / 1000;
-                        })
-                      });
-                      return res.data;
-                    },
-                    (err) => {
-                      console.error(err)
-                    }
-                  )
-                }
-              }]
-          }
-        })
-        .when('/submit', {
-          templateUrl: localized.partials + '/submitForm.html',
-          controller: 'SubmitForm'
-        })
-        .when('/profile', {
-          templateUrl: localized.partials + '/profile.html',
-          controller: 'profile',
-          resolve: {
-  
-          }
-        })
-        .when('/confirmation', {
-          templateUrl: localized.partials + '/confirmation.html'
-        })
-  
-    })
-    */
   .controller('Main', ['$scope', '$timeout', 'myFactory', '$location', 'restapi', function ($scope, $timeout, myFactory, $location, restapi) {
     //$scope.oneAtATime = true;
+    // /angular.element(document.getElementById('loading')).hide();
     // Stores the valid Times from the resolved object in the route
     $scope.validTimes = [];
     // Stores the reservations from the resolved object in the route
@@ -123,12 +35,11 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       let resId = -1;
       let date = Date.now();
       let room = 1;
-      
+
       if (myFactory.getData.arr.length > 0) {
         // Set data 
 
         let date = new Date();
-
         var urlParams = new URLSearchParams(window.location.search);
         // If user is editing post
         if (urlParams.get('res_id')) {
@@ -147,6 +58,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
           }
         }
       }
+
       // Call api with given date, room, and reservation id
       restapi.times(date, room, resId).then(
         (res) => {
@@ -350,7 +262,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         myFactory.setDate($scope.dt);
         $scope.loading = true;
         // make api call with new date in mind
-        restapi.times(new Date($scope.dt)).then(
+        restapi.times(new Date($scope.dt), myFactory.getData.room.c_id).then(
           (res) => {
             // change valid times and reset selected times 
             $scope.validTimes = res.times;
@@ -1389,21 +1301,6 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                           }
                         }
                       }
-                      /*
-                      Timestamp implementation
-                      if (el.start_time.split(",").includes(m.unix().toString()) && el.c_id == room) {
-                        validTimes.push({
-                          start_time: m.unix(),
-                          end_time: tempDate.unix(),
-                          available: false,
-                          reservation: idx,
-                          place: j,
-                          selected: true
-                        });
-                        hasAdded = true;
-                        return;
-                      }
-                      */
                     });
 
                     /**
@@ -1423,6 +1320,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                     }
                     hasAdded = false;
                   } else {
+                    // If the time is before the current time and the day is the same
                     if (m.isSame(Date.now(), "day")) {
                       validTimes.push({
                         //start_time: m.format('h:mm ss A'),
@@ -1485,24 +1383,8 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                             hasAdded = true;
                           }
                         }
-                        /**
-                         * Timestamp implementation - Old code
-                         *
-                        if (el.start_time.split(",").includes(m.unix().toString()) && el.c_id == room) {
-                          validTimes.push({
-                            start_time: m.unix(),
-                            end_time: tempDate.unix(),
-                            available: false,
-                            reservation: idx,
-                            place: j,
-                            selected: true
-                          });
-                          hasAdded = true;
-                          return;
-                        }
-                        */
                       });
-                      if (!hasAdded) {
+                      if (!hasAdded && m.isSame(Date.now(), "day")) {
                         validTimes.push({
                           //start_time: m.format('h:mm ss A'),
                           //end_time: tempDate.format('h:mm ss A'),
@@ -1510,7 +1392,18 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                           end_time: tempDate.unix(),
                           available: true,
                           place: j,
-                          selected: false
+                          selected: false,
+                          past: true
+                        });
+                      }else if(!hasAdded && !m.isSame(Date.now(), "day") ){
+                        validTimes.push({
+                          //start_time: m.format('h:mm ss A'),
+                          //end_time: tempDate.format('h:mm ss A'),
+                          start_time: m.unix(),
+                          end_time: tempDate.unix(),
+                          available: true,
+                          place: j,
+                          selected: false,
                         });
                       }
                     }
@@ -1570,30 +1463,3 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
     return service;
   })
-
-/*
-  .run(function ($rootScope, $location, $route) {
-    $rootScope.$on("$routeChangeStart", function ($event, next, current) {
-      // handle route changes
-      switch ($location.search()['action']) {
-
-        case 'profile':
-          next.$$route.controller = "profile"
-          next.templateUrl = localized.partials + '/profile.html';
-          break;
-        case 'submit':
-          next.$$route.controller = "SubmitForm"
-          next.templateUrl = localized.partials + '/submitForm.html';
-          break;
-        case 'confirmation':
-          next.templateUrl = localized.partials + '/confirmation.html';
-          break;
-        default:
-          next.$$route.controller = "Main"
-          next.templateUrl = localized.partials + '/showRooms.html';
-          break;
-      }
-    });
-  });
-
-  */

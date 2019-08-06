@@ -365,21 +365,12 @@ class DsolBookingPluginHooks
 		global $wpdb;
 		global $dsol_booking_version;
 	
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_amenities" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_branches" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_cityList" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_closings" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_eventAges" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_eventCats" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_event_ages" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_event_categories" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_registrations" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_reservations" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_reservations_deleted" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_roomConts" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_roomConts_members" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_rooms" );
-		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_times" );
+		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_booking_reservation" );
+		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_booking_time" );
+		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_booking_container" );
+		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_booking_room" );
+		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_booking_branch" );
+		$wpdb->query( "DROP TABLE {$wpdb->prefix}dsol_booking_branch_schedule" );
 				
 		delete_option( "dsol_db_version" );
 		delete_option( "dsol_alertEmail" );
