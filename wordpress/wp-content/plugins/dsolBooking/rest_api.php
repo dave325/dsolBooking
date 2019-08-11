@@ -61,6 +61,13 @@ class Dsol_Posts_Controller
                 'callback'  => array($this, 'deleteUserResrvation')
             )
         ));
+
+        register_rest_route($this->namespace, '/adminEditReservations',array(
+            array(
+                'methods' => "POST",
+                "callback" => array($this, 'adminEditReservations')
+            )
+            ));
     }
 
     /**
@@ -564,6 +571,52 @@ class Dsol_Posts_Controller
         } else {
             return new WP_Error(403, ('User not found'));
         }
+    }
+
+    public function adminEditReservations($request){
+        global $wpdb;
+        $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
+        $table_name_room = $wpdb->prefix . 'dsol_booking_room';
+        $table_name_container = $wpdb->prefix . 'dsol_booking_container';
+        $table_name_time = $wpdb->prefix . 'dsol_booking_time';
+        $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
+        $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL";
+        $data = $request->get_json_params();
+        $sql = "SELECT {$table_name_reservation}.res_id,
+            {$table_name_reservation}.company_name,
+            {$table_name_reservation}.email,
+            {$table_name_reservation}.attendance,
+            {$table_name_reservation}.notes,
+            {$table_name_container}.container_number,
+            {$table_name_container}.c_id,
+            {$table_name_container}.r_id,
+            {$table_name_container}.occupancy,
+            {$table_name_time}.t_id,
+            {$table_name_time}.start_time,
+            {$table_name_time}.end_time
+            FROM {$table_name_reservation} 
+            LEFT JOIN {$table_name_container} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
+            LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
+            WHERE {$table_name_reservation}.res_id = {$data['res_id']}
+            GROUP BY {$table_name_time}.t_id,{$table_name_reservation}.res_id, {$table_name_container}.container_number
+            ORDER BY {$table_name_time}.start_time DESC;";
+            $final = $wpdb->get_results($sql, ARRAY_A);
+            if ($wpdb->last_error !== '') {
+                return rest_ensure_response($wpdb->last_result);
+            }
+            // Loop through each result set
+            for ($i = 0; $i < count($final); $i++) {
+                // temp variable to store time array
+                $temp_time = array();
+                array_push($temp_time, array(
+                    "start_time" => $final[$i]['start_time'],
+                    "end_time" => $final[$i]['end_time']
+                ));
+                // Push filtered array set to official time set
+                $final[$i]['time'] = $temp_time;
+            }
+            // Return all of our comment response data.
+            return rest_ensure_response(array($final, $data, $wpdb->last_query));
     }
 
     public function editUserReservation($request)

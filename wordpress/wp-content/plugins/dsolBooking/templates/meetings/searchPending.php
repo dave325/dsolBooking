@@ -3,6 +3,21 @@
 <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script language="javascript">
 	$(function() {
+		$("#editView").click(function(e) {
+			e.preventDefault();
+			var urlParams = new URLSearchParams($(this).attr('href'));
+
+			fetch(urlParams.get('url') + '/wp-json/dsol-booking/v1/adminEditReservations', {
+				method: "POST",
+				body: "{'res_id': " + urlParams.get('res_id') + "}"
+			}).then( (red) => {
+
+				console.log(red)
+				return;
+
+				window.sessionStorage.setItem('userData', JSON.stringify(data));
+			})
+		});
 		// Setup date drops
 		$('#startDate, #endDate').datepicker({
 			dateFormat: 'mm/dd/yy'
@@ -41,8 +56,10 @@
 		if (e.keyCode == 27) jQuery('.popup').fadeOut(350);
 	});
 </script>
-<link href="<?php echo plugins_url(); ?>/dsolBooking/css/dsol_meetings.css" rel="stylesheet" type="text/css"/>
-
+<link href="<?php echo plugins_url(); ?>/dsolBooking/css/dsol_meetings.css" rel="stylesheet" type="text/css" />
+<?php
+print_r($branchList);
+?>
 <div class=wrap>
 	<div id="icon-options-general" class="icon32"></div>
 	<h2>
@@ -75,12 +92,12 @@
 																															$branchName = $val['branchDesc'];
 																															$selected = ($externals['branchID'] == $val['branchID']) ? ' selected="selected"' : NULL;
 																															?><option class="disabled" value="<?php echo 'branch-' . $key; ?>" <?php echo $selected; ?>><?php echo $branchName; ?></option><?php
-																																						# rooms
-																																						$curRoomList = $roomContList['branch'][$val['branchID']];
-																																						foreach ($curRoomList as $roomContID) {
-																																							$selected = ($externals['roomID'] == $roomContID) ? ' selected="selected"' : NULL;
+																																																																# rooms
+																																																																$curRoomList = $roomContList['branch'][$val['branchID']];
+																																																																foreach ($curRoomList as $roomContID) {
+																																																																	$selected = ($externals['roomID'] == $roomContID) ? ' selected="selected"' : NULL;
 
-																																							?>
+																																																																	?>
 							<option value="<?php echo $roomContID; ?>" <?php echo $selected; ?>><?php echo '&nbsp;&nbsp;&nbsp;&nbsp;' . $roomContList['id'][$roomContID]['desc'] . '&nbsp;[' . $roomContList['id'][$roomContID]['occupancy'] . ']'; ?></option>
 						<?php
 						}
@@ -190,6 +207,11 @@ if (empty($cooked)) {
 <?php
 } else {
 	?>
+	<pre>
+							<?php
+							//print_r($cooked)
+							?>
+						</pre>
 	<h3><?php printf(__('Results Found: %s', 'book-a-room'), count($cooked)); ?></h3>
 	<form id="form1" name="form1" method="post" action="?page=bookaroom_meetings">
 		<table class="tableMain freeWidth">
@@ -202,6 +224,7 @@ if (empty($cooked)) {
 				<td><?php _e('Event Name', 'book-a-room'); ?></td>
 				<td><?php _e('Contact Name', 'book-a-room'); ?></td>
 				<td><?php _e('Purpose of meeting', 'book-a-room'); ?></td>
+				<td></td>
 			</tr>
 			<?php
 			foreach ($cooked as $key => $val) {
@@ -216,13 +239,12 @@ if (empty($cooked)) {
 					<td><strong><?php echo "Room #" . $val["room_number"] ?>
 					</td>
 					<td nowrap="nowrap">
-						<?php 
-								for($j = 0; $j < count($val["time"]); $j++){
-							echo date('M. jS, Y', strtotime($val["time"][$j]['start_time'])); ?>
-							<br />
-							<?php echo date('g:i a', strtotime($val["time"][$j]['start_time'])) . ' - ' . date('g:i a', strtotime($val["time"][$j]['end_time'])); }?><br />
+						<?php
+						echo date('M. jS, Y', strtotime($val["start_time"])); ?>
+						<br />
+						<?php echo date('g:i a', strtotime($val['start_time'])) . ' - ' . date('g:i a', strtotime($val['end_time'])); ?><br />
 
-						</td>
+					</td>
 					</td>
 					<td><?php echo  $val['notes'] ?></td>
 					<td><a class="btn" data-popup-open="popup-<?php echo $count; ?>" href="#"><?php echo $val['company_name']; ?></a> (<?php echo $notes; ?>)
@@ -246,6 +268,12 @@ if (empty($cooked)) {
 							} else {
 								echo $val['notes'];
 							} ?></p>
+					</td>
+					<td>
+						<a id="editView" href="?url=<?php echo get_site_url()  ?>&amp;page=bookaroom_meetings_search&amp;res_id=<?php echo $val['res_id']; ?>&amp;nonce=<?php echo $nonce ?>&amp;action=edit">
+							<?php _e('Edit', 'book-a-room'); ?>
+						</a>
+
 					</td>
 				</tr>
 			<?php

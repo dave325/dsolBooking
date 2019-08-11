@@ -100,6 +100,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                   $scope.data.arr = [];
                   myFactory.removeData();
                   myFactory.storeInfo();
+                  $scope.dt = new Date();
                   $scope.info = "Selected time is before current date and time";
                   return;
                 }
@@ -618,6 +619,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       console.log($scope.info.numAttend <= myFactory.getData.room.occupancy)
       console.log(myFactory.getData)
       $scope.submitting = true;
+      console.log($scope.info)
       // Check if user data fields are added
       if ($scope.info.desc &&
         $scope.info.desc.length > 0 &&

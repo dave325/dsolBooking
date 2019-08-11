@@ -16,7 +16,10 @@ class dsol_meetingsSearch
 				$results = self::getMeetingList($externals);
 				self::showSearch($externals, $results);
 				break;
-
+			case 'edit':
+				
+				self::editSinglePost();
+				break;
 			default:
 				self::showSearch($externals, array(), TRUE);
 				break;
@@ -212,7 +215,8 @@ class dsol_meetingsSearch
 		} else {
 			$roomID = $externals['roomID'];
 		}
-
+		$nonce = wp_create_nonce();
+		$admin_url = admin_url('admin-ajax.php');
 		$table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
 		$table_name_room = $wpdb->prefix . 'dsol_booking_room';
 		$table_name_container = $wpdb->prefix . 'dsol_booking_container';
@@ -232,8 +236,9 @@ class dsol_meetingsSearch
                         {$table_name_container}.c_id,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
-                        Json_Array({$table_name_time}.start_time) AS start_time,
-                        Json_Array({$table_name_time}.end_time) AS end_time
+						{$table_name_branch}.b_id,
+                        {$table_name_time}.start_time AS start_time,
+                        {$table_name_time}.end_time AS end_time
         FROM {$table_name_branch}
         LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
@@ -241,8 +246,8 @@ class dsol_meetingsSearch
         LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
         WHERE ({$table_name_reservation}.res_id IS NOT NULL) AND
 		(MONTH({$table_name_time}.start_time) = {$curMonth})
-        GROUP BY {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
-        ORDER BY JSON_EXTRACT(Json_Array({$table_name_time}.start_time) , '$[0]');";
+        GROUP BY {$table_name_time}.t_id, {$table_name_reservation}.res_id,{$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
+        ORDER BY {$table_name_time}.start_time DESC";
 		$cooked = $wpdb->get_results($sql, ARRAY_A);
 		 // Loop through each result set
 		 for ($i = 0; $i < count($cooked); $i++) {
@@ -263,5 +268,12 @@ class dsol_meetingsSearch
 		}
 		require(DSOL_BOOKING_PATH . 'templates/meetings/searchPending.php');
 	}
+
+	public static function editSinglePost(){
+		ob_start();
+		
+		return json_encode(array('key'=>'val'));
+		ob_get_clean();
+		
+	}
 }
-?>

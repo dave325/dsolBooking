@@ -129,8 +129,11 @@
         <h1>Book a Room</h1>
 
         <div class="row-fluid loading-view" id="booking-view">
-            <div id="loadingScreen">
+            <div id="loadingContainer" ng-if="loading">
+                <div id="loadingScreen">
 
+                </div>
+                <div class="loading"></div>
             </div>
             <nav class="navbar col-xs-12 col-md-2 row" ng-class="{'bg-warning':info, 'bg-primary':loading}">
                 <div class="col-xs-12">Room: {{roomShow}} </div>

@@ -110,15 +110,11 @@ class dsol_meetings
 				break;
 				
 			case 'edit':
-				if( !array_key_exists( $externals['res_id'], $pendingList['id'] ) ) {
-					self::showError( 'res_id', $externals['res_id'] );
-					break;
-				}
+
 				$requestInfo = $pendingList['id'][$externals['res_id']];
 				$_SESSION['dsol_res_id'] = $externals['res_id'];
-				$requestInfo['startTime'] = strtotime( $requestInfo['startTime'] );
-				$requestInfo['endTime'] = strtotime( $requestInfo['endTime'] );
-				$requestInfo['amenity'] = unserialize( $requestInfo['amenity'] );
+				$requestInfo['startTime'] = strtotime( $requestInfo['start_time'] );
+				$requestInfo['endTime'] = strtotime( $requestInfo['end_time'] );
 				
 				echo dsol_public::showForm_publicRequest( $requestInfo['roomID'], $branchList, $roomContList, $roomList, $amenityList, $cityList, $requestInfo, array(), $externals['res_id'] );
 				break;
