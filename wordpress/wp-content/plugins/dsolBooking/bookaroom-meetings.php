@@ -21,16 +21,16 @@ class dsol_meetings
 		}
 		
 		# make lines
-		require_once( DSOL_BOOKING_PATH . '/dsol-meetings-rooms.php' );
-		require_once( DSOL_BOOKING_PATH . '/dsol-meetings-branches.php' );
-		require_once( DSOL_BOOKING_PATH . '/dsol-meetings-roomConts.php' );
-		require_once( DSOL_BOOKING_PATH . '/dsol-meetings-public.php' );
+		require_once( DSOL_BOOKING_PATH . '/bookaroom-meetings-rooms.php' );
+		require_once( DSOL_BOOKING_PATH . '/bookaroom-meetings-branches.php' );
+		require_once( DSOL_BOOKING_PATH . '/bookaroom-meetings-roomConts.php' );
+		require_once( DSOL_BOOKING_PATH . '/bookaroom-meetings-public.php' );
 		# vaiables from includes
 		$roomContList = dsol_settings_roomConts::getRoomContList();
 		$roomList = dsol_settings_rooms::getRoomList();
 		$branchList = dsol_settings_branches::getBranchList( TRUE );
 		
-		$pendingList = self::getPending();
+		$pendingList = array();
 		$externals = self::getExternals();
 		if( empty( $_SESSION['dsol_res_id'] ) ) $_SESSION['dsol_res_id'] = null;
 		switch( $externals['action'] ) {
@@ -88,10 +88,26 @@ class dsol_meetings
 				break;
 				
 			case 'changeStatus':
+				if( empty( $externals['res_id'] ) ) {
+					self::showError( 'res_id', $externals['res_id'] );
+					break;
+				}
+
+				$statusArr = array( 'pending', 'pendPayment', 'approved', 'denied', 'archived', 'delete' );
+				//$requestInfo = $pendingList['id'][$externals['res_id']];
+				if( !in_array( $externals['status'], $statusArr ) ) {
+					# BAD STATUS ERROR MESSAGE
+					require( BOOKAROOM_PATH . 'templates/meetings/error_badStatus.php' );
+					break;
+				}
+				if( !is_array( $externals['res_id'] ) ) {
+					$externals['resList'] = array( $externals['res_id'] );
+				} else {
+					$externals['resList'] = $externals['res_id'];
+				}
 				
-				self::changeStatus();				
+				self::changeStatus( $externals, $branchList, $roomContList );
 				break;
-				
 			case 'edit':
 
 				$requestInfo = $pendingList['id'][$externals['res_id']];
@@ -165,7 +181,11 @@ class dsol_meetings
 						array( 'res_id' => $val ) );
 				$wpdb->delete(	$table_name_reservation, 
 						array( 'res_id' => $val ) );
-
+				if($wpdb->last_error != ''){
+					array_push(1,$final['fail']);
+				}else{
+					array_push(1,$final['changed']);
+				}
                 }	
             
 
@@ -408,7 +428,7 @@ class dsol_meetings
 		}
 		
 		# get reservations for date
-		$pendingList = self::getPending( $timestamp );
+		$pendingList = array();
 		$typeArr = array( 'pending' => __( 'New Pend.', 'book-a-room' ), 'pendPayment' => __( 'Pend. Payment', 'book-a-room' ), '501C3' => __( 'Pend 501(c)3', 'book-a-room' ), 'approved' => __( 'Approved', 'book-a-room' ), 'denied' => __( 'Denied', 'book-a-room' ), 'archived' => __( 'Archived', 'book-a-room' ) );
 		
 		require( DSOL_BOOKING_PATH . 'templates/meetings/contactList.php' );

@@ -109,7 +109,7 @@ print_r($branchList);
 		<?php _e('Book a Room - Search Reservations', 'book-a-room'); ?>
 	</h2>
 </div>
-<form action="?page=bookaroom_meetings_search" method="post" name="form" id="form">
+<form action="?page=dsol_meetings_search" method="post" name="form" id="form">
 	<br />
 	<table width="100%" class="tableMain">
 		<tr>
@@ -256,7 +256,7 @@ if (empty($cooked)) {
 							?>
 						</pre>
 	<h3><?php printf(__('Results Found: %s', 'book-a-room'), count($cooked)); ?></h3>
-	<form id="form1" name="form1" method="post" action="?page=bookaroom_meetings">
+	<form id="form1" name="form1" method="post" action="?page=dsol_meetings">
 		<table class="tableMain freeWidth">
 			<tr>
 				<td><input type="checkbox" name="checkAll" id="checkAll" onClick="toggle(this)" />
@@ -312,7 +312,7 @@ if (empty($cooked)) {
 							} ?></p>
 					</td>
 					<td>
-						<a id="editView" href="?url=<?php echo get_site_url()  ?>&amp;page=bookaroom_meetings_search&amp;res_id=<?php echo $val['res_id']; ?>&amp;nonce=<?php echo $nonce ?>&amp;action=edit">
+						<a id="editView" href="?url=<?php echo get_site_url()  ?>&amp;page=dsol_meetings_search&amp;res_id=<?php echo $val['res_id']; ?>&amp;nonce=<?php echo $nonce ?>&amp;action=edit">
 							<?php _e('Edit', 'book-a-room'); ?>
 						</a>
 						<input type="hidden" value="<?php echo wp_create_nonce('wp-rest') ?>" id="nonce"> 
