@@ -182,9 +182,9 @@ class dsol_meetings
 				$wpdb->delete(	$table_name_reservation, 
 						array( 'res_id' => $val ) );
 				if($wpdb->last_error != ''){
-					array_push(1,$final['fail']);
+					array_push($final['fail'],1);
 				}else{
-					array_push(1,$final['changed']);
+					array_push($final['changed'],1);
 				}
                 }	
             

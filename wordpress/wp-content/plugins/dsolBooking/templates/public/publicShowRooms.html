@@ -178,8 +178,8 @@
                                 </div>
                             </div>
                             <div class="panel-body" uib-collapse="isCollapsed" id="rooms">
-                                <div class="row justify-content-between" ng-repeat="room in rooms">
-                                    <div class="col-sm-12" ng-click="selectRoom($index)">Room: {{room.container_number}}
+                                <div class="row justify-content-between" ng-repeat="room in rooms" >
+                                    <div class="col-sm-12" ng-click="selectRoom($index)" ng-class="{'bg-info':roomShow == room.container_number}">Room: {{room.container_number}}
                                         (Max: {{room.occupancy}})</div>
                                 </div>
                             </div>
