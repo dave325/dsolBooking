@@ -1,5 +1,19 @@
 <?php
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use PremiumAddons\Includes;
+use Elementor\Icons_Manager;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Text_Shadow;
+use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Background;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -9,12 +23,18 @@ class Premium_Image_Button extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Image Button';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Image Button', 'premium-addons-for-elementor') );
 	}
     
     public function getTemplateInstance() {
-		return $this->templateInstance = premium_Template_Tags::getInstance();
+		return $this->templateInstance = Includes\premium_Template_Tags::getInstance();
 	}
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
 
     public function get_icon() {
         return 'pa-image-button';
@@ -28,14 +48,12 @@ class Premium_Image_Button extends Widget_Base {
     // This will controls the animation, colors and background, dimensions etc
     protected function _register_controls() {
 
-        /*Start Button Content Section */
         $this->start_controls_section('premium_image_button_general_section',
                 [
                     'label'         => __('Button', 'premium-addons-for-elementor'),
                     ]
                 );
         
-        /*Button Text*/ 
         $this->add_control('premium_image_button_text',
                 [
                     'label'         => __('Text', 'premium-addons-for-elementor'),
@@ -90,7 +108,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        /*Button Hover Effect*/
         $this->add_control('premium_image_button_hover_effect', 
                 [
                     'label'         => __('Hover Effect', 'premium-addons-for-elementor'),
@@ -177,7 +194,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Button Icon Switcher*/
         $this->add_control('premium_image_button_icon_switcher',
                 [
                     'label'         => __('Icon', 'premium-addons-for-elementor'),
@@ -189,31 +205,38 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
 
-        /*Button Icon Selection*/ 
-        $this->add_control('premium_image_button_icon_selection',
-                [
-                    'label'         => __('Icon', 'premium-addons-for-elementor'),
-                    'type'          => Controls_Manager::ICON,
-                    'default'       => 'fa fa-bars',
-                    'condition'     => [
-                        'premium_image_button_icon_switcher' => 'yes',
-                        'premium_image_button_hover_effect!'  =>  'style4'
-                    ],
-                    'label_block'   => true,
-                ]
-                );
+        $this->add_control('premium_image_button_icon_selection_updated',
+            [
+                'label'         => __('Icon', 'premium-addons-for-elementor'),
+                'type'              => Controls_Manager::ICONS,
+                'fa4compatibility'  => 'premium_image_button_icon_selection',
+                'default' => [
+                    'value'     => 'fas fa-bars',
+                    'library'   => 'fa-solid',
+                ],
+                'condition'     => [
+                    'premium_image_button_icon_switcher' => 'yes',
+                    'premium_image_button_hover_effect!'  =>  'style4'
+                ],
+                'label_block'   => true,
+            ]
+        );
         
-        $this->add_control('premium_image_button_style4_icon_selection',
-                [
-                    'label'         => __('Icon', 'premium-addons-for-elementor'),
-                    'type'          => Controls_Manager::ICON,
-                    'default'       => 'fa fa-bars',
-                    'condition'     => [
-                        'premium_image_button_hover_effect'  => 'style4'
-                    ],
-                    'label_block'   => true,
-                ]
-                );
+        $this->add_control('premium_image_button_style4_icon_selection_updated',
+            [
+                'label'         => __('Icon', 'premium-addons-for-elementor'),
+                'type'              => Controls_Manager::ICONS,
+                'fa4compatibility'  => 'premium_image_button_style4_icon_selection',
+                'default' => [
+                    'value'     => 'fas fa-bars',
+                    'library'   => 'fa-solid',
+                ],
+                'condition'     => [
+                    'premium_image_button_hover_effect'  => 'style4'
+                ],
+                'label_block'   => true,
+            ]
+        );
         
         $this->add_control('premium_image_button_icon_position', 
                 [
@@ -297,7 +320,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        /*Button Size*/
         $this->add_control('premium_image_button_size', 
                 [
                     'label'         => __('Size', 'premium-addons-for-elementor'),
@@ -314,7 +336,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Button Align*/
         $this->add_responsive_control('premium_image_button_align',
 			[
 				'label'             => __( 'Alignment', 'premium-addons-for-elementor' ),
@@ -359,10 +380,8 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*End Image Button General Section*/
         $this->end_controls_section();
 
-        /*Start Styling Section*/
         $this->start_controls_section('premium_image_button_style_section',
             [
                 'label'             => __('Button', 'premium-addons-for-elementor'),
@@ -427,7 +446,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Button Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(), 
                 [
@@ -436,7 +454,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        /*Button Border Radius*/
         $this->add_control('premium_image_button_border_radius_normal',
                 [
                     'label'         => __('Border Radius', 'premium-addons-for-elementor'),
@@ -448,7 +465,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        /*Icon Shadow*/
         $this->add_group_control(
             Group_Control_Text_Shadow::get_type(),
                 [
@@ -463,7 +479,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Text Shadow*/
         $this->add_group_control(
             Group_Control_Text_Shadow::get_type(),
                 [
@@ -473,7 +488,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Button Shadow*/
         $this->add_group_control(
             Group_Control_Box_Shadow::get_type(),
                 [
@@ -483,7 +497,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        /*Button Margin*/
         $this->add_responsive_control('premium_image_button_margin_normal',
                 [
                     'label'         => __('Margin', 'premium-addons-for-elementor'),
@@ -494,7 +507,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 ]);
         
-        /*Button Padding*/
         $this->add_responsive_control('premium_image_button_padding_normal',
                 [
                     'label'         => __('Padding', 'premium-addons-for-elementor'),
@@ -604,7 +616,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Overlay Color*/
         $this->add_control('premium_image_button_overlay_color',
                 [
                     'label'         => __('Overlay Color', 'premium-addons-for-elementor'),
@@ -622,7 +633,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Button Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(), 
                 [
@@ -631,7 +641,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        /*Button Border Radius*/
         $this->add_control('premium_image_button_border_radius_hover',
                 [
                     'label'         => __('Border Radius', 'premium-addons-for-elementor'),
@@ -643,7 +652,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        /*Icon Shadow*/
         $this->add_group_control(
             Group_Control_Text_Shadow::get_type(),
                 [
@@ -669,7 +677,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Text Shadow*/
         $this->add_group_control(
             Group_Control_Text_Shadow::get_type(),
                 [
@@ -682,7 +689,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 );
         
-        /*Button Shadow*/
         $this->add_group_control(
             Group_Control_Box_Shadow::get_type(),
                 [
@@ -692,8 +698,6 @@ class Premium_Image_Button extends Widget_Base {
                 ]
                 );
         
-        
-        /*Button Margin*/
         $this->add_responsive_control('premium_image_button_margin_hover',
                 [
                     'label'         => __('Margin', 'premium-addons-for-elementor'),
@@ -704,7 +708,6 @@ class Premium_Image_Button extends Widget_Base {
                     ]
                 ]);
         
-        /*Button Padding*/
         $this->add_responsive_control('premium_image_button_padding_hover',
                 [
                     'label'         => __('Padding', 'premium-addons-for-elementor'),
@@ -719,12 +722,11 @@ class Premium_Image_Button extends Widget_Base {
         
         $this->end_controls_tabs();
 
-        /*End Labels Settings Section*/
         $this->end_controls_section();
     }
 
     protected function render() {
-        // get our input from the widget settings.
+        
         $settings = $this->get_settings_for_display();
         
         $this->add_inline_editing_attributes( 'premium_image_button_text' );
@@ -739,9 +741,15 @@ class Premium_Image_Button extends Widget_Base {
         
         $button_size = 'premium-image-button-' . $settings['premium_image_button_size'];
         
-        $button_icon = $settings['premium_image_button_icon_selection'];
-        
         $image_event = $settings['premium_image_button_event_function'];
+        
+        if ( ! empty ( $settings['premium_image_button_icon_selection'] ) ) {
+            $this->add_render_attribute( 'icon', 'class', $settings['premium_image_button_icon_selection'] );
+            $this->add_render_attribute( 'icon', 'aria-hidden', 'true' );
+        }
+        
+        $migrated = isset( $settings['__fa4_migrated']['premium_image_button_icon_selection_updated'] );
+        $is_new = empty( $settings['premium_image_button_icon_selection'] ) && Icons_Manager::is_migration_allowed();
         
         if ($settings['premium_image_button_hover_effect'] == 'none'){
             $style_dir = 'premium-image-button-none';
@@ -751,39 +759,69 @@ class Premium_Image_Button extends Widget_Base {
             $style_dir = 'premium-image-button-diagonal-effect-' . $settings['premium_image_button_style3_dir'];
         }   elseif($settings['premium_image_button_hover_effect'] == 'style4'){
             $style_dir = 'premium-image-button-style4-' . $settings['premium_image_button_style4_dir'];
+            
+            if ( ! empty ( $settings['premium_image_button_style4_icon_selection'] ) ) {
+                $this->add_render_attribute( 'slide_icon', 'class', $settings['premium_image_button_style4_icon_selection'] );
+                $this->add_render_attribute( 'slide_icon', 'aria-hidden', 'true' );
+            }
+            
+            $slide_migrated = isset( $settings['__fa4_migrated']['premium_image_button_style4_icon_selection_updated'] );
+            $slide_is_new = empty( $settings['premium_image_button_style4_icon_selection'] ) && Icons_Manager::is_migration_allowed();
+            
         }   elseif($settings['premium_image_button_hover_effect'] == 'style5'){
             $style_dir = 'premium-image-button-overlap-effect-' . $settings['premium_image_button_style5_dir'];
+        }
+        
+        $this->add_render_attribute( 'button', 'class', array(
+            'premium-image-button',
+            $button_size,
+            $style_dir
+        ));
+        
+        if( ! empty( $image_link ) ) {
+        
+            $this->add_render_attribute( 'button', 'href', $image_link );
+            
+            if( ! empty( $settings['premium_image_button_link']['is_external'] ) )
+                $this->add_render_attribute( 'button', 'target', '_blank' );
+            
+            if( ! empty( $settings['premium_image_button_link']['nofollow'] ) )
+                $this->add_render_attribute( 'button', 'rel', 'nofollow' );
+        }
+        
+        if( 'yes' === $settings['premium_image_button_event_switcher'] && ! empty( $image_event ) ) {
+            $this->add_render_attribute( 'button', 'onclick', $image_event );
         }
 
     ?>
     <div class="premium-image-button-container">
-        <a class="premium-image-button <?php echo esc_attr( $button_size ); ?> <?php echo esc_attr( $style_dir ); ?>" 
-            <?php if( ! empty( $image_link ) ) : ?> href="<?php echo esc_url( $image_link ); ?>" <?php endif; ?>
-            <?php if( ! empty( $settings['premium_image_button_link']['is_external'] ) ) : ?> target="_blank" <?php endif; ?>
-            <?php if( ! empty( $settings['premium_image_button_link']['nofollow'] ) ) : ?> rel="nofollow" <?php endif; ?>
-            <?php if( ! empty( $settings['premium_image_button_event_function'] ) && $settings['premium_image_button_event_switcher'] ) : ?> onclick="<?php echo $image_event; ?>"<?php endif ?>>
-        <div class="premium-image-button-text-icon-wrapper">
-            <?php if( $settings['premium_image_button_icon_switcher'] &&
-                $settings['premium_image_button_hover_effect'] != 'style4' &&
-                $settings['premium_image_button_icon_position'] == 'before' &&
-                ! empty( $settings['premium_image_button_icon_selection'] ) ) :
-            ?>
-                <i class="fa <?php echo esc_attr( $button_icon ); ?>"></i>
-            <?php endif; ?>
+        <a <?php echo $this->get_render_attribute_string( 'button' ); ?>>
+            <div class="premium-image-button-text-icon-wrapper">
+            <?php if( 'yes' === $settings['premium_image_button_icon_switcher'] && $settings['premium_image_button_hover_effect'] !== 'style4' && $settings['premium_image_button_icon_position'] === 'before' ) :
+                if ( $is_new || $migrated ) :
+                    Icons_Manager::render_icon( $settings['premium_image_button_icon_selection_updated'], [ 'aria-hidden' => 'true' ] );
+                else: ?>
+                    <i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
+                <?php endif;
+            endif; ?>
                 <span <?php echo $this->get_render_attribute_string( 'premium_image_button_text' ); ?>>
                     <?php echo $button_text; ?>
                 </span>
-            <?php if( $settings['premium_image_button_icon_switcher'] &&
-                $settings['premium_image_button_hover_effect'] != 'style4' && 
-                $settings['premium_image_button_icon_position'] == 'after' &&
-                ! empty( $settings['premium_image_button_icon_selection'] ) ) :
-            ?>
-                <i class="fa <?php echo esc_attr( $button_icon ); ?>"></i>
-            <?php endif; ?>
+            <?php if( 'yes' === $settings['premium_image_button_icon_switcher'] && $settings['premium_image_button_hover_effect'] != 'style4' &&  $settings['premium_image_button_icon_position'] == 'after' ) :
+                if ( $is_new || $migrated ) :
+                    Icons_Manager::render_icon( $settings['premium_image_button_icon_selection_updated'], [ 'aria-hidden' => 'true' ] );
+                else: ?>
+                    <i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
+                <?php endif;
+            endif; ?>
         </div>
         <?php if( $settings['premium_image_button_hover_effect'] == 'style4') : ?>
             <div class="premium-image-button-style4-icon-wrapper <?php echo esc_attr( $settings['premium_image_button_style4_dir'] ); ?>">
-                <i class="fa <?php echo esc_attr($settings['premium_image_button_style4_icon_selection']); ?>"></i>
+                <?php if ( $slide_is_new || $slide_migrated ) :
+                    Icons_Manager::render_icon( $settings['premium_image_button_style4_icon_selection_updated'], [ 'aria-hidden' => 'true' ] );
+                else: ?>
+                    <i <?php echo $this->get_render_attribute_string( 'slide_icon' ); ?>></i>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
         </a>
@@ -821,26 +859,44 @@ class Premium_Image_Button extends Widget_Base {
         } else if ( 'style4' == settings.premium_image_button_hover_effect ) {
             styleDir = 'premium-image-button-style4-' + settings.premium_image_button_style4_dir;
             slideIcon = settings.premium_image_button_style4_icon_selection;
+            
+            var slideIconHTML = elementor.helpers.renderIcon( view, settings.premium_image_button_style4_icon_selection_updated, { 'aria-hidden': true }, 'i' , 'object' ),
+                slideMigrated = elementor.helpers.isIconMigrated( settings, 'premium_image_button_style4_icon_selection_updated' );
         } else if ( 'style5' == settings.premium_image_button_hover_effect ){
             styleDir = 'premium-image-button-overlap-effect-' + settings.premium_image_button_style5_dir;
         }
+        
+        var iconHTML = elementor.helpers.renderIcon( view, settings.premium_image_button_icon_selection_updated, { 'aria-hidden': true }, 'i' , 'object' ),
+            migrated = elementor.helpers.isIconMigrated( settings, 'premium_image_button_icon_selection_updated' );
         
         #>
         
         <div class="premium-image-button-container">
             <a class="premium-image-button  {{ buttonSize }} {{ styleDir }}" href="{{ buttonUrl }}" onclick="{{ buttonEvent }}">
                 <div class="premium-image-button-text-icon-wrapper">
-                    <# if( settings.premium_image_button_icon_switcher && 'before' == settings.premium_image_button_icon_position &&  'style4' != settings.premium_image_button_hover_effect && '' != settings.premium_image_button_icon_selection ) { #>
-                        <i class="fa {{ buttonIcon }}"></i>
-                    <# } #>
+                    <# if( 'yes' === settings.premium_image_button_icon_switcher && 'before' === settings.premium_image_button_icon_position &&  'style4' !== settings.premium_image_button_hover_effect ) {
+                        if ( iconHTML && iconHTML.rendered && ( ! buttonIcon || migrated ) ) { #>
+                            {{{ iconHTML.value }}}
+                        <# } else { #>
+                            <i class="{{ buttonIcon }}" aria-hidden="true"></i>
+                        <# }
+                    } #>
                     <span {{{ view.getRenderAttributeString('premium_image_button_text') }}}>{{{ buttonText }}}</span>
-                    <# if( settings.premium_image_button_icon_switcher && 'after' == settings.premium_image_button_icon_position &&  'style4' != settings.premium_image_button_hover_effect && '' != settings.premium_image_button_icon_selection ) { #>
-                        <i class="fa {{ buttonIcon }}"></i>
-                    <# } #>
+                    <# if( 'yes' === settings.premium_image_button_icon_switcher && 'after' === settings.premium_image_button_icon_position && 'style4' !== settings.premium_image_button_hover_effect ) {
+                        if ( iconHTML && iconHTML.rendered && ( ! buttonIcon || migrated ) ) { #>
+                            {{{ iconHTML.value }}}
+                        <# } else { #>
+                            <i class="{{ buttonIcon }}" aria-hidden="true"></i>
+                        <# }
+                    } #>
                 </div>
                 <# if( 'style4' == settings.premium_image_button_hover_effect ) { #>
                     <div class="premium-image-button-style4-icon-wrapper {{ settings.premium_image_button_style4_dir }}">
-                        <i class="fa {{ slideIcon }}"></i>
+                        <# if ( slideIconHTML && slideIconHTML.rendered && ( ! slideIcon || slideMigrated ) ) { #>
+                            {{{ slideIconHTML.value }}}
+                        <# } else { #>
+                            <i class="{{ slideIcon }}" aria-hidden="true"></i>
+                        <# } #>
                     </div>
                 <# } #>
             </a>

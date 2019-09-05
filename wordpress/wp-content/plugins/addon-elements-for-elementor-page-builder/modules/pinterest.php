@@ -101,7 +101,7 @@ class EAE_Pinterest extends Widget_Base {
 		$this->add_control(
 			'user_name',
 			[
-				'label'       => __( 'User Name', 'wts-name' ),
+				'label'       => __( 'User Name', 'wts-eae' ),
 				'type'        => Controls_Manager::TEXT,
 				'placeholder' => 'Pinterest',
 				'default'     => 'Pinterest',
@@ -372,7 +372,7 @@ class EAE_Pinterest extends Widget_Base {
 		$languages = [
 			''      => __( 'Automatic', 'wts-eae' ),
 			'en'    => __( 'English', 'wts-eae' ),
-			'ar'    => __( 'Arabic', 'wta-eae' ),
+			'ar'    => __( 'Arabic', 'wts-eae' ),
 			'bn'    => __( 'Bengali', 'wts-eae' ),
 			'cs'    => __( 'Czech', 'wts-eae' ),
 			'da'    => __( 'Danish', 'wts-eae' ),

@@ -29,10 +29,10 @@ if( ! empty( $wl_twitter_api_settings ) ) {
 			$content = $twitter_client->get( "account/verify_credentials" );
 
 			if ( ! $content ) {
-				throw new Exception( __( 'Connection Error', twitter_tweets ) );
+				throw new Exception( esc_html__( 'Connection Error', 'twitter-tweets' ) );
 			}
 		} catch ( Exception $e ) {
-			echo $e->getMessage();
+			echo esc_html($e->getMessage());
 			return null;
 		}
 
@@ -102,16 +102,14 @@ if( ! empty( $wl_twitter_api_settings ) ) {
 	}
 	else {
 		$connection = get_twitter_connection( $temp_wl_twitter_consumer_key, $temp_wl_twitter_consumer_secret, $temp_wl_twitter_access_token, $temp_wl_twitter_token_secret );
-	}
-	
+	}	
 
 	if ( ! $connection ) {
-		$error_messaage = __("Can't connect to Twitter API. Check your internet connection.", twitter_tweets);
+		$error_messaage = esc_html__("Can't connect to Twitter API. Check your internet connection.", 'twitter-tweets');
 		die( $error_messaage );
 	}	
-	$statuses = $connection->get( "statuses/home_timeline", [
-					"count"            => $wl_twitter_tweets,
-					"exclude_replies"  => 'false',
-					"include_entities" => 0
-				] );
+	$statuses = $connection->get( "statuses/home_timeline",
+	["count"           => $wl_twitter_tweets,
+	"exclude_replies"  => 'false',
+	"include_entities" => 0	]);
 ?>

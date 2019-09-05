@@ -2,6 +2,9 @@
 
 namespace WPGMZA;
 
+if(!defined('ABSPATH'))
+	return;
+
 /**
  * Used to facilitate communication and caching between the client and the Nominatim Geocoding service
  */
@@ -73,6 +76,16 @@ class NominatimGeocodeCache
 
 		$wpdb->query($stmt);
 	}
+
+	/**
+	 * Clears the cache
+	 */
+	public function clear()
+	{
+		global $wpdb;
+				
+		$stmt = $wpdb->query("TRUNCATE TABLE {$this->table}");
+	}
 }
 
 /**
@@ -81,7 +94,6 @@ class NominatimGeocodeCache
  */
 function query_nominatim_cache()
 {
-	
 	$cache = new NominatimGeocodeCache();
 	$record = $cache->get($_GET['query']);
 	
@@ -107,8 +119,33 @@ function store_nominatim_cache()
 	exit;
 }
 
+/**
+ * Bind function to clear the Nominatim cache.
+ * @deprecated This will be moved to the REST API in the future
+ */
+function clear_nominatim_cache()
+{
+	global $wpgmza;
+	
+	if(!$wpgmza->isUserAllowedToEdit())
+	{
+		http_response_code(401);
+		return;
+	}
+	
+	$cache = new NominatimGeocodeCache();
+	$cache->clear();
+
+	wp_send_json(array(
+		'success' => 1
+	));
+	exit;
+}
+
 add_action('wp_ajax_wpgmza_query_nominatim_cache', 			'WPGMZA\\query_nominatim_cache');
 add_action('wp_ajax_nopriv_wpgmza_query_nominatim_cache', 	'WPGMZA\\query_nominatim_cache');
 
 add_action('wp_ajax_wpgmza_store_nominatim_cache', 			'WPGMZA\\store_nominatim_cache');
 add_action('wp_ajax_nopriv_wpgmza_store_nominatim_cache', 	'WPGMZA\\store_nominatim_cache');
+
+add_action('wp_ajax_wpgmza_clear_nominatim_cache', 			'WPGMZA\\clear_nominatim_cache');

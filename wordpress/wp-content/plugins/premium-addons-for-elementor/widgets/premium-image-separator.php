@@ -1,5 +1,15 @@
 <?php
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Modules\DynamicTags\Module as TagsModule;
+use PremiumAddons\Includes;
+use Elementor\Widget_Base;
+use Elementor\Utils;
+use Elementor\Control_Media;
+use Elementor\Controls_Manager;
+use Elementor\Group_Control_Css_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -7,7 +17,7 @@ class Premium_Image_Separator extends Widget_Base {
     protected $templateInstance;
 
     public function getTemplateInstance() {
-        return $this->templateInstance = premium_Template_Tags::getInstance();
+        return $this->templateInstance = Includes\premium_Template_Tags::getInstance();
     }
 
     public function get_name() {
@@ -15,9 +25,15 @@ class Premium_Image_Separator extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Image Separator';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Image Separator', 'premium-addons-for-elementor') );
 	}
 
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
+    
     public function get_icon() {
         return 'pa-image-separator';
     }
@@ -156,6 +172,13 @@ class Premium_Image_Separator extends Widget_Base {
                 [
                     'label'         => __('URL', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
+                    'dynamic'       => [
+                        'active'        => true,
+                        'categories'    => [
+                            TagsModule::POST_META_CATEGORY,
+                            TagsModule::URL_CATEGORY
+                        ]
+                    ],
                     'condition'     => [
                         'premium_image_separator_link_switcher' => 'yes',
                         'premium_image_separator_link_type'     => 'url',
@@ -201,7 +224,7 @@ class Premium_Image_Separator extends Widget_Base {
         /*Start Style Section*/
         $this->start_controls_section('premium_image_separator_style',
             [
-                'label'         => __('Fancy Text', 'premium-addons-for-elementor'),
+                'label'         => __('Image', 'premium-addons-for-elementor'),
                 'tab'           => Controls_Manager::TAB_STYLE,
             ]
         );

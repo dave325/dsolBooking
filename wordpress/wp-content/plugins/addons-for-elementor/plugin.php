@@ -45,7 +45,7 @@ if ( !class_exists( 'Livemesh_Elementor_Addons' ) ) {
         public function __clone()
         {
             // Cloning instances of the class is forbidden
-            _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'livemesh-el-addons' ), '2.6.2' );
+            _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'livemesh-el-addons' ), '2.8' );
         }
         
         /**
@@ -55,7 +55,7 @@ if ( !class_exists( 'Livemesh_Elementor_Addons' ) ) {
         public function __wakeup()
         {
             // Unserializing instances of the class is forbidden
-            _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'livemesh-el-addons' ), '2.6.2' );
+            _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'livemesh-el-addons' ), '2.8' );
         }
         
         private function setup_debug_constants()
@@ -92,6 +92,13 @@ if ( !class_exists( 'Livemesh_Elementor_Addons' ) ) {
             if ( is_admin() ) {
                 require_once LAE_PLUGIN_DIR . 'admin/admin-init.php';
             }
+            if ( !function_exists( 'is_plugin_active' ) ) {
+                include_once ABSPATH . 'wp-admin/includes/plugin.php';
+            }
+            /* Ensure WPML String Translation plugin is active */
+            if ( is_plugin_active( 'wpml-string-translation/plugin.php' ) ) {
+                require_once LAE_PLUGIN_DIR . 'i18n/wpml-compatibility-init.php';
+            }
         }
         
         /**
@@ -125,12 +132,20 @@ if ( !class_exists( 'Livemesh_Elementor_Addons' ) ) {
          */
         private function hooks()
         {
-            add_action( 'plugins_loaded', array( self::$instance, 'load_plugin_textdomain' ) );
-            add_action( 'elementor/widgets/widgets_registered', array( self::$instance, 'include_widgets' ) );
+            add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
+            // Initialize string translation of plugin elements after String Translation plugin is loaded
+            add_action( 'wpml_st_loaded', array( $this, 'init_wpml_compatibility' ) );
+            add_action( 'elementor/widgets/widgets_registered', array( $this, 'include_widgets' ) );
             add_action( 'elementor/frontend/after_register_scripts', array( $this, 'register_frontend_scripts' ), 10 );
             add_action( 'elementor/frontend/after_register_styles', array( $this, 'register_frontend_styles' ), 10 );
             add_action( 'elementor/frontend/after_enqueue_styles', array( $this, 'enqueue_frontend_styles' ), 10 );
             add_action( 'elementor/init', array( $this, 'add_elementor_category' ) );
+        }
+        
+        function init_wpml_compatibility()
+        {
+            // Run WPML String Translation dependent actions
+            new \LivemeshAddons\i18n\LAE_WPML_Compatibility_Init();
         }
         
         private function template_hooks()
@@ -244,10 +259,6 @@ if ( !class_exists( 'Livemesh_Elementor_Addons' ) ) {
             $custom_css = lae_get_option( 'lae_custom_css', '' );
             wp_localize_script( 'lae-frontend-scripts', 'lae_settings', array(
                 'custom_css' => $custom_css,
-            ) );
-            /* Do not attach to widget scripts since they are enqueued really late for some reason */
-            wp_localize_script( 'lae-frontend-scripts', 'lae_ajax_object', array(
-                'ajax_url' => admin_url( 'admin-ajax.php' ),
             ) );
         }
         

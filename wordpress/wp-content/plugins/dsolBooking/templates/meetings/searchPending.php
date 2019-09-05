@@ -9,13 +9,56 @@
 
 			fetch(urlParams.get('url') + '/wp-json/dsol-booking/v1/adminEditReservations', {
 				method: "POST",
-				body: "{'res_id': " + urlParams.get('res_id') + "}"
+				headers: {
+      					'Accept': 'application/json',
+      					'Content-Type': 'application/json'
+    			},
+				body: JSON.stringify({res_id: urlParams.get('res_id')})
 			}).then( (red) => {
 
 				console.log(red)
-				return;
 
+				return red.json()
+			}).then( (res) =>{
+				console.log(res)
+				// TODO - Set data to this object
+			/*
+			        arr: [],
+        date: new Date(),
+        numAttend: 0,
+        desc: '',
+        room: {},
+        repeat: { id: '0', name: 'No Repeat' },
+        reservations: [],
+        multipleDates: [],
+        nonce: localized.nonce,
+        user: {},
+        isSeperate: 0,
+		seperateIndexes: [0]
+		*/
+		let response = res[0][0];
+		response.time.forEach( (time) => {
+			time.start_time = new Date(time.start_time).getTime() / 1000;
+            time.end_time = new Date(time.end_time).getTime() / 1000;
+		});
+		
+		let data = {
+			arr:response.time,
+			date:new Date(response.time[0].start_time * 1000),
+			numAttend:parseInt(response.attendance),
+        	desc: response.notes,
+			room:{c_id:response.c_id, container_number:response.container_number, occupancy:response.occupancy},
+			repeat: { id: '0', name: 'No Repeat' },
+			reservations: [],
+			multipleDates: [],
+			nonce: document.getElementById('nonce').value,
+			user: {},
+			isSeperate: 0,
+			seperateIndexes: [0]
+		}
+		console.log(data)
 				window.sessionStorage.setItem('userData', JSON.stringify(data));
+				window.location.href = "http:/localhost:8000/members" + "/members?res_id=" + response.res_id;
 			})
 		});
 		// Setup date drops
@@ -229,7 +272,6 @@ if (empty($cooked)) {
 			<?php
 			foreach ($cooked as $key => $val) {
 
-				$count++;
 				$notes = 0;
 				$noteInformation = $val['company_name']
 				?>
@@ -273,7 +315,7 @@ if (empty($cooked)) {
 						<a id="editView" href="?url=<?php echo get_site_url()  ?>&amp;page=bookaroom_meetings_search&amp;res_id=<?php echo $val['res_id']; ?>&amp;nonce=<?php echo $nonce ?>&amp;action=edit">
 							<?php _e('Edit', 'book-a-room'); ?>
 						</a>
-
+						<input type="hidden" value="<?php echo wp_create_nonce('wp-rest') ?>" id="nonce"> 
 					</td>
 				</tr>
 			<?php

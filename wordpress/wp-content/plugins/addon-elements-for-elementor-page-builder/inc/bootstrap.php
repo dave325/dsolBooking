@@ -2,6 +2,7 @@
 namespace WTS_EAE;
 
 use Elementor;
+use WTS_EAE\Classes\Helper;
 
 class Plugin {
 
@@ -21,8 +22,6 @@ class Plugin {
 		//die('---');
 		$this->register_autoloader();
 
-		$this->module_manager = new Managers\Module_Manager();
-
 		add_action( 'elementor/init', [ $this, 'eae_elementor_init' ], - 10 );
 		add_action( 'elementor/elements/categories_registered', [ $this, 'register_category' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'eae_scripts' ] );
@@ -30,15 +29,19 @@ class Plugin {
 		add_action( 'elementor/controls/controls_registered', [ $this, 'register_controls' ] );
 		add_action( 'plugins_loaded', [ $this, '_plugins_loaded' ] );
 		//add_action('elementor/widgets/widgets_registered','widgets_registered');
+		add_action('admin_enqueue_scripts', [$this,'eae_admin_scripts']);
+
 		$this->_includes();
+
+		$this->module_manager = new Managers\Module_Manager();
 	}
 
 	function eae_elementor_init() {
 
-
 	}
 
 	public function _plugins_loaded() {
+
 
 		if ( ! did_action( 'elementor/loaded' ) ) {
 			/* TO DO */
@@ -86,27 +89,65 @@ class Plugin {
 		$controls_manager->add_group_control( 'eae-grid', new \WTS_EAE\Controls\Group\Group_Control_Grid() );
 
 	}
+	function eae_admin_scripts(){
+		$screen = get_current_screen();
+		if($screen->id == 'toplevel_page_eae-settings') {
+			add_action( 'admin_print_scripts', [ $this, 'eae_disable_admin_notices' ] );
+
+			wp_enqueue_script( 'eae-admin', EAE_URL . 'assets/js/admin.js', [ 'wp-components' ], '1.0', true );
+			wp_enqueue_style( 'eae-admin-css', EAE_URL . 'assets/css/eae-admin.css' );
+
+			$helper = new Helper();
+
+			$modules = $helper->get_eae_modules();
+
+			wp_localize_script( 'eae-admin', 'eaeGlobalVar', array(
+				'site_url'     => site_url(),
+				'eae_dir'      => EAE_URL,
+				'ajax_url'     => admin_url( 'admin-ajax.php' ),
+				'map_key'      => get_option( 'wts_eae_gmap_key' ),
+				'eae_elements' => $modules,
+				'eae_version' => EAE_VERSION,
+				'nonce'        => wp_create_nonce( 'wp_rest' )
+			) );
+		}
+	}
+
+	function eae_disable_admin_notices() {
+		global $wp_filter;
+		if ( is_user_admin() ) {
+			if ( isset( $wp_filter['user_admin_notices'] ) ) {
+				unset( $wp_filter['user_admin_notices'] );
+			}
+		} elseif ( isset( $wp_filter['admin_notices'] ) ) {
+			unset( $wp_filter['admin_notices'] );
+		}
+		if ( isset( $wp_filter['all_admin_notices'] ) ) {
+			unset( $wp_filter['all_admin_notices'] );
+		}
+	}
+
 	function eae_scripts() {
 		wp_enqueue_style( 'eae-css', EAE_URL . 'assets/css/eae'.EAE_SCRIPT_SUFFIX.'.css' );
 
 		/* animated text css and js file*/
 
 
-		wp_enqueue_script( 'animated-main', EAE_URL . 'assets/js/animated-main'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '1.0', true );
+		wp_register_script( 'animated-main', EAE_URL . 'assets/js/animated-main'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '1.0', true );
 
 		wp_enqueue_script( 'eae-main', EAE_URL . 'assets/js/eae'.EAE_SCRIPT_SUFFIX.'.js', array(
 			'jquery',
-			'wts-magnific'
 		), '1.0', true );
 
-		wp_enqueue_script( 'eae-partices', EAE_URL . 'assets/js/particles'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '1.0', true );
+		wp_register_script( 'eae-particles', EAE_URL . 'assets/js/particles'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '1.0', true );
 
-		wp_enqueue_style( 'vegas-css', EAE_URL . 'assets/lib/vegas/vegas'.EAE_SCRIPT_SUFFIX.'.css' );
-		wp_enqueue_script( 'vegas', EAE_URL . 'assets/lib/vegas/vegas'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '2.4.0', true );
-		wp_enqueue_script( 'wts-magnific', EAE_URL . 'assets/lib/magnific'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '1.9', true );
-		wp_enqueue_script( 'wts-swiper-script', EAE_URL . 'assets/lib/swiper/js/swiper'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '4.4.6', true );
-		wp_enqueue_style( 'wts-swiper-style', EAE_URL . 'assets/lib/swiper/css/swiper'.EAE_SCRIPT_SUFFIX.'.css' );
-		wp_enqueue_script( 'masonry' );
+		wp_register_style( 'vegas-css', EAE_URL . 'assets/lib/vegas/vegas'.EAE_SCRIPT_SUFFIX.'.css' );
+		wp_register_script( 'vegas', EAE_URL . 'assets/lib/vegas/vegas'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '2.4.0', true );
+		wp_register_script( 'wts-swiper-script', EAE_URL . 'assets/lib/swiper/js/swiper'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '4.4.6', true );
+		wp_register_script( 'wts-swiper-style', EAE_URL . 'assets/lib/swiper/css/swiper'.EAE_SCRIPT_SUFFIX.'.css' );
+
+		wp_register_script( 'wts-magnific', EAE_URL . 'assets/lib/magnific'.EAE_SCRIPT_SUFFIX.'.js', array( 'jquery' ), '1.9', true );
+
 
 		$map_key = get_option( 'wts_eae_gmap_key' );
 		if ( isset( $map_key ) && $map_key != '' ) {
@@ -128,13 +169,11 @@ class Plugin {
 	}
 
 	function eae_editor_enqueue_scripts() {
-		wp_enqueue_script( 'eae-partices', EAE_URL . 'assets/js/particles.js', array( 'jquery' ), '1.0', true );
 
 		wp_enqueue_style( 'eae-icons', EAE_URL . 'assets/lib/eae-icons/style.css' );
 	}
 
 	private function register_autoloader() {
-
 		spl_autoload_register( [ __CLASS__, 'autoload' ] );
 	}
 

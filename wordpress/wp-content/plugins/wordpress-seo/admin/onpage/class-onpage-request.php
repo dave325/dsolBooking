@@ -13,12 +13,14 @@
 class WPSEO_OnPage_Request {
 
 	/**
-	 * @var string The endpoint where the request will be send to.
+	 * The endpoint where the request will be send to.
+	 *
+	 * @var string
 	 */
 	private $onpage_endpoint = 'https://indexability.yoast.onpage.org/';
 
 	/**
-	 * Doing the remote get and returns the body
+	 * Doing the remote get and returns the body.
 	 *
 	 * @param string $target_url The home url.
 	 * @param array  $parameters Array of extra parameters to send to Ryte.

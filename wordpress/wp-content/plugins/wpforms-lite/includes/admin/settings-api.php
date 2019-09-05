@@ -103,6 +103,7 @@ function wpforms_settings_license_callback( $args ) {
 
 	// Lite users don't need to worry about license keys.
 	if ( ! wpforms()->pro || ! class_exists( 'WPForms_License', false ) ) {
+
 		$output  = '<p>' . esc_html__( 'You\'re using WPForms Lite - no license needed. Enjoy!', 'wpforms-lite' ) . ' 🙂</p>';
 		$output .=
 			'<p>' .
@@ -133,6 +134,12 @@ function wpforms_settings_license_callback( $args ) {
 					)
 				) .
 			'</p>';
+
+		$output .= '<hr><p>' . esc_html__( 'Already purchased?  Simply enter your license key below to connect with WPForms PRO!', 'wpforms-lite' ) . '</p>';
+		$output .= '<p>';
+		$output .= '<input type="password" id="wpforms-settings-upgrade-license-key" placeholder="' . esc_attr__( 'Paste license key here', 'wpforms-lite' ) . '" value="" />';
+		$output .= '<button type="button" class="wpforms-btn wpforms-btn-md wpforms-btn-orange" id="wpforms-settings-connect-btn">' . esc_attr__( 'Connect', 'wpforms-lite' ) . '</button>';
+		$output .= '</p>';
 
 		return $output;
 	}
@@ -187,6 +194,41 @@ function wpforms_settings_text_callback( $args ) {
 	$id      = wpforms_sanitize_key( $args['id'] );
 
 	$output = '<input type="text" id="wpforms-setting-' . $id . '" name="' . $id . '" value="' . esc_attr( $value ) . '">';
+
+	if ( ! empty( $args['desc'] ) ) {
+		$output .= '<p class="desc">' . wp_kses_post( $args['desc'] ) . '</p>';
+	}
+
+	return $output;
+}
+
+/**
+ * Settings number input field callback.
+ *
+ * @since 1.5.3
+ *
+ * @param array $args Setting field arguments.
+ *
+ * @return string
+ */
+function wpforms_settings_number_callback( $args ) {
+
+	$default = isset( $args['default'] ) ? esc_html( $args['default'] ) : '';
+	$id      = 'wpforms-setting-' . wpforms_sanitize_key( $args['id'] );
+	$attr    =  array(
+		'value' => wpforms_setting( $args['id'], $default ),
+		'name'  => wpforms_sanitize_key( $args['id'] ),
+	);
+	$data    = ! empty( $args['data'] ) ? $args['data'] : array();
+
+	if ( ! empty( $args['attr'] ) ) {
+		$attr = array_merge( $attr, $args['attr'] );
+	}
+
+	$output = sprintf(
+		'<input type="number" %s>',
+		wpforms_html_attributes( $id, array(), $data, $attr )
+	);
 
 	if ( ! empty( $args['desc'] ) ) {
 		$output .= '<p class="desc">' . wp_kses_post( $args['desc'] ) . '</p>';

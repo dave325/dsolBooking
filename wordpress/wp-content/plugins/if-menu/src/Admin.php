@@ -18,6 +18,18 @@ class Admin {
 			update_option('if-menu-peak', isset($_POST['if-menu-peek']) && $_POST['if-menu-peek'] == 1 ? 1 : 0);
 			update_option('if-menu-admin', isset($_POST['if-menu-admin']) && $_POST['if-menu-admin'] == 1 ? 1 : 0);
 		}
+
+		if (isset($_REQUEST['if-menu-set-license-key']) && $_REQUEST['if-menu-set-license-key']) {
+			update_option('if-menu-license-key', $_REQUEST['if-menu-set-license-key']);
+			wp_redirect(admin_url('themes.php?page=if-menu&if-menu-recheck-plan'));
+			exit;
+		}
+
+		if (isset($_REQUEST['if-menu-delete-license-key']) && $_REQUEST['if-menu-delete-license-key'] == 'y') {
+			delete_option('if-menu-license-key');
+			wp_redirect(admin_url('themes.php?page=if-menu&if-menu-recheck-plan'));
+			exit;
+		}
 	}
 
 	public function assets() {
@@ -39,6 +51,7 @@ class Admin {
 		?>
 
 		<div class="wrap about-wrap if-menu-wrap">
+			<a href="<?php echo admin_url('nav-menus.php') ?>" class="button button-secondary if-menu-help"><?php _e('Manage Menus', 'if-menu') ?></a>
 			<h1>If Menu</h1>
 			<p class="about-text"><?php _e('Thanks for using <strong>If Menu</strong>! Now you can display tailored menu items to each visitor, based on visibility rules. Here are a few examples:', 'if-menu') ?></p>
 			<ul class="list">
@@ -78,7 +91,7 @@ class Admin {
 
 				<div class="col">
 					<div class="pricing-cell <?php if ($plan && $plan['plan'] == 'premium') echo 'selected' ?>">
-						<span class="price">$15<small>/<?php _e('annually', 'if-menu') ?></small></span>
+						<span class="price">from $15<small>/<?php _e('annually', 'if-menu') ?></small></span>
 						<h3><?php _e('Premium', 'if-menu') ?></h3>
 
 						<ul>
@@ -112,9 +125,10 @@ class Admin {
 						<p class="description">
 							<?php if ($plan && $plan['plan'] == 'premium') : ?>
 								<button class="button disabled"><?php _e('Current plan', 'if-menu') ?></button>
-								<br><br><small class="text-muted"><?php printf(__('Active until %s', 'if-menu'), date(get_option('date_format'), strtotime($plan['until']))) ?></small>
+								<br><br><?php printf(__('Active until %s.', 'if-menu'), date(get_option('date_format'), strtotime($plan['end']))) ?>
+								<br>Auto renew is <?php echo $plan['autoRenew'] ? 'on' : 'off' ?>, manage on <a href="https://layered.market/purchases" target="_blank">Layered Market</a>.
 							<?php else : ?>
-								<a href="https://wordpress.layered.studio/get-premium?site=<?php echo urlencode(site_url()) ?>&_nonce=<?php echo \If_Menu::apiNonce('get-premium') ?>" class="button button-primary"><?php _e('Get premium', 'if-menu') ?></a>
+								<a href="https://layered.market/get-premium?site=<?php echo urlencode(site_url()) ?>&_nonce=<?php echo \If_Menu::apiNonce('get-premium') ?>" class="button button-primary"><?php _e('Get premium', 'if-menu') ?></a>
 							<?php endif ?>
 						</p>
 					</div>
@@ -158,11 +172,11 @@ class Admin {
 
 			<hr>
 
-			<p class="text-right">
+			<p>
 				<strong>If Menu</strong>:
 				<a href="https://wordpress.org/plugins/if-menu/#faq" target="wpplugins"><?php _e('FAQs', 'if-menu') ?></a> &middot;
-				<a href="https://wordpress.org/plugins/if-menu/#reviews" target="wpplugins"><?php _e('Reviews', 'if-menu') ?></a> &middot;
-				<a href="https://wordpress.org/support/plugin/if-menu" target="wpplugins"><?php _e('Support', 'if-menu') ?></a>
+				<a href="https://wordpress.org/support/plugin/if-menu" target="wpplugins"><?php _e('Support', 'if-menu') ?></a> &middot;
+				<span class="dashicons dashicons-star-filled" style="color: #ffb900"></span> <a href="https://wordpress.org/plugins/if-menu/#reviews" target="wpplugins"><?php _e('Leave a review', 'if-menu') ?></a>
 			</p>
 		</div>
 

@@ -29,6 +29,18 @@
 - [ ] Add https://github.com/piwik/referrer-spam-blacklist
 - [ ] Add jQuery Vector Maps v1.5.0
 
+## 1.3.2
+*Released date: 2019-07-20*
+
+- [x] Fix exportation dates
+
+## 1.3.1
+*Released date: 2019-05-19*
+
+- [x] Update Hungarian language thanks to Pille
+- [x] Remove Warning "Address is not a valid IPv4 or IPv6"
+- [x] Browsers (+93), OS (+11)
+
 ## 1.3.0
 *Released date: 2018-05-15*
 

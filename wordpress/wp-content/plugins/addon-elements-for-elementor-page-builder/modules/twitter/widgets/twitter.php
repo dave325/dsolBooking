@@ -439,7 +439,7 @@ class Twitter extends EAE_Widget_Base {
                 'type'      => Controls_Manager::SELECT,
                 'default'   => 'follow-button',
                 'options'   => [
-                    'follow-button'  => __( 'Follow', 'wts-aea' ),
+                    'follow-button'  => __( 'Follow', 'wts-eae' ),
                     'mention-button' => __( 'Mention', 'wts-eae' ),
                 ],
                 'condition' => [
@@ -681,7 +681,7 @@ class Twitter extends EAE_Widget_Base {
         $languages = [
             ''      => __( 'Automatic', 'wts-eae' ),
             'en'    => __( 'English', 'wts-eae' ),
-            'ar'    => __( 'Arabic', 'wta-eae' ),
+            'ar'    => __( 'Arabic', 'wts-eae' ),
             'bn'    => __( 'Bengali', 'wts-eae' ),
             'cs'    => __( 'Czech', 'wts-eae' ),
             'da'    => __( 'Danish', 'wts-eae' ),

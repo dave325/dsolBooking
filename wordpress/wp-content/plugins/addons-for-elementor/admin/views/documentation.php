@@ -1164,9 +1164,66 @@ else {
             <div id="updates-panel" class="panel-left">
 
                 <h2>Change Log for the Premium Version</h2>
+                <h3>2.8</h3>
+                <ul>
+                    <li>Added - RTL Support for ALL modules.</li>
+                    <li>Added - The grid items on all relevant modules like Posts Grid, Posts Block, Gallery, Testimonials, Services, Pricing Table, Icon List, Clients, Stats, Team Members, FAQ etc. are now displayed from right to left on RTL sites.</li>
+                    <li>Fixed - Sliders and Carousels including Posts Carousel, Gallery Carousel do not display slide content on RTL sites.</li>
+                    <li>Fixed - Icons not showing up in tabs.</li>
+                    <li>Fixed - Some styles broken on tabs.</li>
+                    <li>Fixed - Full screen on YouTube videos lightbox broken on Safari browser.</li>
+                    <li>Fixed - Subtitle not displayed for Services Carousel.</li>
+                    <li>Fixed - Styling for Services Carousel was not taking effect.</li>
+                </ul>
+                <h3>2.7.5</h3>
+                <ul>
+                    <li>Added - Support for Related Posts and Current Query in Posts Grid, Posts Carousel and Posts Block modules. These modules can now be effectively used in Elementor Theme builder templates.</li>
+                    <li>Added - Support for FontAwesome 5 Icon Library in all relevant modules where icons are used.</li>
+                </ul>
+                <h3>2.7.4</h3>
+                <ul>
+                    <li>Added - Support for external page link in services, services carousel, features and team member modules.</li>
+                    <li>Added - Missing dark background styles for services, services carousel, features and team member modules.</li>
+                </ul>
+                <h3>2.7.3</h3>
+                <ul>
+                    <li>Fixed - The taxonomy chosen dropdown displaying superfluous taxonomies in the dropdown for Posts Grid/Posts Block.</li>
+                    <li>Fixed - Some taxonomies and/or their terms missing from taxonomy terms selection in query builder of Posts Grid, Posts Block and Posts Carousel.</li>
+                    <li>Fixed - The order of the taxonomy terms in the taxonomy terms selection in query builder not same as order specified in taxonomy reordering plugins.</li>
+                    <li>Fixed - Not able to sort the filters of the Posts Grid/Posts Block instances with taxonomy reordering plugins.</li>
+                    <li>Fixed - Cannot display taxonomy terms for the post in block styles 7,8 and 9 of Posts Block.</li>
+                </ul>
+                <h3>2.7.2</h3>
+                <ul>
+                    <li>Fixed - Some sites reporting error - call to undefined function get_blog_list().</li>
+                    <li>Updated - Freemius to 2.3.0.</li>
+                </ul>
+                <h3>2.7.1</h3>
+                <ul>
+                    <li>Fixed - Pagination of filters for Posts/Portfolio Grid and Posts Block modules.</li>
+                    <li>Added - Security improvements to Posts Grid and Gallery modules.</li>
+                </ul>
+                <h3>2.7</h3>
+                <ul>
+                    <li>Added - Plugin is now fully compatible with WPML plugin.</li>
+                    <li>Added - All of our addons are now translatable using WPML plugin.</li>
+                    <li>Added - Offset support for Posts Carousel modules.</li>
+                </ul>
+                <h3>2.6.4</h3>
+                <ul>
+                    <li>Added - Thumbnails support for the lightbox module of Posts Grid, Posts Block, Image/Video Gallery and Gallery Carousel.</li>
+                    <li>Added - Offset support for Posts Grid and Posts Block modules.</li>
+                    <li>Updated - Fancybox scripts to 3.5.7 release.</li>
+                </ul>
+                <h3>2.6.3</h3>
+                <ul>
+                    <li>Fixed - The HTML5 videos in the gallery module would display inline instead of showing up in the lightbox.</li>
+                    <li>Fixed - Empty space below the tab addons.</li>
+                </ul>
                 <h3>2.6.2</h3>
                 <ul>
                     <li>Updated - Readme.txt and documentation.</li>
+                    <li>Removed - Unused files in plugin folders.</li>
                 </ul>
                 <h3>2.6.1</h3>
                 <ul>

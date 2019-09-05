@@ -167,7 +167,7 @@ class SwpmMiscUtils {
         $redirect_html = sprintf('<meta http-equiv="refresh" content="%d; url=\'%s\'" />', $timeout, $redirect_url);
         $redir_msg = SwpmUtils::_('You will be automatically redirected in a few seconds. If not, please %s.');
         $redir_msg = sprintf($redir_msg, '<a href="' . $redirect_url . '">' . SwpmUtils::_('click here') . '</a>');
-        
+
         $msg = $msg . '<br/><br/>' . $redir_msg . $redirect_html;
         $title = SwpmUtils::_('Action Status');
         wp_die($msg, $title);
@@ -177,7 +177,9 @@ class SwpmMiscUtils {
         $pageURL = 'http';
 
         if (isset($_SERVER['SCRIPT_URI']) && !empty($_SERVER['SCRIPT_URI'])) {
-            return $_SERVER['SCRIPT_URI'];
+            $pageURL = $_SERVER['SCRIPT_URI'];
+            $pageURL = apply_filters('swpm_get_current_page_url_filter', $pageURL);
+            return $pageURL;
         }
 
         if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on")) {
@@ -189,6 +191,39 @@ class SwpmMiscUtils {
         } else {
             $pageURL .= ltrim($_SERVER["SERVER_NAME"], ".*") . $_SERVER["REQUEST_URI"];
         }
+        
+        $pageURL = apply_filters('swpm_get_current_page_url_filter', $pageURL);
+        
+        return $pageURL;
+    }
+    
+    /* 
+     * This is an alternative to the get_current_page_url() function. It needs to be tested on many different server conditions before it can be utilized 
+     */
+    public static function get_current_page_url_alt() {
+        $url_parts = array();
+        $url_parts['proto'] = 'http';
+
+        if (isset($_SERVER['SCRIPT_URI']) && !empty($_SERVER['SCRIPT_URI'])) {
+            return $_SERVER['SCRIPT_URI'];
+        }
+
+        if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on")) {
+            $url_parts['proto'] = 'https';
+        }
+
+        $url_parts['port'] = '';
+        if (isset($_SERVER["SERVER_PORT"]) && ($_SERVER["SERVER_PORT"] != "80") && ($_SERVER["SERVER_PORT"] != "443")) {
+            $url_parts['port'] = $_SERVER["SERVER_PORT"];
+        }
+
+        $url_parts['domain'] = ltrim($_SERVER["SERVER_NAME"], ".*");
+        $url_parts['uri'] = $_SERVER["REQUEST_URI"];
+        
+        $url_parts = apply_filters('swpm_get_current_page_url_alt_filter', $url_parts);
+
+        $pageURL = sprintf('%s://%s%s%s', $url_parts['proto'], $url_parts['domain'], !empty($url_parts['port']) ? ':' . $url_parts['port'] : '', $url_parts['uri']);
+
         return $pageURL;
     }
 
@@ -377,7 +412,7 @@ class SwpmMiscUtils {
             "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia",
             "Fiji", "Finland", "France", "Gabon", "Gambia, The", "Georgia", "Germany",
             "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau",
-            "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia",
+            "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia",
             "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan",
             "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kuwait",
             "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya",
@@ -430,6 +465,35 @@ class SwpmMiscUtils {
             $countries_dropdown .= "\r\n" . '<option value="' . $country_name . '"' . (strtolower($country_name) == strtolower($country) ? ' selected' : '') . '>' . $country_name . '</option>';
         }
         return $countries_dropdown;
+    }
+
+    public static function get_button_type_name($button_type)
+    {
+        $btnTypesNames = array(
+            'pp_buy_now' => SwpmUtils::_('PayPal Buy Now'),
+            'pp_subscription' => SwpmUtils::_('PayPal Subscription'),
+            'pp_smart_checkout' => SwpmUtils::_('PayPal Smart Checkout'),
+            'stripe_buy_now' => SwpmUtils::_('Stripe Buy Now'),
+            'stripe_subscription' => SwpmUtils::_('Stripe Subscription'),
+            'braintree_buy_now' => SwpmUtils::_('Braintree Buy Now')
+        );
+
+        $button_type_name = $button_type;
+
+        if (array_key_exists($button_type, $btnTypesNames)) {
+            $button_type_name = $btnTypesNames[$button_type];
+        }
+
+        return $button_type_name;
+    }
+
+    public static function format_money($amount, $currency = false)
+    {
+        $formatted = number_format($amount, 2);
+        if ($currency) {
+            $formatted .= ' ' . $currency;
+        }
+        return $formatted;
     }
 
 }

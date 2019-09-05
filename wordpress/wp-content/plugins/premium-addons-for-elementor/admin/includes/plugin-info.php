@@ -25,7 +25,7 @@ class Plugin_Info {
 
 	public function pa_about_page() {
         
-        $theme_name = Admin_Notices::get_installed_theme();
+        $theme_name = Helper_Functions::get_installed_theme();
         
         $url = sprintf('https://premiumaddons.com/pro/?utm_source=about-page&utm_medium=wp-dash&utm_campaign=get-pro&utm_term=%s', $theme_name );
         

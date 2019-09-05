@@ -8,9 +8,10 @@
         <div class="team-container">
             <!-- First Team Block -->
             <div class="team-each-wrap">
-                <div class="spin"></div>
+               
                 <div class="team-block">
-                    <img src="<?php echo $settings['team_image']['url'];?>" alt="<?php echo $settings['team_name'];?>">               
+                    <img src="<?php echo $settings['team_image']['url'];?>" alt="<?php echo $settings['team_name'];?>">  
+                    <div class="spin"></div>             
                 </div>
 
 

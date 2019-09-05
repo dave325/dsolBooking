@@ -63,11 +63,7 @@ jQuery(function($) {
 				dialogClass:	'if-menu-dialog',
 				draggable:		false,
 				modal:			true,
-				width:			450,
-				open:			function(event, ui) {
-					console.log(event);
-					console.log(ui);
-				}
+				width:			450
 			});
 		}
 	});

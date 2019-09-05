@@ -37,6 +37,7 @@
             <?php elseif ($settings['item_option'] == 'sticky_post'): ?>
 
                 <?php $sticky = array(
+                    'post_type' => 'post',
                     'posts_per_page' => $settings['sticky_post_show'],
                     'post__in'  => get_option( 'sticky_posts' ),
                     'ignore_sticky_posts' => 1
@@ -69,6 +70,9 @@
 
                 <?php
                        $project = array(
+                            'post_type' => 'post',
+                            'order' => $settings['items_order'],
+                            'orderby' => $settings['items_orderby'],
                             'post_status'       => 'publish',
                             'posts_per_page'    =>$settings['standard_post_show'],
                             'ignore_sticky_posts' => 1
@@ -78,7 +82,7 @@
                             while($project_query->have_posts()): 
                                 $project_query->the_post(); 
                     ?>
-                    <?php if ( has_post_thumbnail() ): ?>
+                    <?php //if ( has_post_thumbnail() ): ?>
                     <figure class="project-wrap">
                         <div class="project-image" >
                             <a href="<?php the_permalink();?>">
@@ -87,13 +91,13 @@
                         </div>
                         <figcaption class="text-center">
                             <h5 class="title">
-                                <a href="<?php the_permalink();?>"><?php echo wp_trim_words( get_the_title(), 3, ' ' );?>    
+                                <a href="<?php the_permalink();?>"><?php echo wp_trim_words( get_the_title(), $settings['title_word'], ' ' );?>    
                                 </a>
                             </h5>
                             
                         </figcaption>                                                          
                     </figure>
-                <?php endif; endwhile; endif; wp_reset_postdata(); ?>
+                <?php  endwhile; endif; wp_reset_postdata(); ?>
             <?php endif ?>
         </div><!-- /.perfecto-testimonial -->              
     </div><!-- /.section -->

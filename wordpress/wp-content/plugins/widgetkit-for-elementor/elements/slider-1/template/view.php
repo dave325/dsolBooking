@@ -11,7 +11,7 @@
         <div id="<?php echo $id; ?>" class="carousel slide" data-ride="carousel" data-interval="
              <?php if ($settings['slider_interval']):
                  echo $settings['slider_interval'];
-             endif; ?>">
+             endif; ?>" <?php echo ($settings['slider_data_pause'] == 'yes') ? '' : 'data-pause="false"'; ?>>
              <?php if ($settings['dot_enable_1']):?>
                 <!-- Indicators -->
                 <ol class="carousel-indicators">
@@ -30,9 +30,9 @@
 
                         <div class="carousel-caption ">
                             <?php if ($slider['title']):?>
-                                <h2 class="slider-title animated animate-delay-1 <?php echo $slider['title_animation']; ?>">
+                                <<?php echo $settings['heading_tag'];?> class="slider-title animated animate-delay-1 <?php echo $slider['title_animation']; ?>">
                                         <?php echo $slider['title']; ?>                    
-                                </h2>
+                                </<?php echo $settings['heading_tag'];?>>
                             <?php endif; ?>
 
 

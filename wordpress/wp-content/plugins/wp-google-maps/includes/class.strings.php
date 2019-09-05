@@ -2,6 +2,9 @@
 
 namespace WPGMZA;
 
+if(!defined('ABSPATH'))
+	return;
+
 /**
  * This class is a container for all localized strings used by the plugin.
  * In the future, functionality will be added to build a dummy static string file from dynamic strings in the database, this will allow 3rd party software to scan dynamic strings for translation
@@ -41,7 +44,9 @@ class Strings
 			'save_marker'				=> __('Save Marker', 'wp-google-maps'),
 			'please_wait'				=> __('Please Wait...', 'wp-google-maps'),
 			'zero_results'				=> __('Zero results found', 'wp-google-maps'),
-			'geocode_fail'				=> __('Geocode failed due to technical reasons', 'wp-google-maps')
+			'geocode_fail'				=> __('Geocode failed due to technical reasons', 'wp-google-maps'),
+			
+			'you_must_check_gdpr_consent'	=> __('You must check the GDPR consent box to continue', 'wp-google-maps')
 		));
 	}
 	

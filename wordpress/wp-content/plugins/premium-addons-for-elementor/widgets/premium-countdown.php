@@ -1,14 +1,26 @@
 <?php
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Modules\DynamicTags\Module as TagsModule;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+
 if( !defined( 'ABSPATH' ) ) exit; // No access of directly access
 
 class Premium_Countdown extends Widget_Base {
+    
 	public function get_name() {
 		return 'premium-countdown-timer';
 	}
 
 	public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Countdown';
+        return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Countdown', 'premium-addons-for-elementor') );
 	}
 
 	public function get_icon() {
@@ -17,7 +29,13 @@ class Premium_Countdown extends Widget_Base {
     
     public function is_reload_preview_required() {
         return true;
-    }	
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
     
     public function get_script_depends() {
 		return [ 'premium-addons-js','count-down-timer-js' ];
@@ -92,13 +110,7 @@ class Premium_Countdown extends Widget_Base {
 					'M'     => __( 'Minutes', 'premium-addons-for-elementor' ),
 					'S' 	=> __( 'Second', 'premium-addons-for-elementor' ),
 				],
-				'default' 		=> [
-					'O',
-                    'D',
-					'H',
-					'M',
-					'S'
-				],
+				'default' 		=> [ 'O', 'D', 'H', 'M', 'S' ],
 				'multiple'		=> true,
 				'separator'		=> 'after'
 		  	]
@@ -173,7 +185,13 @@ class Premium_Countdown extends Widget_Base {
 			[
 				'label'			=> __('Redirect To', 'premium-addons-for-elementor'),
 				'type'			=> Controls_Manager::TEXT,
-                'dynamic'       => [ 'active' => true ],
+                'dynamic'       => [
+                    'active' => true,
+                    'categories' => [
+                        TagsModule::POST_META_CATEGORY,
+                        TagsModule::URL_CATEGORY
+                    ]
+                ],
 				'condition'		=> [
 					'premium_countdown_expire_text_url' => 'url'
 				],

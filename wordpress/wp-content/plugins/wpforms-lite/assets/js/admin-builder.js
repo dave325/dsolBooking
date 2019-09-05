@@ -622,11 +622,11 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			});
 
 			// Field Options group toggle
-			$builder.on('click', '.wpforms-field-option-group-toggle', function(e) {
+			$builder.on('click', '.wpforms-field-option-group-toggle:not(.upgrade-modal)', function( e ) {
 				e.preventDefault();
-				var $this = $(this);
-				$this.parent().toggleClass('wpforms-hide').find('.wpforms-field-option-group-inner').slideToggle();
-				$this.find('i').toggleClass('fa-angle-down fa-angle-right');
+				var $this = $( this );
+				$this.parent().toggleClass( 'wpforms-hide' ).find( '.wpforms-field-option-group-inner' ).slideToggle();
+				$this.find( 'i' ).toggleClass( 'fa-angle-down fa-angle-right' );
 			});
 
 			// Display toggle for Address field hide address line 2 option
@@ -2695,10 +2695,11 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			// Embed form
 			$builder.on('click', '#wpforms-embed', function(e) {
 				e.preventDefault();
-				var content = wpforms_builder.embed_modal;
+				var content  = wpforms_builder.embed_modal,
+					video_id = wpforms_builder.is_gutenberg ? 'ccyJMwyI8x0' : 'IxGVz3AjEe0';
 					content += '<input type=\'text\' value=\'[wpforms id="' + s.formID + '" title="false" description="false"]\' readonly id=\'wpforms-embed-shortcode\'>';
 					content += wpforms_builder.embed_modal_2;
-					content += '<br><br><iframe width="600" height="338" src="https://www.youtube-nocookie.com/embed/IxGVz3AjEe0?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
+					content += '<br><br><iframe width="600" height="338" src="https://www.youtube-nocookie.com/embed/' + video_id + '?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
 				$.alert({
 					columnClass: 'modal-wide',
 					title: false,
@@ -3246,14 +3247,24 @@ var WPFormsBuilder = window.WPFormsBuilder || ( function( document, window, $ ) 
 			var ctrlDown = false;
 
 			$(document).keydown(function(e) {
-				if (e.keyCode === 17) {
+				if ( e.keyCode === 17 ) {
 					ctrlDown = true;
-				} else if (ctrlDown && e.keyCode === 80) {
-					window.open(wpforms_builder.preview_url);
+				}
+				else if ( ctrlDown && e.keyCode === 80 ) {
+					// Open Form Preview tab on Ctrl+p.
+					window.open( wpforms_builder.preview_url );
 					ctrlDown = false;
 					return false;
-				} else if (ctrlDown && e.keyCode === 69) {
-					window.open(wpforms_builder.entries_url);
+				}
+				else if ( ctrlDown && e.keyCode === 69 ) {
+					// Open Entries tab on Ctrl+e.
+					window.open( wpforms_builder.entries_url );
+					ctrlDown = false;
+					return false;
+				}
+				else if ( ctrlDown && e.keyCode === 83 ) {
+					// Trigger the Builder save on Ctrl+s.
+					$( '#wpforms-save', $builder ).click();
 					ctrlDown = false;
 					return false;
 				}

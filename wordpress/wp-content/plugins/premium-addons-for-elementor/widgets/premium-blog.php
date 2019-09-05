@@ -1,24 +1,40 @@
 <?php
-namespace Elementor;
 
-use Elementor\Core\Responsive\Responsive;
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Css_Filter;
+use Elementor\Group_Control_Box_Shadow;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
 class Premium_Blog extends Widget_Base {
+    
     public function get_name() {
         return 'premium-addon-blog';
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Blog';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Blog', 'premium-addons-for-elementor') );
 	}
 
-    public function is_reload_preview_required(){
+    public function is_reload_preview_required() {
         return true;
     }
     
-    public function get_script_depends(){
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
+    
+    public function get_script_depends() {
         return [
             'isotope-js',
             'jquery-slick',
@@ -29,6 +45,10 @@ class Premium_Blog extends Widget_Base {
     public function get_icon() {
         return 'pa-blog';
     }
+    
+    public function get_keywords() {
+		return [ 'posts', 'grid', 'item', 'loop', 'query', 'portfolio' ];
+	}
 
     public function get_categories() {
         return [ 'premium-elements' ];
@@ -50,7 +70,7 @@ class Premium_Blog extends Widget_Base {
                 'type'          => Controls_Manager::SELECT,
                 'description'   => __('Choose a hover effect for the image','premium-addons-for-elementor'),
                 'options'       => [
-                    'none'  => __('None', 'premium-addons-for-elementor'),
+                    'none'   => __('None', 'premium-addons-for-elementor'),
                     'zoomin' => __('Zoom In', 'premium-addons-for-elementor'),
                     'zoomout'=> __('Zoom Out', 'premium-addons-for-elementor'),
                     'scale'  => __('Scale', 'premium-addons-for-elementor'),
@@ -90,6 +110,19 @@ class Premium_Blog extends Widget_Base {
             ]
         );
         
+        $this->add_control('premium_blog_skin',
+            [
+                'label'         => __('Skin', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SELECT,
+                'options'       => [
+                    'classic'       => __('Classic', 'premium-addons-for-elementor'),
+                    'cards'         => __('Cards', 'premium-addons-for-elementor'),
+                ],
+                'default'       => 'classic',
+                'label_block'   => true
+            ]
+        );
+        
         $this->add_control('premium_blog_title_tag',
 			[
 				'label'			=> __( 'Title HTML Tag', 'premium-addons-for-elementor' ),
@@ -116,13 +149,16 @@ class Premium_Blog extends Widget_Base {
             ]
         );
         
-        $this->add_control('premium_blog_masonry',
+        $this->add_control('premium_blog_layout',
             [
-                'label'         => __('Masonry', 'premium-addons-for-elementor'),
-                'type'          => Controls_Manager::SWITCHER,
-                'return_value'  => 'true',
-                'default'       => 'true',
-                'condition'     => [
+                'label'             => __('Layout', 'premium-addons-for-elementor'),
+                'type'              => Controls_Manager::SELECT,
+                'options'           => [
+                    'even'      => __('Even', 'premium-addons-for-elementor'),
+                    'masonry'   => __('Masonry', 'premium-addons-for-elementor'),
+                ],
+                'default'           => 'masonry',
+                'condition'         => [
                     'premium_blog_grid' => 'yes'
                 ]
             ]
@@ -139,19 +175,73 @@ class Premium_Blog extends Widget_Base {
                     '25%'   => __('4 Columns', 'premium-addons-for-elementor'),
                 ],
                 'default'       => '33.33%',
-                'selectors'     => [
-                    '{{WRAPPER}} .premium-blog-post-container'  => 'width: {{VALUE}};'
-                ],
+                'render_type'   => 'template',
                 'condition'     => [
                     'premium_blog_grid' =>  'yes',
                 ],
-                'label_block'   => true
+                'label_block'   => true,
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-post-outer-container'  => 'width: {{VALUE}};'
+                ],
             ]
         );
         
-        $this->add_responsive_control('premium_blog_posts_spacing',
+        $this->add_responsive_control('premium_blog_thumb_min_height',
             [
-                'label'         => __('Spacing', 'premium-addons-for-elementor'),
+                'label'         => __('Thumbnail Min Height', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SLIDER,
+                'size_units'    => ['px', '%', "em"],
+                'range'         => [
+                    'px'    => [
+                        'min'   => 1, 
+                        'max'   => 300,
+                    ],
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-thumbnail-container img' => 'min-height: {{SIZE}}{{UNIT}};'
+                ]
+            ]
+        );
+        
+        $this->add_responsive_control('premium_blog_thumb_max_height',
+            [
+                'label'         => __('Thumbnail Max Height', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SLIDER,
+                'size_units'    => ['px', '%', "em"],
+                'range'         => [
+                    'px'    => [
+                        'min'   => 1, 
+                        'max'   => 300,
+                    ],
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-thumbnail-container img' => 'max-height: {{SIZE}}{{UNIT}};'
+                ]
+            ]
+        );
+        
+        $this->add_responsive_control('premium_blog_thumbnail_fit',
+            [
+                'label'         => __('Thumbnail Fit', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SELECT,
+                'options'       => [
+                    'cover'  => __('Cover', 'premium-addons-for-elementor'),
+                    'fill'   => __('Fill', 'premium-addons-for-elementor'),
+                    'contain'=> __('Contain', 'premium-addons-for-elementor'),
+                ],
+                'default'       => 'cover',
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-thumbnail-container img' => 'object-fit: {{VALUE}}'
+                ],
+                'condition'     => [
+                    'premium_blog_grid' =>  'yes'
+                ]
+            ]
+        );
+        
+        $this->add_responsive_control('premium_blog_posts_columns_spacing',
+            [
+                'label'         => __('Rows Spacing', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SLIDER,
                 'size_units'    => ['px', '%', "em"],
                 'range'         => [
@@ -164,7 +254,28 @@ class Premium_Blog extends Widget_Base {
                     'premium_blog_grid'   => 'yes'
                 ],
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-blog-post-container' => 'padding: {{SIZE}}{{UNIT}};'
+                    '{{WRAPPER}} .premium-blog-post-outer-container' => 'margin-bottom: {{SIZE}}{{UNIT}}'
+                ]
+            ]
+        );
+        
+        $this->add_responsive_control('premium_blog_posts_spacing',
+            [
+                'label'         => __('Columns Spacing', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SLIDER,
+                'size_units'    => ['px', '%', "em"],
+                'range'         => [
+                    'px'    => [
+                        'min'   => 1, 
+                        'max'   => 200,
+                    ],
+                ],
+                'render_type'   => 'template',
+                'condition'     => [
+                    'premium_blog_grid'   => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-post-outer-container' => 'padding-left: {{SIZE}}{{UNIT}}; padding-right: {{SIZE}}{{UNIT}}'
                 ]
             ]
         );
@@ -208,6 +319,16 @@ class Premium_Blog extends Widget_Base {
                 'type'          => Controls_Manager::SWITCHER,
                 'description'   => __('Excerpt is used for article summary with a link to the whole entry. The default except length is 55','premium-addons-for-elementor'),
                 'default'       => 'yes',
+            ]
+        );
+        
+        $this->add_control('premium_blog_excerpt_box',
+            [
+                'label'         => __('Pull From Content Box', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'description'   => __('Post content will be pulled from post content box','premium-addons-for-elementor'),
+                'default'       => 'true',
+                'return_value'  => 'true',
             ]
         );
 
@@ -267,7 +388,7 @@ class Premium_Blog extends Widget_Base {
             [
                 'label'         => __('Categories Meta', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SWITCHER,
-                'description'   => __('Display or hide categories mata','premium-addons-for-elementor'),
+                'description'   => __('Display or hide categories meta','premium-addons-for-elementor'),
                 'default'       => 'yes',
             ]
         );
@@ -275,7 +396,7 @@ class Premium_Blog extends Widget_Base {
         $this->add_control('premium_blog_comments_meta',
             [
                 'label'         => __('Comments Meta', 'premium-addons-for-elementor'),
-                'description'   => __('Display or hide comments mata','premium-addons-for-elementor'),
+                'description'   => __('Display or hide comments meta','premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SWITCHER,
                 'default'       => 'yes',
             ]
@@ -298,15 +419,6 @@ class Premium_Blog extends Widget_Base {
             ]
         );
         
-        $this->add_control('premium_blog_edit_post',
-            [
-                'label'         => __('Edit Post Icon', 'premium-addons-for-elementor'),
-                'type'          => Controls_Manager::SWITCHER,
-                'description'   => __('Display or hide edit post option','premium-addons-for-elementor'),
-                'default'       => 'yes',
-            ]
-        );
-        
         $this->end_controls_section();
         
         $this->start_controls_section('premium_blog_advanced_settings',
@@ -323,6 +435,45 @@ class Premium_Blog extends Widget_Base {
                 'label_block'   => true,
                 'multiple'      => true,
                 'options'       => premium_addons_post_type_categories(),        
+            ]
+        );
+        
+        $this->add_control('premium_blog_cat_tabs',
+            [
+                'label'         => __('Filter Tabs', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'condition'     => [
+                    'premium_blog_carousel!'  => 'yes'
+                ]
+            ]
+        );
+        
+        $this->add_responsive_control('premium_blog_filter_align',
+            [
+                'label'         => __( 'Alignment', 'premium-addons-for-elementor' ),
+                'type'          => Controls_Manager::CHOOSE,
+                'options'       => [
+                    'flex-start'    => [
+                        'title' => __( 'Left', 'premium-addons-for-elementor' ),
+                        'icon'  => 'fa fa-align-left',
+                    ],
+                    'center'        => [
+                        'title' => __( 'Center', 'premium-addons-for-elementor' ),
+                        'icon'  => 'fa fa-align-center',
+                    ],
+                    'flex-end'      => [
+                        'title' => __( 'Right', 'premium-addons-for-elementor' ),
+                        'icon'  => 'fa fa-align-right',
+                    ],
+                ],
+                'default'       => 'center',
+                'condition'     => [
+                    'premium_blog_cat_tabs'     => 'yes',
+                    'premium_blog_carousel!'    => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-filter' => 'justify-content: {{VALUE}};',
+                ],
             ]
         );
         
@@ -497,7 +648,7 @@ class Premium_Blog extends Widget_Base {
             [
                 'label'         => __('Carousel', 'premium-addons-for-elementor'),
                 'condition'     => [
-                    'premium_blog_masonry!' => 'true'
+                    'premium_blog_layout!' => 'masonry'
                 ]
             ]
         );
@@ -542,6 +693,27 @@ class Premium_Blog extends Widget_Base {
 			]
 		);
         
+        $this->add_control('premium_blog_carousel_dots',
+            [
+                'label'         => __('Navigation Dots', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'condition'     => [
+                    'premium_blog_carousel'  => 'yes'
+                ]
+            ]
+        );
+        
+        $this->add_control('premium_blog_carousel_arrows',
+            [
+                'label'         => __('Navigation Arrows', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'default'       => 'yes',
+                'condition'     => [
+                    'premium_blog_carousel'  => 'yes'
+                ]
+            ]
+        );
+        
         $this->add_responsive_control('premium_blog_carousel_arrows_pos',
             [
                 'label'         => __('Arrows Position', 'premium-addons-for-elementor'),
@@ -558,7 +730,8 @@ class Premium_Blog extends Widget_Base {
                     ],
                 ],
                 'condition'		=> [
-					'premium_blog_carousel' => 'yes'
+					'premium_blog_carousel'         => 'yes',
+                    'premium_blog_carousel_arrows'  => 'yes'
 				],
                 'selectors'     => [
                     '{{WRAPPER}} .premium-blog-wrap a.carousel-arrow.carousel-next' => 'right: {{SIZE}}{{UNIT}};',
@@ -579,7 +752,7 @@ class Premium_Blog extends Widget_Base {
         
         $this->add_control('premium_blog_plus_color',
             [
-                'label'         => __('Icon Color', 'premium-addons-for-elementor'),
+                'label'         => __('Plus Sign Color', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::COLOR,
                 'scheme'        => [
                     'type'  => Scheme_Color::get_type(),
@@ -658,7 +831,6 @@ class Premium_Blog extends Widget_Base {
             Group_Control_Typography::get_type(),
             [
                 'name'          => 'premium_blog_title_typo',
-                'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
                 'selector'      => '{{WRAPPER}} .premium-blog-entry-title',
             ]
         );
@@ -695,7 +867,7 @@ class Premium_Blog extends Widget_Base {
                     'value' => Scheme_Color::COLOR_2,
                 ],
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-blog-entry-meta, {{WRAPPER}} .premium-blog-entry-meta a, {{WRAPPER}} .premium-blog-post-content .premium-blog-excerpt-link'  => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .premium-blog-entry-meta, {{WRAPPER}} .premium-blog-entry-meta a'  => 'color: {{VALUE}};',
                 ]
             ]
         );
@@ -705,8 +877,7 @@ class Premium_Blog extends Widget_Base {
             Group_Control_Typography::get_type(),
             [
                 'name'          => 'premium_blog_meta_typo',
-                'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
-                'selector'      => '{{WRAPPER}} .premium-blog-entry-meta a,{{WRAPPER}} .premium-blog-post-content .premium-blog-excerpt-link',
+                'selector'      => '{{WRAPPER}} .premium-blog-entry-meta a',
             ]
         );
 
@@ -719,54 +890,11 @@ class Premium_Blog extends Widget_Base {
                     'value' => Scheme_Color::COLOR_1,
                 ],
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-blog-entry-meta a:hover, {{WRAPPER}} .premium-blog-post-content .premium-blog-excerpt-link:hover'  => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .premium-blog-entry-meta a:hover'  => 'color: {{VALUE}};',
                 ]
             ]
         );
         
-        $this->end_controls_section();
-        
-        $this->start_controls_section('premium_blog_content_style_section',
-            [
-                'label'         => __('Content', 'premium-addons-for-elementor'),
-                'tab'           => Controls_Manager::TAB_STYLE,
-            ]
-        );
-        
-        $this->add_control('premium_blog_post_content_color',
-            [
-                'label'         => __('Color', 'premium-addons-for-elementor'),
-                'type'          => Controls_Manager::COLOR,
-                'scheme'        => [
-                    'type'  => Scheme_Color::get_type(),
-                    'value' => Scheme_Color::COLOR_3,
-                ],
-                'selectors'     => [
-                    '{{WRAPPER}} .premium-blog-post-content'  => 'color: {{VALUE}};',
-                ]
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name'          => 'premium_blog_content_typo',
-                'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
-                'selector'      => '{{WRAPPER}} .premium-blog-post-content',
-            ]
-        );
-        
-        $this->add_control('premium_blog_content_background_color',
-            [
-                'label'         => __('Background Color', 'premium-addons-for-elementor'),
-                'type'          => Controls_Manager::COLOR,
-                'default'       => '#f5f5f5',
-                'selectors'     => [
-                    '{{WRAPPER}} .premium-blog-content-wrapper'  => 'background-color: {{VALUE}};',
-                ]
-            ]
-        );
-
         $this->end_controls_section();
         
         $this->start_controls_section('premium_blog_tags_style_section',
@@ -794,7 +922,6 @@ class Premium_Blog extends Widget_Base {
             Group_Control_Typography::get_type(),
             [
                 'name'          => 'premium_blog_tags_typo',
-                'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
                 'selector'      => '{{WRAPPER}} .premium-blog-post-tags-container a',
             ]
         );
@@ -902,6 +1029,99 @@ class Premium_Blog extends Widget_Base {
         
         $this->end_controls_section();
         
+        $this->start_controls_section('premium_blog_content_style_section',
+            [
+                'label'         => __('Box', 'premium-addons-for-elementor'),
+                'tab'           => Controls_Manager::TAB_STYLE,
+            ]
+        );
+        
+        $this->add_control('premium_blog_post_content_color',
+            [
+                'label'         => __('Text Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'scheme'        => [
+                    'type'  => Scheme_Color::get_type(),
+                    'value' => Scheme_Color::COLOR_3,
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-post-content'  => 'color: {{VALUE}};',
+                ]
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'          => 'premium_blog_content_typo',
+                'selector'      => '{{WRAPPER}} .premium-blog-post-content',
+            ]
+        );
+        
+        $this->add_control('premium_blog_box_background_color',
+            [
+                'label'         => __('Background Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-post-container'  => 'background-color: {{VALUE}};',
+                ]
+            ]
+        );
+        
+        $this->add_control('premium_blog_content_background_color',
+            [
+                'label'         => __('Content Background Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'default'       => '#f5f5f5',
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-content-wrapper'  => 'background-color: {{VALUE}};',
+                ]
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+                [
+                    'name'          => 'premium_blog_box_shadow',
+                    'selector'      => '{{WRAPPER}} .premium-blog-content-wrapper',
+                ]
+                );
+        
+        $this->add_responsive_control('prmeium_blog_box_padding',
+            [
+                'label'         => __('Padding', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::DIMENSIONS,
+                'size_units'    => ['px', 'em', '%'],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-post-container' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
+                ]
+            ]
+        );
+        
+        $this->add_responsive_control('prmeium_blog_content_margin',
+            [
+                'label'         => __('Content Margin', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::DIMENSIONS,
+                'size_units'    => ['px', 'em', '%'],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-content-wrapper' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
+                ]
+            ]
+        );
+        
+        $this->add_responsive_control('prmeium_blog_content_padding',
+            [
+                'label'         => __('Content Padding', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::DIMENSIONS,
+                'size_units'    => ['px', 'em', '%'],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-content-wrapper' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'
+                ]
+            ]
+        );
+        
+        $this->end_controls_section();
+        
         $this->start_controls_section('premium_blog_pagination_Style',
             [
                 'label'         => __('Pagination Style', 'premium-addons-for-elementor'),
@@ -916,7 +1136,6 @@ class Premium_Blog extends Widget_Base {
             Group_Control_Typography::get_type(),
             [
                 'name'              => 'premium_blog_pagination_typo',
-                'scheme'            => Scheme_Typography::TYPOGRAPHY_1,
                 'selector'          => '{{WRAPPER}} .premium-blog-pagination-container li *',
             ]
             );
@@ -1043,12 +1262,54 @@ class Premium_Blog extends Widget_Base {
         
         $this->end_controls_section();
         
-        $this->start_controls_section('carousel_style',
+        $this->start_controls_section('carousel_dots_style',
             [
-                'label'         => __('Carousel', 'premium-addons-for-elementor'),
+                'label'         => __('Carousel Dots', 'premium-addons-for-elementor'),
                 'tab'           => Controls_Manager::TAB_STYLE,
                 'condition'     => [
-                    'premium_blog_carousel'  => 'yes'
+                    'premium_blog_carousel'         => 'yes',
+                    'premium_blog_carousel_dots'  => 'yes'
+                ]
+            ]
+        );
+        
+        $this->add_control('carousel_dot_navigation_color',
+			[
+				'label' 		=> __( 'Color', 'premium-addons-for-elementor' ),
+				'type' 			=> Controls_Manager::COLOR,
+				'scheme' 		=> [
+				    'type' 	=> Scheme_Color::get_type(),
+				    'value' => Scheme_Color::COLOR_2,
+				],
+				'selectors'		=> [
+					'{{WRAPPER}} ul.slick-dots li' => 'color: {{VALUE}}'
+				]
+			]
+		);
+
+		$this->add_control('carousel_dot_navigation_active_color',
+			[
+				'label' 		=> __( 'Active Color', 'premium-addons-for-elementor' ),
+				'type' 			=> Controls_Manager::COLOR,
+				'scheme' 		=> [
+				    'type' 	=> Scheme_Color::get_type(),
+				    'value' => Scheme_Color::COLOR_1,
+				],
+				'selectors'		=> [
+					'{{WRAPPER}} ul.slick-dots li.slick-active' => 'color: {{VALUE}}'
+				]
+			]
+		);
+        
+        $this->end_controls_section();
+        
+        $this->start_controls_section('carousel_arrows_style',
+            [
+                'label'         => __('Carousel Arrows', 'premium-addons-for-elementor'),
+                'tab'           => Controls_Manager::TAB_STYLE,
+                'condition'     => [
+                    'premium_blog_carousel'         => 'yes',
+                    'premium_blog_carousel_arrows'  => 'yes'
                 ]
             ]
         );
@@ -1115,24 +1376,202 @@ class Premium_Blog extends Widget_Base {
         );
         
         $this->end_controls_section();
+        
+        $this->start_controls_section('premium_blog_read_more_style',
+            [
+                'label'         => __('Read More Text', 'premium-addons-for-elementor'),
+                'tab'           => Controls_Manager::TAB_STYLE,
+            ]
+        );
+        
+        $this->add_control('premium_blog_read_more_color',
+            [
+                'label'         => __('Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-post-content .premium-blog-excerpt-link'  => 'color: {{VALUE}};',
+                ]
+            ]
+        );
+        
+        $this->add_control('premium_blog_read_more_hover_color',
+            [
+                'label'         => __('Hover Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-blog-post-content .premium-blog-excerpt-link:hover'  => 'color: {{VALUE}};',
+                ]
+            ]
+        );
+        
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'          => 'premium_blog_read_more_typo',
+                'selector'      => '{{WRAPPER}} .premium-blog-post-content .premium-blog-excerpt-link',
+            ]
+        );
+        
+        $this->end_controls_section();
+        
+        $this->start_controls_section('premium_blog_filter_style',
+            [
+                'label'     => __('Filter','premium-addons-for-elementor'),
+                'tab'       => Controls_Manager::TAB_STYLE,
+                'condition' => [
+                    'premium_blog_cat_tabs'    => 'yes'
+                ]
+            ]);
+        
+        $this->add_control('premium_blog_filter_color',
+                [
+                    'label'         => __('Color', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::COLOR,
+                    'scheme'        => [
+                        'type'  => Scheme_Color::get_type(),
+                        'value' => Scheme_Color::COLOR_2,
+                    ],
+                    'selectors'     => [
+                        '{{WRAPPER}} .premium-blog-cats-container li a.category span' => 'color: {{VALUE}};',
+                    ]
+                ]
+                );
+        
+        $this->add_control('premium_blog_filter_active_color',
+                [
+                    'label'         => __('Active Color', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::COLOR,
+                    'scheme'        => [
+                        'type'  => Scheme_Color::get_type(),
+                        'value' => Scheme_Color::COLOR_1,
+                    ],
+                    'selectors'     => [
+                        '{{WRAPPER}} .premium-blog-cats-container li a.active span' => 'color: {{VALUE}};',
+                    ]
+                ]
+                );
+        
+        $this->add_group_control(
+                Group_Control_Typography::get_type(),
+                [
+                    'name'          => 'premium_blog_filter_typo',
+                    'scheme'        => Scheme_Typography::TYPOGRAPHY_1,
+                    'selector'      => '{{WRAPPER}} .premium-blog-cats-container li a.category',
+                    ]
+                );
+        
+        $this->add_control('premium_blog_background_color',
+           [
+               'label'         => __('Background Color', 'premium-addons-for-elementor'),
+               'type'          => Controls_Manager::COLOR,
+               'scheme'        => [
+                    'type'  => Scheme_Color::get_type(),
+                    'value' => Scheme_Color::COLOR_1,
+                ],
+               'selectors'     => [
+                   '{{WRAPPER}} .premium-blog-cats-container li a.category' => 'background-color: {{VALUE}};',
+               ],
+           ]
+       );
+        
+        $this->add_control('premium_blog_background_active_color',
+           [
+               'label'         => __('Background Active Color', 'premium-addons-for-elementor'),
+               'type'          => Controls_Manager::COLOR,
+               'scheme'        => [
+                    'type'  => Scheme_Color::get_type(),
+                    'value' => Scheme_Color::COLOR_2,
+                ],
+               'selectors'     => [
+                   '{{WRAPPER}} .premium-blog-cats-container li a.active' => 'background-color: {{VALUE}};',
+               ],
+           ]
+       );
+        
+        $this->add_group_control(
+            Group_Control_Border::get_type(), 
+                [
+                    'name'              => 'premium_blog_filter_border',
+                    'selector'          => '{{WRAPPER}} .premium-blog-cats-container li a.category',
+                ]
+                );
+
+        $this->add_control('premium_blog_filter_border_radius',
+                [
+                    'label'             => __('Border Radius', 'premium-addons-for-elementor'),
+                    'type'              => Controls_Manager::SLIDER,
+                    'size_units'        => ['px','em','%'],
+                    'selectors'         => [
+                        '{{WRAPPER}} .premium-blog-cats-container li a.category'  => 'border-radius: {{SIZE}}{{UNIT}};',
+                        ]
+                    ]
+                );
+        
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+                [
+                    'name'          => 'premium_blog_filter_shadow',
+                    'selector'      => '{{WRAPPER}} .premium-blog-cats-container li a.category',
+                ]
+                );
+        
+        $this->add_responsive_control('premium_blog_filter_margin',
+                [
+                    'label'             => __('Margin', 'premium-addons-for-elementor'),
+                    'type'              => Controls_Manager::DIMENSIONS,
+                    'size_units'        => ['px', 'em', '%'],
+                    'selectors'             => [
+                        '{{WRAPPER}} .premium-blog-cats-container li a.category' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        
+        $this->add_responsive_control('premium_blog_filter_padding',
+                [
+                    'label'             => __('Padding', 'premium-addons-for-elementor'),
+                    'type'              => Controls_Manager::DIMENSIONS,
+                    'size_units'        => ['px', 'em', '%'],
+                'selectors'             => [
+                    '{{WRAPPER}} .premium-blog-cats-container li a.category' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        
+        $this->end_controls_section();
        
     }
     
-    protected function get_post_content(){
+    /*
+     * Renders post content
+     * 
+     * @since 3.0.5
+     * @access protected
+     */
+    protected function get_post_content() {
         
         $settings = $this->get_settings();
         
         $excerpt_type = $settings['premium_blog_excerpt_type'];
         $excerpt_text = $settings['premium_blog_excerpt_text'];
+        $excerpt_src  = $settings['premium_blog_excerpt_box'];
         
-        if ( $settings['premium_blog_excerpt'] === 'yes' ) {
-            echo premium_addons_get_excerpt_by_id( get_the_ID(), $settings['premium_blog_excerpt_length'], $excerpt_type, $excerpt_text );
-        } else { 
-            the_content();
-        }
+    ?>
+        <div class="premium-blog-post-content" style="<?php if ( $settings['premium_blog_post_format_icon'] !== 'yes' ) : echo 'margin-left:0px;'; endif; ?>">
+            <?php if ( $settings['premium_blog_excerpt'] === 'yes' ) {
+                echo premium_addons_get_excerpt_by_id( get_the_ID(), $settings['premium_blog_excerpt_length'], $excerpt_type, $excerpt_text, $excerpt_src );
+            } else { 
+                the_content();
+            } ?>
+        </div>
+    <?php
     }
 
-
+    /*
+     * Renders post format icon
+     * 
+     * @since 3.0.5
+     * @access protected
+     */
     protected function get_post_format_icon() {
         
         $post_format = get_post_format();
@@ -1166,8 +1605,58 @@ class Premium_Blog extends Widget_Base {
         <i class="premium-blog-format-icon fa fa-<?php echo $post_format; ?>"></i>
     <?php 
     }
+    
+    /*
+     * Render post title
+     * 
+     * @since 3.4.4
+     * @access protected
+     */
+    protected function get_post_title( $link_target ) {
+        
+        $settings = $this->get_settings_for_display();
+        
+        $this->add_render_attribute( 'title', 'class', 'premium-blog-entry-title' );
+        
+    ?>
+        
+        <<?php echo $settings['premium_blog_title_tag'] . ' ' . $this->get_render_attribute_string('title'); ?>><a href="<?php the_permalink(); ?>" target="<?php echo esc_attr( $link_target ); ?>"><?php the_title(); ?></a></<?php echo $settings['premium_blog_title_tag']; ?>>
+        
+    <?php   
+    }
+    
+    protected function get_post_meta( $link_target ) {
+        
+        $settings = $this->get_settings();
+        
+        $date_format = get_option('date_format');
+        
+    ?>
+        
+        <div class="premium-blog-entry-meta" style="<?php if( $settings['premium_blog_post_format_icon'] !== 'yes' ) : echo 'margin-left:0px'; endif; ?>">
+            <?php if( $settings['premium_blog_author_meta'] === 'yes' ) : ?>
+                <span class="premium-blog-post-author premium-blog-meta-data"><i class="fa fa-user fa-fw"></i><?php the_author_posts_link();?></span>
+            <?php endif; ?>
+            <?php if( $settings['premium_blog_date_meta'] === 'yes' ) : ?>
+                <span class="premium-blog-post-time premium-blog-meta-data"><i class="fa fa-calendar fa-fw"></i><a href="<?php the_permalink(); ?>" target="<?php echo esc_attr($link_target); ?>"><?php the_time($date_format); ?></a></span>
+            <?php endif; ?>
+            <?php if( $settings['premium_blog_categories_meta'] === 'yes' ) : ?>
+                <span class="premium-blog-post-categories premium-blog-meta-data"><i class="fa fa-align-left fa-fw"></i><?php the_category(', '); ?></span>
+            <?php endif; ?>
+            <?php if( $settings['premium_blog_comments_meta'] === 'yes' ) : ?>
+                <span class="premium-blog-post-comments premium-blog-meta-data"><i class="fa fa-comments-o fa-fw"></i><a href="<?php the_permalink(); ?>" target="<?php echo esc_attr($link_target); ?>"><?php comments_number('0 Comments', '1', '%'); ?>  </a></span>
+            <?php endif; ?>
+        </div>
+        
+    <?php
+    }
 
-
+    /*
+     * Renders post skin
+     * 
+     * @since 3.0.5
+     * @access protected
+     */
     protected function get_post_layout() {
         
         $settings = $this->get_settings();
@@ -1182,61 +1671,102 @@ class Premium_Blog extends Widget_Base {
             $target = '_self';
         }
         
-        $date_format = get_option('date_format');
+        $skin = $settings['premium_blog_skin'];
         
-        $this->add_render_attribute( 'title', 'class', 'premium-blog-entry-title' );
+        $post_id = get_the_ID();
+        
+        $key = 'post_' . $post_id;
+        
+        $tax_key = sprintf( '%s_tax', $key );
+        
+        $wrap_key = sprintf( '%s_wrap', $key );
+        
+        $content_key = sprintf( '%s_content', $key );
+        
+        $this->add_render_attribute( $tax_key, 'class', 'premium-blog-post-outer-container' );
+        
+        $this->add_render_attribute( $wrap_key, 'class', [ 
+            'premium-blog-post-container',
+            $skin,
+        ] );
+        
+        $thumb = ( ! has_post_thumbnail() ) ? 'empty-thumb' : '';
+        
+        if ( 'yes' === $settings['premium_blog_cat_tabs'] && 'yes' !== $settings['premium_blog_carousel'] ) {
+            
+            $categories = get_the_category( $post_id );
+        
+            foreach( $categories as $index => $category ) {
+            
+                $category = str_replace( ' ', '-', $category->cat_name );
+                
+                $this->add_render_attribute( $tax_key, 'class', strtolower( $category ) );
+            }
+            
+        }
+        
+        $this->add_render_attribute( $content_key, 'class', [ 
+            'premium-blog-content-wrapper',
+            $thumb,
+        ] );
+        
     ?>
-
-        <div class="premium-blog-post-container">
-            <div class="premium-blog-thumb-effect-wrapper">
-                <div class="premium-blog-thumbnail-container <?php echo 'premium-blog-' . $image_effect . '-effect';?>">
-                    <a href="<?php the_permalink(); ?>" target="<?php echo esc_attr($target); ?>"><?php the_post_thumbnail('full'); ?></a>
-                </div>
-                <div class="premium-blog-effect-container <?php echo 'premium-blog-'. $post_effect . '-effect'; ?>">
-                    <a class="premium-blog-post-link" href="<?php the_permalink(); ?>" target="<?php echo esc_attr($target); ?>"></a>
-                    <?php if( $settings['premium_blog_hover_color_effect'] === 'bordered' ) : ?>
-                    <div class="premium-blog-bordered-border-container"></div>
-                    <?php elseif( $settings['premium_blog_hover_color_effect'] === 'squares' ) : ?>
-                    <div class="premium-blog-squares-square-container"></div>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="premium-blog-content-wrapper <?php echo (!has_post_thumbnail()) ? 'empty-thumb' : '';  ?>">
-                <div class="premium-blog-inner-container">
-                    <?php if( $settings['premium_blog_post_format_icon'] === 'yes' ) : ?>
-                    <div class="premium-blog-format-container">
-                        <a class="premium-blog-format-link" href="<?php the_permalink(); ?>" title="<?php if( get_post_format() === ' ') : echo 'standard' ; else : echo get_post_format();  endif; ?>" target="<?php echo esc_attr($target); ?>"><?php $this->get_post_format_icon(); ?></a>
+        <div <?php echo $this->get_render_attribute_string( $tax_key ); ?>>
+            <div <?php echo $this->get_render_attribute_string( $wrap_key ); ?>>
+                <div class="premium-blog-thumb-effect-wrapper">
+                    <div class="premium-blog-thumbnail-container <?php echo 'premium-blog-' . $image_effect . '-effect';?>">
+                        <a href="<?php the_permalink(); ?>" target="<?php echo esc_attr( $target ); ?>"><?php the_post_thumbnail('full'); ?></a>
                     </div>
-                    <?php endif; ?>
-                    <div class="premium-blog-entry-container">
-                        <<?php echo $settings['premium_blog_title_tag'] . ' ' . $this->get_render_attribute_string('title'); ?>><a href="<?php the_permalink(); ?>" target="<?php echo esc_attr($target); ?>"><?php the_title(); ?></a></<?php echo $settings['premium_blog_title_tag']; ?>>
-                        <div class="premium-blog-entry-meta" style="<?php if( $settings['premium_blog_post_format_icon'] !== 'yes' ) : echo 'margin-left:0px'; endif; ?>">
-                            <?php if( $settings['premium_blog_author_meta'] === 'yes' ) : ?>
-                                <span class="premium-blog-post-author premium-blog-meta-data"><i class="fa fa-user fa-fw"></i><?php the_author_posts_link();?></span>
-                            <?php endif; ?>
-                            <?php if( $settings['premium_blog_date_meta'] === 'yes' ) : ?>
-                                <span class="premium-blog-post-time premium-blog-meta-data"><i class="fa fa-calendar fa-fw"></i><a href="<?php the_permalink(); ?>" target="<?php echo esc_attr($target); ?>"><?php the_time($date_format); ?></a></span>
-                            <?php endif; ?>
-                            <?php if( $settings['premium_blog_categories_meta'] === 'yes' ) : ?>
-                                <span class="premium-blog-post-categories premium-blog-meta-data"><i class="fa fa-align-left fa-fw"></i><?php the_category(', '); ?></span>
-                            <?php endif; ?>
-                            <?php if( $settings['premium_blog_comments_meta'] === 'yes' ) : ?>
-                                <span class="premium-blog-post-comments premium-blog-meta-data"><i class="fa fa-comments-o fa-fw"></i><a href="<?php the_permalink(); ?>" target="<?php echo esc_attr($target); ?>"><?php comments_number('0 Comments', '1', '%'); ?>  </a></span>
-                            <?php endif; ?>
-                            <?php if( $settings['premium_blog_edit_post'] === 'yes' ) : ?>
-                                <span class="premium-blog-post-edit  premium-blog-meta-data"><i class="fa fa-pencil fa-fw"></i><?php edit_post_link(); ?></span>
-                            <?php endif; ?>
+                    <div class="premium-blog-effect-container <?php echo 'premium-blog-'. $post_effect . '-effect'; ?>">
+                        <a class="premium-blog-post-link" href="<?php the_permalink(); ?>" target="<?php echo esc_attr( $target ); ?>"></a>
+                        <?php if( $settings['premium_blog_hover_color_effect'] === 'bordered' ) : ?>
+                            <div class="premium-blog-bordered-border-container"></div>
+                        <?php elseif( $settings['premium_blog_hover_color_effect'] === 'squares' ) : ?>
+                            <div class="premium-blog-squares-square-container"></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php if( 'cards' === $skin ) : ?>
+                    <div class="premium-blog-author-thumbnail">
+                        <?php echo get_avatar( get_the_author_meta( 'ID' ), 128, '', get_the_author_meta( 'display_name' ) ); ?>
+                    </div>
+                <?php endif; ?>
+                <div <?php echo $this->get_render_attribute_string( $content_key ); ?>>
+                    <div class="premium-blog-inner-container">
+                        <?php if( $settings['premium_blog_post_format_icon'] === 'yes' ) : ?>
+                        <div class="premium-blog-format-container">
+                            <a class="premium-blog-format-link" href="<?php the_permalink(); ?>" title="<?php if( get_post_format() === ' ') : echo 'standard' ; else : echo get_post_format();  endif; ?>" target="<?php echo esc_attr( $target ); ?>"><?php $this->get_post_format_icon(); ?></a>
+                        </div>
+                        <?php endif; ?>
+                        <div class="premium-blog-entry-container">
+                            <?php
+                                $this->get_post_title( $target );
+                                if ( 'classic' === $skin ) {
+                                    $this->get_post_meta( $target );
+                                }
+
+                            ?>
+
                         </div>
                     </div>
-                </div>
-                <div class="premium-blog-post-content" style="<?php if ( $settings['premium_blog_post_format_icon'] !== 'yes' ) : echo 'margin-left:0px;'; endif; ?>">
-                    <?php $this->get_post_content(); ?>
-                </div>
-                <div class="premium-blog-post-tags-container" style="<?php if( $settings['premium_blog_post_format_icon'] !== 'yes' ) : echo 'margin-left:0px;'; endif; ?>">
-                    <?php if( $settings['premium_blog_tags_meta'] === 'yes' && the_tags() != '' ) : ?>
-                        <span class="premium-blog-post-tags"><i class="fa fa-tags fa-fw"></i><?php the_tags(' ', ', '); ?></span>
+
+                    <?php
+                        $this->get_post_content();
+                        if ( 'cards' === $skin ) {
+                            $this->get_post_meta( $target );
+                        }
+                        
+                    ?>
+                    
+                    <?php if( $settings['premium_blog_tags_meta'] === 'yes' && has_tag() ) : ?>
+                        <div class="premium-blog-post-tags-container" style="<?php if( $settings['premium_blog_post_format_icon'] !== 'yes' ) : echo 'margin-left:0px;'; endif; ?>">
+                            <span class="premium-blog-post-tags">
+                                <i class="fa fa-tags fa-fw"></i>
+                                    <?php the_tags(' ', ', '); ?>
+                            </span>
+                        </div>
                     <?php endif; ?>
-                </div>   
+                </div>
             </div>
         </div>
 
@@ -1266,6 +1796,9 @@ class Premium_Blog extends Widget_Base {
         $posts = premium_blog_get_post_data( $post_args, $paged , $new_offset );
         
         switch( $settings['premium_blog_columns_number'] ) {
+            case '100%' :
+                $col_number = 'col-1';
+                break;
             case '50%' :
                 $col_number = 'col-2';
                 break;
@@ -1280,36 +1813,83 @@ class Premium_Blog extends Widget_Base {
         $posts_number = intval ( 100 / substr( $settings['premium_blog_columns_number'], 0, strpos( $settings['premium_blog_columns_number'], '%') ) );
         
         $carousel = 'yes' == $settings['premium_blog_carousel'] ? true : false; 
-        $play = 'yes' == $settings['premium_blog_carousel_play'] ? true : false;
-        $fade = 'yes' == $settings['premium_blog_carousel_fade'] ? 'true' : 'false';
-        $speed = ! empty( $settings['premium_blog_carousel_autoplay_speed'] ) ? $settings['premium_blog_carousel_autoplay_speed'] : 5000;
         
-        $this->add_render_attribute('blog', 'class', [ 'premium-blog-wrap', 'premium-blog-' . $col_number ] );
+        $this->add_render_attribute('blog', 'class', [
+            'premium-blog-wrap',
+            'premium-blog-' . $settings['premium_blog_layout'],
+            'premium-blog-' . $col_number
+            ]
+        );
         
-        $this->add_render_attribute('blog', 'data-pa-masonry', $settings['premium_blog_masonry'] );
+        if ( $carousel ) {
+            
+            $play   = 'yes' == $settings['premium_blog_carousel_play'] ? true : false;
+            $fade   = 'yes' == $settings['premium_blog_carousel_fade'] ? 'true' : 'false';
+            $arrows = 'yes' == $settings['premium_blog_carousel_arrows'] ? 'true' : 'false';
+            $speed  = ! empty( $settings['premium_blog_carousel_autoplay_speed'] ) ? $settings['premium_blog_carousel_autoplay_speed'] : 5000;
+            $dots   = 'yes' == $settings['premium_blog_carousel_dots'] ? 'true' : 'false';
         
-        $this->add_render_attribute('blog', 'data-carousel', $carousel );
+            $this->add_render_attribute('blog', 'data-carousel', $carousel );
         
-        $this->add_render_attribute('blog', 'data-fade', $fade );
-        
-        $this->add_render_attribute('blog', 'data-play', $play );
-        
-        $this->add_render_attribute('blog', 'data-speed', $speed );
-        
-        $this->add_render_attribute('blog', 'data-col', $posts_number );
-        
+            $this->add_render_attribute('blog', 'data-fade', $fade );
+
+            $this->add_render_attribute('blog', 'data-play', $play );
+
+            $this->add_render_attribute('blog', 'data-speed', $speed );
+
+            $this->add_render_attribute('blog', 'data-col', $posts_number );
+            
+            $this->add_render_attribute('blog', 'data-arrows', $arrows );
+            
+            $this->add_render_attribute('blog', 'data-dots', $dots );
+            
+        }
         
     ?>
+    <div class="premium-blog">
+        <?php if ( 'yes' === $settings['premium_blog_cat_tabs'] && 'yes' !== $settings['premium_blog_carousel'] ) { ?>
+            <div class="premium-blog-filter">
+                <ul class="premium-blog-cats-container">
+                    <li>
+                        <a href="javascript:;" class="category active" data-filter="*">
+                            <span><?php echo __('All', 'premium-addons-for-elementor'); ?></span>
+                        </a>
+                    </li>
+                    <?php foreach( $settings['premium_blog_categories'] as $index => $id ) {
+                            $cat_list_key = 'blog_category_' . $index;
 
-    <div <?php echo $this->get_render_attribute_string('blog'); ?>>
-        <?php
-        if( count( $posts ) ) {
-            global $post;
-            foreach($posts as $post) {
-                setup_postdata($post);
-                $this->get_post_layout();
-            }
-        ?>
+                            $name = get_cat_name( $id );
+
+                            $name_filter = str_replace(' ', '-', $name );
+                            $name_lower = strtolower( $name_filter );
+
+                            $this->add_render_attribute( $cat_list_key,
+                                'class', [
+                                    'category'
+                                ]
+                            );
+                        ?>
+                            <li>
+                                <a href="javascript:;" <?php echo $this->get_render_attribute_string($cat_list_key); ?> data-filter=".<?php echo esc_attr( $name_lower ); ?>"
+                                   ><span><?php echo $name; ?></span>
+                                </a>
+                            </li>
+                    <?php } ?>
+                </ul>
+            </div>
+        <?php } ?>
+        <div <?php echo $this->get_render_attribute_string('blog'); ?>>
+
+            <?php
+
+            if( count( $posts ) ) {
+                global $post;
+                foreach( $posts as $post ) {
+                    setup_postdata( $post );
+                    $this->get_post_layout();
+                }
+            ?>
+        </div>
     </div>
     <?php if ( $settings['premium_blog_paging'] === 'yes' ) : ?>
         <div class="premium-blog-pagination-container">

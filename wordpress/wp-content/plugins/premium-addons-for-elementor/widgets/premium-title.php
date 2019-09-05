@@ -1,6 +1,17 @@
 <?php
 
-namespace Elementor;
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Icons_Manager;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Text_Shadow;
+use Elementor\Group_Control_Background;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -11,11 +22,17 @@ class Premium_Title extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Title';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Title', 'premium-addons-for-elementor') );
 	}
 
     public function get_icon() {
         return 'pa-title';
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
     }
 
     public function get_categories() {
@@ -51,19 +68,18 @@ class Premium_Title extends Widget_Base {
                 'type'          => Controls_Manager::SELECT,
                 'default'       => 'style1',
                 'options'       => [
-                    'style1'        => 'Style1',
-                    'style2'        => 'Style2',
-                    'style3'        => 'Style3',
-                    'style4'        => 'Style4',
-                    'style5'        => 'Style5',
-                    'style6'        => 'Style6',
-                    'style7'        => 'Style7',
+                    'style1'        => __('Style 1', 'premium-addons-for-elementor'),
+                    'style2'        => __('Style 2', 'premium-addons-for-elementor'),
+                    'style3'        => __('Style 3', 'premium-addons-for-elementor'),
+                    'style4'        => __('Style 4', 'premium-addons-for-elementor'),
+                    'style5'        => __('Style 5', 'premium-addons-for-elementor'),
+                    'style6'        => __('Style 6', 'premium-addons-for-elementor'),
+                    'style7'        => __('Style 7', 'premium-addons-for-elementor'),
                     ],
                 'label_block'   => true,
             ]
         );
         
-        /*Icon Switcher*/
         $this->add_control('premium_title_icon_switcher',
             [
                 'label'         => __('Icon', 'premium-addons-for-elementor'),
@@ -71,11 +87,15 @@ class Premium_Title extends Widget_Base {
             ]
         );
         
-        /*Icon*/
-        $this->add_control('premium_title_icon', 
+        $this->add_control('premium_title_icon_updated', 
             [
                 'label'         => __('Font Awesome Icon', 'premium-addons-for-elementor'),
-                'type'          => Controls_Manager::ICON,
+                'type'          => Controls_Manager::ICONS,
+                'fa4compatibility'  => 'premium_title_icon',
+                'default'       => [
+                    'value'         => 'fas fa-bars',
+                    'library'       => 'fa-solid',
+                ],
                 'label_block'   => true,
                 'condition'     => [
                     'premium_title_icon_switcher'   => 'yes',
@@ -83,12 +103,11 @@ class Premium_Title extends Widget_Base {
             ]
         );
 
-        /*Title HTML TAG*/ 
         $this->add_control('premium_title_tag',
             [
                 'label'         => __('HTML Tag', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SELECT,
-                'default'       => __('h2','premium-addons-for-elementor'),
+                'default'       => 'h2',
                 'options'       => [
                     'h1'    => 'H1',
                     'h2'    => 'H2',
@@ -120,6 +139,7 @@ class Premium_Title extends Widget_Base {
                         ],
                     ],
                 'default'       => 'left',
+                'toggle'        => false,
                 'selectors'     => [
                     '{{WRAPPER}} .premium-title-container' => 'text-align: {{VALUE}};',
                 ],
@@ -129,10 +149,10 @@ class Premium_Title extends Widget_Base {
         
         
         /*Style 8*/
-        /*Strip Width*/
+        /*Stripe Width*/
         $this->add_control('premium_title_style7_strip_width',
             [
-                'label'         => __('Strip Width (PX)', 'premium-addons-for-elementor'),
+                'label'         => __('Stripe Width (PX)', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SLIDER,
                 'size_units'    => ['px', '%', 'em'],
                 'default'       => [
@@ -140,7 +160,7 @@ class Premium_Title extends Widget_Base {
                     'size'  => '120',
                 ],
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-title-style7-strip:before' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .premium-title-style7-stripe' => 'width: {{SIZE}}{{UNIT}};',
                 ],
                 'label_block'   => true,
                 'condition'     => [
@@ -149,10 +169,9 @@ class Premium_Title extends Widget_Base {
             ]
         );
         
-        /*Strip Height*/
-        $this->add_control('premium_title_style7_strip_height',
+        $this->add_responsive_control('premium_title_style7_strip_height',
             [
-                'label'         => __('Strip Height (PX)', 'premium-addons-for-elementor'),
+                'label'         => __('Stripe Height (PX)', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SLIDER,
                 'size_units'    => ['px', 'em'],
                 'default'       => [
@@ -161,7 +180,7 @@ class Premium_Title extends Widget_Base {
                 ],
                 'label_block'   => true,
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-title-style7-strip,{{WRAPPER}} .premium-title-style7-strip:before ' => 'height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .premium-title-style7-stripe' => 'height: {{SIZE}}{{UNIT}};',
                 ],
                 'condition'     => [
                     'premium_title_style'   => 'style7',
@@ -169,14 +188,13 @@ class Premium_Title extends Widget_Base {
             ]
         );
         
-        /*Strip Top Spacing*/
-        $this->add_control('premium_title_style7_strip_top_spacing',
+        $this->add_responsive_control('premium_title_style7_strip_top_spacing',
             [
-                'label'         => __('Strip Top Spacing (PX)', 'premium-addons-for-elementor'),
+                'label'         => __('Stripe Top Spacing (PX)', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SLIDER,
                 'size_units'    => ['px', '%', 'em'],
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-title-style7-strip' => 'margin-top: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .premium-title-style7-stripe-wrap' => 'margin-top: {{SIZE}}{{UNIT}};',
                 ],
                 'label_block'   => true,
                 'condition'     => [
@@ -185,15 +203,14 @@ class Premium_Title extends Widget_Base {
             ]
         );
         
-        /*Strip Bottom Spacing*/
-        $this->add_control('premium_title_style7_strip_bottom_spacing',
+        $this->add_responsive_control('premium_title_style7_strip_bottom_spacing',
             [
-                'label'         => __('Strip Bottom Spacing (PX)', 'premium-addons-for-elementor'),
+                'label'         => __('Stripe Bottom Spacing (PX)', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SLIDER,
                 'size_units'    => ['px', '%', 'em'],
                 'label_block'   => true,
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-title-style7-strip' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .premium-title-style7-stripe-wrap' => 'margin-bottom: {{SIZE}}{{UNIT}};',
                 ],
                 'condition'     => [
                     'premium_title_style'   => 'style7',
@@ -201,28 +218,29 @@ class Premium_Title extends Widget_Base {
             ]
         );
         
-        /*Title Align*/
+        /*Stripe Align*/
         $this->add_responsive_control('premium_title_style7_strip_align',
             [
-                'label'         => __( 'Align', 'premium-addons-for-elementor' ),
+                'label'         => __( 'Stripe Alignment', 'premium-addons-for-elementor' ),
                 'type'          => Controls_Manager::CHOOSE,
                 'options'       => [
-                    'left'      => [
-                        'title'=> __( 'Left', 'premium-addons-for-elementor' ),
-                        'icon' => 'fa fa-align-left',
+                    'flex-start'    => [
+                        'title' => __( 'Left', 'premium-addons-for-elementor' ),
+                        'icon'  => 'fa fa-align-left',
                         ],
-                    'none'    => [
-                        'title'=> __( 'Center', 'premium-addons-for-elementor' ),
-                        'icon' => 'fa fa-align-center',
+                    'center'        => [
+                        'title' => __( 'Center', 'premium-addons-for-elementor' ),
+                        'icon'  => 'fa fa-align-center',
                         ],
-                    'right'     => [
+                    'flex-end'     => [
                         'title'=> __( 'Right', 'premium-addons-for-elementor' ),
                         'icon' => 'fa fa-align-right',
-                        ],
-                    ],  
-                'default'       => 'none',
+                    ],
+                ],
+                'toggle'        => false,
+                'default'       => 'center',
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-title-style7-strip:before' => 'float: {{VALUE}};',
+                    '{{WRAPPER}} .premium-title-style7-stripe-wrap' => 'justify-content: {{VALUE}};',
                 ],
                 'condition'     => [
                     'premium_title_style'   => 'style7',
@@ -372,7 +390,7 @@ class Premium_Title extends Widget_Base {
             ]
         );
        
-        /*Triangle Color*/
+        /*Arrow Color*/
         $this->add_control('premium_title_style6_triangle_color', 
             [
                 'label'         => __('Triangle Color', 'premium-addons-for-elementor'),
@@ -390,17 +408,17 @@ class Premium_Title extends Widget_Base {
             ]
         );
         
-        /*Strip Color*/
+        /*Stripe Color*/
         $this->add_control('premium_title_style7_strip_color', 
             [
-                'label'         => __('Strip Color', 'premium-addons-for-elementor'),
+                'label'         => __('Stripe Color', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::COLOR,
                 'scheme'        => [
                     'type'  => Scheme_Color::get_type(),
                     'value' => Scheme_Color::COLOR_1
                 ],
                 'selectors'     => [
-                    '{{WRAPPER}} .premium-title-style7-strip:before' => 'background-color: {{VALUE}};'
+                    '{{WRAPPER}} .premium-title-style7-stripe' => 'background-color: {{VALUE}};'
                 ],
                 'condition'     => [
                     'premium_title_style'   => 'style7'
@@ -542,7 +560,7 @@ class Premium_Title extends Widget_Base {
     }
 
     protected function render() {
-        // get our input from the widget settings.
+        
         $settings = $this->get_settings_for_display();
         
         $this->add_inline_editing_attributes('premium_title_text', 'none');
@@ -554,18 +572,34 @@ class Premium_Title extends Widget_Base {
         $this->add_render_attribute( 'container', 'class', [ 'premium-title-container', $selected_style ] );
         
         $this->add_render_attribute( 'title', 'class', [ 'premium-title-header', 'premium-title-' . $selected_style ] );
+        
+        if( 'yes' === $settings['premium_title_icon_switcher'] ) {
+            if ( ! empty ( $settings['premium_title_icon'] ) ) {
+                $this->add_render_attribute( 'icon', 'class', $settings['premium_title_icon'] );
+                $this->add_render_attribute( 'icon', 'aria-hidden', 'true' );
+            }
+            
+            $migrated = isset( $settings['__fa4_migrated']['premium_title_icon_updated'] );
+            $is_new = empty( $settings['premium_title_icon'] ) && Icons_Manager::is_migration_allowed();
+        }
     ?>
 
     <div <?php echo $this->get_render_attribute_string('container'); ?>>
         <<?php echo $title_tag . ' ' . $this->get_render_attribute_string('title') ; ?>>
             <?php if ( $settings['premium_title_style'] === 'style7' ) : ?>
-                <span class="premium-title-style7-strip"></span>
+                <span class="premium-title-style7-stripe-wrap">
+                    <span class="premium-title-style7-stripe"></span>
+                </span>
             <?php endif; ?>
-            <?php if( ! empty( $settings['premium_title_icon'] ) ) : ?>
-                <i class="premium-title-icon <?php echo $settings['premium_title_icon'];?>"></i>
-            <?php endif; ?>
+            <?php if( 'yes' === $settings['premium_title_icon_switcher'] ) :
+                if ( $is_new || $migrated ) :
+                    Icons_Manager::render_icon( $settings['premium_title_icon_updated'], [ 'class' => 'premium-title-icon', 'aria-hidden' => 'true' ] );
+                else: ?>
+                    <i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
+                <?php endif;
+            endif; ?>
             <span <?php echo $this->get_render_attribute_string('premium_title_text'); ?>>
-                <?php echo esc_html($settings['premium_title_text']); ?>
+                <?php echo esc_html( $settings['premium_title_text'] ); ?>
             </span>
         </<?php echo $title_tag; ?>>
     </div>
@@ -593,17 +627,28 @@ class Premium_Title extends Widget_Base {
             
             view.addRenderAttribute( 'premium_title', 'class', [ 'premium-title-header', 'premium-title-' + selectedStyle ] );
             
-            view.addRenderAttribute( 'premium_title_icon', 'class', [ 'premium-title-icon', titleIcon ] );
+            view.addRenderAttribute( 'icon', 'class', [ 'premium-title-icon', titleIcon ] );
+            
+            if( 'yes' === settings.premium_title_icon_switcher ) {
+                var iconHTML = elementor.helpers.renderIcon( view, settings.premium_title_icon_updated, { 'class': 'premium-title-icon', 'aria-hidden': true }, 'i' , 'object' ),
+                    migrated = elementor.helpers.isIconMigrated( settings, 'premium_title_icon_updated' );
+            }
         
         #>
         <div {{{ view.getRenderAttributeString('premium_title_container') }}}>
             <{{{titleTag}}} {{{view.getRenderAttributeString('premium_title')}}}>
                 <# if( selectedStyle == 'style7' ) { #>
-                    <span class="premium-title-style7-strip"></span>
+                    <span class="premium-title-style7-stripe-wrap">
+                        <span class="premium-title-style7-stripe"></span>
+                    </span>
                 <# } 
-                    if( '' != settings.premium_title_icon && 'yes' == settings.premium_title_icon_switcher ) { #>
-                        <i {{{ view.getRenderAttributeString('premium_title_icon') }}}></i>
-                    <# } #>
+                    if( 'yes' === settings.premium_title_icon_switcher ) {
+                        if ( iconHTML && iconHTML.rendered && ( ! settings.premium_title_icon || migrated ) ) { #>
+                            {{{ iconHTML.value }}}
+                        <# } else { #>
+                            <i {{{ view.getRenderAttributeString( 'icon' ) }}}></i>
+                        <# }
+                    } #>
                 <span {{{ view.getRenderAttributeString('premium_title_text') }}}>{{{ titleText }}}</span>
             </{{{titleTag}}}>
         </div>

@@ -431,12 +431,12 @@ function nsp_ExportNow() {
   $table_name = nsp_TABLENAME;
   
   // sanitize from date
-  if (isset($_GET['from']) && is_numeric($_GET['from'])) $from=$_GET['from'];
+  if (isset($_GET['from'])) $from=$_GET['from'];
   else $from='19990101';
   
   // sanitize to date
-  if (isset($_GET['to']) && is_numeric($_GET['to'])) $to=$_GET['to'];
-  else $from='29990101';
+  if (isset($_GET['to'])) $to=$_GET['to'];
+  else $to='29990101';
     
   // sanitize extesnion
   if (isset($_GET['ext'])) {
@@ -480,12 +480,16 @@ function nsp_ExportNow() {
   header('Content-Description: File Transfer');
   header("Content-Disposition: attachment; filename=$filename");
   header('Content-Type: text/plain charset=' . get_option('blog_charset'), true);
+  
+  $iFrom=strtotime($from);
+  $iTo=strtotime($to);
+  
   $qry = $wpdb->get_results(
     "SELECT *
      FROM $table_name
      WHERE
-       date>='".(date("Ymd",strtotime(substr($from,0,8))))."' AND
-       date<='".(date("Ymd",strtotime(substr($to,0,8))))."';
+       date>='".(date("Ymd", $iFrom))."' AND
+       date<='".(date("Ymd", $iTo))."';
     ");
 
   if ($del=="t") {

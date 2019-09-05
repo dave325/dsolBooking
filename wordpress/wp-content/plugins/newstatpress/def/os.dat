@@ -97,14 +97,15 @@ Android Jelly Bean (4.1.x)|Android4.1|Android|
 Android Jelly Bean (4.2.x)|Android4.2|Android|
 Android Jelly Bean (4.3.x)|Android4.3|Android|
 Android Kit Kat (4.4.x)|Android4.4|Android|
-Android Linux 4|Android4|Android|
+Android Kit Kat|Android4|Android|
 Android Lollipop (5.0.x)|Android5.0|Android|
 Android Lollipop (5.1.x)|Android5.1|Android|
-Android Linux 5|Android5|Android|
+Android Lollipop|Android5|Android|
 Android Marshmallow (6.0.x)|Android6.0|Android|
-Android Linux 6|Android6|Android|
+Android Marshmallow|Android6|Android|
 Android Nougat (7.0.x)|Android7.0|Android|
-Android Linux 7|Android7|Android|
+Android Nougat|Android7|Android|
+Android Oreo|Android8|Android|
 Android Linux|Android|Android|
 BlackBerry PlayBook OS2|PlayBook;U;RIMTabletOS2.1.0|BlackBerry|
 BlackBerry Tablet OS|RIMTabletOS1.0.0|BlackBerry|
@@ -189,6 +190,13 @@ Ubuntu Utopic Unicorn|Ubuntu/14.10|Linux Ubuntu|
 Ubuntu Vivid Vervet|Ubuntu/15.04|Linux Ubuntu|
 Ubuntu Wily Werewolf|Ubuntu/15.10|Linux Ubuntu|
 Ubuntu Xenial Xerus|Ubuntu/16.04|Linux Ubuntu|
+Ubuntu Yakkety Yak|Ubuntu/16.10|Linux Ubuntu|
+Ubuntu Zesty Zapus|Ubuntu/17.04|Linux Ubuntu|
+Ubuntu Artful Aardvark|Ubuntu/17.10|Linux Ubuntu|
+Ubuntu Bionic Beaver|Ubuntu/18.04|Linux Ubuntu|
+Ubuntu Cosmic Cuttlefish|Ubuntu/18.10|Linux Ubuntu|
+Ubuntu Disco Dingo|Ubuntu/19.04|Linux Ubuntu|
+Ubuntu Eoan Ermine|Ubuntu/19.10|Linux Ubuntu|
 Ubuntu Linux|Ubuntu|Linux Ubuntu|
 Kubuntu|Kubuntu|linux|
 Suse Linux|Suse|Linux Suse|
@@ -204,6 +212,7 @@ Arch Linux|ArchLinux|linux|
 Arch Linux|Arch|linux|
 Mageia|mageia|linux|
 Linux Mandriva|Mandriva|linux|
+Linux Mint 19 Tara|Linux Mint/19 (Tara)|Linux Mint|
 Linux Mint 18 Sarah|Linux Mint/18 (Sarah)|Linux Mint|
 Linux Mint 17 Rebecca|Linux Mint/17 (Rebecca)|Linux Mint|
 Linux Mint 16 Petra|Linux Mint/16 (Petra)|Linux Mint|

@@ -1,422 +1,645 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: statpress\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-17 14:02+0100\n"
-"PO-Revision-Date: 2017-10-04 20:25+0200\n"
+"Project-Id-Version: NewStatPress\n"
+"POT-Creation-Date: 2018-05-26 13:14+0200\n"
+"PO-Revision-Date: 2018-05-26 13:14+0200\n"
 "Last-Translator: ice00@libero.it\n"
-"Language-Team: \n"
+"Language-Team: Net-media Alapitvany <info@netalap.hu>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: __;_e\n"
-"X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 2.0.3\n"
-"X-Poedit-SearchPath-0: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk\n"
+"X-Generator: Poedit 2.0.7\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: newstatpress.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:52
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:13
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1805
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1949
+#: includes/api/external.php:6 includes/api/nsp_api_dashboard.php:6
+#: includes/api/nsp_api_overview.php:6 includes/api/nsp_api_version.php:6
+#: includes/api/nsp_api_wpversion.php:6 includes/api/variables.php:6
+#: includes/nsp_core.php:6 includes/nsp_credits.php:6
+#: includes/nsp_dashboard.php:6 includes/nsp_details.php:6
+#: includes/nsp_functions-extra.php:6 includes/nsp_options.php:6
+#: includes/nsp_overview.php:6 includes/nsp_search.php:6
+#: includes/nsp_tools.php:6 includes/nsp_visits.php:6 newstatpress.php:15
+msgid ""
+"ERROR: This plugin requires WordPress and will not function if called "
+"directly."
+msgstr ""
+"Hiba: Ez a bővítmény Wordpress alatt működik és nem fog futni közvetlen "
+"meghívással."
+
+#: includes/api/nsp_api_dashboard.php:58 includes/api/nsp_api_overview.php:59
+#: includes/api/nsp_api_overview.php:210 includes/nsp_options.php:544
+#: includes/nsp_visits.php:20 newstatpress.php:1609 newstatpress.php:1771
 msgid "Visitors"
 msgstr "Látogatók"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:57
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1811
+#: includes/api/nsp_api_dashboard.php:63 includes/api/nsp_api_overview.php:64
+#: includes/nsp_options.php:549 newstatpress.php:1615
 msgid "Visitors through Feeds"
 msgstr "Látogatók a hírcsatornákon keresztül"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:62
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:46
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:49
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1817
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1950
+#: includes/api/nsp_api_dashboard.php:68 includes/api/nsp_api_overview.php:69
+#: includes/api/nsp_api_overview.php:211 includes/nsp_core.php:202
+#: includes/nsp_core.php:205 includes/nsp_details.php:51
+#: includes/nsp_details.php:54 includes/nsp_options.php:554
+#: newstatpress.php:1621 newstatpress.php:1772
 msgid "Pageviews"
 msgstr "Oldal megjelenítések"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:67
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:37
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:659
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1823
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1951
+#: includes/api/nsp_api_dashboard.php:73 includes/api/nsp_api_overview.php:74
+#: includes/api/nsp_api_overview.php:212 includes/nsp_core.php:193
+#: includes/nsp_details.php:42 includes/nsp_options.php:564
+#: includes/nsp_tools.php:887 newstatpress.php:1627 newstatpress.php:1773
 msgid "Spiders"
 msgstr "Spider-ek"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:72
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1829
+#: includes/api/nsp_api_dashboard.php:78 includes/api/nsp_api_overview.php:79
+#: includes/nsp_options.php:559 newstatpress.php:1633
 msgid "Pageviews through Feeds"
 msgstr "Oldalmegtekintések a hírcsatornákon keresztül"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:136
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1781
+#: includes/api/nsp_api_dashboard.php:144 newstatpress.php:1585
 msgid "M-1"
 msgstr "Hónap elseje"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:137
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1782
+#: includes/api/nsp_api_dashboard.php:145 newstatpress.php:1586
 msgid "M"
-msgstr "Hónap"
+msgstr "M"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:138
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1783
+#: includes/api/nsp_api_dashboard.php:146 newstatpress.php:1587
 msgid "Y"
-msgstr "Év"
+msgstr "Y"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/api/nsp_api_dashboard.php:139
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1784
+#: includes/api/nsp_api_dashboard.php:147 newstatpress.php:1588
 msgid "T"
+msgstr "T"
+
+#: includes/api/nsp_api_overview.php:147 newstatpress.php:1560
+msgid "Total since"
+msgstr "Összesen indulás óta"
+
+#: includes/api/nsp_api_overview.php:148 newstatpress.php:1561
+msgid "This year"
+msgstr "Ebben az évben"
+
+#: includes/api/nsp_api_overview.php:149 newstatpress.php:1562
+msgid "Last month"
+msgstr "Múlt hónapban"
+
+#: includes/api/nsp_api_overview.php:150 newstatpress.php:1563
+msgid "This month"
+msgstr "Ebben a hónapban"
+
+#: includes/api/nsp_api_overview.php:151 newstatpress.php:1564
+msgid "Target This month"
+msgstr "Cél ez a hónap"
+
+#: includes/api/nsp_api_overview.php:152 newstatpress.php:1565
+msgid "Yesterday"
+msgstr "Tegnap"
+
+#: includes/api/nsp_api_overview.php:153 newstatpress.php:1566
+msgid "Today"
 msgstr "Ma"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:12
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:340
-msgid "support page"
-msgstr "támogató oldal"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:14
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:342
-msgid "the author"
-msgstr "a szerző"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:16
-#, php-format
-msgid ""
-"If you have found this plugin usefull and you like it, you can support the "
-"development by reporting bugs on the %s or  by adding/updating translation "
-"by contacting directly %s. As this plugin is maintained only on free time, "
-"you can also make a donation by clicking on the button to support the work."
-msgstr ""
-"Ha úgy találja, hogy ez a kiegészítő hasznos az Ön számára, támogathatja a "
-"fejlesztést a %s hibáinak bejelentésével, vagy fordítás hozzáadásával / "
-"frissítésével a %s közvetlen kapcsolatba lépésével. Mivel ez a bővítmény "
-"csak szabadidőben készül, a gomb megnyomásával adományozhat a munka "
-"támogatásához."
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:18
-msgid "Development"
-msgstr "Fejlesztés"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:19
-msgid "Translation"
-msgstr "Fordítás"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:20
-msgid "Donation"
-msgstr "Adományozás"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:36
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:202
-msgid "Credits"
-msgstr "Szerzők"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:47
-msgid "Make a donation"
-msgstr "Adományozzon"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:72
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:92
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:109
-msgid "Contributor"
-msgstr "Közreműködő"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:75
-msgid "Description"
-msgstr "Leírás"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:89
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-msgid "Language"
-msgstr "Nyelv"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:95
-msgid "Status"
-msgstr "Státusz"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:112
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:530
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:548
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:595
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:624
-msgid "Date"
-msgstr "Dátum"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:134
-msgid "Plugin homepage"
-msgstr "Bővítmény honlapja"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:139
-msgid "RSS news"
-msgstr "RSS hírek"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_credits.php:140
-msgid "News"
-msgstr "Hírek"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_dashboard.php:42
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:197
-msgid "Details"
-msgstr "Részletek"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_dashboard.php:45
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_functions-extra.php:51
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:18
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:198
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1585
-msgid "Visits"
-msgstr "Látogatók"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_dashboard.php:48
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:201
-msgid "Options"
-msgstr "Beállítások"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_dashboard.php:58
-msgid "NewStatPress Overview"
-msgstr "NewStatPress áttekintés"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:13
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:43
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:46
-msgid "Top days"
-msgstr "Legjobb napok"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:16
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:615
-msgid "OSes"
-msgstr "Operációs rendszerek"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:19
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:637
-msgid "Browsers"
-msgstr "Böngészők"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:22
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:517
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1952
+#: includes/api/nsp_api_overview.php:213 includes/nsp_core.php:178
+#: includes/nsp_details.php:27 includes/nsp_tools.php:745 newstatpress.php:1774
 msgid "Feeds"
 msgstr "Hírcsatornák"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:25
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:681
+#: includes/nsp_core.php:34 includes/nsp_dashboard.php:33
+#: includes/nsp_visits.php:25 newstatpress.php:316 newstatpress.php:1467
+msgid "Visits"
+msgstr "Látogatók"
+
+#: includes/nsp_core.php:168 includes/nsp_core.php:199
+#: includes/nsp_core.php:202 includes/nsp_details.php:19
+#: includes/nsp_details.php:48 includes/nsp_details.php:51
+msgid "Top days"
+msgstr "Legjobb napok"
+
+#: includes/nsp_core.php:172 includes/nsp_details.php:21
+#: includes/nsp_tools.php:843
+msgid "OSes"
+msgstr "Operációs rendszerek"
+
+#: includes/nsp_core.php:175 includes/nsp_details.php:24
+#: includes/nsp_tools.php:865
+msgid "Browsers"
+msgstr "Böngészők"
+
+#: includes/nsp_core.php:181 includes/nsp_details.php:30
+#: includes/nsp_tools.php:909
 msgid "Search engines"
 msgstr "Kereső motorok"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:28
+#: includes/nsp_core.php:184 includes/nsp_details.php:33
 msgid "Top search terms"
 msgstr "Legkeresettebb kifejezések"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:31
+#: includes/nsp_core.php:187 includes/nsp_details.php:36
 msgid "Top referrers"
-msgstr "Legtöbbet hivatkozók"
+msgstr "Legjobb hivatkozók"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:34
+#: includes/nsp_core.php:190 includes/nsp_details.php:39
 msgid "Countries"
 msgstr "Országok"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:34
+#: includes/nsp_core.php:190 includes/nsp_details.php:39
 msgid "Languages"
-msgstr "Nyelvek"
+msgstr "Nyelvi beállítások"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:40
+#: includes/nsp_core.php:196 includes/nsp_details.php:45
 msgid "Top pages"
-msgstr "Első oldalon"
+msgstr "Népszerű oldalak"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:43
+#: includes/nsp_core.php:199 includes/nsp_details.php:48
 msgid "Unique visitors"
 msgstr "Egyedi Látogatók"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_details.php:49
+#: includes/nsp_core.php:205 includes/nsp_details.php:54
 msgid "Top IPs"
 msgstr "Legtöbb IP-ék"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:112
+#: includes/nsp_credits.php:20
+msgid "Development"
+msgstr "Fejlesztés"
+
+#: includes/nsp_credits.php:21
+msgid "Ressources"
+msgstr "Forráskódok"
+
+#: includes/nsp_credits.php:22
+msgid "Translation"
+msgstr "Fordítás"
+
+#: includes/nsp_credits.php:23
+msgid "Donation"
+msgstr "Adományozás"
+
+#: includes/nsp_credits.php:26
+msgid "the support page"
+msgstr "támogató oldal"
+
+#: includes/nsp_credits.php:27 newstatpress.php:521
+msgid "the author"
+msgstr "Szerző"
+
+#: includes/nsp_credits.php:29
+msgid ""
+"If you have found this plugin usefull and you like it, thank you to take a "
+"moment to rate it."
+msgstr ""
+"Ha megtaláltad ezt a plugin hasznos, és tetszik, köszönöm, hogy egy "
+"pillanatra, hogy értékelje azt."
+
+#: includes/nsp_credits.php:30
+#, php-format
+msgid ""
+"You can help to the plugin development by reporting bugs on %s or by adding/"
+"updating translation by contacting directly %s."
+msgstr ""
+"A bővítmények fejlesztéséhez a következő hibákat kell jelenteni: %s, vagy a "
+"fordítás hozzáadásával/frissítésével közvetlenül a következő címen lehet "
+"kapcsolatba lépni: %s."
+
+#: includes/nsp_credits.php:32
+msgid ""
+"NewStatPress is provided for free and is maintained only on free time, you "
+"can also consider a donation to support further work."
+msgstr ""
+"NewStatPress van feltéve részére szabad és van fenntart egyetlen-ra szabad "
+"idő, tudod is tekint egy adomány-hoz támogat tovább dolgozik."
+
+#: includes/nsp_credits.php:37 newstatpress.php:320
+msgid "Credits"
+msgstr "Stáblista"
+
+#: includes/nsp_credits.php:45
+msgid "Rate the plugin"
+msgstr "Értékelje a bővítményt"
+
+#: includes/nsp_credits.php:47
+msgid "Make a donation"
+msgstr "Adományozzon"
+
+#: includes/nsp_credits.php:67
+msgid "This plugin is a fork of the plugin"
+msgstr "Ez a bővítmény egy villát a bővítmény"
+
+#: includes/nsp_credits.php:67
+msgid "originally developed (and not longer maintened) by"
+msgstr "eredetileg (és nem hosszabb maintened)"
+
+#: includes/nsp_credits.php:71 includes/nsp_credits.php:99
+#: includes/nsp_credits.php:112
+msgid "Contributor"
+msgstr "Közreműködő"
+
+#: includes/nsp_credits.php:72 includes/nsp_credits.php:85
+msgid "Description"
+msgstr "Leírás"
+
+#: includes/nsp_credits.php:84
+msgid "Reference"
+msgstr "Kifejezés hivatkozás"
+
+#: includes/nsp_credits.php:86
+msgid "Website"
+msgstr "Weboldal"
+
+#: includes/nsp_credits.php:98 includes/nsp_overview.php:105
+#: includes/nsp_overview.php:508
+msgid "Language"
+msgstr "Nyelv"
+
+#: includes/nsp_credits.php:100
+msgid "Status"
+msgstr "Állapot"
+
+#: includes/nsp_credits.php:113 includes/nsp_overview.php:102
+#: includes/nsp_overview.php:175 includes/nsp_overview.php:224
+#: includes/nsp_overview.php:270 includes/nsp_overview.php:330
+#: includes/nsp_overview.php:505 includes/nsp_overview.php:558
+#: includes/nsp_overview.php:585 includes/nsp_overview.php:655
+#: includes/nsp_overview.php:691
+msgid "Date"
+msgstr "Dátum"
+
+#: includes/nsp_credits.php:124
+msgid "Plugin homepage"
+msgstr "Bővítmény honlapja"
+
+#: includes/nsp_credits.php:129
+msgid "RSS news"
+msgstr "RSS hírek"
+
+#: includes/nsp_credits.php:130
+msgid "News"
+msgstr "Hírek"
+
+#: includes/nsp_dashboard.php:30 newstatpress.php:315
+msgid "Details"
+msgstr "részletek"
+
+#: includes/nsp_dashboard.php:36 newstatpress.php:319
+msgid "Options"
+msgstr "Beállítások"
+
+#: includes/nsp_dashboard.php:46
+msgid "NewStatPress Overview"
+msgstr "NewStatPress áttekintés"
+
+#: includes/nsp_functions-extra.php:64
+msgid "Four time by Day"
+msgstr "Napi négyszer"
+
+#: includes/nsp_functions-extra.php:68
+msgid "Once a Week"
+msgstr "Hetente egyszer"
+
+#: includes/nsp_functions-extra.php:72
+msgid "Once a Month"
+msgstr "Havonta egyszer"
+
+#: includes/nsp_functions-extra.php:242
+msgid "NewStatPress News"
+msgstr "NewStatPress Hírek"
+
+#: includes/nsp_functions-extra.php:267
+msgid ""
+"Since the introduction of new method for speed up the display (needed for "
+"dashboard and overview), you must activate the external API in Options>Api "
+"page."
+msgstr ""
+"Óta a bevezetés-ból új módszer részére felgyorsít a bemutatás (szükséges "
+"részére Műszerfal és áttekintés), Önnek kell hatékonnyá tesz a külső API-ban "
+"választások > API oldal."
+
+#: includes/nsp_functions-extra.php:268
+msgid ""
+"This major change was necessary in aim to improve the plugin for users with "
+"big database. In addition, it will allow to be more flexible about the "
+"graphical informations in next versions."
+msgstr ""
+"Ez a jelentős változás volt szükség a célja, hogy javítsa a plugin a "
+"felhasználók nagy adatbázis. Ezen kívül, ez lehetővé teszi, hogy rugalmasabb "
+"a grafikus információk a következő verziókban."
+
+#: includes/nsp_functions-extra.php:279
+msgid ""
+"It looks like you've been using NewStatPress for a while now. That's great!"
+msgstr ""
+"Ez úgy néz ki mint youve ' használ NewStatPress egy ideig most. az nagyszerű!"
+
+#: includes/nsp_functions-extra.php:280
+msgid ""
+"If you find this plugin useful, would you take a moment to give it a rating "
+"on WordPress.org?"
+msgstr ""
+"Ha úgy találja, ez a plugin hasznos, kíván venni egy pillanatra, hogy ez egy "
+"értékelés a WordPress.org?"
+
+#: includes/nsp_functions-extra.php:281
+msgid ""
+"NB: please open a ticket on the support page instead of adding it to your "
+"rating commentaries if you wish to report an issue with the plugin, it will "
+"be processed more quickly by the team."
+msgstr ""
+"NB: Kérjük, nyisson meg egy jegyet a support oldalon ahelyett, hozzátéve, "
+"hogy a minősítési kommentárok, ha szeretné, hogy jelentse a kérdést a "
+"plugin, akkor feldolgozzák gyorsabban a csapat."
+
+#: includes/nsp_functions-extra.php:282
+msgid "Yes, I'd like to rate it!"
+msgstr "Igen, szeretném értékelni!"
+
+#: includes/nsp_functions-extra.php:284 includes/nsp_functions-extra.php:297
+msgid "I already did!"
+msgstr "Én már megtettem!"
+
+#: includes/nsp_functions-extra.php:293
+msgid ""
+"You've been using NewStatPress for several months now. We hope that means "
+"you like it and are finding it helpful."
+msgstr ""
+"Youve ' használ NewStatPress részére több hónapok most. Mi remél amit anyagi "
+"eszközök ön szeret ez és van megtalálás ez segíteni kész."
+
+#: includes/nsp_functions-extra.php:294
+msgid ""
+"NewStatPress is provided for free and maintained only on free time. If you "
+"like the plugin, consider a donation to help further its development"
+msgstr ""
+"A NewStatPress ingyenes, és csak a szabadidőben tartható fenn. Ha szereted a "
+"plugin, fontolja meg egy adomány, hogy segítsen tovább a fejlesztési"
+
+#: includes/nsp_functions-extra.php:295
+msgid "Yes, I'd like to donate!"
+msgstr "Igen, szeretnék adományozni!"
+
+#: includes/nsp_functions-extra.php:408
+msgid "records"
+msgstr "rekordok"
+
+#: includes/nsp_functions-extra.php:418
+msgid "Mb"
+msgstr "MB"
+
+#: includes/nsp_options.php:96
+#, php-format
+msgid "%s year"
+msgid_plural "%s years"
+msgstr[0] "%s év"
+msgstr[1] "%s év"
+
+#: includes/nsp_options.php:97
+#, php-format
+msgid "%s month"
+msgid_plural "%s months"
+msgstr[0] "%s hónap"
+msgstr[1] "%s hónap"
+
+#: includes/nsp_options.php:98
+#, php-format
+msgid "%s week"
+msgid_plural "%s weeks"
+msgstr[0] "%s hét"
+msgstr[1] "%s hét"
+
+#: includes/nsp_options.php:99
+#, php-format
+msgid "%s day"
+msgid_plural "%s days"
+msgstr[0] "%s nap"
+msgstr[1] "%s nap"
+
+#: includes/nsp_options.php:100
+#, php-format
+msgid "%s hour"
+msgid_plural "%s hours"
+msgstr[0] "%s óra"
+msgstr[1] "%s óra"
+
+#: includes/nsp_options.php:101
+#, php-format
+msgid "%s minute"
+msgid_plural "%s minutes"
+msgstr[0] "%s perc"
+msgstr[1] "%s perc"
+
+#: includes/nsp_options.php:102
+#, php-format
+msgid "%s second"
+msgid_plural "%s seconds"
+msgstr[0] "%s másodperc"
+msgstr[1] "%s másodperc"
+
+#: includes/nsp_options.php:106
 msgid "now"
 msgstr "most"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:239
+#: includes/nsp_options.php:155
+msgid "Non-repeating"
+msgstr "Nem ismétlődő"
+
+#: includes/nsp_options.php:246
 msgid "NewStatPress Settings"
 msgstr "NewStatPress Beállítások"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:275
+#: includes/nsp_options.php:354
 msgid "Options saved!"
-msgstr "Beállítások mentve!"
+msgstr "Beállítások elmentve!"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:287
+#: includes/nsp_options.php:369
 msgid "Email sent by the server!"
-msgstr "E-mail szerver által elküldve!"
+msgstr "E-mail a szerver által elküldve!"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:299
+#: includes/nsp_options.php:371
+msgid "Problem: Email not sent by the server!"
+msgstr "Probléma: az e-mail nem küldhető a szerverrel!"
+
+#: includes/nsp_options.php:382
 msgid "General"
 msgstr "Általános"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:300
+#: includes/nsp_options.php:383
 msgid "Filters"
 msgstr "Szűrők"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:301
+#: includes/nsp_options.php:384
 msgid "Overview Menu"
 msgstr "Áttekintés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:302
+#: includes/nsp_options.php:385
 msgid "Details Menu"
 msgstr "Részletek"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:303
+#: includes/nsp_options.php:386
 msgid "Visits Menu"
 msgstr "Látogatók"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:304
+#: includes/nsp_options.php:387 includes/nsp_tools.php:673
 msgid "Database"
 msgstr "Adatbázis"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:305
+#: includes/nsp_options.php:388
 msgid "Email Notification"
-msgstr "E-mail értesítés"
+msgstr "Email értesítő"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:306
+#: includes/nsp_options.php:389
 msgid "API"
 msgstr "API"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:328
+#: includes/nsp_options.php:409
 msgid "Dashboard"
 msgstr "Vezérlőpult"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:329
+#: includes/nsp_options.php:410
 msgid "Enable NewStatPress widget"
 msgstr "NewStatPress widget engedélyezése"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:333
+#: includes/nsp_options.php:414
 msgid "Minimum capability to display each specific menu"
 msgstr "Minimumon képes megjeleníteni minden egyes menüt"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:333
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:215
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:355
+#: includes/nsp_options.php:414 includes/nsp_visits.php:261
+#: includes/nsp_visits.php:404
 msgid "more info"
 msgstr "további információ"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:335
+#: includes/nsp_options.php:416
 msgid "Overview menu"
 msgstr "Áttekintés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:343
+#: includes/nsp_options.php:424
 msgid "Detail menu"
 msgstr "Részletek"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:352
+#: includes/nsp_options.php:433
 msgid "Visits menu"
 msgstr "Látogatások"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:360
+#: includes/nsp_options.php:441
 msgid "Search menu"
 msgstr "Keresés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:368
+#: includes/nsp_options.php:449
 msgid "Tools menu"
 msgstr "Eszközök"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:376
+#: includes/nsp_options.php:457
 msgid "Options menu"
 msgstr "Beállítások"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:390
+#: includes/nsp_options.php:472
 msgid "Visits calculation method"
 msgstr "Látogatások számítási módszere"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:406
+#: includes/nsp_options.php:488
 msgid "Simple sum of distinct IPs (Classic method)"
 msgstr "Egyszerű összege a különböző IP-knek (klasszikus módszer)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:417
-msgid ""
-"Sum of the distinct IPs of each day (slower than classic method for big "
-"database)"
-msgstr ""
-"Egyszerű összege a különböző IP-knek minden nap (Lassabb, mint a klasszikus "
-"módszer a nagy adatbázis miatt)"
+#: includes/nsp_options.php:500
+msgid "Sum of the distinct IPs of each day"
+msgstr "Az egyes napok különböző IP-címeinek összege"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:424
+#: includes/nsp_options.php:502
+msgid "(slower than classic method for big database)"
+msgstr "(lassabb, mint a klasszikus módszer a nagy adatbázis miatt)"
+
+#: includes/nsp_options.php:511
 msgid "Graph"
 msgstr "Grafikus"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:429
+#: includes/nsp_options.php:516
 msgid "Days number in Overview graph"
 msgstr "Napok száma Áttekintési grafikonon"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:435
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:196
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1751
+#: includes/nsp_options.php:522 includes/nsp_overview.php:370
+#: includes/nsp_overview.php:428 newstatpress.php:314
 msgid "Overview"
-msgstr "Áttekintés"
+msgstr "Áttekinntés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:437
+#: includes/nsp_options.php:526
 #, php-format
 msgid "Elements in Overview (default %d)"
 msgstr "Elemek Áttekintése (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:449
+#: includes/nsp_options.php:529
+msgid "Statistics offsets (Total visits)"
+msgstr "Statisztika-eltolások (összes látogatás)"
+
+#: includes/nsp_options.php:579
 msgid "Never"
 msgstr "Soha"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:450
+#: includes/nsp_options.php:580
 msgid "All"
 msgstr "Összes"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:451
+#: includes/nsp_options.php:581
 msgid "month"
 msgstr "hónap"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:452
+#: includes/nsp_options.php:582
 msgid "months"
 msgstr "hónapok"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:453
+#: includes/nsp_options.php:583
 msgid "week"
 msgstr "hét"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:454
+#: includes/nsp_options.php:584
 msgid "weeks"
 msgstr "hetek"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:456
+#: includes/nsp_options.php:586
 msgid "Data collection"
 msgstr "Adatgyűjtés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:458
+#: includes/nsp_options.php:588
 msgid "Crypt IP addresses"
 msgstr "Titkosított IP címek"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:462
+#: includes/nsp_options.php:592
 msgid "Collect data about logged users, too."
 msgstr "A naplózott felhasználókról is gyűjt adatokat."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:466
+#: includes/nsp_options.php:596
 msgid "Do not collect spiders visits"
 msgstr "Ne gyűjtse a spiderek látogatásait"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:473
+#: includes/nsp_options.php:603
 msgid "Data purge"
 msgstr "Adat tisztogatás"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:478
+#: includes/nsp_options.php:608
 msgid "Automatically delete all visits older than"
 msgstr "Automatikusan törölje a régebbi látogatásokat mint"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:484
+#: includes/nsp_options.php:614
 msgid "Automatically delete only spiders visits older than"
 msgstr "Automatikusan törölje a régebbi webbejáró látogatásokat mint"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:494
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:544
+#: includes/nsp_options.php:622 includes/nsp_options.php:671
 msgid "Parameters to ignore"
 msgstr "Ezeketa Paramétereket ne vegye figyelembe"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:500
+#: includes/nsp_options.php:627
 msgid "Logged users"
-msgstr "Bejelentkezett Felhasználok"
+msgstr "Bejelentkezett Felhasználók"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:502
+#: includes/nsp_options.php:629
 msgid ""
 "Enter a list of users you don't want to track, separated by commas, even if "
 "collect data about logged users is on"
@@ -424,11 +647,11 @@ msgstr ""
 "Adja meg azokat a felhasználókat, akiket nem szeretne követni, vesszővel "
 "elválasztva, még akkor is, ha a naplózott felhasználókról gyűjt adatokat"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:505
+#: includes/nsp_options.php:632
 msgid "IP addresses"
 msgstr "IP címek"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:507
+#: includes/nsp_options.php:634
 msgid ""
 "Enter a list of networks you don't want to track, separated by commas. Each "
 "network <strong>must</strong> be defined using the CIDR notation (i.e. "
@@ -440,11 +663,11 @@ msgstr ""
 "rendszer jelöléssel (vagyis <em>192.168.1.1/24</em>).<br />Ha a formátum nem "
 "megfelelő, a NewStatPress nem garantálja az oldal követéseket."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:510
+#: includes/nsp_options.php:637
 msgid "Pages and posts"
 msgstr "Oldalak és bejegyzések"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:512
+#: includes/nsp_options.php:639
 msgid ""
 "Enter a list of permalinks you don't want to track, separated by commas. You "
 "should omit the domain name from these resources: <em>/about, p=1</em>, etc. "
@@ -457,132 +680,132 @@ msgstr ""
 "olyan oldalmegtekintést, amelynek közvetlen hivatkozása "
 "<strong>tartalmazza</ strong> ezeket."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:523
+#: includes/nsp_options.php:650
 msgid "Visitors by Spy"
 msgstr "A látogatók általi észrevételek"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:527
+#: includes/nsp_options.php:654
 msgid "number of IP per page"
 msgstr "ip-k száma oldalanként"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:534
+#: includes/nsp_options.php:661
 msgid "number of visits for IP"
 msgstr "ip-kénti látogatások"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:547
+#: includes/nsp_options.php:674
 msgid "number of bot per page"
 msgstr "oldalankénti keresőrobotok száma"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:554
+#: includes/nsp_options.php:681
 msgid "number of bot for IP"
 msgstr "botok száma IP-ként"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:566
+#: includes/nsp_options.php:693
 msgid "Element numbers to display in"
 msgstr "Elemszámok megjelenítése"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:569
+#: includes/nsp_options.php:696
 #, php-format
 msgid "Top days (default %d)"
 msgstr "Legjobb napok (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:572
+#: includes/nsp_options.php:699
 #, php-format
 msgid "O.S. (default %d)"
 msgstr "Operációsrendszer (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:575
+#: includes/nsp_options.php:702
 #, php-format
 msgid "Browser (default %d)"
 msgstr "Böngésző (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:578
+#: includes/nsp_options.php:705
 #, php-format
 msgid "Feed (default %d)"
-msgstr "Feed csatorna (alapértelmezett %d)"
+msgstr "Hírcsatorna (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:581
+#: includes/nsp_options.php:708
 #, php-format
 msgid "Search Engines (default %d)"
 msgstr "keresőrobotok (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:584
+#: includes/nsp_options.php:711
 #, php-format
 msgid "Top Search Terms (default %d)"
 msgstr "Legtöbbet keresett kifejezések (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:587
+#: includes/nsp_options.php:714
 #, php-format
 msgid "Top Referrer (default %d)"
 msgstr "Legtöbbet hivatkozók (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:590
+#: includes/nsp_options.php:717
 #, php-format
 msgid "Countries/Languages (default %d)"
 msgstr "Országok/nyelvek (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:593
+#: includes/nsp_options.php:720
 #, php-format
 msgid "Spiders (default %d)"
 msgstr "spider-ek (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:596
+#: includes/nsp_options.php:723
 #, php-format
 msgid "Top Pages (default %d)"
 msgstr "Legjobb oldalak (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:599
+#: includes/nsp_options.php:726
 #, php-format
 msgid "Top Days - Unique visitors (default %d)"
 msgstr "Legjobb napok - egyedi látogatók (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:602
+#: includes/nsp_options.php:729
 #, php-format
 msgid "Top Days - Pageviews (default %d)"
 msgstr "Legjobb napok - oldalmegtekintések (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:605
+#: includes/nsp_options.php:732
 #, php-format
 msgid "Top IPs - Pageviews (default %d)"
 msgstr "Legjobb IP-k - oldalmegtekintések (alapértelmezett %d)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:615
-msgid "Database update option"
-msgstr "Adatbázis frissítés beállítások"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:621
+#: includes/nsp_options.php:741
 msgid ""
 "Select the interval of date from today you want to use for updating your "
-"database with new definitions. "
+"database with new definitions"
 msgstr ""
-"Válassza ki azt az időtartamot a mai naptól számítva, amikortól frissítni "
+"Válassza ki azt az időtartamot a mai naptól számítva, amikortól frissíteni "
 "kívánja az adatbázist az új beállításokkal. Ha sokszor futtatja, túl sok "
 "szerver erőforrást vehet igéybe! Kiválaszthatja melyik mezőket nem akarja "
 "frissíteni."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:622
+#: includes/nsp_options.php:743
+msgid "(To update your database, go to Tools page)"
+msgstr "(To update your database, go to Tools page)"
+
+#: includes/nsp_options.php:745
 msgid ""
-"Be aware, larger is the interval, longer is the update and bigger are the "
-"resources required."
+"Note: Be aware, larger is the interval, longer is the update and bigger are "
+"the resources required."
 msgstr ""
 "Ne feledje, hogy ha minnél nagyobb az intervallum, annál hosszabb a "
 "frissítés és a szükséges erőforrásigény."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:630
+#: includes/nsp_options.php:757
 msgid "Update data in the given period"
 msgstr "Adatok frissítése az adott időszakban"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:643
+#: includes/nsp_options.php:769
 msgid ""
 "This option allows you to get periodic reports by email (dashboard "
 "informations). You can customize the frequency and the publishing time of "
-"the reports."
+"the reports and also the description of Sender."
 msgstr ""
 "Ezzel az opcióval periodikus jelentéseket kaphat e-mailben (vezérlőpult "
 "információk). Testreszabhatja a jelentések gyakoriságát és megjelenési "
 "idejét."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:644
+#: includes/nsp_options.php:770
 msgid ""
 "Note: WP Cron job need to be operational in aim to schedule Email "
 "Notification."
@@ -590,252 +813,385 @@ msgstr ""
 "Megjegyzés: A WP Cron-nak működőképesnek kell lennie az e-mail értesítés "
 "ütemezéséhez."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:645
+#: includes/nsp_options.php:771
 msgid ""
 "Mailing address accept only one email address, check is well valid before "
 "reporting issues."
 msgstr "A levelezési címhez csak egy e-mail címet írhat be."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:646
+#: includes/nsp_options.php:772
 msgid "Notification will be sent at UTC time."
 msgstr "Értesítést fogunk küldeni UTC időben."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:670
+#: includes/nsp_options.php:773
+msgid ""
+"Sender could be personalized according your website (by default : "
+"'NewStatPress')."
+msgstr ""
+"A feladó a webhelye szerint személyre szabható (alapértelmezés szerint: ' "
+"NewStatPress ')."
+
+#: includes/nsp_options.php:809
 msgid "Statistics notification is"
 msgstr "Statisztikai értesítés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:681
+#: includes/nsp_options.php:820
 msgid "Disabled"
-msgstr "Tiltott"
+msgstr "Letiltott"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:684
+#: includes/nsp_options.php:823
 msgid "Enabled"
 msgstr "Engedélyezett"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:689
+#: includes/nsp_options.php:830
 msgid "Event schedule"
-msgstr "Eseménynaptár"
+msgstr "Eseménynapló"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:699
+#: includes/nsp_options.php:841
 msgid "Publishing time"
-msgstr "Publikáció ideje"
+msgstr "Közzé tétel ideje"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:701
+#: includes/nsp_options.php:846
 msgid "Select"
-msgstr "Kiválaszt"
+msgstr "Választás"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:726
+#: includes/nsp_options.php:862
+#, php-format
+msgid "UTC time is %s"
+msgstr "UTC-idő %s"
+
+#: includes/nsp_options.php:863
+#, php-format
+msgid "Local time is %s"
+msgstr "Helyi idő: %s"
+
+#: includes/nsp_options.php:869
+msgid "Sender Description (From)"
+msgstr "Feladó leírása (a)"
+
+#: includes/nsp_options.php:878
 msgid "Mailing address"
 msgstr "Levelezési cím"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:741
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:743
+#: includes/nsp_options.php:883
 msgid "Email Test"
 msgstr "E-mail teszt"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:781
+#: includes/nsp_options.php:897
+msgid ""
+"The external API is build to let you to use the collected data from your "
+"Newstatpress plugin in an other web server application (for example you can "
+"show data relative to your Wordpress blog, inside a Drupal site that run "
+"since an another server)."
+msgstr ""
+"A külső API épít-hoz enged ön-hoz használ a összegyűjtött adatokat a "
+"Newstatpress plugin egy másik webszerver alkalmazás (például meg lehet "
+"mutatni adatokat képest a WordPress blog, belül egy Drupal site fut, mivel "
+"egy másik szerver)."
+
+#: includes/nsp_options.php:898
+msgid ""
+"However the external API is also used by Newstatpress itself for speedup "
+"page rendering of queried data (when are processed AJAX calls), so 'overview "
+"page & widget dashboard' will be not working if you not activate it."
+msgstr ""
+"Bármennyire a külső API van is használt mellett Newstatpress maga részére "
+"sebesség oldal visszaadás-ból kérdezgető adat (Mikor van folyamat Ajax hív), "
+"tehát ' áttekintés oldal reggeli műszerfal ' lesz nem működő ha Ön nem "
+"hatékonnyá tesz ez."
+
+#: includes/nsp_options.php:899
+msgid ""
+"To use it, a key is needed to allow NewStatpress to recognize that you and "
+"only you want the data and not the not authorized people (Let the input form "
+"blank means that you allow everyone to get data without authorization if "
+"external API is activated)."
+msgstr ""
+"To use it, a key is needed to allow NewStatpress to recognize that you and "
+"only you want the data and not the not authorized people (Let the input form "
+"blank means that you allow everyone to get data without authorization if "
+"external API is activated)."
+
+#: includes/nsp_options.php:900
+msgid "Full documentation (PDF)"
+msgstr "Teljes dokumentáció (PDF)"
+
+#: includes/nsp_options.php:901
+msgid ""
+"Please be aware that the external API is also used by Newstatpress itself "
+"when are processed AJAX calls for speedup page rendering of queried data, so "
+"you will need to choose an key and activate it."
+msgstr ""
+"Please be aware that the external API is also used by Newstatpress itself "
+"when are processed AJAX calls for speedup page rendering of queried data, so "
+"you will need to choose an key and activate it."
+
+#: includes/nsp_options.php:903
+msgid ""
+"You must generate or set manually a private key for the external API : only "
+"alphanumeric characters are allowed (A-Z, a-z, 0-9), length should be "
+"between 64 and 128 characters."
+msgstr ""
+"Manuálisan kell létrehoznia vagy beállítania a külső API személyes kulcsát: "
+"csak alfanumerikus karakterek megengedettek (a-z, a-z, 0-9), a hossznak 64 "
+"és 128 karakter között kell lennie."
+
+#: includes/nsp_options.php:905
 msgid "Enable External API"
 msgstr "Külső API engedélyezése"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:785
+#: includes/nsp_options.php:917
+msgid "Extern API"
+msgstr "Külső API"
+
+#: includes/nsp_options.php:922
 msgid "API key"
-msgstr "API kulcs"
+msgstr "API-kulcs"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:787
-msgid ""
-"The external access API is build to let you to use the collected data from "
-"your Newstatpress plugin  in an other web server application (for example "
-"you can show data relative to your Wordpress blog, inside a Drupal site that "
-"run in another server). This key allows Newstatpress to recognize that you "
-"and only you want the data and not the not authorized people. Let the input "
-"form blank means that you allow everyone to get data without authorization "
-"if external API is activated. The API should be activated with the flag box. "
-"Please be aware that the external API will be also used by Newstatpress "
-"itself when are processed AJAX calls for speedup page rendering of queried "
-"data, so you will need to choose an key and activate it.\n"
-"\n"
-"<br/><br/>To retrieve data from Newstatpress plugin, you can generate "
-"automatically or set manually a private key for the external API (used for "
-"example from Multi-Newstatpress software) : only alphanumeric characters are "
-"allowed (A-Z, a-z, 0-9), length should be between 64 and 128 characters."
-msgstr ""
-"The external access API is build to let you to use the collected data from "
-"your Newstatpress plugin  in an other web server application (for example "
-"you can show data relative to your Wordpress blog, inside a Drupal site that "
-"run in another server). This key allows Newstatpress to recognize that you "
-"and only you want the data and not the not authorized people. Let the input "
-"form blank means that you allow everyone to get data without authorization "
-"if external API is activated. The API should be activated with the flag box. "
-"Please be aware that the external API will be also used by Newstatpress "
-"itself when are processed AJAX calls for speedup page rendering of queried "
-"data, so you will need to choose an key and activate it.\n"
-"\n"
-"<br/><br/>To retrieve data from Newstatpress plugin, you can generate "
-"automatically or set manually a private key for the external API (used for "
-"example from Multi-Newstatpress software) : only alphanumeric characters are "
-"allowed (A-Z, a-z, 0-9), length should be between 64 and 128 characters."
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:804
+#: includes/nsp_options.php:947
 msgid "Generate new API key"
 msgstr "Új API-kulcs létrehozása"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:813
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_options.php:817
+#: includes/nsp_options.php:959
 msgid "Save options"
 msgstr "Beállítások mentése"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:6
-msgid "URL Requested"
-msgstr "Lekért webcím"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:7
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:566
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:624
+#: includes/nsp_overview.php:37 includes/nsp_overview.php:608
+#: includes/nsp_overview.php:691 includes/nsp_search.php:14
 msgid "Agent"
 msgstr "Program"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:8
-msgid "Referrer"
-msgstr "Hivatkozás"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:9
-msgid "Search terms"
-msgstr "Kereső kifejezések"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:10
-msgid "Search engine"
-msgstr "Kereső program"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:11
-msgid "Operative system"
+#: includes/nsp_overview.php:38 includes/nsp_overview.php:109
+#: includes/nsp_overview.php:274 includes/nsp_overview.php:512
+#: includes/nsp_overview.php:609 includes/nsp_overview.php:659
+msgid "OS"
 msgstr "Operációs rendszer"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:12
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:566
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:595
+#: includes/nsp_overview.php:39 includes/nsp_overview.php:111
+#: includes/nsp_overview.php:276 includes/nsp_overview.php:514
+#: includes/nsp_overview.php:611 includes/nsp_overview.php:661
+#: includes/nsp_search.php:19
 msgid "Browser"
 msgstr "Böngésző"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:13
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:566
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:624
+#: includes/nsp_overview.php:39 includes/nsp_overview.php:611
+#: includes/nsp_overview.php:691 includes/nsp_search.php:20
 msgid "Spider"
 msgstr "Spider"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:14
+#: includes/nsp_overview.php:103 includes/nsp_overview.php:176
+#: includes/nsp_overview.php:225 includes/nsp_overview.php:271
+#: includes/nsp_overview.php:331 includes/nsp_overview.php:506
+#: includes/nsp_overview.php:559 includes/nsp_overview.php:586
+#: includes/nsp_overview.php:656 includes/nsp_overview.php:691
+msgid "Time"
+msgstr "Idő"
+
+#: includes/nsp_overview.php:104 includes/nsp_overview.php:507
+#: includes/nsp_search.php:21
 msgid "IP"
 msgstr "IP"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:16
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:63
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:199
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:673
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:687
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:804
+#: includes/nsp_overview.php:105 includes/nsp_overview.php:508
+msgid "Country"
+msgstr "Ország"
+
+#: includes/nsp_overview.php:106 includes/nsp_overview.php:272
+#: includes/nsp_overview.php:509 includes/nsp_overview.php:657
+#: includes/nsp_visits.php:473 includes/nsp_visits.php:485
+#: includes/nsp_visits.php:488 includes/nsp_visits.php:500 newstatpress.php:619
+#: newstatpress.php:631
+msgid "Page"
+msgstr "Oldal"
+
+#: includes/nsp_overview.php:107 includes/nsp_overview.php:510
+msgid "Feed"
+msgstr "Tölt"
+
+#: includes/nsp_overview.php:177 includes/nsp_overview.php:332
+#: includes/nsp_overview.php:560
+msgid "Terms"
+msgstr "Feltételek"
+
+#: includes/nsp_overview.php:178 includes/nsp_overview.php:333
+#: includes/nsp_overview.php:561
+msgid "Engine"
+msgstr "Keresőrobot"
+
+#: includes/nsp_overview.php:179 includes/nsp_overview.php:227
+#: includes/nsp_overview.php:334 includes/nsp_overview.php:562
+#: includes/nsp_overview.php:588 includes/nsp_tools.php:728
+msgid "Result"
+msgstr "Eredmény"
+
+#: includes/nsp_overview.php:188 includes/nsp_overview.php:237
+#: includes/nsp_overview.php:571 includes/nsp_overview.php:594
+msgid "page viewed"
+msgstr "lekért oldal"
+
+#: includes/nsp_overview.php:226 includes/nsp_overview.php:587
+msgid "URL"
+msgstr "URL"
+
+#: includes/nsp_overview.php:389
+msgid "Loading... (Refresh page if no information is displayed)."
+msgstr "Betöltés... (frissítse az oldalt, ha nem jelenik meg)."
+
+#: includes/nsp_overview.php:390
+msgid "Impossible to load the overview:"
+msgstr "Lehetetlen betölteni az áttekintést:"
+
+#: includes/nsp_overview.php:390
+msgid "You must activate the external api first (Page Option>Api)"
+msgstr "Aktiválni kell a külső API első (oldal opció > API)"
+
+#: includes/nsp_overview.php:501 newstatpress.php:339
+msgid "Last hits"
+msgstr "Utolsó találatok"
+
+#: includes/nsp_overview.php:554 newstatpress.php:340
+msgid "Last search terms"
+msgstr "Utolsó keresési kulcsszavak"
+
+#: includes/nsp_overview.php:581 newstatpress.php:341
+msgid "Last referrers"
+msgstr "Utolsó hivatkozók"
+
+#: includes/nsp_overview.php:603 includes/nsp_overview.php:605
+#: newstatpress.php:342
+msgid "Last agents"
+msgstr "Utolsó programok"
+
+#: includes/nsp_overview.php:651 newstatpress.php:343
+msgid "Last pages"
+msgstr "Utolsó látogatott oldalak"
+
+#: includes/nsp_overview.php:691 newstatpress.php:344
+msgid "Last spiders"
+msgstr "Utolsó spiderek"
+
+#: includes/nsp_search.php:13
+msgid "URL Requested"
+msgstr "Lekért webcím"
+
+#: includes/nsp_search.php:15
+msgid "Referrer"
+msgstr "Hivatkozó"
+
+#: includes/nsp_search.php:16
+msgid "Search terms"
+msgstr "Kereső kifejezések"
+
+#: includes/nsp_search.php:17
+msgid "Search engine"
+msgstr "Kereső program"
+
+#: includes/nsp_search.php:18
+msgid "Operative system"
+msgstr "Operációs rendszer"
+
+#: includes/nsp_search.php:23 includes/nsp_search.php:82
+#: includes/nsp_visits.php:476 includes/nsp_visits.php:490 newstatpress.php:317
+#: newstatpress.php:622
 msgid "Search"
 msgstr "Keresés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:21
+#: includes/nsp_search.php:28
 msgid "Field"
 msgstr "Mező"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:30
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:31
+#: includes/nsp_search.php:37 includes/nsp_search.php:38
 msgid "Group by"
 msgstr "Csoportosítva mint"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:35
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:36
+#: includes/nsp_search.php:42 includes/nsp_search.php:43
 msgid "Sort by"
 msgstr "Rendezve mint"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:38
+#: includes/nsp_search.php:47
 msgid "if contains"
 msgstr "ha tartalmazza"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:48
+#: includes/nsp_search.php:66
 msgid "sort by count if grouped"
 msgstr "sorszám szerint csoportosítva"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:49
+#: includes/nsp_search.php:67
 msgid "include spiders/crawlers/bot"
 msgstr "spiders/crawlers/bot-okkal együtt"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:50
+#: includes/nsp_search.php:68
 msgid "include feed"
 msgstr "feeddel együtt"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:57
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1581
+#: includes/nsp_search.php:75 newstatpress.php:1463
 msgid "Limit results to"
-msgstr "Limitálva van"
+msgstr "Limit results to"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:140
+#: includes/nsp_search.php:165
 msgid "Results"
-msgstr "Találatok"
+msgstr "Eredmények"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_search.php:148
+#: includes/nsp_search.php:173
 msgid "Count"
-msgstr "Szám"
+msgstr "Mennyiség"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:19
+#: includes/nsp_tools.php:24
 msgid "IP2nation"
 msgstr "IP2nation"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:20
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:448
+#: includes/nsp_tools.php:25 includes/nsp_tools.php:623
 msgid "Update"
-msgstr "Frissítés"
+msgstr "Módosít"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:21
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:307
+#: includes/nsp_tools.php:26 includes/nsp_tools.php:413
 msgid "Export"
-msgstr "Exportálás"
+msgstr "Export"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:22
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:750
+#: includes/nsp_tools.php:27 includes/nsp_tools.php:985
 msgid "Optimize"
 msgstr "Optimalizál"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:23
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:782
+#: includes/nsp_tools.php:28 includes/nsp_tools.php:1024
 msgid "Repair"
-msgstr "Helyre állít"
+msgstr "Javítás"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:24
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:153
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:362
+#: includes/nsp_tools.php:29 includes/nsp_tools.php:185
+#: includes/nsp_tools.php:530
 msgid "Remove"
-msgstr "Eltávolít"
+msgstr "Eltávolítás"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:29
+#: includes/nsp_tools.php:30
+msgid "Informations"
+msgstr "Információk"
+
+#: includes/nsp_tools.php:35
 msgid "Database Tools"
 msgstr "Adatbázis eszközök"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:113
+#: includes/nsp_tools.php:144
 msgid "unknow"
 msgstr "ismeretlen"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:117
+#: includes/nsp_tools.php:148
 #, php-format
 msgid "Last version available: %s"
 msgstr "Frissebb verzió érhető el:%s"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:120
+#: includes/nsp_tools.php:151
 #, php-format
 msgid "Last version installed: %s"
 msgstr "A legfrissebb verzió telepítve:% s"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:122
+#: includes/nsp_tools.php:153
 msgid "To update the IP2nation database, just click on the button bellow."
 msgstr "Az IP2nation adatbázis frissítéséhez kattintson az alábbi gombra."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:133
+#: includes/nsp_tools.php:164
 msgid "Last version installed: none "
 msgstr "Utolsó verzió telepítve: nincs"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:135
+#: includes/nsp_tools.php:166
 msgid ""
 "To download and to install the IP2nation database, just click on the button "
 "bellow."
@@ -843,11 +1199,11 @@ msgstr ""
 "Az IP2nation adatbázis letöltéséhez és telepítéséhez kattintson az alábbi "
 "gombra."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:161
+#: includes/nsp_tools.php:193
 msgid "What is ip2nation?"
 msgstr "Mi az a ip2nation?"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:163
+#: includes/nsp_tools.php:195
 msgid ""
 "ip2nation is a free MySQL database that offers a quick way to map an IP to a "
 "country. The database is optimized to ensure fast lookups and is based on "
@@ -861,71 +1217,122 @@ msgstr ""
 "adatbázist a bal oldalon található link segítségével telepítheti. (lsd.: <a "
 "href=\"http://www.ip2nation.com/\">http://www.ip2nation.com</a>)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:166
+#: includes/nsp_tools.php:198
 msgid "Note: The installation may take some times to complete."
 msgstr "Megjegyzés: A telepítés  eltarthat egy ideig."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:210
+#: includes/nsp_tools.php:242
 msgid "Failure to save content locally, please try to re-install."
 msgstr "Nem sikerült a tartalmat elmenteni, próbálja meg újra telepíteni."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:227
+#: includes/nsp_tools.php:259
 msgid "Failure to unzip archive, please try to re-install"
 msgstr "Nem sikerült kicsomagolni a zip álományt, próbálja meg újra telepíteni"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:230
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:255
+#: includes/nsp_tools.php:262 includes/nsp_tools.php:287
 msgid "Installation of IP2nation database was successful"
 msgstr "Az IP2nation adatbázis telepítése sikeresen megtörtént"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:272
+#: includes/nsp_tools.php:305
 msgid "IP2nation database was remove successfully"
 msgstr "Az IP2nation adatbázisának eltávolítása sikeresen megtörtént"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:284
-msgid "Export stats to text file"
-msgstr "Statisztika exportálása text fájlba"
+#: includes/nsp_tools.php:315
+msgid ""
+"The export tool allows you to save your statistics in a local file for a "
+"date interval defined by yourself."
+msgstr ""
+"Az Exportálás eszköz lehetővé teszi, hogy a statisztikákat egy helyi fájlba "
+"mentse egy saját maga által meghatározott időintervallumra."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:285
-msgid "You should define the stats period you want to export:"
-msgstr "Meg kell adnia az exportálandó statisztikai időszakot:"
+#: includes/nsp_tools.php:317
+msgid ""
+"You can define the filename and the file extension, and also the fields "
+"delimiter used to separate the data."
+msgstr ""
+"Megadhatja a fájlnevet és a fájlkiterjesztést, valamint az adatok "
+"elkülönítésére használt mezők határolóját is."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:289
+#: includes/nsp_tools.php:318
+msgid ""
+"Note: the parameters chosen will be saved automatically as default values."
+msgstr ""
+"Megjegyzés: a választott paramétereket a program automatikusan "
+"alapértelmezett értékként menti."
+
+#: includes/nsp_tools.php:320
+msgid "default value : semicolon"
+msgstr "alapértelmezett érték: pontosvessző"
+
+#: includes/nsp_tools.php:321
+msgid "default value : CSV (readable by Excel)"
+msgstr "alapértelmezett érték: CSV (Excel által olvasható)"
+
+#: includes/nsp_tools.php:322
+msgid ""
+"If the field remain blank, the default value is 'BLOG_TITLE-newstatpress'."
+msgstr ""
+"Ha a mező üres marad, az alapértelmezett érték a ' BLOG_TITLE-newstatpress '."
+
+#: includes/nsp_tools.php:324
+msgid ""
+"The date interval will be added to the filename (i.e. BLOG_TITLE-"
+"newstatpress_20160229-20160331.csv)."
+msgstr ""
+"A rendszer a dátumot hozzáadja a fájlnévhez (pl. BLOG_TITLE-"
+"newstatpress_20160229-20160331. csv)."
+
+#: includes/nsp_tools.php:338
+msgid "Date interval"
+msgstr "Dátumintervallum"
+
+#: includes/nsp_tools.php:342
 msgid "From:"
-msgstr "Tól:"
+msgstr "Feladó:"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:290
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:294
+#: includes/nsp_tools.php:347 includes/nsp_tools.php:358
 msgid "YYYYMMDD"
-msgstr "ÉÉÉÉ/hh/nn"
+msgstr "YYYYMMDD"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:293
+#: includes/nsp_tools.php:354
 msgid "To:"
-msgstr "Hoz:"
+msgstr "Címzett:"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:299
-msgid "You should choose a fields delimiter to separate the data:"
-msgstr "Válasszon ki egy mező határolót az adatok elválasztásához:"
+#: includes/nsp_tools.php:366
+msgid "Filename"
+msgstr "fájlnév"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:351
+#: includes/nsp_tools.php:371
+msgid "enter a filename"
+msgstr "Adjon meg egy fájlnevet"
+
+#: includes/nsp_tools.php:379
+msgid "File extension"
+msgstr "Fájl kiterjesztés"
+
+#: includes/nsp_tools.php:397
+msgid "Fields delimiter"
+msgstr "Mezők elválasztója"
+
+#: includes/nsp_tools.php:518
 msgid "All data removed"
-msgstr "Minden adatot eltávolított"
+msgstr "Minden adat eltávolítva"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:356
+#: includes/nsp_tools.php:523
 msgid "Remove NewStatPress database"
 msgstr "NewStatPress adatbázisának eltávolítása"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:360
+#: includes/nsp_tools.php:527
 msgid "To remove the Newstatpress database, just click on the button bellow."
 msgstr ""
 "Ahhoz, hogy el távolítsa a Newstatpress adatbázisát, kattintson a lenti "
 "gombra."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:362
+#: includes/nsp_tools.php:530
 msgid "Are you sure?"
 msgstr "Biztos benne?"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:367
+#: includes/nsp_tools.php:535
 msgid ""
 "This operation will remove all collected data by NewStatpress. This function "
 "is useful at people who did not want use the plugin any more or who want "
@@ -935,26 +1342,26 @@ msgstr ""
 "funkció azon felhasználók számára hasznos, akik nem akarják többé a plugint "
 "használni, vagy egyszerűen csak törölni kívánják a tárolt adatokat."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:371
+#: includes/nsp_tools.php:539
 msgid "If you have doubt about this function, don't use it."
 msgstr "Ha kétség merül fel ez a funkció, ne használja."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:375
+#: includes/nsp_tools.php:543
 msgid ""
 "Warning: pressing the below button will make all your stored data to be "
 "erased!"
 msgstr ""
-"Figyelmeztetés: lenti gomb megnyomásával minden tárolt adat törlödni fog!"
+"Figyelmeztetés: a lenti gomb megnyomásával minden tárolt adat törlődni fog!"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:441
+#: includes/nsp_tools.php:615
 msgid "Database update"
 msgstr "Adatbázis frissítése"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:442
+#: includes/nsp_tools.php:616
 msgid "To update the newstatpress database, just click on the button bellow."
-msgstr "Newstatpress adatbázis frissítéséhez , kattintson a lenti gombra."
+msgstr "Newstatpress adatbázis frissítéséhez kattintson a lenti gombra."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:456
+#: includes/nsp_tools.php:631
 msgid ""
 "Update the database is particularly useful when the ip2nation data and "
 "definitions data (OS, browser, spider) have been updated. An option in "
@@ -964,75 +1371,80 @@ msgstr ""
 "definíciós adatok (operációsrendszer, böngésző, spider) frissítve lettek. A "
 "jövőben egy lehetőség lehetővé teszi az adatbázis automatikus frissítését."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:459
+#: includes/nsp_tools.php:634
 msgid "Note: The update may take some times to complete."
 msgstr "Megjegyzés: A frissítés eltarthat egy ideig míg befejezi."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:498
-msgid "Database Update"
-msgstr "Adatbázis frissítése"
+#: includes/nsp_tools.php:667
+msgid ""
+"This tool display basic informations about the newstatpress database. It "
+"should be usefull to check the functionning of the plugin."
+msgstr ""
+"Ez az eszköz alapvető információkat jelenít meg a newstatpress "
+"adatbázisáról. Ez legyen hasznos-hoz ellenőriz a functionning-ból dugó."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:500
-msgid "Updating..."
-msgstr "Frissítés..."
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:500
+#: includes/nsp_tools.php:674 includes/nsp_tools.php:728
 msgid "Size"
 msgstr "Méret"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:500
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:530
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:548
-msgid "Result"
-msgstr "Eredmény"
+#: includes/nsp_tools.php:675
+msgid "Number of Records"
+msgstr "Rekordok száma"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:507
+#: includes/nsp_tools.php:681 includes/nsp_tools.php:735
 msgid "Structure"
 msgstr "Felépítés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:512
+#: includes/nsp_tools.php:686 includes/nsp_tools.php:740
 msgid "Index"
 msgstr "Index"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:711
+#: includes/nsp_tools.php:726
+msgid "Database Update"
+msgstr "Adatbázis frissítés"
+
+#: includes/nsp_tools.php:728
+msgid "Updating..."
+msgstr "Frissítés..."
+
+#: includes/nsp_tools.php:939
 msgid "Final Structure"
 msgstr "Végső felépítés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:715
+#: includes/nsp_tools.php:943
 msgid "Final Index"
 msgstr "Végső Index"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:719
+#: includes/nsp_tools.php:947
 msgid "Duration of the update"
 msgstr "Időtartam frissítése"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:723
+#: includes/nsp_tools.php:951
 msgid "This update was done in"
 msgstr "Ez a frissítés készen van"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:724
+#: includes/nsp_tools.php:952
 msgid "SQL queries"
 msgstr "SQL lekérdezések"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:743
+#: includes/nsp_tools.php:977
 msgid "Optimize table"
-msgstr "Optimalizált asztal"
+msgstr "Tábla optimalizálás"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:744
+#: includes/nsp_tools.php:978
 msgid "To optimize the statpress table, just click on the button bellow."
 msgstr ""
-"Ahhoz, hogy optimalizálja a StatPress asztalt, kattintson a lenti gombra."
+"Ahhoz, hogy optimalizálja a NewStatPress táblát, kattintson a lenti gombra."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:754
+#: includes/nsp_tools.php:989
 msgid ""
 "Optimize a table is an database operation that can free some server space if "
 "you had lot of delation (like with prune activated) in it."
 msgstr ""
-"A táblázat optimalizálása olyan adatbázis-művelet, amely felszabadíthatja a "
+"A tábla optimalizálása olyan adatbázis-művelet, amely felszabadíthatja a "
 "kiszolgálói helyet, ha nagy mennyiségű delatációra van szüksége (pl. prune)."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:757
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:789
+#: includes/nsp_tools.php:992 includes/nsp_tools.php:1031
 msgid ""
 "Be aware that this operation may take a lot of server time to finish the "
 "processing (depending on your database size). So so use it only if you know "
@@ -1041,174 +1453,194 @@ msgstr ""
 "Ne feledje, hogy ez a művelet sok időt igényelhet (az adatbázis méretétől "
 "függően). Ccsak akkor használja, ha tudja, hogy mit csinál."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:775
+#: includes/nsp_tools.php:1016
 msgid "Repair table"
-msgstr "Asztal javítása"
+msgstr "Tábla javítása"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:776
+#: includes/nsp_tools.php:1017
 msgid ""
 "To repair the statpress table if damaged, just click on the button bellow."
 msgstr ""
 "Megjavítani a StatPress táblázatban, ha sérült, kattintson a lenti gombra."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:786
+#: includes/nsp_tools.php:1028
 msgid "Repair is an database operation that can fix a corrupted table."
 msgstr ""
 "Javítása az művelet adatbázist, amely rögzíteni tudja a sérült asztalt."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:800
+#: includes/nsp_tools.php:1042
 msgid "Optimization finished"
 msgstr "Optimalizálás befejeződött"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_tools.php:808
+#: includes/nsp_tools.php:1050
 msgid "Repair finished"
 msgstr "Javítás befejeződött"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:12
+#: includes/nsp_visits.php:19
 msgid "Last visitors"
 msgstr "Utolsó látogatók"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:14
+#: includes/nsp_visits.php:21
 msgid "Spy Bot"
 msgstr "Botok stat"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:241
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:243
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:372
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:373
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:380
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:381
+#: includes/nsp_visits.php:290 includes/nsp_visits.php:292
+#: includes/nsp_visits.php:424 includes/nsp_visits.php:425
+#: includes/nsp_visits.php:436 includes/nsp_visits.php:437
 msgid "arrived from"
 msgstr "érkezett"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:241
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:372
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:380
+#: includes/nsp_visits.php:290 includes/nsp_visits.php:424
+#: includes/nsp_visits.php:436
 msgid "searching"
 msgstr "keresés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:340
+#: includes/nsp_visits.php:389
 msgid "Http domain"
 msgstr "HTTP domain"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:351
+#: includes/nsp_visits.php:400
 msgid "Hostip country"
 msgstr "Hosztolt IP-k országai"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/includes/nsp_visits.php:453
+#: includes/nsp_visits.php:474 includes/nsp_visits.php:489 newstatpress.php:620
+msgid "Category"
+msgstr "Kategória"
+
+#: includes/nsp_visits.php:475 newstatpress.php:621
+msgid "Calendar"
+msgstr "Naptár"
+
+#: includes/nsp_visits.php:566
 msgid "Pages"
 msgstr "Oldalak"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:71
+#: newstatpress.php:91
 msgid "Today visits"
 msgstr "Látogatók ma"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:72
+#: newstatpress.php:92
 msgid "Yesterday visits"
 msgstr "Látogatók tegnap"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:73
+#: newstatpress.php:93
 msgid "Month visits"
 msgstr "Látogatók a hónapban"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:74
+#: newstatpress.php:94
 msgid "Week visits"
 msgstr "Látogatók a héten"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:75
+#: newstatpress.php:95
 msgid "Total visits"
 msgstr "Összes látogató"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:76
+#: newstatpress.php:96
 msgid "Total pages view"
 msgstr "Összes lekért oldal"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:77
+#: newstatpress.php:97
 msgid "Total pages view today"
 msgstr "Mai összes lekért oldal"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:78
+#: newstatpress.php:98
 msgid "This page, total visits"
-msgstr "Ezen az oldalon,össes látogató"
+msgstr "Összes látogató ezen az oldalon"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:79
+#: newstatpress.php:99
 msgid "All page, total visits"
-msgstr "Minden oldal,össes látogató"
+msgstr "Minden oldal, összes látogató"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:80
+#: newstatpress.php:100
 msgid "Visitor Operative System"
 msgstr "Látogató Operációs rendszere"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:81
+#: newstatpress.php:101
 msgid "Visitor Browser"
-msgstr "Böngésző"
+msgstr "Látogató böngészője"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:82
+#: newstatpress.php:102
 msgid "Visitor IP address"
 msgstr "Látogató IP címe"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:83
+#: newstatpress.php:103
 msgid "Date of the first hit"
 msgstr "Első találat időpontja"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:84
+#: newstatpress.php:104
 msgid "Counts all online visitors"
 msgstr "Számolja meg az összes elérhető vendéget"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:85
+#: newstatpress.php:105
 msgid "Counts logged online visitors"
-msgstr "Számolja össze a bejelentkezett elérhető vendégeket"
+msgstr "Számolja össze a bejelentkezett elérhető látogatót"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:86
+#: newstatpress.php:106
+msgid "Total page view in the month"
+msgstr "A hónap teljes lap nézete"
+
+#: newstatpress.php:107
 msgid "The most viewed Post"
 msgstr "A legnézettebb bejegyzés"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:200
+#: newstatpress.php:141
+#, php-format
+msgid ""
+"Plugin %s deactivated. WordPress Version %s required. Please upgrade "
+"WordPress to the latest version."
+msgstr ""
+"A (z) %s bővítmény inaktivált. WordPress változat %s szükséges. Kérjük "
+"frissítse a WordPress-t a legújabb verzióra."
+
+#: newstatpress.php:318
 msgid "Tools"
 msgstr "Eszközök"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:252
-msgid "Once a minute"
-msgstr "Percenként egyet"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:256
-msgid "Four time by Day"
-msgstr "Négy alkalommal egy nap"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:261
-msgid "Once a Week"
-msgstr "Hetente egyszer"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:265
-msgid "Once a Month"
-msgstr "Havonta egyszer"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:322
+#: newstatpress.php:503
 #, php-format
-msgid "Visits statistics from %s"
-msgstr "Látogassa meg a státuszt innen %s"
+msgid "[%s] Visits statistics"
+msgstr "[ %s] Látogatások statisztikája"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:324
+#: newstatpress.php:505
 #, php-format
-msgid "This is a test from %s"
-msgstr "Ez egy teszt innen %s"
+msgid "[%s] Visits statistics : test of email address"
+msgstr "[ %s] Látogatások statisztikája: az e-mail cím tesztelése"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:344
-#, php-format
+#: newstatpress.php:520
+msgid "support page"
+msgstr "támogató oldal"
+
+#: newstatpress.php:523
 msgid ""
-"If you have found this plugin usefull and you like it, you can support the "
-"development by reporting bugs on the %s or  by adding/updating translation "
-"by contacting directly %s. As this plugin is maintained only on free time, "
-"you can also make a donation directly on the plugin website or through the "
-"plugin (Credits Page)."
+"If you have found this plugin useful and you like it, thank you to take a "
+"moment to rate it."
 msgstr ""
-"Ha úgy gondolja, hogy ez a kiegészítő hasznos és tetszik Önnek, támogassa a "
-"fejlesztést a %s hibáinak bejelentésével, vagy a fordítás hozzáadásával / "
-"frissítésével a %s közvetlen kapcsolatba lépésével. Mivel ez a kiegészítő "
-"csak szabadidőben készül, adományt közvetlenül a kiegészítő webhelyén, vagy "
-"a kiegészítő (Credits Page) keresztül is leadhat."
+"Ha megtaláltad ezt a plugin hasznos és tetszik, köszönöm, hogy egy "
+"pillanatra, hogy értékelje azt."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:347
+#: newstatpress.php:524
+#, fuzzy, php-format
+#| msgid ""
+#| "You can help to the plugin development by reporting bugs on the %s or by "
+#| "adding/updating translation by contacting directly %s."
+msgid ""
+"You can help to the plugin development by reporting bugs on the %s or by "
+"adding/updating translation by contacting directly %s."
+msgstr ""
+"Segíts te is a plugin fejlesztésében, hogy a hibákat a (z) %s-on ( %s), vagy "
+"a fordítás hozzáadásával/frissítésével, közvetlenül %s kapcsolattal."
+
+#: newstatpress.php:526
+msgid ""
+"NewStatPress is provided for free and is maintained only on free time, you "
+"can also consider a donation to support further work, directly on the plugin "
+"website or through the plugin (Credits Page)."
+msgstr ""
+"NewStatPress van feltéve részére szabad és van fenntart egyetlen-ra szabad "
+"idő, tudod is tekint egy adomány-hoz támogat tovább dolgozik, közvetlenül-on "
+"dugó website vagy átmenő a dugó (hitelek oldal)."
+
+#: newstatpress.php:528
 msgid ""
 "This option is yet experimental, please report bugs or improvement (see link "
 "on the bottom)"
@@ -1216,7 +1648,7 @@ msgstr ""
 "Ez a lehetőség még kísérleti, jelentse a hibákat, vagy a javítandókat (a "
 "link alul található)"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:348
+#: newstatpress.php:529
 msgid ""
 "You receive this email because you have enabled the statistics notification "
 "in the NewStatpress plugin (option menu) from your WP website "
@@ -1224,209 +1656,50 @@ msgstr ""
 "Ezt az e-mailt kapja, mert engedélyezte a statisztikai értesítést a WP "
 "webhelyén található NewStatpress kiegészítő opciók menüjében."
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:349
+#: newstatpress.php:530
 msgid "Dear"
 msgstr "Kedves"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:353
+#: newstatpress.php:534
 msgid "Statistics at"
-msgstr "Statisztikák"
+msgstr "Statisztika"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:353
+#: newstatpress.php:534
 msgid "server time"
 msgstr "szerver idő"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:355
+#: newstatpress.php:536
 msgid "Best Regards from"
 msgstr "Üdvözlettel"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:457
-msgid ""
-"This new version integrate a new major function of <strong>Email "
-"Notification</strong> (see Option Page) to get periodic reports of your "
-"statistics. This function remains a bit experimental until it's tested "
-"recursively, thanks to be comprehensive. <br/> <i>Thanks to <strong>Douglas "
-"R.</strong> to support our work with his donation.</i>"
-msgstr ""
-"Az új verzió integrálja az <strong>E-mail értesítés</ strong> új fő "
-"funkcióját (lásd az Opciók menüt), hogy rendszeres időközönként jelentéseket "
-"készítsen statisztikáiról. Ez a funkció még kísérleti fázisban van, amíg "
-"átfogó tesztelésre nem kerül.<br/><i>Köszönet <strong>Douglas R.-nak</ "
-"strong> a támogatásért.</i>"
+#: newstatpress.php:569
+msgid "Settings"
+msgstr "Beállítások"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-msgid "Last hits"
-msgstr "Utolsó találatok"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:530
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:548
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:595
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:624
-msgid "Time"
-msgstr "Idő"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-msgid "Country"
-msgstr "Ország"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:595
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:670
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:682
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:685
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:697
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:801
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:813
-msgid "Page"
-msgstr "Oldal"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-msgid "Feed"
-msgstr "Tölt"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:490
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:566
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:595
-msgid "OS"
-msgstr "Operációs rendszer"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:530
-msgid "Last search terms"
-msgstr "Utolsó keresési kulcsszavak"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:530
-msgid "Terms"
-msgstr "Feltételek"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:530
-msgid "Engine"
-msgstr "Keresőrobot"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:542
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:560
-msgid "page viewed"
-msgstr "lekért oldal"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:548
-msgid "Last referrers"
-msgstr "Utolsó hivatkozók"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:548
-msgid "URL"
-msgstr "URL"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:566
-msgid "Last agents"
-msgstr "Utolsó programok"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:595
-msgid "Last pages"
-msgstr "Utolsó látogatott oldalak"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:624
-msgid "Last spiders"
-msgstr "Utolsó spiderek"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:671
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:686
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:802
-msgid "Category"
-msgstr "Kategória"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:672
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:803
-msgid "Calendar"
-msgstr "Naptár"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:854
-msgid "records"
-msgstr "levéltár"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1527
+#: newstatpress.php:1409
 msgid "Title:"
 msgstr "Cím:"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1531
+#: newstatpress.php:1413
 msgid "Body:"
 msgstr "Tartalom:"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1535
+#: newstatpress.php:1417
 msgid "Stats available: "
-msgstr "Státusz elérhető: "
+msgstr "Statisztika elérhető: "
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1576
+#: newstatpress.php:1458
 msgid "Title"
-msgstr "Cím"
+msgstr "Címsor"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1756
-msgid "Total since"
-msgstr "Összesen indulás óta"
+#~ msgid "NewStatPress"
+#~ msgstr "NewStatPress"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1757
-msgid "This year"
-msgstr "Ebben az évben"
+#~ msgid "http://newstatpress.altervista.org"
+#~ msgstr "http://newstatpress.altervista.org"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1758
-msgid "Last month"
-msgstr "Múlt hónapban"
+#~ msgid "Real time stats for your Wordpress blog"
+#~ msgstr "Valós idejű statisztika a WordPress-hez"
 
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1759
-msgid "This month"
-msgstr "Ebben a hónapban"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1760
-msgid "Target This month"
-msgstr "Cél ez a hónap"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1761
-msgid "Yesterday"
-msgstr "Tegnap"
-
-#: /mnt/new/home/ice/SRC/cvsroot/newstatpress/trunk/newstatpress.php:1762
-msgid "Today"
-msgstr "Ma"
-
-#, fuzzy
-#~ msgid "Last visitors by Spy"
-#~ msgstr "Látogatók részletei"
-
-#~ msgid "Saved"
-#~ msgstr "Elmentett"
-
-#, fuzzy
-#~ msgid "Visitors by Spy: number of IP per page"
-#~ msgstr "Új stat: oldalakénti IP száma"
-
-#~ msgid "Never delete!"
-#~ msgstr "Sose töröld!"
-
-#~ msgid "Fields delimiter"
-#~ msgstr "Mező elválasztó"
-
-#~ msgid "period of days"
-#~ msgstr "napszakok"
-
-#~ msgid "More details"
-#~ msgstr "További részletek"
-
-#, fuzzy
-#~ msgid "pageviews"
-#~ msgstr "Oldalmegjelenítés"
-
-#, fuzzy
-#~ msgid "spiders"
-#~ msgstr "Spider"
-
-#~ msgid "Spy"
-#~ msgstr "Részletes info"
-
-#~ msgid "New Spy"
-#~ msgstr "Új stat"
-
-#, fuzzy
-#~ msgid "Elements in Summary (default 10)"
-#~ msgstr "Mennyit jelenítsen az operációs rendszernél (alapban 10)"
-
-#~ msgid "Total"
-#~ msgstr "Insgesamt"
+#~ msgid "Stefano Tognon and cHab (from Daniele Lippi works)"
+#~ msgstr "Stefano Tognon and cHab (from Daniele Lippi works)"

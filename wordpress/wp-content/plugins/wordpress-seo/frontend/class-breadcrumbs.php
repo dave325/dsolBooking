@@ -108,6 +108,8 @@ class WPSEO_Breadcrumbs {
 	private $output;
 
 	/**
+	 * Holds the WooCommerce shop page instance.
+	 *
 	 * @var WPSEO_WooCommerce_Shop_Page
 	 */
 	private $woocommerce_shop_page;
@@ -251,7 +253,7 @@ class WPSEO_Breadcrumbs {
 	 *
 	 * @param object $term Term to get the parents for.
 	 *
-	 * @return    array
+	 * @return array
 	 */
 	private function get_term_parents( $term ) {
 		$tax     = $term->taxonomy;
@@ -361,7 +363,6 @@ class WPSEO_Breadcrumbs {
 	 * Determine the crumbs which should form the breadcrumb.
 	 */
 	private function set_crumbs() {
-		/** @var WP_Query $wp_query */
 		global $wp_query;
 
 		$this->maybe_add_home_crumb();
@@ -784,11 +785,11 @@ class WPSEO_Breadcrumbs {
 	}
 
 	/**
-	 * Retrieve link url and text based on post id
+	 * Retrieve link url and text based on post id.
 	 *
 	 * @param int $id Post ID.
 	 *
-	 * @return array Array of link text and url
+	 * @return array Array of link text and url.
 	 */
 	private function get_link_info_for_id( $id ) {
 		$link         = array();

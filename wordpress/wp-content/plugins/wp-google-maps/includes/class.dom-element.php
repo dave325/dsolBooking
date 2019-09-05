@@ -2,6 +2,9 @@
 
 namespace WPGMZA;
 
+if(!defined('ABSPATH'))
+	return;
+
 require_once(plugin_dir_path(__FILE__) . 'class.selector-to-xpath.php');
 
 class DOMElement extends \DOMElement
@@ -11,6 +14,20 @@ class DOMElement extends \DOMElement
 	public function __construct()
 	{
 		\DOMElement::__construct();
+	}
+	
+	public function __get($name)
+	{
+		switch($name)
+		{
+			case "html":
+				
+				return $this->ownerDocument->saveHTML( $this );
+			
+				break;
+		}
+		
+		return \DOMElement::__get($name);
 	}
 	
 	/**
@@ -94,7 +111,7 @@ class DOMElement extends \DOMElement
 	 */
 	public function closest($selector)
 	{
-		if($this === $this->ownerDocument->documentElement)
+		if($this === $this->ownerDocument->getDocumentElementSafe())
 			throw new \Exception('Method not valid on document element');
 		
 		for($el = $this; $el->parentNode != null; $el = $el->parentNode)
@@ -212,10 +229,10 @@ class DOMElement extends \DOMElement
 		
 		if($subject instanceof \DOMDocument)
 		{
-			if(!$subject->documentElement)
+			if(!$subject->getDocumentElementSafe())
 				throw new \Exception('Document is empty');
 			
-			$node = $this->ownerDocument->importNode($subject->documentElement, true);
+			$node = $this->ownerDocument->importNode($subject->getDocumentElementSafe(), true);
 
 		}
 		else if($subject instanceof \DOMNode)
@@ -234,14 +251,14 @@ class DOMElement extends \DOMElement
 			else
 				$temp->load($subject);
 			
-			$node = $this->ownerDocument->importNode($temp->documentElement, true);
+			$node = $this->ownerDocument->importNode($temp->getDocumentElementSafe(), true);
 		}
 		else if(is_string($subject))
 		{
 			if(empty($subject))
 				return;
 			
-			if($subject != strip_tags($subject))
+			if($subject != strip_tags($subject) || preg_match('/&.+;/', $subject))
 			{
 				// Subject is a HTML string
 				$html = DOMDocument::convertUTF8ToHTMLEntities($subject);
@@ -500,6 +517,44 @@ class DOMElement extends \DOMElement
 		}
 		
 		return $this;
+	}
+	
+	public function serializeFormData()
+	{
+		$data = array();
+		
+		foreach($this->querySelectorAll('input, select, textarea') as $input)
+		{
+			$name = $input->getAttribute('name');
+			
+			if(!$name)
+				continue;
+			
+			switch($input->getAttribute('type'))
+			{
+				case 'checkbox':
+				
+					if($input->getValue())
+						$data[$name] = true;
+					else
+						$data[$name] = false;
+					
+					break;
+					
+				case 'radio':
+				
+					if($input->getAttribute('checked'))
+						$data[$name] = $input->getAttribute('value');
+				
+					break;
+				
+				default:
+					$data[$name] = $input->getValue();
+					break;
+			}
+		}
+		
+		return $data;
 	}
 	
 	/**

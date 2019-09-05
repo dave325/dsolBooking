@@ -212,6 +212,25 @@ class wkfe_slider_1 extends Widget_Base {
 		      ]
 		  );
 
+		$this->add_control(
+			'heading_tag',
+				[
+					'label'     => esc_html__( 'Heading Tag', 'widgetkit-for-elementor' ),
+					'type'      => Controls_Manager::SELECT,
+					'default'   => 'h2',
+					'options'   => [
+						'h1'			   => esc_html__('H1'),
+						'h2'			   => esc_html__('H2'),
+						'h3'			   => esc_html__('H3'),
+						'h4'			   => esc_html__('H4'),
+						'h5'			   => esc_html__('H5'),
+						'h6'			   => esc_html__('H6'),
+						'p'			       => esc_html__('P'),
+						'span'			   => esc_html__('Span'),
+					],
+				]
+		);
+
 $this->end_controls_section();
 // Content options End
 
@@ -219,7 +238,7 @@ $this->end_controls_section();
 $this->start_controls_section(
 	'section_option',
 		[
-			'label' => esc_html__( 'Content Options', 'widgetkit-for-elementor' ),
+			'label' => esc_html__( 'Content', 'widgetkit-for-elementor' ),
 			'tab'   => Controls_Manager::TAB_STYLE,
 		]
 );
@@ -401,7 +420,7 @@ $this->start_controls_section(
 					'label'  => esc_html__( 'Caption Width', 'widgetkit-for-elementor' ),
 					'type'   => Controls_Manager::SLIDER,
 					'default'  => [
-                        'size' => 1200,
+                        'size' => 1110,
                     ],
 					'range'  => [
 						'px' => [
@@ -458,7 +477,7 @@ $this->end_controls_section();
 	$this->start_controls_section(
 		'button_style',
 			[
-				'label' => esc_html__( 'Button Options', 'widgetkit-for-elementor' ),
+				'label' => esc_html__( 'Button', 'widgetkit-for-elementor' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 	);
@@ -662,7 +681,7 @@ $this->end_controls_section();
 $this->start_controls_section(
 	'control_style',
 		[
-			'label' => esc_html__( 'Control Options', 'widgetkit-for-elementor' ),
+			'label' => esc_html__( 'Control', 'widgetkit-for-elementor' ),
 			'tab'   => Controls_Manager::TAB_STYLE,
 		]
 	);
@@ -703,6 +722,16 @@ $this->start_controls_section(
 				]
 			);
 
+			$this->add_control(
+				'slider_data_pause',
+					[
+						'label'     => esc_html__( 'Data Pause', 'widgetkit-for-elementor' ),
+						'type'      => Controls_Manager::SWITCHER,
+						'default'   => 'yes',
+						'true'    => esc_html__( 'True', 'widgetkit-for-elementor' ),
+						'false'   => esc_html__( 'False', 'widgetkit-for-elementor' ),
+					]
+			);
 
 
 			$this->add_control(

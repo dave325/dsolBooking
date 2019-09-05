@@ -1,11 +1,28 @@
 <?php
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use PremiumAddons\Includes;
+use Elementor\Icons_Manager;
+use Elementor\Widget_Base;
+use Elementor\Utils;
+use Elementor\Control_Media;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Text_Shadow;
+use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Background;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
 class Premium_Modalbox extends Widget_Base {
-    public function getTemplateInstance(){
-        return $this->templateInstance = premium_Template_Tags::getInstance();
+
+    public function getTemplateInstance() {
+        return $this->templateInstance = Includes\premium_Template_Tags::getInstance();
     }
     
     public function get_name() {
@@ -17,11 +34,17 @@ class Premium_Modalbox extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Modal Box';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Modal Box', 'premium-addons-for-elementor') );
 	}
 
     public function get_icon() {
         return 'pa-modal-box';
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
     }
 
     public function get_script_depends() {
@@ -39,7 +62,6 @@ class Premium_Modalbox extends Widget_Base {
     // Adding the controls fields for the premium modal box
     // This will controls the animation, colors and background, dimensions etc
     protected function _register_controls() {
-        /* Start Box Content Section */
         
         $this->start_controls_section('premium_modal_box_selector_content_section', 
                 [
@@ -58,7 +80,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Icon To Display*/
         $this->add_control('premium_modal_box_icon_selection',
                 [
                     'label'         => __('Icon', 'premium-addons-for-elementor'),
@@ -77,18 +98,18 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Font Awesome Icon*/
-        $this->add_control('premium_modal_box_font_icon', 
-                [
-                    'label'         => __('Font Awesome', 'premium-addons-for-elementor'),
-                    'type'          => Controls_Manager::ICON,
-                    'condition'     => [
-                        'premium_modal_box_icon_selection'    => 'fonticon',
-                        'premium_modal_box_header_switcher' => 'yes'
-                    ],
-                    'label_block'   => true,
-                ]
-                );
+        $this->add_control('premium_modal_box_font_icon_updated', 
+            [
+                'label'             => __('Font Awesome', 'premium-addons-for-elementor'),
+                'type'              => Controls_Manager::ICONS,
+                'fa4compatibility'  => 'premium_modal_box_font_icon',
+                'condition'         => [
+                    'premium_modal_box_icon_selection'    => 'fonticon',
+                    'premium_modal_box_header_switcher' => 'yes'
+                ],
+                'label_block'       => true,
+            ]
+        );
         
         $this->add_responsive_control('premium_modal_box_font_icon_size', 
                 [
@@ -105,7 +126,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Image Icon*/ 
         $this->add_control('premium_modal_box_image_icon',
                 [
                     'label'         => __('Custom Image', 'premium-addons-for-elementor'),
@@ -122,13 +142,12 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
 
-        /*Modal Box Title*/ 
         $this->add_control('premium_modal_box_title',
                 [
                     'label'         => __('Title', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
                     'dynamic'       => [ 'active' => true ],
-                    'description'   => __('Provide the modal box with a title', 'premium-addons-for-elementor'),
+                    'description'   => __('Add a title for the modal box', 'premium-addons-for-elementor'),
                     'default'       => 'Modal Box Title',
                     'condition'     => [
                         'premium_modal_box_header_switcher' => 'yes'
@@ -137,7 +156,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Modal Box Content Heading*/
         $this->add_control('premium_modal_box_content_heading',
                 [
                     'label'         => __('Content', 'premium-addons-for-elementor'),
@@ -145,7 +163,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Modal Box Content Type*/
         $this->add_control('premium_modal_box_content_type',
                 [
                     'label'         => __('Content to Show', 'premium-addons-for-elementor'),
@@ -159,7 +176,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Modal Box Elementor Template*/
         $this->add_control('premium_modal_box_content_temp',
                 [
                     'label'			=> __( 'Content', 'premium-addons-for-elementor' ),
@@ -172,7 +188,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
             );
         
-        /*Modal Box Content*/
         $this->add_control('premium_modal_box_content',
                 [
                     'type'          => Controls_Manager::WYSIWYG,
@@ -186,7 +201,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
 
-        /*Upper Close Button*/
         $this->add_control('premium_modal_box_upper_close',
                 [
                     'label'         => __('Upper Close Button', 'premium-addons-for-elementor'),
@@ -198,7 +212,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Lower Close Button*/
         $this->add_control('premium_modal_box_lower_close',
                 [
                     'label'         => __('Lower Close Button', 'premium-addons-for-elementor'),
@@ -228,7 +241,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Modal Box Display On*/
         $this->add_control('premium_modal_box_display_on',
                 [
                     'label'         => __('Display Style', 'premium-addons-for-elementor'),
@@ -245,7 +257,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
       
-        /*Button Text*/ 
         $this->add_control('premium_modal_box_button_text',
                 [
                     'label'         => __('Button Text', 'premium-addons-for-elementor'),
@@ -270,18 +281,22 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
 
-        $this->add_control('premium_modal_box_button_icon_selection',
-                [
-                    'label'         => __('Icon', 'premium-addons-for-elementor'),
-                    'type'          => Controls_Manager::ICON,
-                    'default'       => 'fa fa-bars',
-                    'condition'     => [
-                        'premium_modal_box_display_on'  => 'button',
-                        'premium_modal_box_icon_switcher'   => 'yes'
-                    ],
-                    'label_block'   => true,
-                ]
-                );
+        $this->add_control('premium_modal_box_button_icon_selection_updated',
+            [
+                'label'             => __('Icon', 'premium-addons-for-elementor'),
+                'type'              => Controls_Manager::ICONS,
+                'fa4compatibility'  => 'premium_modal_box_button_icon_selection',
+                'default' => [
+                    'value'     => 'fas fa-bars',
+                    'library'   => 'fa-solid',
+                ],
+                'condition'     => [
+                    'premium_modal_box_display_on'      => 'button',
+                    'premium_modal_box_icon_switcher'   => 'yes'
+                ],
+                'label_block'   => true,
+            ]
+        );
         
         $this->add_control('premium_modal_box_icon_position', 
                 [
@@ -333,9 +348,7 @@ class Premium_Modalbox extends Widget_Base {
                     'separator'     => 'after',
                 ]
             );
-        }
         
-        if( ! $this->check_rtl() ) {
         $this->add_control('premium_modal_box_icon_after_spacing',
                 [
                     'label'         => __('Icon Spacing', 'premium-addons-for-elementor'),
@@ -356,7 +369,7 @@ class Premium_Modalbox extends Widget_Base {
             );
         }
         
-        if( $this->check_rtl() ){
+        if( $this->check_rtl() ) {
             $this->add_control('premium_modal_box_icon_rtl_before_spacing',
                     [
                         'label'         => __('Icon Spacing', 'premium-addons-for-elementor'),
@@ -375,9 +388,7 @@ class Premium_Modalbox extends Widget_Base {
                         'separator'     => 'after',
                     ]
                 );
-            }
         
-        if( $this->check_rtl() ){
             $this->add_control('premium_modal_box_icon_rtl_after_spacing',
                     [
                         'label'         => __('Icon Spacing', 'premium-addons-for-elementor'),
@@ -398,7 +409,6 @@ class Premium_Modalbox extends Widget_Base {
                 );
             }
         
-        /*Button Size*/
         $this->add_control('premium_modal_box_button_size',
                 [
                     'label'         => __('Button Size', 'premium-addons-for-elementor'),
@@ -417,7 +427,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Image Source*/ 
         $this->add_control('premium_modal_box_image_src',
                 [
                     'label'         => __('Image', 'premium-addons-for-elementor'),
@@ -433,7 +442,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Text Selector*/
         $this->add_control('premium_modal_box_selector_text',
                 [
                     'label'         => __('Text', 'premium-addons-for-elementor'),
@@ -447,7 +455,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*On Load Trigger Delay*/
         $this->add_control('premium_modal_box_popup_delay',
                 [
                     'label'         => __('Delay in Popup Display (Sec)','premium-addons-for-elementor'),
@@ -461,24 +468,22 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        
-        /*Alignment*/
         $this->add_responsive_control('premium_modal_box_selector_align',
                 [
                     'label' => __( 'Alignment', 'premium-addons-for-elementor' ),
                     'type' => Controls_Manager::CHOOSE,
                     'options' => [
                             'left'    => [
-                                    'title' => __( 'Left', 'premium-addons-for-elementor' ),
-                                    'icon' => 'fa fa-align-left',
+                                'title' => __( 'Left', 'premium-addons-for-elementor' ),
+                                'icon' => 'fa fa-align-left',
                             ],
                             'center' => [
-                                    'title' => __( 'Center', 'premium-addons-for-elementor' ),
-                                    'icon' => 'fa fa-align-center',
+                                'title' => __( 'Center', 'premium-addons-for-elementor' ),
+                                'icon' => 'fa fa-align-center',
                             ],
                             'right' => [
-                                    'title' => __( 'Right', 'premium-addons-for-elementor' ),
-                                    'icon' => 'fa fa-align-right',
+                                'title' => __( 'Right', 'premium-addons-for-elementor' ),
+                                'icon' => 'fa fa-align-right',
                             ],
                         ],
                     'default'       => 'center',
@@ -491,10 +496,8 @@ class Premium_Modalbox extends Widget_Base {
                 ]
             );
         
-        /*End Box Content Section*/
         $this->end_controls_section();
         
-        /*Selector Style*/
         $this->start_controls_section('premium_modal_box_selector_style_section',
                 [
                     'label'         => __('Trigger', 'premium-addons-for-elementor'),
@@ -505,7 +508,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
 
-        /*Button Text Color*/
         $this->add_control('premium_modal_box_button_text_color',
                 [
                     'label'         => __('Color', 'premium-addons-for-elementor'),
@@ -574,7 +576,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
 
-        /*Selector Text Typography*/
         $this->add_group_control(
             Group_Control_Typography::get_type(),
                 [
@@ -590,7 +591,6 @@ class Premium_Modalbox extends Widget_Base {
         
         $this->start_controls_tabs('premium_modal_box_button_style');
         
-        /*Button Color*/
         $this->start_controls_tab('premium_modal_box_tab_selector_normal',
                 [
                     'label'         => __( 'Normal', 'premium-addons-for-elementor' ),
@@ -600,7 +600,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
 		);
         
-        /*Button Background Color*/
         $this->add_control('premium_modal_box_selector_background',
                 [
                     'label'         => __('Background Color', 'premium-addons-for-elementor'),
@@ -618,19 +617,17 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
 
-        /*Button Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(), 
                 [
                     'name'          => 'selector_border',
                     'selector'      => '{{WRAPPER}} .premium-modal-box-button-selector,{{WRAPPER}} .premium-modal-box-text-selector, {{WRAPPER}} .premium-modal-box-img-selector',
                     'condition'     => [
-                        'premium_modal_box_display_on'  => ['button', 'text','image'],
+                        'premium_modal_box_display_on'  => [ 'button', 'text','image' ],
                         ]
                 ]
                 );
         
-        /*Button Border Radius*/
         $this->add_control('premium_modal_box_selector_border_radius',
                 [
                    'label'          => __('Border Radius', 'premium-addons-for-elementor'),
@@ -643,13 +640,12 @@ class Premium_Modalbox extends Widget_Base {
                         '{{WRAPPER}} .premium-modal-box-button-selector, {{WRAPPER}} .premium-modal-box-text-selector, {{WRAPPER}} .premium-modal-box-img-selector'     => 'border-radius:{{SIZE}}{{UNIT}};',
                     ],
                     'condition'     => [
-                        'premium_modal_box_display_on'  => ['button', 'text', 'image'],
+                        'premium_modal_box_display_on'  => [ 'button', 'text', 'image' ],
                         ],
                     'separator'     => 'after',
                     ]
                 );
         
-        /*Selector Padding*/
         $this->add_responsive_control('premium_modal_box_selector_padding',
                 [
                     'label'         => __('Padding', 'premium-addons-for-elementor'),
@@ -666,12 +662,11 @@ class Premium_Modalbox extends Widget_Base {
                         '{{WRAPPER}} .premium-modal-box-button-selector, {{WRAPPER}} .premium-modal-box-text-selector' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}',
                         ],
                     'condition'     => [
-                            'premium_modal_box_display_on'  => ['button', 'text'],
+                            'premium_modal_box_display_on'  => [ 'button', 'text' ],
                         ]
                     ]
                 );
         
-        /*Selector Box Shadow*/
         $this->add_group_control(
             Group_Control_Box_Shadow::get_type(),
                 [
@@ -679,12 +674,11 @@ class Premium_Modalbox extends Widget_Base {
                     'name'          => 'premium_modal_box_selector_box_shadow',
                     'selector'      => '{{WRAPPER}} .premium-modal-box-button-selector, {{WRAPPER}} .premium-modal-box-img-selector',
                     'condition'     => [
-                        'premium_modal_box_display_on'  => ['button', 'image'],
+                        'premium_modal_box_display_on'  => [ 'button', 'image' ],
                         ]
                 ]
                 );
         
-        /*Selector Text Shadow*/
         $this->add_group_control(
             Group_Control_Text_Shadow::get_type(),
                 [
@@ -702,12 +696,11 @@ class Premium_Modalbox extends Widget_Base {
                 [
                     'label'         => __('Hover', 'premium-addons-for-elementor'),
                     'condition'     => [
-                        'premium_modal_box_display_on'  => ['button','text','image'],
+                        'premium_modal_box_display_on'  => [ 'button','text','image' ],
                         ]
                 ]
                 );
         
-        /*Button Hover Background Color*/
         $this->add_control('premium_modal_box_selector_hover_background',
                 [
                     'label'         => __('Background Color', 'premium-addons-for-elementor'),
@@ -721,7 +714,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
 
-        /*Button Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(), 
                 [
@@ -729,12 +721,11 @@ class Premium_Modalbox extends Widget_Base {
                     'selector'      => '{{WRAPPER}} .premium-modal-box-button-selector:hover,
                     {{WRAPPER}} .premium-modal-box-text-selector:hover, {{WRAPPER}} .premium-modal-box-img-selector:hover',
                     'condition'     => [
-                        'premium_modal_box_display_on'  => ['button', 'text', 'image'],
+                        'premium_modal_box_display_on'  => [ 'button', 'text', 'image' ],
                         ]
                 ]
                 );
         
-        /*Button Border Radius*/
         $this->add_control('premium_modal_box_selector_border_radius_hover',
                 [
                    'label'          => __('Border Radius', 'premium-addons-for-elementor'),
@@ -744,12 +735,11 @@ class Premium_Modalbox extends Widget_Base {
                         '{{WRAPPER}} .premium-modal-box-button-selector:hover,{{WRAPPER}} .premium-modal-box-text-selector:hover, {{WRAPPER}} .premium-modal-box-img-selector:hover'     => 'border-radius:{{SIZE}}{{UNIT}};',
                     ],
                     'condition'     => [
-                        'premium_modal_box_display_on'  => ['button', 'text', 'image'],
+                        'premium_modal_box_display_on'  => [ 'button', 'text', 'image' ],
                         ]
                 ]
                 );
         
-        /*Selector Box Shadow*/
         $this->add_group_control(
             Group_Control_Box_Shadow::get_type(),
                 [
@@ -757,7 +747,7 @@ class Premium_Modalbox extends Widget_Base {
                     'name'          => 'premium_modal_box_selector_box_shadow_hover',
                     'selector'      => '{{WRAPPER}} .premium-modal-box-button-selector:hover, {{WRAPPER}} .premium-modal-box-text-selector:hover, {{WRAPPER}} .premium-modal-box-img-selector:hover',
                     'condition'     => [
-                        'premium_modal_box_display_on'  => ['button', 'text', 'image'],
+                        'premium_modal_box_display_on'  => [ 'button', 'text', 'image' ],
                         ]
                 ]
                 );
@@ -768,7 +758,6 @@ class Premium_Modalbox extends Widget_Base {
                 
         $this->end_controls_section();
         
-        /*Start Header Seettings Section*/
         $this->start_controls_section('premium_modal_box_header_settings',
                 [
                     'label'         => __('Heading', 'premium-addons-for-elementor'),
@@ -779,7 +768,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Header Text Color*/
         $this->add_control('premium_modal_box_header_text_color',
                 [
                     'label'         => __('Color', 'premium-addons-for-elementor'),
@@ -790,7 +778,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Header Text Typography*/
         $this->add_group_control(
             Group_Control_Typography::get_type(),
                 [
@@ -801,7 +788,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Header Background Color*/
         $this->add_control('premium_modal_box_header_background',
                 [
                     'label'         => __('Background Color', 'premium-addons-for-elementor'),
@@ -812,7 +798,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Heading Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(), 
                 [
@@ -821,11 +806,8 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*End Header Settings Section*/
         $this->end_controls_section();
         
-        
-        /*Start Close Button Section*/
         $this->start_controls_section('premium_modal_box_upper_close_button_section',
                 [
                     'label'         => __('Upper Close Button', 'premium-addons-for-elementor'),
@@ -837,7 +819,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Close Button Size*/
         $this->add_responsive_control('premium_modal_box_upper_close_button_size',
                 [
                     'label'         => __('Size', 'premium-addons-for-elementor'),
@@ -853,14 +834,12 @@ class Premium_Modalbox extends Widget_Base {
         
         $this->start_controls_tabs('premium_modal_box_upper_close_button_style');
         
-        /*Button Color*/
         $this->start_controls_tab('premium_modal_box_upper_close_button_normal',
                 [
                     'label'         => __( 'Normal', 'premium-addons-for-elementor' ),
                     ]
                 );
         
-        /*Close Button Color*/
         $this->add_control('premium_modal_box_upper_close_button_normal_color',
                 [
                     'label'         => __('Color', 'premium-addons-for-elementor'),
@@ -871,7 +850,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Close Button Background Color*/
         $this->add_control('premium_modal_box_upper_close_button_background_color',
                 [
                     'label'         => __('Background Color', 'premium-addons-for-elementor'),
@@ -882,7 +860,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Button Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(), 
                 [
@@ -891,7 +868,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Button Border Radius*/
         $this->add_control('premium_modal_upper_border_radius',
                 [
                    'label'          => __('Border Radius', 'premium-addons-for-elementor'),
@@ -912,7 +888,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Close Button Color*/
         $this->add_control('premium_modal_box_upper_close_button_hover_color',
                 [
                     'label'         => __('Color', 'premium-addons-for-elementor'),
@@ -923,7 +898,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Close Button Background Color*/
         $this->add_control('premium_modal_box_upper_close_button_background_color_hover',
                 [
                     'label'         => __('Background Color', 'premium-addons-for-elementor'),
@@ -934,7 +908,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Button Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(), 
                 [
@@ -943,7 +916,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Button Border Radius*/
         $this->add_control('premium_modal_upper_border_radius_hover',
                 [
                    'label'          => __('Border Radius', 'premium-addons-for-elementor'),
@@ -960,7 +932,6 @@ class Premium_Modalbox extends Widget_Base {
         
         $this->end_controls_tabs();
         
-        /*Upper Close Padding*/
         $this->add_responsive_control('premium_modal_box_upper_close_button_padding',
                 [
                     'label'         => __('Padding', 'premium-addons-for-elementor'),
@@ -972,10 +943,8 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
 
-        /*End Upper Close Button Style Section*/
         $this->end_controls_section();
         
-        /*Start Close Button Section*/
         $this->start_controls_section('premium_modal_box_lower_close_button_section',
                 [
                     'label'         => __('Lower Close Button', 'premium-addons-for-elementor'),
@@ -986,7 +955,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Close Button Text Typography*/
         $this->add_group_control(
             Group_Control_Typography::get_type(),
                 [
@@ -997,7 +965,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Close Button Size*/
         $this->add_responsive_control('premium_modal_box_lower_close_button_width',
                 [
                     'label'         => __('Width', 'premium-addons-for-elementor'),
@@ -1022,14 +989,12 @@ class Premium_Modalbox extends Widget_Base {
         
         $this->start_controls_tabs('premium_modal_box_lower_close_button_style');
         
-        /*Button Color*/
         $this->start_controls_tab('premium_modal_box_lower_close_button_normal',
                 [
                     'label'         => __( 'Normal', 'premium-addons-for-elementor' ),
                     ]
                 );
         
-        /*Close Button Background Color*/
         $this->add_control('premium_modal_box_lower_close_button_normal_color',
                 [
                     'label'         => __('Color', 'premium-addons-for-elementor'),
@@ -1044,7 +1009,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Close Button Background Color*/
         $this->add_control('premium_modal_box_lower_close_button_background_normal_color',
                 [
                     'label'         => __('Background Color', 'premium-addons-for-elementor'),
@@ -1059,7 +1023,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Lower Close Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(),
                 [
@@ -1068,7 +1031,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Lower Close Radius*/
         $this->add_control('premium_modal_box_lower_close_border_radius',
                 [
                     'label'         => __('Border Radius', 'premium-addons-for-elementor'),
@@ -1089,7 +1051,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Close Button Background Color*/
         $this->add_control('premium_modal_box_lower_close_button_hover_color',
                 [
                     'label'         => __('Color', 'premium-addons-for-elementor'),
@@ -1104,7 +1065,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Close Button Background Color*/
         $this->add_control('premium_modal_box_lower_close_button_background_hover_color',
                 [
                     'label'         => __('Background Color', 'premium-addons-for-elementor'),
@@ -1119,7 +1079,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Lower Close Hover Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(),
                 [
@@ -1128,7 +1087,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Lower Close Hover Border Radius*/
         $this->add_control('premium_modal_box_lower_close_border_radius_hover',
                 [
                     'label'         => __('Border Radius', 'premium-addons-for-elementor'),
@@ -1145,7 +1103,6 @@ class Premium_Modalbox extends Widget_Base {
         
         $this->end_controls_tabs();
         
-        /*Upper Close Padding*/
         $this->add_responsive_control('premium_modal_box_lower_close_button_padding',
                 [
                     'label'         => __('Padding', 'premium-addons-for-elementor'),
@@ -1157,7 +1114,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*End Lower Close Button Style Section*/
         $this->end_controls_section();
         
         $this->start_controls_section('premium_modal_box_style',
@@ -1167,7 +1123,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Modal Size*/
         $this->add_control('premium_modal_box_modal_size',
                 [
                     'label'         => __('Width', 'premium-addons-for-elementor'),
@@ -1201,7 +1156,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Modal Background Color*/
         $this->add_group_control(
             Group_Control_Background::get_type(),
             [
@@ -1211,7 +1165,6 @@ class Premium_Modalbox extends Widget_Base {
             ]
         );
         
-        /*Content Background Color*/
         $this->add_control('premium_modal_box_content_background',
                 [
                     'label'         => __('Content Background Color', 'premium-addons-for-elementor'),
@@ -1222,7 +1175,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Footer Background Color*/
         $this->add_control('premium_modal_box_footer_background',
                 [
                     'label'         => __('Footer Background Color', 'premium-addons-for-elementor'),
@@ -1233,7 +1185,6 @@ class Premium_Modalbox extends Widget_Base {
                     ]
                 );
         
-        /*Content Box Border*/
         $this->add_group_control(
             Group_Control_Border::get_type(),
                 [
@@ -1242,7 +1193,6 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Border Radius*/
         $this->add_control('premium_modal_box_border_radius',
                 [
                    'label'          => __('Border Radius', 'premium-addons-for-elementor'),
@@ -1254,7 +1204,14 @@ class Premium_Modalbox extends Widget_Base {
                 ]
                 );
         
-        /*Modal Box Margin*/
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+                [
+                    'name'          => 'premium_modal_box_shadow',
+                    'selector'      => '{{WRAPPER}} .premium-modal-box-modal-dialog',
+                ]
+                );
+        
         $this->add_responsive_control('premium_modal_box_margin',
                 [
                     'label'         => __('Margin', 'premium-addons-for-elementor'),
@@ -1280,16 +1237,41 @@ class Premium_Modalbox extends Widget_Base {
         $this->end_controls_section();
         
     }
+    
+    
+    protected function render_header_icon( $new, $migrate ) {
+        
+        $settings = $this->get_settings_for_display();
+        if( 'fonticon' === $settings['premium_modal_box_icon_selection'] ) {
+            if ( $new || $migrate ) :
+                Icons_Manager::render_icon( $settings['premium_modal_box_font_icon_updated'], [ 'aria-hidden' => 'true' ] );
+            else: ?>
+                <i <?php echo $this->get_render_attribute_string( 'title_icon' ); ?>></i>
+            <?php endif;
+        } elseif( 'image' === $settings['premium_modal_box_icon_selection'] ) {
+        ?>
+            <img <?php echo $this->get_render_attribute_string('title_icon'); ?>>
+        <?php 
+        }
+        
+    }
 
     protected function render() {
-        // get our input from the widget settings.
+        
         $settings = $this->get_settings_for_display();
+        
         $this->add_inline_editing_attributes('premium_modal_box_selector_text');
       
-        $button_icon = $settings['premium_modal_box_button_icon_selection'];
+        if ( ! empty ( $settings['premium_modal_box_button_icon_selection'] ) ) {
+            $this->add_render_attribute( 'icon', 'class', $settings['premium_modal_box_button_icon_selection'] );
+            $this->add_render_attribute( 'icon', 'aria-hidden', 'true' );
+        }
         
-        $elementor_post_id = $settings['premium_modal_box_content_temp'];
-        $premium_elements_frontend = new Frontend;
+        $migrated = isset( $settings['__fa4_migrated']['premium_modal_box_button_icon_selection_updated'] );
+        $is_new = empty( $settings['premium_modal_box_button_icon_selection'] ) && Icons_Manager::is_migration_allowed();
+        
+        $template = $settings['premium_modal_box_content_temp'];
+        
 		$modal_settings = [
             'trigger'   => $settings['premium_modal_box_display_on'],
             'delay'     => $settings['premium_modal_box_popup_delay'],
@@ -1328,16 +1310,19 @@ class Premium_Modalbox extends Widget_Base {
         
         $this->add_render_attribute('text', 'data-target', '#premium-modal-' . $this->get_id() );
         
-        if (  'fonticon' === $settings['premium_modal_box_icon_selection'] ) {
-            
-            $this->add_render_attribute('title_icon', 'class', $settings['premium_modal_box_font_icon'] );
-            
-        } else { 
-            
-            $this->add_render_attribute('title_icon', 'src', $settings['premium_modal_box_image_icon']['url'] );
-            $alt = Control_Media::get_image_alt( $settings['premium_modal_box_image_icon'] );
-            $this->add_render_attribute('title_icon', 'alt', $alt );
-            
+        if( 'yes' === $settings['premium_modal_box_header_switcher'] ) {
+            if (  'fonticon' === $settings['premium_modal_box_icon_selection'] ) {
+                if (  ! empty ( $settings['premium_modal_box_font_icon'] ) ) {
+                    $this->add_render_attribute('title_icon', 'class', $settings['premium_modal_box_font_icon'] );
+                    $this->add_render_attribute('title_icon', 'aria-hidden', 'true' );
+                }
+                $header_migrated = isset( $settings['__fa4_migrated']['premium_modal_box_font_icon_updated'] );
+                $header_new = empty( $settings['premium_modal_box_font_icon'] ) && Icons_Manager::is_migration_allowed();
+            } else {
+                $this->add_render_attribute('title_icon', 'src', $settings['premium_modal_box_image_icon']['url'] );
+                $alt = Control_Media::get_image_alt( $settings['premium_modal_box_image_icon'] );
+                $this->add_render_attribute('title_icon', 'alt', $alt );
+            }
         }
         
     ?>
@@ -1347,45 +1332,49 @@ class Premium_Modalbox extends Widget_Base {
             <?php
             if ( $settings['premium_modal_box_display_on'] === 'button' ) : ?>
                 <button <?php echo $this->get_render_attribute_string('button'); ?>>
-                      <?php if( $settings['premium_modal_box_icon_switcher'] && $settings['premium_modal_box_icon_position'] == 'before' && ! empty( $settings['premium_modal_box_button_icon_selection'] ) ) : ?>
-                          <i class="fa <?php echo esc_attr( $button_icon ); ?>"></i>
-                      <?php endif; ?>
+                    <?php if( 'yes' === $settings['premium_modal_box_icon_switcher'] && $settings['premium_modal_box_icon_position'] === 'before' ) :
+                        if ( $is_new || $migrated ) :
+                            Icons_Manager::render_icon( $settings['premium_modal_box_button_icon_selection_updated'], [ 'aria-hidden' => 'true' ] );
+                        else: ?>
+                            <i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
+                        <?php endif;
+                      endif; ?>
                       <span><?php echo $settings['premium_modal_box_button_text']; ?></span>
-                      <?php if( $settings['premium_modal_box_icon_switcher'] && $settings['premium_modal_box_icon_position'] == 'after' && ! empty( $settings['premium_modal_box_button_icon_selection'] ) ) : ?>
-                          <i class="fa <?php echo esc_attr( $button_icon ); ?>"></i>
-                      <?php endif; ?>
+                      <?php if( 'yes' === $settings['premium_modal_box_icon_switcher'] && $settings['premium_modal_box_icon_position'] === 'after' ) :
+                        if ( $is_new || $migrated ) :
+                            Icons_Manager::render_icon( $settings['premium_modal_box_button_icon_selection_updated'], [ 'aria-hidden' => 'true' ] );
+                        else: ?>
+                            <i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
+                        <?php endif;
+                      endif; ?>
                 </button>
             <?php elseif ( $settings['premium_modal_box_display_on'] === 'image' ) : ?>
                 <img <?php echo $this->get_render_attribute_string('image'); ?>>
-            <?php elseif($settings['premium_modal_box_display_on'] === 'text') : ?>
+            <?php elseif( $settings['premium_modal_box_display_on'] === 'text' ) : ?>
                 <span <?php echo $this->get_render_attribute_string('text'); ?>><div <?php echo $this->get_render_attribute_string('premium_modal_box_selector_text'); ?>><?php echo $settings['premium_modal_box_selector_text'];?></div></span>
             <?php endif; ?>
         </div>
 
-        <div id="premium-modal-<?php echo  $this->get_id(); ?>"  class="premium-modal-box-modal premium-modal-fade" role="dialog">
+        <div id="premium-modal-<?php echo $this->get_id(); ?>"  class="premium-modal-box-modal premium-modal-fade" role="dialog">
             <div class="premium-modal-box-modal-dialog">
                 <div class="premium-modal-box-modal-content">
-                <?php if($settings['premium_modal_box_header_switcher'] == 'yes') : ?>
+                <?php if( $settings['premium_modal_box_header_switcher'] == 'yes' ) : ?>
                     <div class="premium-modal-box-modal-header">
+                        <?php if ( ! empty( $settings['premium_modal_box_title'] ) ) : ?>
+                            <h3 class="premium-modal-box-modal-title">
+                                <?php $this->render_header_icon( $header_new , $header_migrated );
+                                echo $settings['premium_modal_box_title']; ?>
+                            </h3>
+                        <?php endif; ?>
                         <?php if ( $settings['premium_modal_box_upper_close'] === 'yes' ) : ?>
                             <div class="premium-modal-box-close-button-container">
                                 <button type="button" class="premium-modal-box-modal-close" data-dismiss="premium-modal">&times;</button>
                             </div>
                         <?php endif; ?>
-                        <?php if ( ! empty( $settings['premium_modal_box_title'] ) ) : ?>
-                            <h3 class="premium-modal-box-modal-title">
-                                <?php if( 'fonticon' === $settings['premium_modal_box_icon_selection'] ) : ?>
-                                    <i <?php echo $this->get_render_attribute_string('title_icon'); ?>></i>
-                                <?php elseif( 'image' === $settings['premium_modal_box_icon_selection'] ) : ?>
-                                    <img <?php echo $this->get_render_attribute_string('title_icon'); ?>>
-                                <?php endif;
-                                echo $settings['premium_modal_box_title']; ?>
-                            </h3>
-                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
                 <div class="premium-modal-box-modal-body">
-                    <?php if( $settings['premium_modal_box_content_type'] == 'editor' ) : echo $this->parse_text_editor( $settings['premium_modal_box_content'] ); else: echo $premium_elements_frontend->get_builder_content( $elementor_post_id, true ); endif; ?>
+                    <?php if( $settings['premium_modal_box_content_type'] == 'editor' ) : echo $this->parse_text_editor( $settings['premium_modal_box_content'] ); else: echo $this->getTemplateInstance()->get_template_content( $template ); endif; ?>
                 </div>
                 <?php if ( $settings['premium_modal_box_lower_close'] === 'yes' ) : ?>
                     <div class="premium-modal-box-modal-footer">

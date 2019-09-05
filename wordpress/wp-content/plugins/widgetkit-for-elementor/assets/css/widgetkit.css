@@ -111,13 +111,13 @@
 .tgx-slider-1 .carousel .carousel-indicators li.active:before {
     content: "";
     position: absolute;
-    left: 4px;
+    left: 3px;
     right: 0;
     border: 2px solid #fff;
     width: 5px;
     height: 5px;
     border-radius: 1px;
-    top: 4px;
+    top: 3px;
     bottom: 0;
     z-index: -1;
 }
@@ -2150,6 +2150,7 @@
   -ms-transition: all .3s ease;
   -o-transition: all .3s ease;
   transition: all .3s ease;
+  z-index: 9;
 }
 .tgx-team-1 .team-container .team-content {
   width: 100%;
@@ -2289,6 +2290,7 @@
   -ms-transition: all .3s ease;
   -o-transition: all .3s ease;
   transition: all .3s ease;
+  z-index: 9;
 }
 .tgx-team-2 .team-container .team-social {
   width: 100%;
@@ -2427,7 +2429,6 @@
 }
 .tgx-team-3 .team-container .team-each-wrap .team-block {
   position: relative;
-  overflow: hidden;
   display: inline-block;
   -webkit-transition: all 0.5s ease;
   -moz-transition: all 0.5s ease;
@@ -2450,7 +2451,7 @@
   -moz-transition: all 0.6s ease-in-out;
   transition: all 0.6s ease-in-out;
   position: absolute;
-  left: 0;
+  left: -5px;
   right: 0;
   top: -5px;
   margin: auto;
@@ -2508,16 +2509,6 @@
 	.tgx-team-3 .team-container .team-each-wrap .spin {
 	    width: 160px;
 	    height: 160px;
-	    border-radius: 50%;
-	    -webkit-transition: all 0.6s ease-in-out;
-	    -moz-transition: all 0.6s ease-in-out;
-	    transition: all 0.6s ease-in-out;
-	    position: absolute;
-	    left: 14px;
-	    right: 0;
-	    top: -5px;
-	     margin: 0; 
-	    text-align: center;
 	}
 	.tgx-team-3 .team-container .team-each-wrap .team-block img {
 	    width: 150px;
@@ -2530,16 +2521,6 @@
 	.tgx-team-3 .team-container .team-each-wrap .spin {
 	    width: 160px;
 	    height: 160px;
-	    border-radius: 50%;
-	    -webkit-transition: all 0.6s ease-in-out;
-	    -moz-transition: all 0.6s ease-in-out;
-	    transition: all 0.6s ease-in-out;
-	    position: absolute;
-	    left: 60px;
-	    right: 0;
-	    top: -5px;
-	    margin: 0;
-	    text-align: center;
 	}
 }
 
@@ -3648,7 +3629,7 @@
 /************************************************************************
 *  Testimonial 1 css
 ************************************************************************/
-  .tgx-testimonial-1 .testimoni-image {
+  .tgx-testimonial-1 .testimony-image {
     display: block;
     border-radius: 50px;
     max-width: 50px;
@@ -3726,7 +3707,7 @@
   margin: 0 0 50px;
 }
 
-.tgx-testimonial-2 .testimoni-image {
+.tgx-testimonial-2 .testimony-image {
   display: inline-block !important;
   border-radius: 100px;
   max-width: 80px;
@@ -3741,12 +3722,16 @@
   margin: 35px auto;
   width: 60%;
 }
+
 .tgx-testimonial-2 .testimoni-wrapper .testimony p {
   line-height: 27px;
 }
 .tgx-testimonial-2 .testimoni-wrapper .author {
   position: relative;
   padding: 25px 0;
+}
+.tgx-testimonial-2 .testimoni-wrapper .author img{
+	max-width: 10% !important;
 }
 .tgx-testimonial-2 .testimoni-wrapper .name {
   font-size: 16px;
@@ -4955,7 +4940,7 @@
     transition: transform 0.35s;
 }
 .tgx-hover-image .jazz-effect .caption-title, .tgx-hover-image .jazz-effect .caption-content {
-    opacity: 1;
+    opacity:0;
     -webkit-transform: scale3d(0.8,0.8,1);
     transform: scale3d(0.8,0.8,1);
 }
@@ -5053,12 +5038,12 @@
 .tgx-hover-image .goliath-effect .image-caption{
   text-align: left;
   background: #444;
-  opacity: 0.5;
+  opacity: 0;
   transition: all 0.3s ease;
 }
 .tgx-hover-image .goliath-effect:hover .image-caption{
    transition: all 0.3s ease;
-
+   opacity: 1;
 }
 
 .tgx-hover-image .goliath-effect .image-caption .caption-title,
@@ -5093,6 +5078,7 @@
 
 .tgx-hover-image .sadie-effect:hover .caption-title {
     color: #fff;
+    opacity: 1;
     -webkit-transform: translate3d(0,-50%,0) translate3d(0,-40px,0);
     transform: translate3d(0,-50%,0) translate3d(0,-40px,0);
 }
@@ -5105,6 +5091,10 @@
     transition: transform 0.35s, color 0.35s;
     -webkit-transform: translate3d(0,-50%,0);
     transform: translate3d(0,-50%,0);
+    padding:0 20px;
+    opacity: 0;
+    left: 0;
+    right: 0;
 }
 
 .tgx-hover-image .sadie-effect:hover figcaption::before, .tgx-hover-image .sadie-effect:hover .caption-content {
@@ -5121,6 +5111,7 @@
     margin: 120px 0;
     -webkit-transform: translate3d(0,10px,0);
     transform: translate3d(0,10px,0);
+    padding:0 20px;
 }
 
 .tgx-hover-image .sadie-effect figcaption::before, .tgx-hover-image .sadie-effect .caption-content {
@@ -5143,6 +5134,12 @@
   transition: opacity 0.35s;
 }
 
+.tgx-hover-image .bubba-effect .hover-image a{
+	display: block;
+	position: relative;
+	z-index: 9;
+}
+
 .tgx-hover-image .bubba-effect:hover img {
   opacity: 0.4;
 }
@@ -5161,8 +5158,8 @@
   opacity: 1;
 }
 
-.tgx-hover-image .bubba-effect .hover-image::before,
-.tgx-hover-image .bubba-effect .hover-image::after {
+.tgx-hover-image .bubba-effect .hover-image a::before,
+.tgx-hover-image .bubba-effect .hover-image a::after {
   position: absolute;
   top: 30px;
   right: 30px;
@@ -5174,7 +5171,7 @@
   transition: opacity 0.35s, transform 0.35s;
 }
 
-.tgx-hover-image .bubba-effect .hover-image::before {
+.tgx-hover-image .bubba-effect .hover-image a::before {
   border-top: 1px solid;
   border-bottom: 1px solid ;
   border-color: #fff;
@@ -5182,7 +5179,7 @@
   transform: scale(0,1);
 }
 
-.tgx-hover-image .bubba-effect .hover-image::after {
+.tgx-hover-image .bubba-effect .hover-image a::after {
   border-right: 1px solid ;
   border-left: 1px solid ;
   border-color: #fff;
@@ -5196,6 +5193,7 @@
   transition: transform 0.35s;
   -webkit-transform: translate3d(0,-20px,0);
   transform: translate3d(0,-20px,0);
+  opacity: 0;
 }
 
 .tgx-hover-image .bubba-effect p {
@@ -5206,8 +5204,8 @@
   transform: translate3d(0,20px,0);
 }
 
-.tgx-hover-image .bubba-effect:hover .hover-image::before,
-.tgx-hover-image .bubba-effect:hover .hover-image::after {
+.tgx-hover-image .bubba-effect:hover .hover-image a::before,
+.tgx-hover-image .bubba-effect:hover .hover-image a::after {
   opacity: 1;
   -webkit-transform: scale(1);
   transform: scale(1);

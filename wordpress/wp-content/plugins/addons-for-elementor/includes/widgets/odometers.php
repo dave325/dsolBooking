@@ -15,6 +15,7 @@ use Elementor\Utils;
 use Elementor\Scheme_Color;
 use Elementor\Group_Control_Typography;
 use Elementor\Scheme_Typography;
+use Elementor\Icons_Manager;
 use Elementor\Modules\DynamicTags\Module as TagsModule;
 
 if (!defined('ABSPATH'))
@@ -164,14 +165,15 @@ class LAE_Odometers_Widget extends Widget_Base {
                     ],
 
                     [
-                        'name' => 'icon',
+                        'name' => 'selected_icon',
                         'label' => __('Stats Icon', 'livemesh-el-addons'),
-                        'type' => Controls_Manager::ICON,
+                        'type' => Controls_Manager::ICONS,
                         'label_block' => true,
                         'default' => '',
                         'condition' => [
                             'icon_type' => 'icon',
                         ],
+                        'fa4compatibility' => 'icon',
                     ],
 
                     [
@@ -324,27 +326,6 @@ class LAE_Odometers_Widget extends Widget_Base {
         );
 
         $this->add_control(
-            'icon_spacing',
-            [
-                'label' => __('Spacing', 'livemesh-el-addons'),
-                'description' => __('Space after icon.', 'livemesh-el-addons'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%', 'em' ],
-                'default' => [
-                    'top' => 0,
-                    'right' => 15,
-                    'bottom' => 0,
-                    'left' => 0,
-                    'unit' => 'px',
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .lae-odometers .lae-odometer .lae-stats-title .lae-icon-wrapper, {{WRAPPER}} .lae-odometers .lae-odometer .lae-stats-title .lae-image-wrapper' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'isLinked' => false
-            ]
-        );
-
-        $this->add_control(
             'icon_color',
             [
                 'label' => __('Icon Color', 'livemesh-el-addons'),
@@ -362,6 +343,8 @@ class LAE_Odometers_Widget extends Widget_Base {
         $settings = $this->get_settings_for_display();
 
         $settings = apply_filters('lae_odometers_' . $this->get_id() . '_settings', $settings);
+
+        $migration_allowed = Icons_Manager::is_migration_allowed();
 
         $output = '<div class="lae-odometers lae-grid-container ' . lae_get_grid_classes($settings) . '">';
 
@@ -384,6 +367,8 @@ class LAE_Odometers_Widget extends Widget_Base {
 
             $icon_type = esc_html($odometer['icon_type']);
 
+            $icon_html = '';
+
             if ($icon_type == 'icon_image') :
 
                 $icon_image = $odometer['icon_image'];
@@ -394,9 +379,29 @@ class LAE_Odometers_Widget extends Widget_Base {
 
                 endif;
 
-            else :
+            elseif ((!empty($odometer['icon']) || !empty($odometer['selected_icon']['value']))) :
 
-                $icon_html = '<span class="lae-icon-wrapper"><i class="' . esc_attr($odometer['icon']) . '"></i></span>';
+                $migrated = isset($odometer['__fa4_migrated']['selected_icon']);
+                $is_new = empty($odometer['icon']) && $migration_allowed;
+
+                $icon_html = '<span class="lae-icon-wrapper">';
+
+                if ($is_new || $migrated) :
+
+                    ob_start();
+
+                    Icons_Manager::render_icon($odometer['selected_icon'], ['aria-hidden' => 'true']);
+
+                    $icon_html .= ob_get_contents();
+                    ob_end_clean();
+
+                else :
+
+                    $icon_html .= '<i class="' . esc_attr($odometer['icon']) . '" aria-hidden="true"></i>';
+
+                endif;
+
+                $icon_html .= '</span>';
 
             endif;
 

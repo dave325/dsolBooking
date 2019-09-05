@@ -1,6 +1,8 @@
+$lae-default-gutter: 20px;
+
 $neat-grid: (
         columns: 12,
-        gutter: 20px,
+        gutter: $lae-default-gutter,
         direction: ltr,
 );
 
@@ -32,3 +34,13 @@ $lae-mobile-only-grid: (
 $lae-tablet-only-grid: (
         media: "(min-width:480px) and (max-width: 800px)",
 );
+
+$lae-rtl-grid: (
+        direction: rtl,
+);
+
+$lae-rtl-five-col-grid: (
+        columns: 5,
+        direction: rtl,
+);
+

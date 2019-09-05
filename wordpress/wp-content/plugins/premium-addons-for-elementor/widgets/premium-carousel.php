@@ -1,13 +1,22 @@
 <?php 
-namespace Elementor;
-if( !defined( 'ABSPATH' ) ) exit; // No access of directly access
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use PremiumAddons\Includes;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Repeater;
+use Elementor\Scheme_Color;
+
+if( ! defined( 'ABSPATH' ) ) exit; // No access of directly access
 
 class Premium_Carousel extends Widget_Base {
 
     protected $templateInstance;
 
 	public function getTemplateInstance() {
-		return $this->templateInstance = premium_Template_Tags::getInstance();
+		return $this->templateInstance = Includes\premium_Template_Tags::getInstance();
 	}
 
 	public function get_name() {
@@ -15,16 +24,21 @@ class Premium_Carousel extends Widget_Base {
 	}
 
 	public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Carousel';
+        return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Carousel', 'premium-addons-for-elementor') );
 	}
 
 	public function get_icon() {
 		return 'pa-carousel';
 	}
     
-    public function is_reload_preview_required()
-    {
+    public function is_reload_preview_required() {
        return true;
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
     }
 
 	public function get_script_depends() {
@@ -290,6 +304,7 @@ class Premium_Carousel extends Widget_Base {
             [
                 'label'         => __('Animations', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::ANIMATION,
+                'render_type'   => 'template'
             ]
             );
 
@@ -390,7 +405,23 @@ class Premium_Carousel extends Widget_Base {
 		);
         
         $this->end_controls_section();
-
+        
+        $this->start_controls_section('docs',
+            [
+                'label'         => __('Helpful Documentations', 'premium-addons-pro'),
+            ]
+        );
+        
+        $this->add_control('doc_1',
+            [
+                'type'            => Controls_Manager::RAW_HTML,
+                'raw'             => sprintf( __( '%1$s Issue: I can see the first slide only » %2$s', 'premium-addons-for-elementor' ), '<a href="https://premiumaddons.com/docs/i-can-see-the-first-slide-only-in-carousel-widget/?utm_source=pa-dashboard&utm_medium=pa-editor&utm_campaign=pa-plugin" target="_blank" rel="noopener">', '</a>' ),
+                'content_classes' => 'editor-pa-doc',
+            ]
+        );
+        
+        $this->end_controls_section();
+        
 		$this->start_controls_section('premium_carousel_navigation_arrows',
 			[
 				'label'         => __( 'Navigation Arrows', 'premium-addons-for-elementor' ),
@@ -407,86 +438,87 @@ class Premium_Carousel extends Widget_Base {
 		        'type'          => Controls_Manager::CHOOSE,
 		        'options'       => [
 		            'right_arrow_bold'          => [
-		                'icon' => 'fa fa-arrow-right',
+		                'icon' => 'fas fa-arrow-right',
 		            ],
 		            'right_arrow_long'          => [
-		                'icon' => 'fa fa-long-arrow-right',
+		                'icon' => 'fas fa-long-arrow-alt-right',
 		            ],
 		            'right_arrow_long_circle' 	=> [
-		                'icon' => 'fa fa-arrow-circle-right',
+		                'icon' => 'fas fa-arrow-circle-right',
 		            ],
 		            'right_arrow_angle' 		=> [
-		                'icon' => 'fa fa-angle-right',
+		                'icon' => 'fas fa-angle-right',
 		            ],
 		            'right_arrow_chevron' 		=> [
-		                'icon' => 'fa fa-chevron-right',
+		                'icon' => 'fas fa-chevron-right',
 		            ]
 		        ],
 		        'default'       => 'right_arrow_angle',
 		        'condition'		=> [
 					'premium_carousel_navigation_show'  => 'yes',
 					'premium_carousel_slider_type!'     => 'vertical'
-				]
+				],
+                'toggle'        => false
 		    ]
 		);
 
-		// If the carousel type vertical 
 		$this->add_control('premium_carousel_arrow_icon_next_ver',
 		    [
 		        'label' 	=> __( 'Bottom Icon', 'premium-addons-for-elementor' ),
 		        'type' 		=> Controls_Manager::CHOOSE,
 		        'options' 	=> [
 		            'right_arrow_bold'    		=> [
-		                'icon' => 'fa fa-arrow-down',
+		                'icon' => 'fas fa-arrow-down',
 		            ],
 		            'right_arrow_long' 			=> [
-		                'icon' => 'fa fa-long-arrow-down',
+		                'icon' => 'fas fa-long-arrow-alt-down',
 		            ],
 		            'right_arrow_long_circle' 	=> [
-		                'icon' => 'fa fa-arrow-circle-down',
+		                'icon' => 'fas fa-arrow-circle-down',
 		            ],
 		            'right_arrow_angle' 		=> [
-		                'icon' => 'fa fa-angle-down',
+		                'icon' => 'fas fa-angle-down',
 		            ],
 		            'right_arrow_chevron' 		=> [
-		                'icon' => 'fa fa-chevron-down',
+		                'icon' => 'fas fa-chevron-down',
 		            ]
 		        ],
 		        'default'		=> 'right_arrow_angle',
 		        'condition'		=> [
 					'premium_carousel_navigation_show'  => 'yes',
 					'premium_carousel_slider_type'      => 'vertical',
-				]
+				],
+                'toggle'        => false
 		    ]
 		);
         
-        // If carousel slider is vertical type
 		$this->add_control('premium_carousel_arrow_icon_prev_ver',
 		    [
 		        'label'         => __( 'Top Icon', 'premium-addons-for-elementor' ),
 		        'type'          => Controls_Manager::CHOOSE,
 		        'options'       => [
 		            'left_arrow_bold'    		=> [
-		                'icon' => 'fa fa-arrow-up',
+		                'icon' => 'fas fa-arrow-up',
 		            ],
 		            'left_arrow_long' 			=> [
-		                'icon' => 'fa fa-long-arrow-up',
+		                'icon' => 'fas fa-long-arrow-alt-up',
 		            ],
 		            'left_arrow_long_circle' 	=> [
-		                'icon' => 'fa fa-arrow-circle-up',
+		                'icon' => 'fas fa-arrow-circle-up',
 		            ],
 		            'left_arrow_angle' 		=> [
-		                'icon' => 'fa fa-angle-up',
+		                'icon' => 'fas fa-angle-up',
 		            ],
 		            'left_arrow_chevron' 		=> [
-		                'icon' => 'fa fa-chevron-up',
+		                'icon' => 'fas fa-chevron-up',
 		            ]
 		        ],
 		        'default'		=> 'left_arrow_angle',
 		        'condition'		=> [
 					'premium_carousel_navigation_show'  => 'yes',
 					'premium_carousel_slider_type'      => 'vertical',
-				]
+				],
+                'toggle'        => false
 		    ]
 		);
         
@@ -496,26 +528,27 @@ class Premium_Carousel extends Widget_Base {
 		        'type'          => Controls_Manager::CHOOSE,
 		        'options'       => [
 		            'left_arrow_bold'    		=> [
-		                'icon' => 'fa fa-arrow-left',
+		                'icon' => 'fas fa-arrow-left',
 		            ],
 		            'left_arrow_long' 			=> [
-		                'icon' => 'fa fa-long-arrow-left',
+		                'icon' => 'fas fa-long-arrow-alt-left',
 		            ],
 		            'left_arrow_long_circle' 	=> [
-		                'icon' => 'fa fa-arrow-circle-left',
+		                'icon' => 'fas fa-arrow-circle-left',
 		            ],
 		            'left_arrow_angle' 		=> [
-		                'icon' => 'fa fa-angle-left',
+		                'icon' => 'fas fa-angle-left',
 		            ],
 		            'left_arrow_chevron' 		=> [
-		                'icon' => 'fa fa-chevron-left',
+		                'icon' => 'fas fa-chevron-left',
 		            ]
 		        ],
 		        'default'		=> 'left_arrow_angle',
 		        'condition'		=> [
 					'premium_carousel_navigation_show' => 'yes',
 					'premium_carousel_slider_type!' => 'vertical',
-				]
+				],
+                'toggle'        => false
 		    ]
 		);
 
@@ -674,25 +707,23 @@ class Premium_Carousel extends Widget_Base {
 		        'type'          => Controls_Manager::CHOOSE,
 		        'options'       => [
 		            'square_white'    		=> [
-		                'icon' => 'fa fa-square-o',
+		                'icon' => 'far fa-square',
 		            ],
 		            'square_black' 			=> [
-		                'icon' => 'fa fa-square',
+		                'icon' => 'fas fa-square',
 		            ],
 		            'circle_white' 	=> [
-		                'icon' => 'fa fa-circle',
+		                'icon' => 'fas fa-circle',
 		            ],
 		            'circle_thin' 		=> [
-		                'icon' => 'fa fa-circle-thin',
-		            ],
-		            'circle_thin_bold' 		=> [
-		                'icon' => 'fa fa-circle-o',
+		                'icon' => 'far fa-circle',
 		            ]
 		        ],
 		        'default'		=> 'circle_white',
 		        'condition'		=> [
 					'premium_carousel_dot_navigation_show' => 'yes'
-				]
+				],
+                'toggle'        => false
 		    ]
 		);
 
@@ -759,7 +790,6 @@ class Premium_Carousel extends Widget_Base {
 			]
 		);
         
-        /*First Border Radius*/
         $this->add_control('premium_carousel_navigation_effect_border_radius',
             [
                 'label'         => __('Border Radius', 'premium-addons-for-elementor'),
@@ -784,8 +814,7 @@ class Premium_Carousel extends Widget_Base {
 		$settings = $this->get_settings();
         
         $vertical = $settings['premium_carousel_slider_type'] == 'vertical' ? true : false;
-		// responsive carousel set up
-
+		
 		$slides_on_desk = $settings['premium_carousel_responsive_desktop'];
 		if( $settings['premium_carousel_slides_to_show'] == 'all' ) {
 			$slidesToScroll = ! empty( $slides_on_desk ) ? $slides_on_desk : 1;
@@ -814,7 +843,7 @@ class Premium_Carousel extends Widget_Base {
         
         $autoplay = $settings['premium_carousel_autoplay'] == 'yes' ? true : false;
         
-        $autoplaySpeed = !empty( $settings['premium_carousel_autoplay_speed'] ) ? $settings['premium_carousel_autoplay_speed'] : '';
+        $autoplaySpeed = ! empty( $settings['premium_carousel_autoplay_speed'] ) ? $settings['premium_carousel_autoplay_speed'] : '';
         
         $draggable = $settings['premium_carousel_draggable_effect'] == 'yes' ? true  : false;
 		
@@ -863,70 +892,70 @@ class Premium_Carousel extends Widget_Base {
 			if( $settings['premium_carousel_slider_type'] == 'vertical' ) {
 				$icon_next = $settings['premium_carousel_arrow_icon_next_ver'];
 				if( $icon_next == 'right_arrow_bold' ) {
-					$icon_next_class = 'fa fa-arrow-down';
+					$icon_next_class = 'fas fa-arrow-down';
 				}
 				if( $icon_next == 'right_arrow_long' ) {
-					$icon_next_class = 'fa fa-long-arrow-down';
+					$icon_next_class = 'fas fa-long-arrow-alt-down';
 				}
 				if( $icon_next == 'right_arrow_long_circle' ) {
-					$icon_next_class = 'fa fa-arrow-circle-down';
+					$icon_next_class = 'fas fa-arrow-circle-down';
 				}
 				if( $icon_next == 'right_arrow_angle' ) {
-					$icon_next_class = 'fa fa-angle-down';
+					$icon_next_class = 'fas fa-angle-down';
 				}
 				if( $icon_next == 'right_arrow_chevron' ) {
-					$icon_next_class = 'fa fa-chevron-down';
+					$icon_next_class = 'fas fa-chevron-down';
 				}
 				$icon_prev = $settings['premium_carousel_arrow_icon_prev_ver'];
 
 				if( $icon_prev == 'left_arrow_bold' ) {
-					$icon_prev_class = 'fa fa-arrow-up';
+					$icon_prev_class = 'fas fa-arrow-up';
 				}
 				if( $icon_prev == 'left_arrow_long' ) {
-					$icon_prev_class = 'fa fa-long-arrow-up';
+					$icon_prev_class = 'fas fa-long-arrow-alt-up';
 				}
 				if( $icon_prev == 'left_arrow_long_circle' ) {
-					$icon_prev_class = 'fa fa-arrow-circle-up';
+					$icon_prev_class = 'fas fa-arrow-circle-up';
 				}
 				if( $icon_prev == 'left_arrow_angle' ) {
-					$icon_prev_class = 'fa fa-angle-up';
+					$icon_prev_class = 'fas fa-angle-up';
 				}
 				if( $icon_prev == 'left_arrow_chevron' ) {
-					$icon_prev_class = 'fa fa-chevron-up';
+					$icon_prev_class = 'fas fa-chevron-up';
 				}
 			} else {
 				$icon_next = $settings['premium_carousel_arrow_icon_next'];
 				if( $icon_next == 'right_arrow_bold' ) {
-					$icon_next_class = 'fa fa-arrow-right';
+					$icon_next_class = 'fas fa-arrow-right';
 				}
 				if( $icon_next == 'right_arrow_long' ) {
-					$icon_next_class = 'fa fa-long-arrow-right';
+					$icon_next_class = 'fas fa-long-arrow-alt-right';
 				}
 				if( $icon_next == 'right_arrow_long_circle' ) {
-					$icon_next_class = 'fa fa-arrow-circle-right';
+					$icon_next_class = 'fas fa-arrow-circle-right';
 				}
 				if( $icon_next == 'right_arrow_angle' ) {
-					$icon_next_class = 'fa fa-angle-right';
+					$icon_next_class = 'fas fa-angle-right';
 				}
 				if( $icon_next == 'right_arrow_chevron' ) {
-					$icon_next_class = 'fa fa-chevron-right';
+					$icon_next_class = 'fas fa-chevron-right';
 				}
 				$icon_prev = $settings['premium_carousel_arrow_icon_prev'];
 
 				if( $icon_prev == 'left_arrow_bold' ) {
-					$icon_prev_class = 'fa fa-arrow-left';
+					$icon_prev_class = 'fas fa-arrow-left';
 				}
 				if( $icon_prev == 'left_arrow_long' ) {
-					$icon_prev_class = 'fa fa-long-arrow-left';
+					$icon_prev_class = 'fas fa-long-arrow-alt-left';
 				}
 				if( $icon_prev == 'left_arrow_long_circle' ) {
-					$icon_prev_class = 'fa fa-arrow-circle-left';
+					$icon_prev_class = 'fas fa-arrow-circle-left';
 				}
 				if( $icon_prev == 'left_arrow_angle' ) {
-					$icon_prev_class = 'fa fa-angle-left';
+					$icon_prev_class = 'fas fa-angle-left';
 				}
 				if( $icon_prev == 'left_arrow_chevron' ) {
-					$icon_prev_class = 'fa fa-chevron-left';
+					$icon_prev_class = 'fas fa-chevron-left';
 				}
 			}
 
@@ -944,19 +973,16 @@ class Premium_Carousel extends Widget_Base {
 		if( $settings['premium_carousel_dot_navigation_show'] == 'yes' ){
 			$dots =  true;
 			if( $settings['premium_carousel_dot_icon'] == 'square_white' ) {
-				$dot_icon = 'fa fa-square-o';
+				$dot_icon = 'far fa-square';
 			}
 			if( $settings['premium_carousel_dot_icon'] == 'square_black' ) {
-				$dot_icon = 'fa fa-square';
+				$dot_icon = 'fas fa-square';
 			}
 			if( $settings['premium_carousel_dot_icon'] == 'circle_white' ) {
-				$dot_icon = 'fa fa-circle';
+				$dot_icon = 'fas fa-circle';
 			}
 			if( $settings['premium_carousel_dot_icon'] == 'circle_thin' ) {
-				$dot_icon = 'fa fa-circle-thin';
-			}
-			if( $settings['premium_carousel_dot_icon'] == 'circle_thin_bold' ) {
-				$dot_icon = 'fa fa-circle-o';
+				$dot_icon = 'far fa-circle-thin';
 			}
 			$customPaging = $dot_icon;
 		} else {
@@ -964,7 +990,7 @@ class Premium_Carousel extends Widget_Base {
             $dot_icon = '';
             $customPaging = '';
         }
-		$extra_class = $settings['premium_carousel_extra_class'] !== '' ? ' '.$settings['premium_carousel_extra_class'] : '';
+		$extra_class = ! empty ( $settings['premium_carousel_extra_class'] ) ? ' ' . $settings['premium_carousel_extra_class'] : '';
 		
 		$animation_class = $settings['premium_carousel_animation_list'];
 		$animation = ! empty( $animation_class ) ? 'animated ' . $animation_class : 'null';
@@ -1004,16 +1030,15 @@ class Premium_Carousel extends Widget_Base {
             'mobileBreak'   => $mobile_breakpoint
         ];
         
-        $premium_elements_page_id = array();
+        $templates = array();
+        
         if( 'select' === $settings['premium_carousel_content_type'] ){
-            $premium_elements_page_id = $settings['premium_carousel_slider_content'];
+            $templates = $settings['premium_carousel_slider_content'];
         } else {
             foreach( $settings['premium_carousel_templates_repeater'] as $template ){
-                array_push($premium_elements_page_id, $template['premium_carousel_repeater_item']);
+                array_push($templates, $template['premium_carousel_repeater_item']);
             }
         }
-        
-        $premium_elements_frontend = new Frontend;
         
         $this->add_render_attribute( 'carousel', 'id', 'premium-carousel-wrapper-' . esc_attr( $this->get_id() ) );
         
@@ -1041,14 +1066,304 @@ class Premium_Carousel extends Widget_Base {
         <div <?php echo $this->get_render_attribute_string('carousel'); ?>>
             <div id="premium-carousel-<?php echo esc_attr( $this->get_id() ); ?>" class="premium-carousel-inner">
                 <?php 
-                    foreach( $premium_elements_page_id as $elementor_post_id ) :
+                    foreach( $templates as $template_title ) :
                  ?>
                 <div class="item-wrapper">
-                    <?php echo $premium_elements_frontend->get_builder_content( $elementor_post_id, true ); ?>
+                    <?php echo $this->getTemplateInstance()->get_template_content( $template_title ); ?>
                 </div>
                 <?php endforeach; ?>
             </div>
         </div>
 		<?php
 	}
+    
+    protected function _content_template() {
+        
+        ?>
+        
+        <#
+        
+            var vertical        = 'vertical' === settings.premium_carousel_slider_type ? true : false,
+                slidesOnDesk    = settings.premium_carousel_responsive_desktop,
+                slidesToScroll  = 1,
+                arrowClass      = '',
+                iconNextClass   = '',
+                iconPrevClass   = '',
+                dotIcon         = '',
+                verticalAlignment= '';
+                
+            if( 'all' === settings.premium_carousel_slides_to_show ) {
+                slidesToScroll = '' !== slidesOnDesk ? slidesOnDesk : 1;
+            } else {
+                slidesToScroll = 1;
+            }
+
+            var slidesToShow    = '' !== slidesOnDesk ? slidesOnDesk : 1,
+                slidesOnTabs    = settings.premium_carousel_responsive_tabs,
+                slidesOnMob     = settings.premium_carousel_responsive_mobile;
+
+            if( '' === settings.premium_carousel_responsive_tabs ) {
+                slidesOnTabs = slidesOnDesk;
+            }
+
+            if( '' === settings.premium_carousel_responsive_mobile ) {
+                slidesOnMob = slidesOnDesk;
+            }
+
+            var infinite    = settings.premium_carousel_loop === 'yes' ? true : false,
+                fade        = settings.premium_carousel_fade === 'yes' ? true : false,
+                speed       = '' !== settings.premium_carousel_speed ? settings.premium_carousel_speed : '',
+                autoplay    = settings.premium_carousel_autoplay === 'yes' ? true : false,
+                autoplaySpeed = '' !== settings.premium_carousel_autoplay_speed ? settings.premium_carousel_autoplay_speed : '',
+                draggable   = settings.premium_carousel_draggable_effect === 'yes' ? true  : false,
+                touchMove   = settings.premium_carousel_touch_move === 'yes' ? true : false,
+                dir         = '',
+                rtl         = false;
+
+            if( 'yes' === settings.premium_carousel_RTL_Mode ) {
+                rtl = true;
+                dir = 'dir="rtl"';
+            }
+
+            var adaptiveHeight  = 'yes' === settings.premium_carousel_adaptive_height ? true : false,
+                pauseOnHover    = 'yes' === settings.premium_carousel_pausehover ? true : false,
+                centerMode      = 'yes' === settings.premium_carousel_center_mode ? true : false,
+                centerPadding   = '' !== settings.premium_carousel_space_btw_items ? settings.premium_carousel_space_btw_items + "px" : '';
+                
+            // Navigation arrow setting setup
+            if( 'yes' === settings.premium_carousel_navigation_show ) {
+            
+                var arrows = true;
+
+                if( 'vertical' === settings.premium_carousel_slider_type ) {
+                    verticalAlignment = "ver-carousel-arrow";
+                } else {
+                    verticalAlignment = "carousel-arrow";
+                }
+                
+                if( 'circle-bg' === settings.premium_carousel_arrow_style ) {
+                    arrowClass = ' circle-bg';
+                }
+                if( 'square-bg' === settings.premium_carousel_arrow_style ) {
+                    arrowClass = ' square-bg';
+                }
+                if( 'square-border' === settings.premium_carousel_arrow_style ) {
+                    arrowClass = ' square-border';
+                }
+                if( 'circle-border' === settings.premium_carousel_arrow_style ) {
+                    arrowClass = ' circle-border';
+                }
+                if( 'default' === settings.premium_carousel_arrow_style ) {
+                    arrowClass = '';
+                }
+                
+                if( 'vertical' === settings.premium_carousel_slider_type ) {
+                
+                    var iconNext = settings.premium_carousel_arrow_icon_next_ver;
+                    
+                    if( iconNext === 'right_arrow_bold' ) {
+                        iconNextClass = 'fas fa-arrow-down';
+                    }
+                    if( iconNext === 'right_arrow_long' ) {
+                        iconNextClass = 'fas fa-long-arrow-alt-down';
+                    }
+                    if( iconNext === 'right_arrow_long_circle' ) {
+                        iconNextClass = 'fas fa-arrow-circle-down';
+                    }
+                    if( iconNext === 'right_arrow_angle' ) {
+                        iconNextClass = 'fas fa-angle-down';
+                    }
+                    if( iconNext === 'right_arrow_chevron' ) {
+                        iconNextClass = 'fas fa-chevron-down';
+                    }
+                    
+                    var iconPrev = settings.premium_carousel_arrow_icon_prev_ver;
+
+                    if( iconPrev === 'left_arrow_bold' ) {
+                        iconPrevClass = 'fas fa-arrow-up';
+                    }
+                    if( iconPrev === 'left_arrow_long' ) {
+                        iconPrevClass  = 'fas fa-long-arrow-alt-up';
+                    }
+                    if( iconPrev === 'left_arrow_long_circle' ) {
+                        iconPrevClass  = 'fas fa-arrow-circle-up';
+                    }
+                    if( iconPrev === 'left_arrow_angle' ) {
+                        iconPrevClass  = 'fas fa-angle-up';
+                    }
+                    if( iconPrev === 'left_arrow_chevron' ) {
+                        iconPrevClass  = 'fas fa-chevron-up';
+                    }
+                    
+                } else {
+                    var iconNext = settings.premium_carousel_arrow_icon_next;
+                    
+                    if( iconNext === 'right_arrow_bold' ) {
+                        iconNextClass = 'fas fa-arrow-right';
+                    }
+                    if( iconNext === 'right_arrow_long' ) {
+                        iconNextClass = 'fas fa-long-arrow-alt-right';
+                    }
+                    if( iconNext === 'right_arrow_long_circle' ) {
+                        iconNextClass = 'fas fa-arrow-circle-right';
+                    }
+                    if( iconNext === 'right_arrow_angle' ) {
+                        iconNextClass = 'fas fa-angle-right';
+                    }
+                    if( iconNext === 'right_arrow_chevron' ) {
+                        iconNextClass = 'fas fa-chevron-right';
+                    }
+                    
+                    var iconPrev = settings.premium_carousel_arrow_icon_prev;
+
+                    if( iconPrev === 'left_arrow_bold' ) {
+                        iconPrevClass = 'fas fa-arrow-left';
+                    }
+                    if( iconPrev === 'left_arrow_long' ) {
+                        iconPrevClass = 'fas fa-long-arrow-alt-left';
+                    }
+                    if( iconPrev === 'left_arrow_long_circle' ) {
+                        iconPrevClass = 'fas fa-arrow-circle-left';
+                    }
+                    if( iconPrev === 'left_arrow_angle' ) {
+                        iconPrevClass = 'fas fa-angle-left';
+                    }
+                    if( iconPrev === 'left_arrow_chevron' ) {
+                        iconPrevClass = 'fas fa-chevron-left';
+                    }
+                }
+
+                
+                var next_arrow = '<a type="button" data-role="none" class="'+ verticalAlignment +' carousel-next' + arrowClass + '" aria-label="Next" role="button" style=""><i class="' + iconNextClass + '" aria-hidden="true"></i></a>';
+
+                var left_arrow = '<a type="button" data-role="none" class="'+ verticalAlignment +' carousel-prev' + arrowClass + '" aria-label="Next" role="button" style=""><i class="' + iconPrevClass + '" aria-hidden="true"></i></a>';
+
+                var nextArrow = next_arrow,
+                    prevArrow = left_arrow;
+                    
+            } else {
+                var arrows = false,
+                    nextArrow = '',
+                    prevArrow = '';
+            }
+            
+            if( 'yes' === settings.premium_carousel_dot_navigation_show  ) {
+            
+                var dots =  true;
+                
+                if( 'square_white' === settings.premium_carousel_dot_icon ) {
+                    dotIcon = 'far fa-square';
+                }
+                if( 'square_black' === settings.premium_carousel_dot_icon ) {
+                    dotIcon = 'fas fa-square';
+                }
+                if( 'circle_white' === settings.premium_carousel_dot_icon ) {
+                    dotIcon = 'fas fa-circle';
+                }
+                if( 'circle_thin' === settings.premium_carousel_dot_icon ) {
+                    dotIcon = 'far fa-circle';
+                }
+                var customPaging = dotIcon;
+                
+            } else {
+            
+                var dots =  false,
+                    dotIcon = '',
+                    customPaging = '';
+                    
+            }
+            var extraClass = '' !== settings.premium_carousel_extra_class  ? ' ' + settings.premium_carousel_extra_class : '';
+
+            var animationClass  = settings.premium_carousel_animation_list;
+            var animation       = '' !== animationClass ? 'animated ' + animationClass : 'null';
+                
+            var dotAnim = settings.premium_carousel_navigation_effect === 'yes' ? 'hvr-ripple-out' : '';
+
+            var tabletBreakpoint = '' !== settings.premium_carousel_tablet_breakpoint ? settings.premium_carousel_tablet_breakpoint : 1025;
+
+            var mobileBreakpoint = '' !== settings.premium_carousel_mobile_breakpoint ? settings.premium_carousel_mobile_breakpoint : 768;
+            
+            var carouselSettings = {};
+            
+            carouselSettings.vertical       = vertical;
+            carouselSettings.slidesToScroll = slidesToScroll;
+            carouselSettings.slidesToShow   = slidesToShow;
+            carouselSettings.infinite       = infinite;
+            carouselSettings.speed          = speed;
+            carouselSettings.fade           = fade;
+            carouselSettings.autoplay       = autoplay;
+            carouselSettings.autoplaySpeed  = autoplaySpeed;
+            carouselSettings.draggable      = draggable;
+            carouselSettings.touchMove      = touchMove;
+            carouselSettings.rtl            = rtl;
+            carouselSettings.adaptiveHeight = adaptiveHeight;
+            carouselSettings.pauseOnHover   = pauseOnHover;
+            carouselSettings.centerMode     = centerMode;
+            carouselSettings.centerPadding  = centerPadding;
+            carouselSettings.arrows         = arrows;
+            carouselSettings.nextArrow      = nextArrow;
+            carouselSettings.prevArrow      = prevArrow;
+            carouselSettings.dots           = dots;
+            carouselSettings.customPaging   = customPaging;
+            carouselSettings.slidesDesk     = slidesOnDesk;
+            carouselSettings.slidesTab      = slidesOnTabs;
+            carouselSettings.slidesMob      = slidesOnMob;
+            carouselSettings.animation      = animation;
+            carouselSettings.tabletBreak    = tabletBreakpoint;
+            carouselSettings.mobileBreak    = mobileBreakpoint;
+            
+            var templates = [];
+            
+            if( 'select' === settings.premium_carousel_content_type ) {
+            
+                templates = settings.premium_carousel_slider_content;
+                
+            } else {
+            
+                _.each( settings.premium_carousel_templates_repeater, function( template ) {
+                
+                    templates.push( template.premium_carousel_repeater_item );
+                
+                } );
+            
+            }
+
+            view.addRenderAttribute( 'carousel', 'id', 'premium-carousel-wrapper-' + view.getID() );
+
+            view.addRenderAttribute( 'carousel', 'class', [
+                'premium-carousel-wrapper',
+                dotAnim,
+                'carousel-wrapper-' + view.getID(),
+                extraClass,
+                dir
+            ] );
+            
+            if( 'yes' === settings.premium_carousel_dot_navigation_show ) {
+                view.addRenderAttribute( 'carousel', 'class', 'premium-carousel-dots-' + settings.premium_carousel_dot_position );
+            }
+
+            if( 'yes' === settings.premium_carousel_fade && 'yes' === settings.premium_carousel_zoom ) {
+                view.addRenderAttribute( 'carousel', 'class', 'premium-carousel-scale' );
+            }
+        
+            view.addRenderAttribute( 'carousel', 'data-settings', JSON.stringify( carouselSettings ) );
+            
+            view.addRenderAttribute( 'carousel-inner', 'id', 'premium-carousel-' + view.getID() );
+            view.addRenderAttribute( 'carousel-inner', 'class', 'premium-carousel-inner' );
+            
+            
+        #>
+        
+        <div {{{ view.getRenderAttributeString('carousel') }}}>
+            <div {{{ view.getRenderAttributeString('carousel-inner') }}}>
+                <# _.each( templates, function( templateID ) { #>
+                    <div class="item-wrapper" data-template="{{templateID}}"></div>
+                <# } ); #>
+            </div>
+        </div>
+        
+        
+    <?php 
+    
+    }
 }

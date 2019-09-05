@@ -16,4 +16,8 @@ class Module extends Module_Base {
 		return 'eae-animatedtext';
 	}
 
+	public function add_dependent_js_css(){
+		wp_enqueue_script('animated-main');
+	}
+
 }

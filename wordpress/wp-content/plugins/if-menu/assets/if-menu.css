@@ -77,10 +77,17 @@
 .if-menu-wrap .two-col,
 .if-menu-wrap .three-col {
 	align-items: flex-start;
+	display: flex;
+}
+
+.if-menu-wrap .two-col .col,
+.if-menu-wrap .three-col .col {
+	margin: 0 0.5rem;
 }
 
 .if-menu-wrap .pricing-plan-section h3 {
 	margin-bottom: 2rem;
+	margin-top: 0;
 }
 
 .if-menu-wrap .pricing-plan-section .price {

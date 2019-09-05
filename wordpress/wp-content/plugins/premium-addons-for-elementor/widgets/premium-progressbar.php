@@ -1,6 +1,15 @@
 <?php
 
-namespace Elementor;
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Repeater;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Background;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -11,7 +20,7 @@ class Premium_Progressbar extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Progress Bar';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Progress Bar', 'premium-addons-for-elementor') );
 	}
     
     public function get_icon() {
@@ -22,8 +31,13 @@ class Premium_Progressbar extends Widget_Base {
         return [ 'premium-elements' ];
     }
     
-    public function get_script_depends()
-    {
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
+    
+    public function get_script_depends() {
         return [
             'elementor-waypoints',
             'premium-addons-js'
@@ -191,7 +205,7 @@ class Premium_Progressbar extends Widget_Base {
                     'default'       => 'solid',
                     'options'       => [
                         'solid'    => __('Solid', 'premium-addons-for-elementor'),
-                        'stripped' => __('Stripped', 'premium-addons-for-elementor'),
+                        'stripped' => __('Striped', 'premium-addons-for-elementor'),
                         ],
                     ]
                 );
@@ -584,8 +598,10 @@ class Premium_Progressbar extends Widget_Base {
         $this->add_inline_editing_attributes('premium_progressbar_left_label');
         $this->add_inline_editing_attributes('premium_progressbar_right_label');
         
+        $length = isset ( $settings['premium_progressbar_progress_percentage']['size'] ) ? $settings['premium_progressbar_progress_percentage']['size'] : $settings['premium_progressbar_progress_percentage'];
+        
         $progressbar_settings = [
-            'progress_length'   => $settings['premium_progressbar_progress_percentage'],
+            'progress_length'   => $length,
             'speed'             => !empty( $settings['premium_progressbar_speed'] ) ? $settings['premium_progressbar_speed'] : 1000
         ];
 ?>

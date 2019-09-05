@@ -6,11 +6,13 @@
  */
 
 /**
- * Represents the link column count. This class contains the count for each post id on the current page .
+ * Represents the link column count. This class contains the count for each post id on the current page.
  */
 class WPSEO_Link_Column_Count {
 
 	/**
+	 * The link counts for each post id on the current page.
+	 *
 	 * @var array
 	 */
 	protected $count = array();

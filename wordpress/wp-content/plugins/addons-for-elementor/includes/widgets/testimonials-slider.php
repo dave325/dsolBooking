@@ -438,6 +438,10 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
 
         $settings = $this->get_settings_for_display();
 
+        $dir = is_rtl() ? ' dir="rtl"' : '';
+
+        $style = is_rtl() ? ' style="direction:rtl"' : '';
+
         $settings = apply_filters('lae_testimonials_slider_' . $this->get_id() . '_settings', $settings);
 
         $slider_options = [
@@ -451,13 +455,13 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
             'pause_on_action' => ('yes' === $settings['pause_on_action'])
         ];
 
-        $output = '<div class="lae-testimonials-slider lae-flexslider lae-container" data-settings=\'' . wp_json_encode($slider_options) . '\'>';
+        $output = '<div' . $dir . $style . ' class="lae-testimonials-slider lae-flexslider lae-container" data-settings=\'' . wp_json_encode($slider_options) . '\'>';
 
-        $output .= '<div class="lae-slides">';
+        $output .= '<ul class="lae-slides">';
 
         foreach ($settings['testimonials'] as $testimonial) :
 
-            $child_output = '<div class="lae-slide lae-testimonial-wrapper">';
+            $child_output = '<li class="lae-slide lae-testimonial-wrapper">';
 
             $child_output .= '<div class="lae-testimonial">';
 
@@ -495,13 +499,13 @@ class LAE_Testimonials_Slider_Widget extends Widget_Base {
 
             $child_output .= '</div><!-- .lae-testimonial -->';
 
-            $child_output .= '</div><!-- .lae-testimonial-wrapper.lae-slide -->';
+            $child_output .= '</li><!-- .lae-testimonial-wrapper.lae-slide -->';
 
             $output .= apply_filters('lae_testimonials_slide_output', $child_output, $testimonial, $settings);
 
         endforeach;
 
-        $output .= '</div><!-- .lae-slides -->';
+        $output .= '</ul><!-- .lae-slides -->';
 
         $output .= '</div><!-- .lae-testimonials-slider -->';
 

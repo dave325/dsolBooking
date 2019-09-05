@@ -18,25 +18,117 @@ function lae_get_all_post_type_options() {
  */
 function lae_get_all_taxonomy_options() {
 
-    global $wpdb;
+    $taxonomies = lae_get_all_taxonomies();
 
     $results = array();
-
-    $limit = apply_filters('lae_taxonomy_terms_dropdown_limit', 500);
-
-    foreach ($wpdb->get_results("
-		SELECT terms.slug AS 'slug', terms.name AS 'label', termtaxonomy.taxonomy AS 'type'
-		FROM $wpdb->terms AS terms
-		JOIN $wpdb->term_taxonomy AS termtaxonomy ON terms.term_id = termtaxonomy.term_id
-		LIMIT $limit
-	") as $result) {
-        $results[$result->type . ':' . $result->slug] = $result->type . ':' . $result->label;
+    foreach ($taxonomies as $taxonomy) {
+        $terms = get_terms(array('taxonomy' => $taxonomy));
+        foreach ($terms as $term)
+            $results[$term->taxonomy . ':' . $term->slug] = $term->taxonomy . ':' . $term->name;
     }
 
     return apply_filters('lae_taxonomy_options', $results);
 }
 
 function lae_build_query_args($settings) {
+
+    if ($settings['query_type'] == 'current_query') {
+
+        global $wp_query;
+
+        $query_args = $wp_query->query_vars;
+
+        $query_args = apply_filters('lae_current_query_args', $query_args, $settings);
+    }
+    elseif ($settings['query_type'] == 'related') {
+
+        $query_args = lae_default_query_args($settings);
+
+        $post_id = get_queried_object_id();
+        $related_post_id = is_singular() && ($post_id !== 0) ? $post_id : null;
+        $query_args['post_type'] = get_post_type($related_post_id);
+
+        if ($related_post_id) {
+            $post_not_in = isset($query_args['post__not_in']) ? $query_args['post__not_in'] : [];
+            $post_not_in[] = $related_post_id;
+            $query_args['post__not_in'] = $post_not_in;
+        }
+
+        $taxonomies = $settings['taxonomies'];
+        $terms = array();
+        if (is_array($taxonomies)) {
+            foreach ($taxonomies as $taxonomy) {
+                $terms[$taxonomy] = wp_get_post_terms($related_post_id, $taxonomy, ['fields' => 'tt_ids']);
+            }
+        }
+        else {
+            $taxonomy = $taxonomies; // it is a string representing single taxonomy
+            $terms[$taxonomy] = wp_get_post_terms($related_post_id, $taxonomy, ['fields' => 'tt_ids']);
+        }
+
+        foreach ($terms as $taxonomy => $ids) {
+
+            if (empty($ids))
+                continue;
+
+            $query = array(
+                'taxonomy' => $taxonomy,
+                'field' => 'term_taxonomy_id',
+                'terms' => $ids,
+            );
+
+            if (empty($query_args['tax_query']))
+                $query_args['tax_query'] = array();
+            else
+                $query_args['tax_query']['relation'] = 'OR';
+
+            $query_args['tax_query'][] = $query;
+        }
+
+        $query_args = apply_filters('lae_related_query_args', $query_args, $settings);
+    }
+    else {
+
+        $query_args = lae_default_query_args($settings);
+
+        if (!empty($settings['post_in'])) {
+            $query_args['post_type'] = 'any';
+            $query_args['post__in'] = explode(',', $settings['post_in']);
+            $query_args['post__in'] = array_map('intval', $query_args['post__in']);
+        }
+        else {
+            if (!empty($settings['post_types'])) {
+                $query_args['post_type'] = $settings['post_types'];
+            }
+
+            if (!empty($settings['tax_query'])) {
+                $tax_queries = $settings['tax_query'];
+
+                $query_args['tax_query'] = array();
+                $query_args['tax_query']['relation'] = 'OR';
+                foreach ($tax_queries as $tq) {
+                    list($tax, $term) = explode(':', $tq);
+
+                    if (empty($tax) || empty($term))
+                        continue;
+                    $query_args['tax_query'][] = array(
+                        'taxonomy' => $tax,
+                        'field' => 'slug',
+                        'terms' => $term
+                    );
+                }
+            }
+        }
+
+        $query_args = apply_filters('lae_custom_query_args', $query_args, $settings);
+    }
+
+    $query_args['paged'] = max(1, get_query_var('paged'), get_query_var('page'));
+
+    return apply_filters('lae_posts_query_args', $query_args, $settings);
+}
+
+function lae_default_query_args($settings) {
 
     $query_args = [
         'orderby' => $settings['orderby'],
@@ -45,38 +137,9 @@ function lae_build_query_args($settings) {
         'post_status' => 'publish',
     ];
 
-    if (!empty($settings['post_in'])) {
-        $query_args['post_type'] = 'any';
-        $query_args['post__in'] = explode(',', $settings['post_in']);
-        $query_args['post__in'] = array_map('intval', $query_args['post__in']);
-    }
-    else {
-        if (!empty($settings['post_types'])) {
-            $query_args['post_type'] = $settings['post_types'];
-        }
-
-        if (!empty($settings['tax_query'])) {
-            $tax_queries = $settings['tax_query'];
-
-            $query_args['tax_query'] = array();
-            $query_args['tax_query']['relation'] = 'OR';
-            foreach ($tax_queries as $tq) {
-                list($tax, $term) = explode(':', $tq);
-
-                if (empty($tax) || empty($term))
-                    continue;
-                $query_args['tax_query'][] = array(
-                    'taxonomy' => $tax,
-                    'field' => 'slug',
-                    'terms' => $term
-                );
-            }
-        }
-    }
-
     $query_args['posts_per_page'] = $settings['posts_per_page'];
 
-    $query_args['paged'] = max(1, get_query_var('paged'), get_query_var('page'));
+    $query_args['offset'] = isset($settings['offset']) ? intval($settings['offset']) : 0;
 
-    return apply_filters('lae_posts_query_args', $query_args, $settings);
+    return apply_filters('lae_default_query_args', $query_args, $settings);
 }

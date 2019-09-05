@@ -25,6 +25,8 @@ class WPSEO_Link_Columns {
 	const COLUMN_LINKS = 'links';
 
 	/**
+	 * Holds the link column count instance.
+	 *
 	 * @var WPSEO_Link_Column_Count
 	 */
 	protected $link_count;
@@ -57,7 +59,7 @@ class WPSEO_Link_Columns {
 	 */
 	public function register_hooks() {
 		global $pagenow;
-		$is_ajax_request = defined( 'DOING_AJAX' ) && DOING_AJAX;
+		$is_ajax_request = wp_doing_ajax();
 
 		if ( ! WPSEO_Metabox::is_post_overview( $pagenow ) && ! $is_ajax_request ) {
 			return;
@@ -214,7 +216,7 @@ class WPSEO_Link_Columns {
 	public function set_count_objects() {
 		global $wp_query;
 
-		$posts    = $wp_query->get_posts();
+		$posts    = empty( $wp_query->posts ) ? $wp_query->get_posts() : $wp_query->posts;
 		$post_ids = array();
 
 		// Post lists return a list of objects.
@@ -235,7 +237,7 @@ class WPSEO_Link_Columns {
 	}
 
 	/**
-	 * Displays the column content for the given column
+	 * Displays the column content for the given column.
 	 *
 	 * @param string $column_name Column to display the content for.
 	 * @param int    $post_id     Post to display the column content for.

@@ -1,5 +1,74 @@
 == Changelog ==
 
+= 1.5.5 =
+- Added: WPForms details inside Site Health Info reports (Tools > Site Health > Info).
+- Added: Filter `wpforms_emails_summaries_is_disabled` to easily disable Email Summaries functionality.
+- Added: New smart tag: `{field_html_id="42"}` - that will postprocess field value and display its HTML representation.
+- Changed: Improve `wpforms_get_ip()` IP detection and related `{user_ip}` smart-tag value.
+- Fixed: Giving access to WPForms for Editors (and other roles) should give access to dashboard widget as well.
+- Fixed: Add 'attr' property to 'input_container' for radio/checkbox-based fields.
+- Fixed: Various typos.
+- Fixed: WP Mail SMTP plugin description on About us page.
+
+= 1.5.4.2 =
+- Changed: Renamed certain actions with typos in their names, backwards-compatible. Added a deprecation text using `do_action_deprecated()`.
+- Fixed: About Us page behaviour when WP Mail SMTP Pro is installed.
+- Fixed: reCAPTCHA settings could be saved without providing reCAPTCHA type.
+
+= 1.5.4.1 =
+- Fixed: Plugin Settings > Misc > 'View Email Summary Example' link errors.
+
+= 1.5.4 =
+- Added: Email Summaries.
+- Added: Form builder hotkey to save changes, CTRL + S.
+- Changed: Team photo under WPForms > About Us. :)
+- Fixed: Dynamic field population populates checkbox and radio fields values but not adding 'wpforms-selected' class to its containers.
+- Fixed: Dropdown field attributes are now accessible with `wpforms_field_properties` filter.
+- Fixed: Form builder field buttons overflowing when translated.
+- Fixed: Dashboard widget PHP error.
+- Fixed: Form can be submitted multiple times if "Submit button processing text" form setting empty.
+- Fixed: "Error loading block" in Gutenberg if Additional CSS form settings are provided.
+
+= 1.5.3.1 =
+- Fixed: Checkbox field validation issue when field is not required.
+
+= 1.5.3 =
+- Added: AJAX form submissions.
+- Added: Full support and compatiblity with Google AMP.
+- Added: Google reCAPTCHA v3.
+- Changed: WPForms uninstall script for better cleanup process.
+- Changed: Email field mailcheck feature to offer additional controls. New filters: `wpforms_mailcheck_enabled`, `wpforms_mailcheck_domains`, and `wpforms_mailcheck_toplevel_domains`.
+- Fixed: Special characters aren't encoded when Smart Tags are processed in query string.
+- Fixed: Fields with Image choices are not working with some Android and older desktop browsers.
+- Fixed: Form Builder: Several alert modals are displayed in batch if multiple providers have configuration issues.
+- Fixed: WP_Post object is returned from `wpforms()->form->get()` if form data is requested with a non-WPForms post ID.
+
+= 1.5.2.3 =
+- Fixed: PHP error if checkbox field is empty when form is submitted.
+
+= 1.5.2.2 =
+- Fixed: PHP notice/warnings from undefined constant (typo).
+
+= 1.5.2.1 =
+- Fixed: Required Checkbox fields asking for all inputs to be checked to pass validation.
+
+= 1.5.2 =
+- Added: Choice Limit advanced option for Checkbox fields.
+- Added: Smart domain name typo detection for Email fields.
+- Added: New Gutenberg block keywords to help with discovery.
+- Added: Link to "How to Properly Test Your WordPress Forms Before Launching" doc inside Gutenberg block.
+- Changed: Form builder field delete icon, now a trash can.
+- Changed: Updated jQuery inputmask library to v4.0.6.
+- Changed: Updated jQuery validation plugin to v1.19.0.
+- Changed: Clear Dashboard widget cache when form is created/deleted/updated.
+- Fixed: Blank form if using form template containing `target="_blank"`.
+- Fixed: Honeypot field not using unique IDs.
+- Fixed: Duplicating forms creating another duplicate if afterwards the table was sorted.
+- Fixed: Minor issues with Gutenberg editor.
+- Fixed: Form Builder embed modal showing Classic Editor instructions for Gutenberg users.
+- Fixed: Number field allowing non-numerical characters on iOS devices.
+- Fixed: Field Dynamic Choices not showing in form preview when using "Post Type".
+
 = 1.5.1.3 =
 - Fixed: Importing forms that containing `target="_blank"`.
 - Fixed: Quote support/display inside query param Smart Tags.
@@ -10,7 +79,7 @@
 - Fixed: Unable to uncheck default Multiple Choice value in form builder after being set initially.
 - Fixed: PHP error when entries are exported after a field has been deleted.
 - Fixed: Form builder Email notification conditional logic settings display issue after new notification is added.
-- Fixed: - Conflict with some themes preventing Multiple Choice fields from being selectable.
+- Fixed: Conflict with some themes preventing Multiple Choice fields from being selectable.
 
 = 1.5.1 =
 - Added: Complete translations for Spanish, Italian, Japanese, and German.

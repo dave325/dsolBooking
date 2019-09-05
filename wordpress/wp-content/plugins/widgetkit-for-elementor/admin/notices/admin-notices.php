@@ -13,7 +13,7 @@ function widgetkit_for_elemetor_admin_notice(){
 	<p>%s</p>
 	</div>
 EOD;
-	$notice = "Our admin notice";
+	$notice = "Thanks for using WidgetKit";
 	printf($notice_container, "notice-info", $notice);
 
 }

@@ -19,15 +19,15 @@ class Group_Control_Grid extends Group_Control_Base {
 
 		$controls['columns'] = [
 
-			'label'      => __( 'Columns', 'bpel' ),
+			'label'      => __( 'Columns', 'wts-eae' ),
 			'type'       => Controls_Manager::SELECT,
 			'options'    => [
-				'1' => __( '1', 'bpel' ),
-				'2' => __( '2', 'bpel' ),
-				'3' => __( '3', 'bpel' ),
-				'4' => __( '4', 'bpel' ),
-				'5' => __( '5', 'bpel' ),
-				'6' => __( '6', 'bpel' ),
+				'1' => __( '1', 'wts-eae' ),
+				'2' => __( '2', 'wts-eae' ),
+				'3' => __( '3', 'wts-eae' ),
+				'4' => __( '4', 'wts-eae' ),
+				'5' => __( '5', 'wts-eae' ),
+				'6' => __( '6', 'wts-eae' ),
 			],
 			'default'    => '3',
 			'responsive' => true,
@@ -37,7 +37,7 @@ class Group_Control_Grid extends Group_Control_Base {
 		];
 
 		$controls['col-gap'] = [
-			'label'     => __('Column Gap', 'bepl'),
+			'label'     => __('Column Gap', 'wts-eae'),
 			'type'      => Controls_Manager::SLIDER,
 			'default' => [
 				'size' => 30,
@@ -55,7 +55,7 @@ class Group_Control_Grid extends Group_Control_Base {
 		];
 
 		$controls['row-gap'] = [
-			'label'     => __('Row Gap', 'bepl'),
+			'label'     => __('Row Gap', 'wts-eae'),
 			'type'      => Controls_Manager::SLIDER,
 			'default' => [
 				'size' => 30,

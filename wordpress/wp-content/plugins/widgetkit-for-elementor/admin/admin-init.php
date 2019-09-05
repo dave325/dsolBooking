@@ -163,39 +163,7 @@ if (isset($_GET['dismissed']) && $_GET['dismissed'] == 1) {
     <div class="wrap">
         <div class="response-wrap"></div>
         <form action="" method="POST" id="widgetkit-settings" name="widgetkit-settings">
-            <div class="widgetkit-header-wrapper">
-    
 
-
-
-
-            <div class="card widgetkit-card">
-              <h2 class="card-header"></h2>
-              <div class="card-body">
-                  <div class="slide-thumbnail">
-                    <a target="_blank" href="https://themeforest.net/item/edumodo-allinone-lms-education-theme-for-wordpress/20973202?ref=ThemeXpert">
-                        <img src="https://s3.envato.com/files/256827879/edumodo_preview.__large_preview.jpg"/>
-                    </a>
-                </div>
-                <div class="card-info">
-                <h2 class="card-title">
-                 <a href="https://themeforest.net/item/edumodo-allinone-lms-education-theme-for-wordpress/20973202?ref=ThemeXpert"
-                           target="_blank"><?php _e( 'Best Education WordPress Theme', 'wigetkit-for-elementor' ); ?></a>
-             </h2>
-                <p class="card-text">Create excellent and totally organized education website dedicated to teaching, learning and selling. Edumodo Wordpress theme allows you to create website for school, college, university, coaching, academy, kindergarten, training center and every type of educational institutes.<br>
-
-                Edumodo comes with support of most three popular plugins - LearnPress, Sensei, and LearnDash. You can choose any of these lms that fits best for you. You get 10+ exclusive layouts with this theme, no time needed to develop a website, just import with 1 click.
-                Edumodo is the one of the best and next generation WordPress education theme, your money won't go waste with this theme.</p>
-                    <a href="https://themeforest.net/item/edumodo-allinone-lms-education-theme-for-wordpress/20973202?ref=ThemeXpert" class="button button-primary"
-                           target="_blank"><?php _e( 'Download Now', 'wigetkit-for-elementor' ); ?></a>
-                        <a href="http://demo.themexpert.com/wordpress/edumodo/" class="button"
-                           target="_blank"><?php _e( 'Live Demo', 'wigetkit-for-elementor' ); ?></a>
-              </div>
-              </div>
-            </div>
-
-
-            </div>
             <div class="widgetkit-settings-tabs">
                 <ul class="widgetkit-settings-tabs-list">
                     <li><a class="widgetkit-tab-list-item" href="#widgetkit-about">About</a></li>
@@ -528,43 +496,19 @@ if (isset($_GET['dismissed']) && $_GET['dismissed'] == 1) {
 
 
                             <ul>
-                                <li><a href="#" title="Slider" target="_blank"><?php echo  __( 'Slider Pro');?></a>
+                                <li><a href="http://widgetkit.themesgrove.com/parallax-banner/" title="Banner" target="_blank"><?php echo  __( 'Parallax Banner');?></a>
                                 </li>
-                                <li><a href="#" title="News Ticker" target="_blank"><?php echo  __( 'News Ticker');?></a>
+                                <li><a href="http://widgetkit.themesgrove.com/news-ticker/" title="News Ticker" target="_blank"><?php echo  __( 'News Ticker');?></a>
                                 </li>
-                                <li><a href="#" title="Masonry Protfolio" target="_blank"><?php echo  __( 'Masonry Protfolio');?></a>
+                                <li><a href="http://widgetkit.themesgrove.com/masonry-portfolio/" title="Masonry Protfolio" target="_blank"><?php echo  __( 'Masonry Protfolio');?></a>
                                 </li>
-                                <li><a href="#" title="Dynamic Category Tab" target="_blank"><?php echo  __( 'Dynamic Category Tab');?></a>
+                                <li><a href="http://widgetkit.themesgrove.com/latest-post/" title="Dynamic Category Tab" target="_blank"><?php echo  __( 'Dynamic Category Tab');?></a>
                                 </li>
-                                <li><a href="#" title="Dynamic Layout" target="_blank"><?php echo  __( 'Dynamic Layout');?></a>
+                                <li><a href="http://widgetkit.themesgrove.com/featured-post/" title="Featured Post" target="_blank"><?php echo  __( 'Featured Post');?></a>
                                 </li>
-                                <li><a href="#" title="Multiple Category with Dynamic Carousel" target="_blank"><?php echo  __( 'Multiple Category with Dynamic Carousel');?></a> </li>
-                                <li>    <h3> <?php echo  __( 'New Premium Elements Coming Soon');?></h3></li>
-                   
-                                <li><a href="#" title="List Layout" target="_blank"><?php echo  __( 'List Layout');?></a>
-                                </li>
-                            
-                                <li><a href="#" title="Posts with Load More Button" target="_blank"><?php echo  __( 'Posts with Load More Button');?></a>
-                                </li>
-                                <li><a href="#" title="Recent Post Carousel" target="_blank"><?php echo  __( 'Recent Post Carousel');?></a>
-                                </li>
-                                <li><a href="#" title="Recent Post Layout" target="_blank"><?php echo  __( 'Recent Post Layout');?></a>
-                                </li>
-                                <li><a href="#" title="Recent Post Slider" target="_blank"><?php echo  __( 'Recent Post Slider');?></a>
-                                </li>
-                                <li><a href="#" title="Single Category Carousel" target="_blank"><?php echo  __( 'Single Category Carousel');?></a>
-                                </li>
-                                <li><a href="#" title="Single Category Layout" target="_blank"><?php echo  __( 'Single Category Layout');?></a>
-                                </li>
-
-                                <li><a href="#" title="Single Category with Dynamic Carousel" target="_blank"><?php echo  __( 'Single Category with Dynamic Carousel');?></a>
-                                </li>
-                                <li><a href="#" title="Single Post By ID" target="_blank"><?php echo  __( 'Single Post By ID');?></a>
-                                </li> 
-                                <li><a href="#" title="Tab Between Two Category" target="_blank"><?php echo  __( 'Tab Between Two Category');?></a>
-                                </li>
+                                <li><a href="http://widgetkit.themesgrove.com/advance-tab/" title="Advance Tab" target="_blank"><?php echo  __( 'Advance Tab');?></a> </li>
                             </ul>
-                        <a target="_blank" class="btn-pro" href="#">
+                        <a target="_blank" class="btn-pro" href="https://themesgrove.com/widgetkit-for-elementor/">
                                 <?php echo  __( 'Go Pro', 'widgetkit-for-elementor' ) ;?>
                         </a>
 

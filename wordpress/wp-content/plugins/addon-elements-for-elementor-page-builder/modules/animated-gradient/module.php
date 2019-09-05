@@ -86,13 +86,13 @@ class Module  {
 
                     'default'   => [
                         [
-                            'eae_animated_gradient_color'   =>  __('#00a6d8' , 'wts-eae'),
+                            'eae_animated_gradient_color'   =>  '#00a6d8'
                         ],
                         [
-                            'eae_animated_gradient_color'   =>  __('#b800c9' , 'wts-eae'),
+                            'eae_animated_gradient_color'   =>  '#b800c9'
                         ],
                         [
-                            'eae_animated_gradient_color'   =>  __('#e57600' , 'wts-eae'),
+                            'eae_animated_gradient_color'   =>  '#e57600'
                         ]
                     ],
 

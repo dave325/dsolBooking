@@ -139,14 +139,21 @@
   position: absolute;
   right: 0;
   top: 8px; }
+  .rtl .back-to-top {
+    left: 0;
+    right: auto; }
 
 .livemesh-doc .panels h3 {
   width: 100%;
   position: relative;
   padding-right: 90px; }
+  .rtl .livemesh-doc .panels h3 {
+    padding: 0 0 0 90px; }
 
 .livemesh-doc h3 .back-to-top {
   float: right; }
+  .rtl .livemesh-doc h3 .back-to-top {
+    float: left; }
 
 .livemesh-doc .panel-right {
   position: relative;
@@ -154,6 +161,8 @@
   width: 32%;
   float: right;
   vertical-align: top; }
+  .rtl .livemesh-doc .panel-right {
+    float: left; }
 
 .livemesh-doc .panel-aside {
   margin-bottom: 25px;
@@ -199,6 +208,8 @@
   width: 50%;
   margin-left: 4%;
   vertical-align: top; }
+  .rtl .livemesh-doc .intro {
+    margin: 0 4% 0 0; }
 
 .livemesh-doc .intro h3 {
   font-size: 50px;

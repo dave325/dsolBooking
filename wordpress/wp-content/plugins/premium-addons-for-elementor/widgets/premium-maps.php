@@ -1,6 +1,18 @@
 <?php
 
-namespace Elementor;
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Admin\Settings\Maps;
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Repeater;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Box_Shadow;
+
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -10,13 +22,12 @@ class Premium_Maps extends Widget_Base {
         return 'premium-addon-maps';
     }
     
-    public function is_reload_preview_required()
-    {
+    public function is_reload_preview_required() {
         return true;
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Maps';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Maps', 'premium-addons-for-elementor') );
 	}
     
     public function get_icon() {
@@ -27,12 +38,23 @@ class Premium_Maps extends Widget_Base {
         return [ 'premium-elements' ];
     }
     
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
+    
     public function get_script_depends() {
         return [
-            'premium-maps-api-js' ,
+            'google-maps-cluster',
+            'premium-maps-api-js',
             'premium-maps-js'
         ];
     }
+    
+    public function get_keywords() {
+		return [ 'google', 'marker' ];
+	}
 
     // Adding the controls fields for the premium maps
     // This will controls the animation, colors and background, dimensions etc
@@ -45,9 +67,9 @@ class Premium_Maps extends Widget_Base {
                     ]
                 );
         
-        $map_api = get_option( 'pa_maps_save_settings' )['premium-map-api'];
+        $settings = Maps::get_enabled_keys();
         
-        if( ! isset( $map_api ) || empty( $map_api ) ){
+        if( empty( $settings['premium-map-api'] ) ) {
             $this->add_control('premium_maps_api_url',
                 [
                     'label'         => '<span style="line-height: 1.4em;">Premium Maps requires an API key. Get your API key from <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/get-api-key">here</a> and add it to Premium Addons admin page. Go to Dashboard -> Premium Addons for Elementor -> Google Maps API</span>',
@@ -331,12 +353,15 @@ class Premium_Maps extends Widget_Base {
                     ]
                 );
 
-        $this->add_control('premium_maps_map_option_cluster',
+        if( $settings['premium-map-cluster'] ) {
+            $this->add_control('premium_maps_map_option_cluster',
                 [
                     'label'         => __( 'Marker Clustering', 'premium-addons-for-elementor' ),
                     'type'          => Controls_Manager::SWITCHER,
                 ]
-                );
+            );
+        }
+        
         
         $this->end_controls_section();
         
@@ -593,6 +618,7 @@ class Premium_Maps extends Widget_Base {
     }
 
     protected function render() {
+        
         // get our input from the widget settings.
         $settings = $this->get_settings_for_display();
         
@@ -614,8 +640,14 @@ class Premium_Maps extends Widget_Base {
         
         $hover_close = 'yes' == $settings['premium_maps_marker_mouse_out'] ? 'true' : 'false';
         
-        $marker_cluster = 'yes' == $settings['premium_maps_map_option_cluster'] ? 'true' : 'false';
-
+        $marker_cluster = false; 
+        
+        $is_cluster_enabled = Maps::get_enabled_keys()['premium-map-cluster'];
+        
+        if( $is_cluster_enabled ) {
+            $marker_cluster = 'yes' == $settings['premium_maps_map_option_cluster'] ? 'true' : 'false';
+        }
+        
         $centerlat = !empty($settings['premium_maps_center_lat']) ? $settings['premium_maps_center_lat'] : 18.591212;
         
         $centerlong = !empty($settings['premium_maps_center_long']) ? $settings['premium_maps_center_long'] : 73.741261;

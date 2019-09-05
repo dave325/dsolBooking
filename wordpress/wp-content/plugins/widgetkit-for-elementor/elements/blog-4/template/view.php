@@ -52,7 +52,7 @@
                         <div class="date">
                             <span>
                                 <a href="<?php the_permalink();?>">
-                                    <?php echo get_the_date(); ?>
+                                    <?php esc_html_e(date_i18n((get_option('date_format'))), 'widgetkit-for-elementor'); ?>
                                 </a>
                             </span>     
                         </div> <!-- date -->

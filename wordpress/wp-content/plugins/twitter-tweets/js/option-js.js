@@ -14,10 +14,10 @@
 				type:'post',
 				data : jQuery(weblizar_theme_options).serialize(),
 				 success : function(data)
-				 {  jQuery(weblizar_loding_image).fadeOut();						
+				 {  jQuery(weblizar_loding_image).fadeOut();
 					jQuery(weblizar_settings_save_success).show();
 					jQuery(weblizar_settings_save_success).fadeOut(5000);
-				}			
+				}
 		});
 	}	
 /*Admin options value reset */

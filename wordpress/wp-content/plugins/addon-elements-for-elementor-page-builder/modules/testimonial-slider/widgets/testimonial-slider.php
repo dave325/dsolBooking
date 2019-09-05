@@ -485,7 +485,7 @@ class TestimonialSlider extends EAE_Widget_Base{
 		$this -> add_control(
 			'ptype',
 			[
-				'label' => __(' Pagination Type' , 'wts-ese'),
+				'label' => __(' Pagination Type' , 'wts-eae'),
 				'type' => Controls_Manager::SELECT,
 				'options' =>
 					[

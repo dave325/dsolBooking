@@ -1,6 +1,17 @@
 <?php
 
-namespace Elementor;
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use PremiumAddons\Includes;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Text_Shadow;
+use Elementor\Group_Control_Background;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -8,7 +19,7 @@ class Premium_Dual_Header extends Widget_Base {
     protected $templateInstance;
 
     public function getTemplateInstance(){
-        return $this->templateInstance = premium_Template_Tags::getInstance();
+        return $this->templateInstance = Includes\premium_Template_Tags::getInstance();
     }
     
     public function get_name() {
@@ -16,9 +27,14 @@ class Premium_Dual_Header extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Dual Heading';
+        return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Dual Heading', 'premium-addons-for-elementor') );
 	}
 
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
     
     public function get_icon() {
         return 'pa-dual-header';
@@ -255,6 +271,58 @@ class Premium_Dual_Header extends Widget_Base {
             ]
         );
         
+        $this->add_control('premium_dual_header_first_stroke',
+            [
+                'label'         => __('Stroke', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'condition'         => [
+                    'premium_dual_header_first_back_clip'  => 'clipped'
+                ],
+            ]
+        );
+        
+        $this->add_control('premium_dual_header_first_stroke_text_color',
+            [
+                'label'         => __('Stroke Text Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'condition'     => [
+                    'premium_dual_header_first_back_clip'   => 'clipped',
+                    'premium_dual_header_first_stroke'      => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-dual-header-first-clip.stroke .premium-dual-header-first-span'   => '-webkit-text-stroke-color: {{VALUE}};'
+                ]
+            ]
+        );
+        
+        $this->add_control('premium_dual_header_first_stroke_color',
+            [
+                'label'         => __('Stroke Fill Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'condition'     => [
+                    'premium_dual_header_first_back_clip'   => 'clipped',
+                    'premium_dual_header_first_stroke'      => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-dual-header-first-clip.stroke .premium-dual-header-first-span'   => '-webkit-text-fill-color: {{VALUE}};'
+                ]
+            ]
+        );
+        
+        $this->add_control('premium_dual_header_first_stroke_width',
+            [
+                'label'         => __('Stroke Fill Width', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SLIDER,
+                'condition'     => [
+                    'premium_dual_header_first_back_clip'   => 'clipped',
+                    'premium_dual_header_first_stroke'      => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-dual-header-first-clip.stroke .premium-dual-header-first-span'   => '-webkit-text-stroke-width: {{SIZE}}px;'
+                ]
+            ]
+        );
+        
         /*First Clip*/
         $this->add_group_control(
             Group_Control_Background::get_type(),
@@ -262,7 +330,8 @@ class Premium_Dual_Header extends Widget_Base {
                 'name'              => 'premium_dual_header_first_clipped_background',
                 'types'             => [ 'classic' , 'gradient' ],
                 'condition'         => [
-                    'premium_dual_header_first_back_clip'  => 'clipped'
+                    'premium_dual_header_first_back_clip'  => 'clipped',
+                    'premium_dual_header_first_stroke!'      => 'yes'
                 ],
                 'selector'          => '{{WRAPPER}} .premium-dual-header-first-span'
             ]
@@ -273,7 +342,8 @@ class Premium_Dual_Header extends Widget_Base {
             Group_Control_Border::get_type(),
             [
                 'name'              => 'first_header_border',
-                'selector'          => '{{WRAPPER}} .premium-dual-header-first-span'
+                'selector'          => '{{WRAPPER}} .premium-dual-header-first-span',
+                'separator'         => 'before'
             ]
         );
         
@@ -305,6 +375,7 @@ class Premium_Dual_Header extends Widget_Base {
                 'label'         => __('Margin', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::DIMENSIONS,
                 'size_units'    => [ 'px', 'em', '%' ],
+                'separator'     => 'before',
                 'selectors'     => [
                     '{{WRAPPER}} .premium-dual-header-first-span' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}'
                 ]
@@ -397,6 +468,58 @@ class Premium_Dual_Header extends Widget_Base {
             ]
         );
         
+        $this->add_control('premium_dual_header_second_stroke',
+            [
+                'label'         => __('Stroke', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'condition'         => [
+                    'premium_dual_header_second_back_clip'  => 'clipped'
+                ],
+            ]
+        );
+        
+        $this->add_control('premium_dual_header_second_stroke_text_color',
+            [
+                'label'         => __('Stroke Text Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'condition'     => [
+                    'premium_dual_header_second_back_clip'   => 'clipped',
+                    'premium_dual_header_second_stroke'      => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-dual-header-second-clip.stroke'   => '-webkit-text-stroke-color: {{VALUE}};'
+                ]
+            ]
+        );
+        
+        $this->add_control('premium_dual_header_second_stroke_color',
+            [
+                'label'         => __('Stroke Fill Color', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::COLOR,
+                'condition'     => [
+                    'premium_dual_header_second_back_clip'   => 'clipped',
+                    'premium_dual_header_second_stroke'      => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-dual-header-second-clip.stroke'   => '-webkit-text-fill-color: {{VALUE}};'
+                ]
+            ]
+        );
+        
+        $this->add_control('premium_dual_header_second_stroke_width',
+            [
+                'label'         => __('Stroke Fill Width', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SLIDER,
+                'condition'     => [
+                    'premium_dual_header_second_back_clip'   => 'clipped',
+                    'premium_dual_header_second_stroke'      => 'yes'
+                ],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-dual-header-second-clip.stroke'   => '-webkit-text-stroke-width: {{SIZE}}px;'
+                ]
+            ]
+        );
+        
         /*Second Clip*/
         $this->add_group_control(
             Group_Control_Background::get_type(),
@@ -404,7 +527,8 @@ class Premium_Dual_Header extends Widget_Base {
                 'name'              => 'premium_dual_header_second_clipped_background',
                 'types'             => [ 'classic' , 'gradient' ],
                 'condition'         => [
-                    'premium_dual_header_second_back_clip'  => 'clipped'
+                    'premium_dual_header_second_back_clip'  => 'clipped',
+                    'premium_dual_header_second_stroke!'      => 'yes'
                 ],
                 'selector'          => '{{WRAPPER}} .premium-dual-header-second-header'
             ]
@@ -415,7 +539,8 @@ class Premium_Dual_Header extends Widget_Base {
             Group_Control_Border::get_type(),
             [
                 'name'              => 'second_header_border',
-                'selector'          => '{{WRAPPER}} .premium-dual-header-second-header'
+                'selector'          => '{{WRAPPER}} .premium-dual-header-second-header',
+                'separator'         => 'before'
             ]
         );
         
@@ -446,6 +571,7 @@ class Premium_Dual_Header extends Widget_Base {
             [
                 'label'         => __('Margin', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::DIMENSIONS,
+                'separator'     => 'before',
                 'size_units'    => [ 'px', 'em', '%' ],
                 'selectors'     => [
                     '{{WRAPPER}} .premium-dual-header-second-header' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}'
@@ -471,7 +597,7 @@ class Premium_Dual_Header extends Widget_Base {
     }
 
     protected function render() {
-        // get our input from the widget settings.
+        
         $settings = $this->get_settings_for_display();
 
         $this->add_inline_editing_attributes('premium_dual_header_first_header_text');
@@ -487,16 +613,24 @@ class Premium_Dual_Header extends Widget_Base {
         $first_clip = '';
 
         $second_clip = '';
+        
+        $first_stroke = '';
 
-        if( $settings['premium_dual_header_first_back_clip'] === 'clipped' ) : $first_clip = "premium-dual-header-first-clip"; endif; 
+        $second_stroke = '';
 
-        if( $settings['premium_dual_header_second_back_clip'] === 'clipped' ) : $second_clip = "premium-dual-header-second-clip"; endif; 
+        if( 'clipped' === $settings['premium_dual_header_first_back_clip'] ) : $first_clip = "premium-dual-header-first-clip"; endif; 
+
+        if( 'clipped' === $settings['premium_dual_header_second_back_clip'] ) : $second_clip = "premium-dual-header-second-clip"; endif; 
+        
+        if( ! empty( $first_clip ) && 'yes' === $settings['premium_dual_header_first_stroke'] ) : $first_stroke = " stroke"; endif; 
+
+        if( ! empty( $second_clip ) && 'yes' === $settings['premium_dual_header_second_stroke'] ) : $second_stroke = " stroke"; endif; 
         
         $first_grad = $settings['premium_dual_header_first_animated'] === 'yes' ? ' gradient' : '';
         
         $second_grad = $settings['premium_dual_header_second_animated'] === 'yes' ? ' gradient' : '';
         
-        $full_first_title_tag = '<' . $first_title_tag . ' class="premium-dual-header-first-header ' . $first_clip . $first_grad . '"><span class="premium-dual-header-first-span">'. $first_title_text . '</span><span class="premium-dual-header-second-header ' . $second_clip . $second_grad . '">'. $second_title_text . '</span></' . $settings['premium_dual_header_first_header_tag'] . '> ';
+        $full_title = '<' . $first_title_tag . ' class="premium-dual-header-first-header ' . $first_clip . $first_stroke . $first_grad . '"><span class="premium-dual-header-first-span">'. $first_title_text . '</span><span class="premium-dual-header-second-header ' . $second_clip . $second_stroke . $second_grad . '">'. $second_title_text . '</span></' . $settings['premium_dual_header_first_header_tag'] . '> ';
         
         $link = '';
         if( $settings['premium_dual_header_link_switcher'] == 'yes' && $settings['premium_dual_heading_link_selection'] == 'link' ) {
@@ -512,7 +646,7 @@ class Premium_Dual_Header extends Widget_Base {
             <a href="<?php echo esc_attr( $link ); ?>" <?php if( ! empty( $settings['premium_dual_heading_link']['is_external'] ) ) : ?> target="_blank" <?php endif; ?><?php if( ! empty( $settings['premium_dual_heading_link']['nofollow'] ) ) : ?> rel="nofollow" <?php endif; ?>>
             <?php endif; ?>
             <div class="premium-dual-header-first-container">
-                <?php echo $full_first_title_tag; ?>
+                <?php echo $full_title; ?>
             </div>
         <?php if( ! empty ( $link ) ) : ?>
             </a>
@@ -539,20 +673,30 @@ class Premium_Dual_Header extends Widget_Base {
 
             firstClip = '',
 
-            secondClip = '';
+            secondClip = '',
+            
+            firstStroke = '',
+            
+            secondStroke = '';
 
             if( 'clipped' === settings.premium_dual_header_first_back_clip )
                 firstClip = "premium-dual-header-first-clip"; 
 
             if( 'clipped' === settings.premium_dual_header_second_back_clip )
                 secondClip = "premium-dual-header-second-clip";
+                
+            if( 'yes' === settings.premium_dual_header_first_stroke )
+                firstStroke = "stroke"; 
+
+            if( 'yes' === settings.premium_dual_header_second_stroke )
+                secondStroke = "stroke";
 
             var firstGrad = 'yes' === settings.premium_dual_header_first_animated  ? ' gradient' : '',
 
                 secondGrad = 'yes' === settings.premium_dual_header_second_animated ? ' gradient' : '';
             
-                view.addRenderAttribute('first_title', 'class', ['premium-dual-header-first-header', firstClip, firstGrad ] );
-                view.addRenderAttribute('second_title', 'class', ['premium-dual-header-second-header', secondClip, secondGrad ] );
+                view.addRenderAttribute('first_title', 'class', ['premium-dual-header-first-header', firstClip, firstGrad, firstStroke ] );
+                view.addRenderAttribute('second_title', 'class', ['premium-dual-header-second-header', secondClip, secondGrad, secondStroke ] );
         
             if( 'yes' == settings.premium_dual_header_link_switcher && 'link' == settings.premium_dual_heading_link_selection ) {
                 var link = settings.premium_dual_heading_existing_link;
@@ -568,7 +712,7 @@ class Premium_Dual_Header extends Widget_Base {
             <# } #>
             <div class="premium-dual-header-first-container">
                 <{{{firstTag}}} {{{ view.getRenderAttributeString('first_title') }}}>
-                <span class="premium-dual-header-first-span">{{{ firstText }}}</span><span {{{ view.getRenderAttributeString('second_title') }}}>{{{ secondText }}}</span>
+                    <span class="premium-dual-header-first-span">{{{ firstText }}}</span><span {{{ view.getRenderAttributeString('second_title') }}}>{{{ secondText }}}</span>
                 </{{{firstTag}}}>
                 
             </div>

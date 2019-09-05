@@ -26,7 +26,15 @@ class Module {
 		add_action( 'elementor/section/print_template', [ $this, '_print_template'],10,2);
 		add_action( 'elementor/column/print_template', [ $this, '_print_template'],10,2);
 
+		add_action( 'wp_enqueue_scripts', [ $this, 'eae_add_js_css' ] );
 	}
+
+	function eae_add_js_css(){
+	    wp_enqueue_style('vegas-css');
+	    wp_enqueue_script('vegas');
+	    wp_enqueue_script('wts-swiper-script');
+	    wp_enqueue_style('wts-swiper-style');
+    }
 
 	public function _add_controls( $element, $section_id, $args ) {
 		if ( ('section' === $element->get_name() && 'section_background' === $section_id) || ('column' === $element->get_name() && 'section_style' === $section_id)) {
@@ -61,7 +69,7 @@ class Module {
 			$element->add_control(
 				'slides_to_show',
 				[
-					'label' => __( 'Slides to Show', 'eae' ),
+					'label' => __( 'Slides to Show', 'wts-eae' ),
 					'type' => Controls_Manager::SELECT,
 					'default' => '3',
 					'options' => $slides_to_show,
@@ -70,11 +78,11 @@ class Module {
 			/*$element->add_control(
                 'slide',
                 [
-                    'label' => __( 'Initial Slide', 'eae' ),
+                    'label' => __( 'Initial Slide', 'wts-eae' ),
                     'type' => Controls_Manager::TEXT,
                     'label_block' => true,
-					'placeholder' => __( 'Initial Slide', 'eae' ),
-					'default' => __( '0', 'eae' ),
+					'placeholder' => __( 'Initial Slide', 'wts-eae' ),
+					'default' => __( '0', 'wts-eae' ),
                 ]
             );*/
 

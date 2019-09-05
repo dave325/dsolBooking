@@ -148,7 +148,7 @@ class TextSeparator extends EAE_Widget_Base {
 		$this->add_control(
 		    'icon_position',
 		    [
-		        'label' => __('Icon Position','wts_eae'),
+		        'label' => __('Icon Position','wts-eae'),
 		        'type'  => Controls_Manager::SELECT,
 		        'options' => [
 					'before' => __( 'Before Text', 'wts-eae' ),
@@ -275,6 +275,12 @@ class TextSeparator extends EAE_Widget_Base {
 				'size_units' => [ '%' ],
 				'default' => [
 					'size' => 100,
+					'unit' => '%',
+				],
+				'tablet_default' => [
+					'unit' => '%',
+				],
+				'mobile_default' => [
 					'unit' => '%',
 				],
 				'range' => [

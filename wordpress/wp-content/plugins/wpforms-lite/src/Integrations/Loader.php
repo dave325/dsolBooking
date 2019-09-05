@@ -38,6 +38,7 @@ class Loader {
 
 		$core_integrations = array(
 			new Gutenberg\FormSelector(),
+			new SiteHealth\SiteHealth(),
 			new WPMailSMTP\Notifications(),
 		);
 

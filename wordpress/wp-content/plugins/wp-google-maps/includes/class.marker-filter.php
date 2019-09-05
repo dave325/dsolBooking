@@ -4,6 +4,9 @@
 
 namespace WPGMZA;
 
+if(!defined('ABSPATH'))
+	return;
+
 class MarkerFilter extends Factory
 {
 	protected $_center;
@@ -71,6 +74,8 @@ class MarkerFilter extends Factory
 	
 	protected function applyRadiusClause($query)
 	{
+		global $wpgmza;
+		
 		if(!$this->center || !$this->radius)
 			return;
 		
@@ -81,7 +86,7 @@ class MarkerFilter extends Factory
 		if($this->map && $this->map->storeLocatorDistanceUnits == Distance::UNITS_MI)
 			$radius *= Distance::KILOMETERS_PER_MILE;
 		
-		$query->where['radius'] = '
+		$query->where['radius'] = "
 			(
 				6381 *
 			
@@ -89,23 +94,23 @@ class MarkerFilter extends Factory
 			
 				ATAN2(
 					SQRT(
-						POW( SIN( ( (X(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 ) +
-						COS( X(latlng) / 180 * 3.1415926 ) * COS( %f ) *
-						POW( SIN( ( (Y(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 )
+						POW( SIN( ( ({$wpgmza->spatialFunctionPrefix}X(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 ) +
+						COS( {$wpgmza->spatialFunctionPrefix}X(latlng) / 180 * 3.1415926 ) * COS( %f ) *
+						POW( SIN( ( ({$wpgmza->spatialFunctionPrefix}Y(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 )
 					),
 					
 					SQRT(1 - 
 						(
-							POW( SIN( ( (X(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 ) +
-							COS( X(latlng) / 180 * 3.1415926 ) * COS( %f ) *
-							POW( SIN( ( (Y(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 )
+							POW( SIN( ( ({$wpgmza->spatialFunctionPrefix}X(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 ) +
+							COS( {$wpgmza->spatialFunctionPrefix}X(latlng) / 180 * 3.1415926 ) * COS( %f ) *
+							POW( SIN( ( ({$wpgmza->spatialFunctionPrefix}Y(latlng) / 180 * 3.1415926) - %f ) / 2 ), 2 )
 						)
 					)
 				)
 			)
 			
 			< %f
-		';
+		";
 		
 		$query->params[] = $lat;
 		$query->params[] = $lat;

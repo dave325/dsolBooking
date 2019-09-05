@@ -6,7 +6,7 @@
  */
 
 /**
- * Class WPSEO_Import_Settings
+ * Class WPSEO_Import_Settings.
  *
  * Class with functionality to import the Yoast SEO settings.
  */
@@ -20,11 +20,15 @@ class WPSEO_Import_Settings {
 	const NONCE_ACTION = 'wpseo-import-settings';
 
 	/**
+	 * Holds the import status instance.
+	 *
 	 * @var WPSEO_Import_Status
 	 */
 	public $status;
 
 	/**
+	 * Holds the old WPSEO version.
+	 *
 	 * @var string
 	 */
 	private $old_wpseo_version;
@@ -82,7 +86,7 @@ class WPSEO_Import_Settings {
 	}
 
 	/**
-	 * Parse the option group and import it
+	 * Parse the option group and import it.
 	 *
 	 * @param string $name         Name string.
 	 * @param array  $option_group Option group data.

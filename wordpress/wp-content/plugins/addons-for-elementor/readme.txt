@@ -1,11 +1,11 @@
-=== Livemesh Addons for Elementor ===
+=== Livemesh Addons for Elementor Page Builder ===
 Author URI: https://livemeshelementor.com
 Plugin URI: https://livemeshelementor.com
 Contributors: livemesh, freemius
 Tags: elementor, elementor addons, elementor extensions, elementor modules, page builder, portfolio, carousel, posts grid
 Requires at least: 4.5
-Tested up to: 5.1
-Stable Tag: 2.6.1
+Tested up to: 5.2
+Stable Tag: 2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -105,6 +105,33 @@ Pls install and activate the <a href="https://wordpress.org/plugins/portfolio-po
 5. The Livemesh Addons for Elementor plugin documentation.
 
 == Changelog ==
+
+= 2.8 =
+* Added - RTL Support for ALL modules.
+* Added - The grid items on all relevant modules like Posts Grid, Testimonials, Services, Pricing Table, Clients, Stats, Team Members etc. are now displayed from right to left on RTL sites.
+* Fixed - Sliders and Carousels including Posts Carousel do not display slide content on RTL sites.
+
+= 2.7.5 =
+* Added - Support for Related Posts and Current Query in Posts Grid and Posts Carousel modules. These modules can now be effectively used in Elementor Theme builder templates.
+* Added - Support for FontAwesome 5 Icon Library in all relevant modules where icons are used.
+
+= 2.7.4 =
+* Added - Support for external page link in services and team member modules.
+* Added - Missing dark background styles for Services and Team modules.
+
+= 2.7.3 =
+* Fixed - The taxonomy chosen dropdown displaying superfluous taxonomies in the dropdown for Posts Grid.
+* Fixed - Some taxonomies and/or their terms missing from taxonomy terms selection in query builder of Posts Grid and Posts Carousel.
+* Fixed - Not able to sort the filters of the Posts Grid with taxonomy reordering plugins.
+
+= 2.7.2 =
+* Fixed - Some sites reporting error - call to undefined function get_blog_list().
+* Updated - Freemius to 2.3.0.
+
+= 2.7 =
+* Added - Plugin is now fully compatible with WPML plugin.
+* Added - All of our addons are now translatable using WPML plugin.
+* Added - Offset support for Posts Grid/Portfolio and Posts Carousel modules.
 
 = 2.6.2 =
 * Updated - Readme.txt and documentation

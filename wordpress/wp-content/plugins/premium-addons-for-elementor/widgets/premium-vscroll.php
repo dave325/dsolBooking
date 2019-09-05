@@ -1,13 +1,24 @@
 <?php
 
-namespace Elementor;
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use PremiumAddons\Includes;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Repeater;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Box_Shadow;
 
 if( ! defined('ABSPATH') ) exit(); // If this file is called directly, abort.
 
 class Premium_Vscroll extends Widget_Base {
     
     public function getTemplateInstance() {
-		return $this->templateInstance = premium_Template_Tags::getInstance();
+		return $this->templateInstance = Includes\premium_Template_Tags::getInstance();
 	}
     
     public function get_name() {
@@ -15,7 +26,7 @@ class Premium_Vscroll extends Widget_Base {
     }
      
     public function get_title() {
-        return \PremiumAddons\Helper_Functions::get_prefix() . ' Vertical Scroll';
+        return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Vertical Scroll', 'premium-addons-for-elementor') );
     }
     
     public function get_icon() {
@@ -24,6 +35,12 @@ class Premium_Vscroll extends Widget_Base {
     
     public function get_categories() {
         return [ 'premium-elements' ];
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
     }
     
     public function get_script_depends() {
@@ -117,6 +134,21 @@ class Premium_Vscroll extends Widget_Base {
                 'label'         => __('Dots Tooltips', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SWITCHER,
                 'default'       => 'yes'
+            ]
+        );
+        
+        $this->add_control('dots_shape',
+            [
+                'label'         => __('Shape', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SELECT,
+                'options'       => [
+                    'circ'          => __('Circles', 'premium-addons-for-elementor'),
+                    'lines'         => __('Lines', 'premium-addons-for-elementor')
+                ],
+                'default'       => 'circ',
+                'condition'     => [
+                    'dots_tooltips_switcher'    => 'yes'
+                ]
             ]
         );
         
@@ -275,6 +307,35 @@ class Premium_Vscroll extends Widget_Base {
                 'label'         => __('Full Section Scroll', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::SWITCHER,
                 'default'       => 'yes',
+            ]
+        );
+        
+        $this->add_control('save_state',
+            [
+                'label'         => __('Save to Browser History', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'description'   => __('Enabling this option will save the current section ID to the browser history', 'premium-addons-for-elementor'),
+                'default'       => 'yes',
+            ]
+        );
+        
+        $this->add_control('full_section_touch',
+            [
+                'label'         => __('Enable Full Section Scroll on Touch Devices', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'condition'     => [
+                    'full_section'  => 'yes'
+                ]
+            ]
+        );
+        
+        $this->add_control('overflow_touch',
+            [
+                'label'         => __('Show overflow content', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SWITCHER,
+                'condition'     => [
+                    'full_section_touch'  => 'yes'
+                ]
             ]
         );
         
@@ -692,15 +753,6 @@ class Premium_Vscroll extends Widget_Base {
         
     }
     
-    protected function get_template_content( $template_id ) {
-        
-        $premium_elements_frontend = new Frontend;
-         
-        $template_content = $premium_elements_frontend->get_builder_content($template_id, true);
-        
-        return $template_content;
-    }
-    
     protected function render() {
         
         $settings = $this->get_settings_for_display();
@@ -713,11 +765,17 @@ class Premium_Vscroll extends Widget_Base {
         
         $this->add_render_attribute( 'vertical_scroll_wrapper', 'id', 'premium-vscroll-wrap-' . $id );
         
-        $this->add_render_attribute( 'vertical_scroll_inner', 'class', array( 'premium-vscroll-inner' ) );
+        $this->add_render_attribute( 'vertical_scroll_inner', 'class', 'premium-vscroll-inner' );
         
         $this->add_render_attribute( 'vertical_scroll_inner', 'id', 'premium-vscroll-' . $id );
         
-        $this->add_render_attribute( 'vertical_scroll_dots', 'class', array( 'premium-vscroll-dots', $settings['navigation_dots_pos'], $settings['navigation_dots_v_pos'] ) );
+        $this->add_render_attribute( 'vertical_scroll_dots', 'class', array(
+                'premium-vscroll-dots',
+                $settings['navigation_dots_pos'],
+                $settings['navigation_dots_v_pos'],
+                $settings['dots_shape']
+            )
+        );
         
         $this->add_render_attribute( 'vertical_scroll_dots_list', 'class', array( 'premium-vscroll-dots-list' ) );
         
@@ -730,13 +788,16 @@ class Premium_Vscroll extends Widget_Base {
         $this->add_render_attribute( 'vertical_scroll_sections_wrap', 'class', 'premium-vscroll-sections-wrap' );
         
         $vscroll_settings = [
-            'id'        => $id, 
-            'speed'     => !empty( $settings['scroll_speed'] ) ? $settings['scroll_speed'] * 1000 : 700,
-            'tooltips'  => 'yes' == $settings['dots_tooltips_switcher'] ? true : false,
-            'dotsText'  => $dots_text,
-            'dotsPos'   => $settings['navigation_dots_pos'],
-            'dotsVPos'  => $settings['navigation_dots_v_pos'],
-            'fullSection'=> 'yes' == $settings['full_section'] ? true : false
+            'id'            => $id, 
+            'speed'         => ! empty( $settings['scroll_speed'] ) ? $settings['scroll_speed'] * 1000 : 700,
+            'tooltips'      => 'yes' == $settings['dots_tooltips_switcher'] ? true : false,
+            'dotsText'      => $dots_text,
+            'dotsPos'       => $settings['navigation_dots_pos'],
+            'dotsVPos'      => $settings['navigation_dots_v_pos'],
+            'fullSection'   => 'yes' == $settings['full_section'] ? true : false,
+            'fullTouch'     => 'yes' == $settings['full_section_touch'] ? true : false,
+            'showOverflow'  => 'yes' == $settings['overflow_touch'] ? true : false,
+            'addToHistory'  => 'yes' == $settings['save_state'] ? true : false
         ];
         
         $templates = 'templates' === $settings['content_type'] ? $settings['section_repeater'] : $settings['id_repeater'];
@@ -772,8 +833,8 @@ class Premium_Vscroll extends Widget_Base {
                             ?>
                             <div <?php echo $this->get_render_attribute_string('section_' . $index); ?>>
                                 <?php 
-                                    $template_id = $section['section_template'];
-                                    echo $this->get_template_content($template_id);
+                                    $template_title = $section['section_template'];
+                                    echo $this->getTemplateInstance()->get_template_content( $template_title );
                                 ?>
                             </div>
                         <?php endforeach; ?>

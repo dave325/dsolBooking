@@ -36,6 +36,8 @@ class Education {
 			return;
 		}
 
+		\add_action( 'wpforms_field_options_after_advanced-options', array( $this, 'field_conditional_logic' ), 10, 2 );
+
 		\add_filter( 'wpforms_lite_builder_strings', array( $this, 'js_strings' ) );
 
 		\add_action( 'wpforms_builder_enqueues_before', array( $this, 'enqueues' ) );
@@ -318,7 +320,33 @@ class Education {
 		return $fields;
 	}
 
-		/**
+	/**
+	 * Displays conditional logic settings section for fields inside the form builder.
+	 *
+	 * @since 1.5.5
+	 *
+	 * @param array  $field    Field data.
+	 * @param object $instance Builder instance.
+	 */
+	public function field_conditional_logic( $field, $instance ) {
+
+		// Certain fields don't support conditional logic.
+		if ( in_array( $field['type'], array( 'pagebreak', 'divider', 'hidden' ), true ) ) {
+			return;
+		}
+		?>
+
+		<div class="wpforms-field-option-group">
+
+			<a href="#" class="wpforms-field-option-group-toggle upgrade-modal" data-name="Conditional Logic">
+				<?php esc_html_e( 'Conditionals', 'wpforms-lite' ); ?> <i class="fa fa-angle-right"></i>
+			</a>
+
+		</div>
+		<?php
+	}
+
+	/**
 	 * Display settings panels.
 	 *
 	 * @since 1.5.1
@@ -394,38 +422,7 @@ class Education {
 	 */
 	public function providers() {
 
-		$providers = array(
-			array(
-				'name' => 'AWeber',
-				'slug' => 'aweber',
-				'img'  => 'addon-icon-aweber.png',
-			),
-			array(
-				'name' => 'Campaign Monitor',
-				'slug' => 'campaign-monitor',
-				'img'  => 'addon-icon-campaign-monitor.png',
-			),
-			array(
-				'name' => 'Drip',
-				'slug' => 'drip',
-				'img'  => 'addon-icon-drip.png',
-			),
-			array(
-				'name' => 'GetResponse',
-				'slug' => 'getresponse',
-				'img'  => 'addon-icon-getresponse.png',
-			),
-			array(
-				'name' => 'MailChimp',
-				'slug' => 'mailchimp',
-				'img'  => 'addon-icon-mailchimp.png',
-			),
-			array(
-				'name' => 'Zapier',
-				'slug' => 'zapier',
-				'img'  => 'addon-icon-zapier.png',
-			),
-		);
+		$providers = wpforms_get_providers_all();
 
 		foreach ( $providers as $provider ) {
 

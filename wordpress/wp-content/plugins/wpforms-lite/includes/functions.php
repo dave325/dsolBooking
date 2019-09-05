@@ -128,7 +128,7 @@ function wpforms_setting( $key, $default = false, $option = 'wpforms_settings' )
 
 	$key     = wpforms_sanitize_key( $key );
 	$options = get_option( $option, false );
-	$value   = is_array( $options ) && ! empty( $options[ $key ] ) ? $options[ $key ] : $default;
+	$value   = is_array( $options ) && ! empty( $options[ $key ] ) ? wp_unslash( $options[ $key ] ) : $default;
 
 	return $value;
 }
@@ -424,7 +424,13 @@ function wpforms_html_attributes( $id = '', $class = array(), $datas = array(), 
 	if ( ! empty( $atts ) ) {
 		foreach ( $atts as $att => $val ) {
 			if ( '0' == $val || ! empty( $val ) ) {
-				$parts[] = sanitize_html_class( $att ) . '="' . esc_attr( $val ) . '"';
+				if ( '[' === $att[0] ) {
+					// Handle special case for bound attributes in AMP.
+					$escaped_att = '[' . sanitize_html_class( trim( $att, '[]' ) ) . ']';
+				} else {
+					$escaped_att = sanitize_html_class( $att );
+				}
+				$parts[] = $escaped_att . '="' . esc_attr( $val ) . '"';
 			}
 		}
 	}
@@ -616,6 +622,37 @@ function wpforms_get_form_fields( $form = false, $whitelist = array() ) {
 
 	return $form_fields;
 }
+
+/**
+ * Conditional logic form fields supported.
+ *
+ * @since 1.5.2
+ *
+ * @return array
+ */
+function wpforms_get_conditional_logic_form_fields_supported() {
+
+	$fields_supported = array(
+		'text',
+		'textarea',
+		'select',
+		'radio',
+		'email',
+		'url',
+		'checkbox',
+		'number',
+		'payment-multiple',
+		'payment-checkbox',
+		'payment-select',
+		'hidden',
+		'rating',
+		'net_promoter_score',
+	);
+
+	return apply_filters( 'wpforms_get_conditional_logic_form_fields_supported', $fields_supported );
+}
+
+
 
 /**
  * Get meta key value for a form field.
@@ -1054,24 +1091,36 @@ function wpforms_days() {
  * https://github.com/easydigitaldownloads/easy-digital-downloads/blob/master/includes/misc-functions.php#L163
  *
  * @since 1.2.5
+ *
  * @return string
  */
 function wpforms_get_ip() {
 
-	$ip = '127.0.0.1';
+	$ip = false;
 
-	if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-		$ip = $_SERVER['HTTP_CLIENT_IP'];
+	if ( ! empty( $_SERVER['HTTP_X_REAL_IP'] ) ) {
+		$ip = filter_var( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ), FILTER_VALIDATE_IP );
+	} elseif ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+		// Check ip from share internet.
+		$ip = filter_var( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ), FILTER_VALIDATE_IP );
 	} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		// To check ip is pass from proxy.
+		// Can include more than 1 ip, first is the public one.
+		// WPCS: sanitization ok.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$ips = explode( ',', wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+		if ( is_array( $ips ) ) {
+			$ip = filter_var( $ips[0], FILTER_VALIDATE_IP );
+		}
 	} elseif ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
-		$ip = $_SERVER['REMOTE_ADDR'];
+		$ip = filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP );
 	}
 
-	// Fix potential CSV returned from $_SERVER variables
-	$ip_array = array_map( 'trim', explode( ',', $ip ) );
+	$ip       = false !== $ip ? $ip : '127.0.0.1';
+	$ip_array = explode( ',', $ip );
+	$ip_array = array_map( 'trim', $ip_array );
 
-	return $ip_array[0];
+	return sanitize_text_field( apply_filters( 'wpforms_get_ip', $ip_array[0] ) );
 }
 
 /**
@@ -1592,9 +1641,10 @@ function wpforms_log( $title = '', $message = '', $args = array() ) {
  *
  * @since 1.4.1
  *
+ * @param bool $check_theme_support Whether theme support should be checked. Defaults to true.
  * @return bool
  */
-function wpforms_is_amp() {
+function wpforms_is_amp( $check_theme_support = true ) {
 
 	$is_amp = false;
 
@@ -1605,6 +1655,10 @@ function wpforms_is_amp() {
 		( function_exists( 'is_better_amp' ) && is_better_amp() )
 	) {
 		$is_amp = true;
+	}
+
+	if ( $is_amp && $check_theme_support ) {
+		$is_amp = current_theme_supports( 'amp' );
 	}
 
 	return apply_filters( 'wpforms_is_amp', $is_amp );
@@ -1723,11 +1777,69 @@ function wpforms_get_day_period_date( $period, $timestamp = '', $format = 'Y-m-d
 		case 'end_of_day':
 			$date = date( $format, strtotime( 'tomorrow', $timestamp ) - 1 );
 			break;
-
 	}
 
 	return $date;
 }
+
+/**
+ * Get an array of all possible provider addons.
+ *
+ * @since 1.5.5
+ *
+ * @return array
+ */
+function wpforms_get_providers_all() {
+
+	$providers = array(
+		array(
+			'name'        => 'AWeber',
+			'slug'        => 'aweber',
+			'img'         => 'addon-icon-aweber.png',
+			'plugin'      => 'wpforms-aweber/wpforms-aweber.php',
+			'plugin_slug' => 'wpforms-aweber',
+		),
+		array(
+			'name'        => 'Campaign Monitor',
+			'slug'        => 'campaign-monitor',
+			'img'         => 'addon-icon-campaign-monitor.png',
+			'plugin'      => 'wpforms-campaign-monitor/wpforms-campaign-monitor.php',
+			'plugin_slug' => 'wpforms-campaign-monitor',
+		),
+		array(
+			'name'        => 'Drip',
+			'slug'        => 'drip',
+			'img'         => 'addon-icon-drip.png',
+			'plugin'      => 'wpforms-drip/wpforms-drip.php',
+			'plugin_slug' => 'wpforms-drip',
+		),
+		array(
+			'name'        => 'GetResponse',
+			'slug'        => 'getresponse',
+			'img'         => 'addon-icon-getresponse.png',
+			'plugin'      => 'wpforms-getresponse/wpforms-getresponse.php',
+			'plugin_slug' => 'wpforms-getresponse',
+		),
+		array(
+			'name'        => 'MailChimp',
+			'slug'        => 'mailchimp',
+			'img'         => 'addon-icon-mailchimp.png',
+			'plugin'      => 'wpforms-mailchimp/wpforms-mailchimp.php',
+			'plugin_slug' => 'wpforms-mailchimp',
+		),
+		array(
+			'name'        => 'Zapier',
+			'slug'        => 'zapier',
+			'img'         => 'addon-icon-zapier.png',
+			'plugin'      => 'wpforms-zapier/wpforms-zapier.php',
+			'plugin_slug' => 'wpforms-zapier',
+		),
+	);
+
+	return $providers;
+}
+
+
 
 /**
  * Get an array of all the active provider addons.

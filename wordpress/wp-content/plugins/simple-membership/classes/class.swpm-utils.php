@@ -92,7 +92,7 @@ abstract class SwpmUtils {
     public static function get_formatted_expiry_date($start_date, $subscription_duration, $subscription_duration_type) {
         if ($subscription_duration_type == SwpmMembershipLevel::FIXED_DATE) {
             //Membership will expire after a fixed date.
-            return SwpmUtils::get_formatted_date_according_to_wp_settings($subscription_duration);
+            return SwpmUtils::get_formatted_and_translated_date_according_to_wp_settings($subscription_duration);
         }
 
         $expires = self::calculate_subscription_period_days($subscription_duration, $subscription_duration_type);
@@ -102,8 +102,7 @@ abstract class SwpmUtils {
         }
 
         //Membership is set to a duration expiry settings.
-
-        return date(get_option('date_format'), strtotime($start_date . ' ' . $expires . ' days'));
+        return date_i18n(get_option('date_format'), strtotime($start_date . ' ' . $expires . ' days'));
     }
 
     public static function gender_dropdown($selected = 'not specified') {
@@ -330,7 +329,6 @@ abstract class SwpmUtils {
     /*
      * Formats the given date value according to the WP date format settings. This function is useful for displaying a human readable date value to the user.
      */
-
     public static function get_formatted_date_according_to_wp_settings($date) {
         $date_format = get_option('date_format');
         if (empty($date_format)) {
@@ -343,6 +341,21 @@ abstract class SwpmUtils {
         return $formatted_date;
     }
 
+    /*
+     * Formats and Translates the given date value according to the WP date format settings. This function is useful for displaying a human readable date value to the user.
+     * The $date argument value must be in nromal date format (2025-01-15). The function will use strtotime() function to convert it to unix time then use it.
+     */
+    public static function get_formatted_and_translated_date_according_to_wp_settings($date) {
+        $date_format = get_option('date_format');
+        if (empty($date_format)) {
+            //WordPress's date form settings is not set. Lets set a default format.
+            $date_format = 'Y-m-d';
+        }
+
+        $formatted_translated_date = date_i18n( $date_format, strtotime( $date ) );
+        return $formatted_translated_date;
+    }
+    
     public static function swpm_username_exists($user_name) {
         global $wpdb;
         $member_table = $wpdb->prefix . 'swpm_members_tbl';
@@ -462,6 +475,43 @@ abstract class SwpmUtils {
         $filtered = apply_filters('swpm_first_click_free', $args);
         list($is_first_click, $content) = $filtered;
         return $is_first_click;
+    }
+
+    private static function crypt_fallback($string, $action = 'e') {
+        if ($action === 'e') {
+            return base64_encode($string);
+        } else {
+            return base64_decode($string);
+        }
+    }
+
+    public static function crypt($string, $action = 'e') {
+        //check if openssl module is enabled
+        if (!extension_loaded('openssl')) {
+            // no openssl extension loaded. Can't ecnrypt
+            return self::crypt_fallback($string, $action);
+        }
+        //check if encrypt method is supported
+        $encrypt_method = "aes-256-ctr";
+        $available_methods = openssl_get_cipher_methods();
+        if (!in_array($encrypt_method, $available_methods)) {
+            // no ecryption method supported. Can't encrypt
+            return self::crypt_fallback($string, $action);
+        }
+
+        $output = false;
+        $secret_key = wp_salt('auth');
+        $secret_iv = wp_salt('secure_auth');
+        $key = hash('sha256', $secret_key);
+        $iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+        if ($action == 'e') {
+            $output = base64_encode(openssl_encrypt($string, $encrypt_method, $key, 0, $iv));
+        } else if ($action == 'd') {
+            $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+        }
+
+        return $output;
     }
 
 }

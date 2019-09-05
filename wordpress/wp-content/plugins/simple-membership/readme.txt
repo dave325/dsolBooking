@@ -3,8 +3,8 @@ Contributors: smp7, wp.insider
 Donate link: https://simple-membership-plugin.com/
 Tags: member, members, members only, membership, memberships, register, WordPress membership plugin, content, content protection, paypal, restrict, restrict access, Restrict content, admin, access control, subscription, teaser, protection, profile, login, login page, bbpress, stripe, braintree
 Requires at least: 4.0
-Tested up to: 5.1
-Stable tag: 3.7.8
+Tested up to: 5.2
+Stable tag: 3.8.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,7 +75,9 @@ You can create a free forum user account and ask your questions.
 * Membership management side is handled by the plugin.
 * Ability to manually approve your members.
 * Ability to import WordPress users as members.
+* Search for a member's profile in your WP admin dashboard.
 * Filter members list by account status.
+* Filter members list by membership level.
 * Can be translated to any language.
 * Hide the admin toolbar from the frontend of your site.
 * Allow your members to delete their membership accounts.
@@ -156,7 +158,62 @@ https://simple-membership-plugin.com/
 
 == Changelog ==
 
-= 3.7.8 = 
+= 3.8.8 =
+- The expiry date in the login widget now shows the translated date value for Non-English installs.
+- Updated the German language translation files.
+- Integration with the Super Socializer plugin for social login.
+  https://simple-membership-plugin.com/social-login-plugin-simple-membership/
+
+= 3.8.7 =
+- Removed a PHP warning in the wp_password_reset_hook(). Thanks to John Wick for pointing this out.
+- Small improvement to the PayPal subscription IPN handling script.
+
+= 3.8.6 =
+- Added nonce check to the "Addons settings" tab.
+
+= 3.8.5 =
+- Fixed CSRF issue in the Bulk Operation menu tab.
+- Fixed Braintree payment issue that could occur if customer pays via PayPal.
+- Fixed Stripe library conflict if other Stripe plugin is installed.
+- Added support for the coupons addon.
+- Added current_user_can() check to the admin menu handling function.
+- Added nonce check to wp_ajax.
+
+= 3.8.4 =
+- More strings from the settings admin interface of the plugin are translatable.
+- The strong password validation error message is now translatable (if you are using this feature).
+- Minor enhancement in the PayPal IPN handling code.
+- Fixed an issue with some profile data not updating when password is also updated at the same time.
+
+= 3.8.3 =
+- Updated Braintree PHP SDK to prevent deprecation notice when using PHP 7+.
+- The "Expiry Date" of a member is now shown in the member's profile of the admin dashboard.
+- Compatibility with Wordfence plugin's captcha feature.
+- German translation file updated.
+- Japanese translation file updated.
+
+= 3.8.2 =
+- Added membership level and account status filter in the member search function (Members menu of admin dashboard).
+- Updated the Polish language translation.
+- Added a filter hook in the get_current_page_url() function.
+
+= 3.8.1 =
+- [Important Note] If you are using the Braintree gateway, please take a backup before updating. Do a test transaction using Braintree gateway on live mode to make sure the new 3D Secure changes are working fine. 
+- Added 3D Secure support for Braintree payment gateway buttons. It automatically tries to detect if 3DS is enabled, then shows the additional steps.
+- Added note for email activation feature regarding temporary passwords storage.
+- Added "swpm_email_activation_data" filter to modify user email activation data.
+
+= 3.8.0 =
+- Email activation's temporary data is now stored in an encrypted format.
+- Fixed email activation data leftovers removal in the DB.
+- Updated some translation strings.
+
+= 3.7.9 =
+- Added new shortcode [swpm_show_after_login_page_link] via the swpm misc shortcodes addon.
+- More characters are now allowed in the "username" field.
+- Fixed a minor bug with the plugin not finding the corresponding member's profile when a subscritpion is canceled.
+
+= 3.7.8 =
 - Added a new feature to allow forwarding of the payment notification to an external URL. This option can be found in the "Advanced Settings" of the plugin.
 - The "Forgot Password?" translation string in the login form will allow the "?" character to be translated/customized.
 - Fixed a PHP7 related warning.

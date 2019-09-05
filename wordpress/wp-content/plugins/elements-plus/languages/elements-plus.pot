@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Elements Plus!\n"
-"POT-Creation-Date: 2019-03-26 13:34+0200\n"
+"POT-Creation-Date: 2019-07-25 13:54+0300\n"
 "PO-Revision-Date: 2016-08-29 19:22+0300\n"
 "Last-Translator: Nik Vourvachis <nvourva@cssigniter.com>\n"
 "Language-Team: Nik Vourvachis <nvourva@cssigniter.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: elements-plus.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-#: elements-plus.php:82 inc/elements-plus-options.php:319
+#: elements-plus.php:82 inc/elements-plus-options.php:337
 msgid "Elements Plus!"
 msgstr ""
 
@@ -54,7 +54,8 @@ msgstr ""
 #: elements/ep-flipclock.php:138 elements/ep-label.php:162
 #: elements/ep-preloader.php:124 elements/ep-search.php:227
 #: elements/ep-search.php:342 elements/ep-search.php:434
-#: elements/ep-search.php:500 elements/ep-video-slider.php:134
+#: elements/ep-search.php:500 elements/ep-tables.php:277
+#: elements/ep-video-slider.php:134
 msgid "Background Color"
 msgstr ""
 
@@ -71,7 +72,8 @@ msgstr ""
 #: elements/ep-justified-gallery.php:234 elements/ep-label.php:150
 #: elements/ep-search.php:211 elements/ep-search.php:326
 #: elements/ep-search.php:418 elements/ep-search.php:564
-#: elements/ep-search.php:600 elements/ep-tooltip.php:93
+#: elements/ep-search.php:600 elements/ep-tables.php:257
+#: elements/ep-tables.php:327 elements/ep-tooltip.php:93
 #: elements/ep-video-slider.php:122
 msgid "Text Color"
 msgstr ""
@@ -162,45 +164,54 @@ msgstr ""
 
 #: elements/ep-button-plus.php:82 elements/ep-cta.php:92
 #: elements/ep-dual-button.php:129 elements/ep-dual-button.php:274
-#: elements/ep-icon-plus.php:127
+#: elements/ep-icon-plus.php:127 elements/ep-image-hover-effects.php:81
+#: elements/ep-inline-svg.php:46
 msgid "Link"
 msgstr ""
 
 #: elements/ep-button-plus.php:94 elements/ep-cta.php:104
 #: elements/ep-dual-button.php:144 elements/ep-flipclock.php:95
-#: elements/ep-icon-plus.php:136 elements/ep-justified-gallery.php:201
-#: elements/ep-label.php:45
+#: elements/ep-icon-plus.php:136 elements/ep-inline-svg.php:70
+#: elements/ep-justified-gallery.php:201 elements/ep-label.php:45
+#: elements/ep-tables.php:88 elements/ep-tables.php:298
 msgid "Alignment"
 msgstr ""
 
 #: elements/ep-button-plus.php:98 elements/ep-cta.php:108
 #: elements/ep-dual-button.php:148 elements/ep-flipclock.php:99
-#: elements/ep-icon-plus.php:140 elements/ep-justified-gallery.php:113
+#: elements/ep-icon-plus.php:140 elements/ep-inline-svg.php:74
+#: elements/ep-justified-gallery.php:113
 #: elements/ep-justified-gallery.php:205 elements/ep-label.php:49
-#: elements/ep-tooltip.php:49 elements/ep-video-slider.php:82
-#: elements/ep-video-slider.php:154
+#: elements/ep-tables.php:92 elements/ep-tables.php:232
+#: elements/ep-tables.php:302 elements/ep-tooltip.php:49
+#: elements/ep-video-slider.php:82 elements/ep-video-slider.php:154
 msgid "Left"
 msgstr ""
 
 #: elements/ep-button-plus.php:102 elements/ep-cta.php:112
 #: elements/ep-dual-button.php:152 elements/ep-flipclock.php:103
-#: elements/ep-icon-plus.php:144 elements/ep-justified-gallery.php:209
-#: elements/ep-label.php:53 elements/ep-video-slider.php:158
+#: elements/ep-icon-plus.php:144 elements/ep-inline-svg.php:78
+#: elements/ep-justified-gallery.php:209 elements/ep-label.php:53
+#: elements/ep-tables.php:96 elements/ep-tables.php:236
+#: elements/ep-tables.php:306 elements/ep-video-slider.php:158
 msgid "Center"
 msgstr ""
 
 #: elements/ep-button-plus.php:106 elements/ep-cta.php:116
 #: elements/ep-dual-button.php:156 elements/ep-flipclock.php:107
-#: elements/ep-icon-plus.php:148 elements/ep-justified-gallery.php:114
+#: elements/ep-icon-plus.php:148 elements/ep-inline-svg.php:82
+#: elements/ep-justified-gallery.php:114
 #: elements/ep-justified-gallery.php:213 elements/ep-label.php:57
-#: elements/ep-tooltip.php:47 elements/ep-video-slider.php:81
-#: elements/ep-video-slider.php:162
+#: elements/ep-tables.php:100 elements/ep-tables.php:240
+#: elements/ep-tables.php:310 elements/ep-tooltip.php:47
+#: elements/ep-video-slider.php:81 elements/ep-video-slider.php:162
 msgid "Right"
 msgstr ""
 
 #: elements/ep-button-plus.php:110 elements/ep-cta.php:120
 #: elements/ep-dual-button.php:160 elements/ep-justified-gallery.php:217
-#: elements/ep-label.php:61
+#: elements/ep-label.php:61 elements/ep-tables.php:104
+#: elements/ep-tables.php:244 elements/ep-tables.php:314
 msgid "Justified"
 msgstr ""
 
@@ -262,7 +273,8 @@ msgstr ""
 
 #: elements/ep-button-plus.php:255 elements/ep-countdown.php:149
 #: elements/ep-cta.php:265 elements/ep-flipclock.php:155
-#: elements/ep-label.php:181 elements/ep-tooltip.php:73
+#: elements/ep-label.php:181 elements/ep-tables.php:210
+#: elements/ep-tooltip.php:73
 msgid "Border"
 msgstr ""
 
@@ -601,11 +613,11 @@ msgstr ""
 msgid "Image Comparison Plus!"
 msgstr ""
 
-#: elements/ep-image-comparison.php:35 elements/ep-image-hover-effects.php:35
+#: elements/ep-image-comparison.php:35 elements/ep-image-hover-effects.php:37
 msgid "Choose First Image"
 msgstr ""
 
-#: elements/ep-image-comparison.php:43 elements/ep-image-hover-effects.php:43
+#: elements/ep-image-comparison.php:43 elements/ep-image-hover-effects.php:45
 msgid "Choose Second Image"
 msgstr ""
 
@@ -634,14 +646,16 @@ msgid "Move Slider On Hover"
 msgstr ""
 
 #: elements/ep-image-comparison.php:117 elements/ep-image-comparison.php:129
-#: elements/ep-image-comparison.php:141 elements/ep-justified-gallery.php:70
-#: elements/ep-styled-maps.php:133
+#: elements/ep-image-comparison.php:141 elements/ep-inline-svg.php:126
+#: elements/ep-inline-svg.php:178 elements/ep-justified-gallery.php:70
+#: elements/ep-styled-maps.php:133 elements/ep-tables.php:41
 msgid "Yes"
 msgstr ""
 
 #: elements/ep-image-comparison.php:118 elements/ep-image-comparison.php:130
-#: elements/ep-image-comparison.php:142 elements/ep-justified-gallery.php:71
-#: elements/ep-styled-maps.php:134
+#: elements/ep-image-comparison.php:142 elements/ep-inline-svg.php:127
+#: elements/ep-inline-svg.php:179 elements/ep-justified-gallery.php:71
+#: elements/ep-styled-maps.php:134 elements/ep-tables.php:42
 msgid "No"
 msgstr ""
 
@@ -653,81 +667,129 @@ msgstr ""
 msgid "Move Slider Only With Handle"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:13
-#: elements/ep-image-hover-effects.php:28
+#: elements/ep-image-hover-effects.php:15
+#: elements/ep-image-hover-effects.php:30
 msgid "Image Hover Effects Plus!"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:51
+#: elements/ep-image-hover-effects.php:53
 msgid "Displacement Image"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:55
+#: elements/ep-image-hover-effects.php:57
 msgid "1"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:56
+#: elements/ep-image-hover-effects.php:58
 msgid "2"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:57
+#: elements/ep-image-hover-effects.php:59
 msgid "3"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:58
+#: elements/ep-image-hover-effects.php:60
 msgid "4"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:59
+#: elements/ep-image-hover-effects.php:61
 msgid "5"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:60
+#: elements/ep-image-hover-effects.php:62
 msgid "6"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:61
+#: elements/ep-image-hover-effects.php:63
 msgid "7"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:62
+#: elements/ep-image-hover-effects.php:64
 msgid "8"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:63
+#: elements/ep-image-hover-effects.php:65
 msgid "9"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:64
+#: elements/ep-image-hover-effects.php:66
 msgid "10"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:65
+#: elements/ep-image-hover-effects.php:67
 msgid "11"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:66
+#: elements/ep-image-hover-effects.php:68
 msgid "12"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:67
+#: elements/ep-image-hover-effects.php:69
 msgid "13"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:68
+#: elements/ep-image-hover-effects.php:70
 msgid "14"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:69
+#: elements/ep-image-hover-effects.php:71
 msgid "15"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:70
+#: elements/ep-image-hover-effects.php:72
 msgid "16"
 msgstr ""
 
-#: elements/ep-image-hover-effects.php:71
+#: elements/ep-image-hover-effects.php:73
 msgid "17"
+msgstr ""
+
+#: elements/ep-inline-svg.php:15 elements/ep-inline-svg.php:30
+msgid "Inline SVG Plus!"
+msgstr ""
+
+#: elements/ep-inline-svg.php:37
+msgid "Select SVG file"
+msgstr ""
+
+#: elements/ep-inline-svg.php:62
+msgid "Styles"
+msgstr ""
+
+#: elements/ep-inline-svg.php:95
+msgid "Width"
+msgstr ""
+
+#: elements/ep-inline-svg.php:96
+msgid "Set the maximum width"
+msgstr ""
+
+#: elements/ep-inline-svg.php:122
+msgid "Customize Color"
+msgstr ""
+
+#: elements/ep-inline-svg.php:123
+msgid ""
+"Modify the color of svg elements that have a fill or stroke color set."
+msgstr ""
+
+#: elements/ep-inline-svg.php:136
+msgid "Color"
+msgstr ""
+
+#: elements/ep-inline-svg.php:155
+msgid "Hover Color"
+msgstr ""
+
+#: elements/ep-inline-svg.php:174
+msgid "Remove Inline CSS"
+msgstr ""
+
+#: elements/ep-inline-svg.php:175
+msgid ""
+"An SVG might include inline styles. If custom color options do not work, "
+"try this option to remove these styles. Please note, this will also remove "
+"non-color related styling."
 msgstr ""
 
 #: elements/ep-instagram-filters.php:8
@@ -792,11 +854,13 @@ msgstr ""
 
 #: elements/ep-instagram.php:90 elements/ep-instagram.php:102
 #: elements/ep-justified-gallery.php:125 elements/ep-preloader.php:63
+#: elements/ep-tables.php:151
 msgid "On"
 msgstr ""
 
 #: elements/ep-instagram.php:91 elements/ep-instagram.php:103
 #: elements/ep-justified-gallery.php:126 elements/ep-preloader.php:64
+#: elements/ep-tables.php:152
 msgid "Off"
 msgstr ""
 
@@ -836,7 +900,7 @@ msgstr ""
 msgid "Attachment Page"
 msgstr ""
 
-#: elements/ep-justified-gallery.php:57
+#: elements/ep-justified-gallery.php:57 elements/ep-tilt.php:183
 msgid "None"
 msgstr ""
 
@@ -1136,6 +1200,138 @@ msgid ""
 "Elements Plus ."
 msgstr ""
 
+#: elements/ep-tables.php:15
+msgid "Tables Plus!"
+msgstr ""
+
+#: elements/ep-tables.php:31
+msgid "General Options"
+msgstr ""
+
+#: elements/ep-tables.php:38
+msgid "Make table responsive"
+msgstr ""
+
+#: elements/ep-tables.php:51 elements/ep-tables.php:58
+#: elements/ep-tables.php:60
+msgid "Table Header"
+msgstr ""
+
+#: elements/ep-tables.php:64 elements/ep-tables.php:67
+#: elements/ep-tables.php:68 elements/ep-tables.php:116
+#: elements/ep-tables.php:119
+msgid "Header Text"
+msgstr ""
+
+#: elements/ep-tables.php:72 elements/ep-tables.php:158
+msgid "Column Span"
+msgstr ""
+
+#: elements/ep-tables.php:80 elements/ep-tables.php:166
+msgid "Row Span"
+msgstr ""
+
+#: elements/ep-tables.php:130 elements/ep-tables.php:137
+msgid "Table Body"
+msgstr ""
+
+#: elements/ep-tables.php:142 elements/ep-tables.php:175
+#: elements/ep-tables.php:178
+msgid "Body Text"
+msgstr ""
+
+#: elements/ep-tables.php:144
+msgid "Type your description here"
+msgstr ""
+
+#: elements/ep-tables.php:145
+msgid "Table Data"
+msgstr ""
+
+#: elements/ep-tables.php:149
+msgid "New Row"
+msgstr ""
+
+#: elements/ep-tables.php:189
+msgid "Table Styles"
+msgstr ""
+
+#: elements/ep-tables.php:197
+msgid "Inner Cell Padding"
+msgstr ""
+
+#: elements/ep-tables.php:220
+msgid "Table Header Style"
+msgstr ""
+
+#: elements/ep-tables.php:228
+msgid "Text Alignment"
+msgstr ""
+
+#: elements/ep-tables.php:290
+msgid "Table Body Style"
+msgstr ""
+
+#: elements/ep-tables.php:347
+msgid "Primary Background Color"
+msgstr ""
+
+#: elements/ep-tables.php:358
+msgid "Secondary Background Color"
+msgstr ""
+
+#: elements/ep-tilt.php:32
+msgid "Tilt Effect"
+msgstr ""
+
+#: elements/ep-tilt.php:39
+msgid "Enable Tilt"
+msgstr ""
+
+#: elements/ep-tilt.php:52
+msgid "Reverse Tilt Direction"
+msgstr ""
+
+#: elements/ep-tilt.php:65
+msgid "Max tilt rotation"
+msgstr ""
+
+#: elements/ep-tilt.php:84
+msgid "Starting tilt on the X axis"
+msgstr ""
+
+#: elements/ep-tilt.php:103
+msgid "Starting tilt on the Y axis"
+msgstr ""
+
+#: elements/ep-tilt.php:122
+msgid "Transform perspective, the lower the more extreme the tilt gets."
+msgstr ""
+
+#: elements/ep-tilt.php:141
+msgid "Scale on hover."
+msgstr ""
+
+#: elements/ep-tilt.php:160
+msgid "Speed of the enter/exit transition."
+msgstr ""
+
+#: elements/ep-tilt.php:179
+msgid "Choose an axis to disable"
+msgstr ""
+
+#: elements/ep-tilt.php:184
+msgid "Disable X axis"
+msgstr ""
+
+#: elements/ep-tilt.php:185
+msgid "Disable Y axis"
+msgstr ""
+
+#: elements/ep-tilt.php:193
+msgid "Enable/Disable device orientation detection"
+msgstr ""
+
 #: elements/ep-tooltip.php:15
 msgid "Elements Plus! Tooltip"
 msgstr ""
@@ -1350,86 +1546,118 @@ msgid ""
 msgstr ""
 
 #: inc/elements-plus-options.php:110
-msgid "Instagram <em>Plus!</em>"
+msgid "Inline SVG <em>Plus!</em>"
 msgstr ""
 
 #: inc/elements-plus-options.php:111
-msgid ""
-"Display the most recent images from an Instagram feed or a certain tag."
+msgid "Add SVG as markup instead of an HTML image tag."
 msgstr ""
 
 #. translators: %s is a URL.
 #: inc/elements-plus-options.php:114
 #, php-format
 msgid ""
+"<a href=\"%s\" target=\"_blank\">Safe SVG</a> is not active. Install and "
+"activate the plugin to use this module."
+msgstr ""
+
+#: inc/elements-plus-options.php:118
+msgid "Instagram <em>Plus!</em>"
+msgstr ""
+
+#: inc/elements-plus-options.php:119
+msgid ""
+"Display the most recent images from an Instagram feed or a certain tag."
+msgstr ""
+
+#. translators: %s is a URL.
+#: inc/elements-plus-options.php:122
+#, php-format
+msgid ""
 "<a href=\"%s\" target=\"_blank\">WP Instagram Widget</a> is not active. "
 "Install and activate the plugin to use this module."
 msgstr ""
 
-#: inc/elements-plus-options.php:118
+#: inc/elements-plus-options.php:126
 msgid "Instagram Filters <em>Plus!</em>"
 msgstr ""
 
-#: inc/elements-plus-options.php:119
+#: inc/elements-plus-options.php:127
 msgid ""
 "This option will enable an Instagram Filters Plus! drop-down in the "
 "default Elementor Image widget."
 msgstr ""
 
-#: inc/elements-plus-options.php:123
+#: inc/elements-plus-options.php:131
 msgid "Label <em>Plus!</em>"
 msgstr ""
 
-#: inc/elements-plus-options.php:124
+#: inc/elements-plus-options.php:132
 msgid "Add a label above any element."
 msgstr ""
 
-#: inc/elements-plus-options.php:128
+#: inc/elements-plus-options.php:136
 msgid "Preloader <em>Plus!</em>"
 msgstr ""
 
-#: inc/elements-plus-options.php:129
+#: inc/elements-plus-options.php:137
 msgid "Display a loading animation while your page loads."
 msgstr ""
 
-#: inc/elements-plus-options.php:133
+#: inc/elements-plus-options.php:141
 msgid "Scheduled <em>Plus!</em>"
 msgstr ""
 
-#: inc/elements-plus-options.php:134
+#: inc/elements-plus-options.php:142
 msgid ""
 "With this module you can set date/time-based display restrictions on every "
 "module available. Check the \"Schedule\" section in the \"Advanced\" tab "
 "of your modules."
 msgstr ""
 
-#: inc/elements-plus-options.php:138
+#: inc/elements-plus-options.php:146
 msgid "Search <em>Plus!</em>"
 msgstr ""
 
-#: inc/elements-plus-options.php:139
+#: inc/elements-plus-options.php:147
 msgid "Create highly configurable AJAX powered search boxes."
 msgstr ""
 
-#: inc/elements-plus-options.php:143
+#: inc/elements-plus-options.php:151
+msgid "Tables <em>Plus!</em>"
+msgstr ""
+
+#: inc/elements-plus-options.php:152
+msgid "This option will enable the tables element."
+msgstr ""
+
+#: inc/elements-plus-options.php:156
+msgid "Tilt Effect <em>Plus!</em>"
+msgstr ""
+
+#: inc/elements-plus-options.php:157
+msgid "This option will enable the tilt effect."
+msgstr ""
+
+#: inc/elements-plus-options.php:161
 msgid "Tooltip <em>Plus!</em>"
 msgstr ""
 
-#: inc/elements-plus-options.php:144
+#: inc/elements-plus-options.php:162
 msgid ""
 "This option will enable a tooltip section in the following Elementor "
 "default widgets: Heading, Button, Icon, and Icon Box."
 msgstr ""
 
-#: inc/elements-plus-options.php:148
+#: inc/elements-plus-options.php:166
 msgid "YouTube Slideshow <em>Plus!</em>"
 msgstr ""
 
-#: inc/elements-plus-options.php:149
+#: inc/elements-plus-options.php:167
 msgid "Create a slideshow using your favorite YouTube videos."
 msgstr ""
 
-#: inc/elements-plus-options.php:320
+#: inc/elements-plus-options.php:338
 msgid "Use the checkboxes below to enable or disable the custom elements."
 msgstr ""
 

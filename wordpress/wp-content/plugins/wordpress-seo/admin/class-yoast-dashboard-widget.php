@@ -6,36 +6,49 @@
  */
 
 /**
- * Class to change or add WordPress dashboard widgets
+ * Class to change or add WordPress dashboard widgets.
  */
-class Yoast_Dashboard_Widget {
+class Yoast_Dashboard_Widget implements WPSEO_WordPress_Integration {
 
 	/**
+	 * Holds the cache transient key.
+	 *
 	 * @var string
 	 */
 	const CACHE_TRANSIENT_KEY = 'wpseo-dashboard-totals';
 
 	/**
+	 * Holds an instance of the admin asset manager.
+	 *
 	 * @var WPSEO_Admin_Asset_Manager
 	 */
 	protected $asset_manager;
 
 	/**
+	 * Holds the dashboard statistics.
+	 *
 	 * @var WPSEO_Statistics
 	 */
 	protected $statistics;
 
 	/**
-	 * @param WPSEO_Statistics $statistics The statistics class to retrieve statistics from.
+	 * Yoast_Dashboard_Widget constructor.
+	 *
+	 * @param WPSEO_Statistics|null $statistics WPSEO_Statistics instance.
 	 */
 	public function __construct( WPSEO_Statistics $statistics = null ) {
-		if ( null === $statistics ) {
+		if ( $statistics === null ) {
 			$statistics = new WPSEO_Statistics();
 		}
 
 		$this->statistics    = $statistics;
 		$this->asset_manager = new WPSEO_Admin_Asset_Manager();
+	}
 
+	/**
+	 * Register WordPress hooks.
+	 */
+	public function register_hooks() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dashboard_assets' ) );
 		add_action( 'admin_init', array( $this, 'queue_dashboard_widget' ) );
 	}
@@ -52,7 +65,7 @@ class Yoast_Dashboard_Widget {
 	}
 
 	/**
-	 * Adds dashboard widget to WordPress
+	 * Adds dashboard widget to WordPress.
 	 */
 	public function add_dashboard_widget() {
 		add_filter( 'postbox_classes_dashboard_wpseo-dashboard-overview', array( $this, 'wpseo_dashboard_overview_class' ) );

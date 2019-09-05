@@ -72,6 +72,8 @@ abstract class Module_Base {
 		$this->reflection = new \ReflectionClass( $this );
 
 		add_action( 'elementor/widgets/widgets_registered', [ $this, 'init_widgets' ] );
+
+		add_action( 'wp_enqueue_scripts', [ $this, 'add_dependent_js_css' ] );
 	}
 
 	/**
@@ -126,4 +128,7 @@ abstract class Module_Base {
 		return [];
 	}
 
+	public function add_dependent_js_css(){
+
+	}
 }

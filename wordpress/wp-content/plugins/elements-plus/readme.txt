@@ -2,16 +2,16 @@
 Contributors: cssigniterteam, nvourva, tsiger, anastis, silencerius
 Tags: elements plus, elementor, elementor widgets, custom widgets, custom elements, page builder
 Requires at least: 4.7
-Tested up to: 5.1.1
+Tested up to: 5.2.2
 Requires PHP: 5.4
-Stable tag: 2.2.1
+Stable tag: 2.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Elements Plus! provides awesome custom widgets for the Elementor page builder. Labels, Styled maps, Justified galleries, Button, Call to Action, AudioIgniter, YouTube Slideshow, Preloader, Instagram, Tooltip, Icon, FlipClock, Image Comparison, Image Hover Effects, Dual Button, Instagram Filters, AJAX Search and Countdown widgets are available.
+Elements Plus! provides awesome custom widgets for the Elementor page builder. Labels, Styled maps, Justified galleries, Button, Call to Action, AudioIgniter, YouTube Slideshow, Preloader, Instagram, Tooltip, Schedule, Icon, FlipClock, Image Comparison, Image Hover Effects, Dual Button, Instagram Filters, AJAX Search, Countdown, Inline SVG, Tilt Effect and Table widgets are available.
 
 == Description ==
-Elements Plus! is a plugin for the popular Elementor page builder. It gives the user eleven extra 'elements' (widgets) to use.
+Elements Plus! is a plugin for the popular Elementor page builder. It gives the user twenty two extra 'elements' (widgets) to use.
 
 Check out [the demo](https://www.cssigniter.com/preview/elements-plus/) now!
 
@@ -57,6 +57,12 @@ The plugin's documentation can be found [here](https://www.cssigniter.com/docs/e
 
 **Countdown Plus**: A simple but versatile countdown widget.
 
+**Inline SVG Plus**: Use SVGs with Elementor.
+
+**Tilt Effect Plus**: Add tilt effect to any element or widget.
+
+**Tables Plus**: Create awesome tables in no time.
+
 **Notice**
 The plugin requires the [Elementor](https://wordpress.org/plugins/elementor/) page builder to be active in order to work.
 
@@ -81,6 +87,22 @@ Manually via FTP:
 3. The justified gallery widget
 
 == Changelog ==
+
+= 2.6.0 =
+* Added Tables Plus!
+
+= 2.5.2 =
+* Replaced TweenMax with jstween due to licensing issues.
+* Added link option to Image Hover Effects Plus!
+
+= 2.5.1 =
+* Added Outdoors Icons to the Icon Plus! element.
+
+= 2.5.0 =
+* Added Tilt Effect Plus!
+
+= 2.4.0 =
+* Added Inline SVG Plus! element.
 
 = 2.3.0 =
 * Added Countdown Plus! element.

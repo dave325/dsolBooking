@@ -10,7 +10,7 @@ class Widget_Test_Control extends Widget_Base {
 	}
 
 	public function get_title() {
-		return __( 'EAE - Test Control', 'elementor' );
+		return __( 'EAE - Test Control', 'wts-eae' );
 	}
 
 	public function get_icon() {
@@ -25,7 +25,7 @@ class Widget_Test_Control extends Widget_Base {
 		$this->start_controls_section(
 			'section_general',
 			[
-				'label' => __( 'General', 'elementor' )
+				'label' => __( 'General', 'wts-eae' )
 			]
 		);
 
@@ -41,7 +41,7 @@ class Widget_Test_Control extends Widget_Base {
 		$this->add_control(
 			'front_box__color',
 			[
-				'label' => __( 'Title', 'elementor' ),
+				'label' => __( 'Title', 'wts-eae' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} {{CURRENT_ITEM}}.divTest' => 'color: {{VALUE}};',
@@ -63,7 +63,7 @@ class Widget_Test_Control extends Widget_Base {
 			Group_Control_Typography::get_type(),
 			[
 				'name' => 'front_box_title_typography',
-				'label' => __( 'Title Typography', 'elementor' ),
+				'label' => __( 'Title Typography', 'wts-eae' ),
 				'scheme' => Scheme_Typography::TYPOGRAPHY_4,
 				'selector' => '{{WRAPPER}} {{CURRENT_ITEM}}.divTest',
 
@@ -73,7 +73,7 @@ class Widget_Test_Control extends Widget_Base {
 		$repeater->add_control(
 			'front_box_title_color',
 			[
-				'label' => __( 'Title', 'elementor' ),
+				'label' => __( 'Title', 'wts-eae' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} {{CURRENT_ITEM}} i' => 'color: {{VALUE}};',
@@ -84,7 +84,7 @@ class Widget_Test_Control extends Widget_Base {
 		$this->add_control(
 			'eae_flip_box_set',
 			[
-				'label' => __( 'Flip Box', 'elementor' ),
+				'label' => __( 'Flip Box', 'wts-eae' ),
 				'type' => Controls_Manager::REPEATER,
 				'show_label'	=> true,
 				'fields'	=> array_values($repeater->get_controls()),

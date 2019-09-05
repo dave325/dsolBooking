@@ -569,7 +569,7 @@
 				var $entriesList = $( '#wpforms-entries-list' );
 
 				// Works on entry list page only.
-				if ( ! $entriesList.length ) {
+				if ( ! $entriesList.length || $entriesList.find( '.wpforms-dash-widget' ).length ) {
 					return;
 				}
 
@@ -772,6 +772,12 @@
 				errorText,
 				successText;
 
+			if ( $btn.hasClass( 'status-go-to-url' ) ) {
+				// Open url in new tab.
+				window.open( $btn.attr('data-plugin'), '_blank' );
+				return;
+			}
+
 			$btn.prop( 'disabled', true ).addClass( 'loading' );
 			$btn.html( s.iconSpinner );
 
@@ -807,8 +813,8 @@
 
 			} else if ( $btn.hasClass( 'status-download' ) ) {
 				// Install & Activate.
-				action     = 'wpforms_install_addon';
-				cssClass   = 'status-active';
+				action   = 'wpforms_install_addon';
+				cssClass = 'status-active';
 				if ( plugin_type === 'plugin' ) {
 					cssClass += ' button disabled';
 				}
@@ -817,7 +823,7 @@
 				if ( plugin_type === 'addon' ) {
 					buttonText = s.iconActivate + wpforms_admin.addon_deactivate;
 				}
-				errorText  = s.iconInstall + wpforms_admin.addon_activate;
+				errorText = s.iconInstall + wpforms_admin.addon_activate;
 
 			} else {
 				return;
@@ -935,6 +941,26 @@
 							}
 						},
 						effect: 'appear'
+					},
+					// reCAPTCHA > Score Threshold.
+					{
+						conditions: {
+							element:   'input[name=recaptcha-type]:checked',
+							type:      'value',
+							operator:  '=',
+							condition: 'v3'
+						},
+						actions: {
+							if: {
+								element: '#wpforms-setting-row-recaptcha-v3-threshold',
+								action:	 'show'
+							},
+							else : {
+								element: '#wpforms-setting-row-recaptcha-v3-threshold',
+								action:	 'hide'
+							}
+						},
+						effect: 'appear'
 					}
 				] );
 			});
@@ -1000,7 +1026,7 @@
 			});
 
 			// Integration individual display toggling.
-			$( document ).on( 'click', '.wpforms-settings-provider-header', function( event ) {
+			$( document ).on( 'click', '.wpforms-settings-provider:not(.focus-out) .wpforms-settings-provider-header', function( event ) {
 
 				event.preventDefault();
 

@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
 			e.preventDefault();
 
 			var conf = confirm( EC_ICONS.delete );
-			
+
 			if(conf == true){
 
 				var request = new FormData(),

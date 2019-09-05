@@ -113,6 +113,8 @@ label.lae-inline {
 
 .lae-menu-options .lae-tab:first-child {
   margin: 0 0 0 150px; }
+  .rtl .lae-menu-options .lae-tab:first-child {
+    margin: 0 150px 0 0; }
   @media only screen and (max-width: 600px) {
     .lae-menu-options .lae-tab:first-child {
       margin: 0; } }
@@ -252,19 +254,19 @@ input.lae-checkbox:checked + label:after {
 
 /* =========================== Buttons ==================== */
 .lae-button {
-  border: none !important;
-  text-shadow: none !important;
-  border: none !important;
-  outline: none !important;
-  -webkit-box-shadow: none !important;
-          box-shadow: none !important;
-  line-height: 26px !important;
-  height: auto !important;
-  margin: 0 !important;
-  padding: 0 10px !important;
-  color: #fff !important;
+  border: none;
+  text-shadow: none;
+  border: none;
+  outline: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  line-height: 26px;
+  height: auto;
+  margin: 0;
+  padding: 0 10px;
+  color: #fff;
   background: #f94213;
-  border-radius: 0 !important;
+  border-radius: 0;
   vertical-align: top;
   -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s; }

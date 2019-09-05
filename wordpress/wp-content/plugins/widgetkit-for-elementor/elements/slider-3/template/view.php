@@ -11,7 +11,7 @@
                             <div class="slide__img" style="background-image: url(<?php echo esc_url( $sliders['tgx_slider_3_image']['url']); ?>)"></div>
 
                                 <?php if($sliders['tgx_slider_3_title']): ?>
-                                    <h2 class="slide__title"><?php echo  $sliders['tgx_slider_3_title']; ?></h2>
+                                    <<?php echo $settings['heading_tag'];?> class="slide__title"><?php echo  $sliders['tgx_slider_3_title']; ?></<?php echo $settings['heading_tag'];?>>
                                 <?php endif; ?>
 
                                 <?php if($sliders['tgx_slider_3_subtitle']): ?>
@@ -25,7 +25,7 @@
                                 <?php endif; ?>
 
                         </div> <!-- slider -->
-                    <?php endforeach; $a++; ?>
+                    <?php $a++; endforeach; ?>
                 </div><!-- Slides --> 
 
 

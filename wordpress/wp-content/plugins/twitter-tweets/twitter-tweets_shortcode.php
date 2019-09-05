@@ -1,7 +1,6 @@
 <?php
-/**
- * Shortcode For twitter tweet
- */
+if ( ! defined( 'ABSPATH' ) ) exit;
+/*** Shortcode For twitter tweet ***/
 add_shortcode("TWTR", "twitter_tweet_shortcode");
 function twitter_tweet_shortcode() {
 	ob_start();
@@ -51,7 +50,7 @@ function twitter_tweet_shortcode() {
 		$TwitterWidgetId = "";
 	}
 	
-	$title = __( 'Widget Title Here', 'twitter_tweets' );
+	$title = esc_html__( 'Widget Title Here', 'twitter-tweets' );
 	if(isset($twitterSettings[ 'title' ] ) ) {
 		$title = $twitterSettings[ 'title' ];
 	}
@@ -74,7 +73,6 @@ function twitter_tweet_shortcode() {
 	<?php
 	return ob_get_clean();
 }
-
 add_shortcode("WL_TWITTER", "wl_twitter_tweets_api");
 function wl_twitter_tweets_api() {
 	require_once( wl_twitter_dir_path . "load-tweets.php" );
@@ -83,8 +81,8 @@ function wl_twitter_tweets_api() {
 <div class="wl_twt_free">
 	<div class="container-fluid">
 	    <div class="row">	    	
-	    	<div class="col-md-<?php if( isset( $wl_twitter_layout ) ) {echo $wl_twitter_layout;} ?>">
-	    		<?php if ( isset( $statuses ) && is_array( $statuses )  ) {		
+	    	<div class="col-md-<?php if( isset( $wl_twitter_layout ) ) {echo esc_attr($wl_twitter_layout);} ?>">
+	    		<?php if ( isset( $statuses ) && is_array( $statuses )  ) {	                   
 				foreach ( $statuses as $status ) {
 					// var_dump($status);
 					/* user info */
@@ -122,9 +120,8 @@ function wl_twitter_tweets_api() {
 				?>
 	    		<div class="wl_tweet_box">
 	                <p class="wl_tweet">      	
-	                    <img class="align-self-start mr-3" src="<?php if( isset( $user->profile_image_url_https ) ) {echo $profile_image_url_https;} ?>"
-	                         alt="">
-	                    <a href="https://twitter.com/<?php if( isset( $user->screen_name ) ) {echo $screen_name;} ?>">
+	                    <img class="align-self-start mr-3" src="<?php if( isset( $user->profile_image_url_https ) ) { echo esc_url($profile_image_url_https); } ?>"                      alt="">
+	                    <a href="https://twitter.com/<?php if( isset( $user->screen_name ) ) {echo esc_attr($screen_name);} ?>">
 							<?php if( isset( $user->screen_name ) ) {echo "@" . $screen_name;} ?>
 	                    </a>
 	                </p>
@@ -138,7 +135,7 @@ function wl_twitter_tweets_api() {
 							$media_url               = $extended_entities->media_url;
 							if ( $media_type == "photo" ) {
 								?>
-	                            <img src="<?php echo $media_url; ?>" class="img-fluid"/>
+	                            <img src="<?php echo esc_url($media_url); ?>" class="img-fluid"/>
 								<?php
 							} elseif ( $media_type == "video" ) {
 								$video_info   = $extended_entities->video_info->variants[2];
@@ -149,14 +146,11 @@ function wl_twitter_tweets_api() {
 								if ( isset( $enable_extended_entitie ) && $enable_extended_entitie == "enable" ) {
 									?>
 	                                <a href="#" data-toggle="modal" data-target="#myModal">
-	                                    <img src="<?php echo $media_url; ?>" class="img-fluid"/>
+	                                    <img src="<?php echo esc_url($media_url); ?>" class="img-fluid"/>
 	                                </a>
 									<?php
-								} else {
-									?>
-	                                <a href="#">
-	                                    <img src="<?php echo $media_url; ?>" class="img-fluid"/>
-	                                </a>
+								} else { ?>
+	                                <a href="#"><img src="<?php echo esc_url($media_url); ?>" class="img-fluid"/></a>
 									<?php
 								}
 							}
@@ -170,15 +164,13 @@ function wl_twitter_tweets_api() {
 								$media_display_url  = $media_value->display_url;
 								$media_expanded_url = $media_value->expanded_url;
 								$media_type         = $media_value->type;
-								$media_sizes        = $media_value->sizes;
-								?>
-	                            <a href="<?php echo $media_expanded_url; ?>">
-	                                <img src="<?php echo $media_url_https; ?>" class="img-fluid"/>
+								$media_sizes        = $media_value->sizes; ?>
+	                            <a href="<?php echo esc_url($media_expanded_url); ?>">
+	                                <img src="<?php echo esc_url($media_url_https); ?>" class="img-fluid"/>
 	                            </a>
 								<?php
 							}
-										
-					?>
+						} ?>
 	                <p class="wl_tweet_desc">
 						<?php
 						if( isset( $status->text ) ) {						
@@ -187,46 +179,37 @@ function wl_twitter_tweets_api() {
 						?>
 	                </p>
 	                <p class="wl_tweet_action_buttons">
-	                    <a href="https://twitter.com/intent/retweet?tweet_id=<?php echo $id_str; ?>&related=<?php echo $screen_name; ?> retweet"
+	                    <a href="https://twitter.com/intent/retweet?tweet_id=<?php echo esc_attr($id_str); ?>&related=<?php echo esc_attr($screen_name); ?> retweet"
 	                       target="_blank"
-	                       onclick="window.open('https://twitter.com/intent/retweet?tweet_id=<?php echo $id_str; ?>&related=<?php echo $screen_name; ?> retweet', 'newwindow', 'width=600,height=450'); return false;">
+	                       onclick="window.open('https://twitter.com/intent/retweet?tweet_id=<?php echo esc_attr($id_str); ?>&related=<?php echo esc_attr($screen_name); ?> retweet', 'newwindow', 'width=600,height=450'); return false;">
 							<?php
 		                       if ( isset( $status->retweet_count ) ) {
-		                       		_e( 'Retweet', twitter_tweets );
-									echo " ($status->retweet_count)";
+		                       		esc_html_e( 'Retweet', 'twitter-tweets' );
+									echo esc_html("($status->retweet_count)");
 								}
 							?>
 	                    </a>
 
-	                    <a href="https://twitter.com/intent/like?tweet_id=<?php echo $id_str; ?>&related=<?php echo $screen_name; ?>"
-	                       target="_blank"
-	                       onclick="window.open('https://twitter.com/intent/like?tweet_id=<?php echo $id_str; ?>&related=<?php echo $screen_name; ?> retweet', 'newwindow', 'width=600,height=450'); return false;">
-	                        <?php
-		                       if ( isset( $status->favorite_count ) ) {
-	                       		    _e( 'Like', twitter_tweets );
-									echo "($status->favorite_count)";
-		                       }
-							?>
+	                    <a href="https://twitter.com/intent/like?tweet_id=<?php echo esc_attr($id_str); ?>&related=<?php echo esc_attr($screen_name); ?>" target="_blank" onclick="window.open('https://twitter.com/intent/like?tweet_id=<?php echo esc_attr($id_str); ?>&related=<?php echo esc_attr($screen_name); ?> retweet', 'newwindow', 'width=600,height=450'); return false;">
+						<?php
+						   if ( isset( $status->favorite_count ) ) {
+								esc_html_e( 'Like', 'twitter-tweets' );
+								echo esc_html("($status->favorite_count)");
+						   }
+						?>
 	                    </a>
-
-	                    <a href="https://twitter.com/intent/tweet?in_reply_to=<?php echo $id_str; ?>&related=<?php echo $screen_name; ?>"
-	                       target="_blank"
-	                       onclick="window.open('https://twitter.com/intent/tweet?in_reply_to=<?php echo $id_str; ?>&related=<?php echo $screen_name; ?> retweet', 'newwindow', 'width=600,height=450'); return false;"><?php _e( 'Reply', twitter_tweets ); ?>
+	                    <a href="https://twitter.com/intent/tweet?in_reply_to=<?php echo esc_attr($id_str); ?>&related=<?php echo esc_attr($screen_name); ?>" target="_blank" onclick="window.open('https://twitter.com/intent/tweet?in_reply_to=<?php echo esc_attr($id_str); ?>&related=<?php echo esc_attr($screen_name); ?> retweet', 'newwindow', 'width=600,height=450'); return false;"><?php esc_html_e( 'Reply', 'twitter-tweets' ); ?>
 	                    </a>
 	                </p>                
-	                <span class="wl-wtp-date-font-size"><?php if( isset( $status->created_at ) ) {echo tweet_time_calculate( $created_at );} ?>
-	                    &nbsp;<?php if( isset( $status->created_at ) ) { _e( 'ago', twitter_tweets );} ?></span>
+	                <span class="wl-wtp-date-font-size">
+						<?php if( isset( $status->created_at ) ) {echo tweet_time_calculate( $created_at );} ?>&nbsp;
+						<?php if( isset( $status->created_at ) ) { esc_html_e( 'ago', 'twitter-tweets' );} ?>
+					</span>
 	            </div> <!-- Tweet box -->
-	        <?php } ?>
-	    	</div>
-	    <?php }
-		}
-	     ?>
+	       <?php }
+			} ?>
+	    	</div>	    
 	    </div>
 	</div>
 </div>
-<?php
-	return ob_get_clean();
-}
- 
-?>
+<?php return ob_get_clean(); } ?>

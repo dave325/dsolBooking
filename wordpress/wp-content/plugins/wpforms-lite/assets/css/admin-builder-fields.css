@@ -184,6 +184,9 @@
 	padding: 12px 5px 12px 18px;
 	border-radius: 2px;
 	text-align: left;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 #wpforms-panel-fields .wpforms-add-fields-button.upgrade-modal,
@@ -231,11 +234,16 @@
 }
 
 #wpforms-panel-fields .wpforms-field-option-row input[type=text],
+#wpforms-panel-fields .wpforms-field-option-row input[type=number],
 #wpforms-panel-fields .wpforms-field-option-row textarea {
 	width: 99%;
 	border: 1px solid #d6d6d6;
 	padding: 6px 8px;
 	box-shadow: none;
+}
+
+#wpforms-panel-fields .wpforms-field-option-row input[type=number] {
+	width: 20%;
 }
 
 #wpforms-panel-fields .wpforms-field-option-row input[type=text].has-before {
@@ -324,6 +332,10 @@
 	border-bottom: 1px solid #b1bac3;
 	text-decoration: none;
 	outline: 0;
+}
+
+#wpforms-panel-fields .wpforms-field-option-group-toggle.upgrade-modal {
+	opacity: 0.6;
 }
 
 #wpforms-panel-fields .wpforms-field-option-group-toggle span {

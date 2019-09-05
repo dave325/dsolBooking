@@ -38,6 +38,7 @@ class Skin_1 extends Skin_Base {
 				],
 			]
 		);
+
 		$this->update_control(
 			'item_icon_icon_padding',
 			[

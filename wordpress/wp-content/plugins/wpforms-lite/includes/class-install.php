@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Handles plugin installation upon activation.
  *
@@ -23,6 +22,9 @@ class WPForms_Install {
 
 		// Watch for new multisite blogs.
 		add_action( 'wpmu_new_blog', array( $this, 'new_multisite_blog' ), 10, 6 );
+
+		// Watch for delayed admin install.
+		add_action( 'admin_init', array( $this, 'admin' ) );
 	}
 
 	/**
@@ -45,7 +47,7 @@ class WPForms_Install {
 
 				foreach ( $sites as $site ) {
 					switch_to_blog( $site->blog_id );
-					$this->run_install();
+					$this->run();
 					restore_current_blog();
 				}
 			} else {
@@ -54,14 +56,14 @@ class WPForms_Install {
 
 				foreach ( $sites as $site ) {
 					switch_to_blog( $site['blog_id'] );
-					$this->run_install();
+					$this->run();
 					restore_current_blog();
 				}
 			}
 		} else {
 
 			// Normal single site.
-			$this->run_install();
+			$this->run();
 		}
 
 		// Abort so we only set the transient for single site installs.
@@ -74,13 +76,49 @@ class WPForms_Install {
 	}
 
 	/**
+	 * Runs manual install.
+	 *
+	 * @since 1.5.4.2
+	 *
+	 * @param bool $silent Silent install, disables welcome page.
+	 */
+	public function manual( $silent = false ) {
+
+		$this->install( is_plugin_active_for_network( plugin_basename( WPFORMS_PLUGIN_FILE ) ) );
+
+		if ( $silent ) {
+			delete_transient( 'wpforms_activation_redirect' );
+		}
+	}
+
+	/**
+	 * Watch for delayed install procedure from WPForms admin.
+	 *
+	 * @since 1.5.4.2
+	 */
+	public function admin() {
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$install = get_option( 'wpforms_install', false );
+
+		if ( empty( $install ) ) {
+			return;
+		}
+
+		$this->manual( true );
+
+		delete_option( 'wpforms_install' );
+	}
+
+	/**
 	 * Run the actual installer.
 	 *
-	 * @since 1.3.0
+	 * @since 1.5.4.2
 	 */
-	public function run_install() {
-
-		$wpforms_install = new stdClass();
+	protected function run() {
 
 		// Hook for Pro users.
 		do_action( 'wpforms_install' );
@@ -103,21 +141,19 @@ class WPForms_Install {
 	 *
 	 * @since 1.3.0
 	 *
-	 * @param int $blog_id
-	 * @param int $user_id
-	 * @param string $domain
-	 * @param string $path
-	 * @param int $site_id
-	 * @param array $meta
+	 * @param int    $blog_id Blog ID.
+	 * @param int    $user_id User ID.
+	 * @param string $domain  Site domain.
+	 * @param string $path    Site path.
+	 * @param int    $site_id Site ID. Only relevant on multi-network installs.
+	 * @param array  $meta    Meta data. Used to set initial site options.
 	 */
 	public function new_multisite_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
 
 		if ( is_plugin_active_for_network( plugin_basename( WPFORMS_PLUGIN_FILE ) ) ) {
-
 			switch_to_blog( $blog_id );
-			$this->run_install();
+			$this->run();
 			restore_current_blog();
-
 		}
 	}
 }

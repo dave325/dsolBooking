@@ -93,6 +93,7 @@ class Timeline extends EAE_Widget_Base {
 		);
 
 		$this->title_controls();
+		$this->date_controls();
 		$this->image_controls();
 		$this->excerpt_controls();
 		$this->read_more_controls();
@@ -121,6 +122,7 @@ class Timeline extends EAE_Widget_Base {
 				'default' => 'February 2, 2014',
 			]
 		);
+
 		$repeater->add_control(
 			'item_link',
 			[
@@ -530,6 +532,74 @@ class Timeline extends EAE_Widget_Base {
 				'condition' => [
 					'enable_cta' => 'yes'
 				],
+			]
+		);
+	}
+
+	public function date_controls(){
+		$this->add_control(
+			'date_heading',
+			[
+				'label' => __('Date', 'wts-eae'),
+				'type'  => Controls_Manager::HEADING,
+				'separator' => 'before'
+			]
+		);
+
+		$this->add_control(
+			'show_date',
+			[
+				'label' => __('Show Date', 'wts-eae'),
+				'type'  => Controls_Manager::SWITCHER,
+				'label_off' => __( 'No', 'wts-eae' ),
+				'label_on' => __( 'Yes', 'wts-eae' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+		$this->add_control(
+			'post_date_format',
+			[
+				'label'   => __( 'Date Format', 'wts-eae' ),
+				'type'    => Controls_Manager::SELECT,
+				'options' => [
+					'F j, Y g:i a' => date('F j, Y g:i a'),
+					'F j, Y' => date( 'F j, Y' ),
+					'F, Y' => date( 'F, Y' ),
+					'g:i a' => date( 'g:i a' ),
+					'g:i:s a' => date( 'g:i:s a' ),
+					'l, F jS, Y' => date( 'l, F jS, Y' ),
+					'M j, Y @ G:i' => date( 'M j, Y @ G:i' ),
+					'Y/m/d \a\t g:i A' => date( 'Y/m/d \a\t g:i A' ),
+					'Y/m/d \a\t g:ia' => date( 'Y/m/d \a\t g:ia' ),
+					'Y/m/d g:i:s A' => date( 'Y/m/d g:i:s A' ),
+					'Y/m/d' => date( 'Y/m/d' ),
+					'Y-m-d \a\t g:i A' => date( 'Y-m-d \a\t g:i A' ),
+					'Y-m-d \a\t g:ia' => date( 'Y-m-d \a\t g:ia' ),
+					'Y-m-d g:i:s A' => date( 'Y-m-d g:i:s A' ),
+					'Y-m-d' => date( 'Y-m-d' ),
+					'custom' => __( 'Custom', 'wts-eae' ),
+					'default' => __( 'Default', 'wts-eae' )
+				],
+				'default' => 'F j, Y',
+				'condition'   => [
+					'show_date' => 'yes'
+				],
+				'description' => '<a href="https://codex.wordpress.org/Formatting_Date_and_Time" target="_blank"> Click here</a> for documentation on date and time formatting.'
+			]
+		);
+
+		$this->add_control(
+			'post_date_format_custom',
+			[
+				'label'       => __( 'Custom Format', 'wts-eae' ),
+				'type'        => Controls_Manager::TEXT,
+				'default'     => __( 'd/m/Y', 'wts-eae' ),
+				'placeholder' => __( 'Enter Date Format', 'wts-eae' ),
+				'condition'   => [
+					'show_date' => 'yes',
+					'post_date_format' => 'custom',
+				]
 			]
 		);
 	}

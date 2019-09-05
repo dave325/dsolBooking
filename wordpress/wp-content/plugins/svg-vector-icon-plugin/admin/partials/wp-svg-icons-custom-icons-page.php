@@ -1,15 +1,18 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if( file_exists( '../../../../../wp-load.php' ) ) {
-	// required for _e() to work inside of the modal
-	include_once( "../../../../../wp-load.php" );
+if ( ! defined( 'ABSPATH' ) ) {
+
+	exit; // Exit if accessed directly
+
 }
+
+$screen = get_current_screen();
+
 ?>
 
 	<div class="svg-custom-upload-wrap wrap" style="min-width:900px;">
 
-				<?php if( !file_exists( '../../../../../wp-load.php' ) ) { ?>
+				<?php if( 'wp-svg-icons_page_wp-svg-icons-custom-set ' === $screen->base ) { ?>
 					<!-- review us container -->
 					<div id="review-wp-svg-icons" style="position:absolute;right:15em;top:0;text-align:center;">
 						<p><?php _e( 'Leave Us A Review!' , 'wp-svg-icons' ); ?></p>
@@ -35,11 +38,9 @@ if( file_exists( '../../../../../wp-load.php' ) ) {
 							Validate our nonce for security reasons
 							@since 3.1.8.2
 						*/
-						if ( ! empty( $_POST['wp_svg_icons_upload_validation'] ) ) {
-							if( ! check_admin_referer( 'validate_wp_svg_icons', 'wp_svg_icons_upload_validation' ) ) {
-								wp_die( __( 'Sorry, your nonce did not verify. Please try again.', 'wp-svg-icons' ) );
-								exit;
-							}
+						if( ! check_admin_referer( 'validate_wp_svg_icons', 'wp_svg_icons_upload_validation' ) ) {
+							wp_die( __( 'Sorry, your nonce did not verify. Please try again.', 'wp-svg-icons' ) );
+							exit;
 						}
 
 
@@ -360,7 +361,7 @@ if( file_exists( '../../../../../wp-load.php' ) ) {
 		</div>
 
 		<section class="ten-icon-limit-reached" style="display:none;margin:2em 0;text-align:center;font-size:15px;color:rgb(238, 110, 81);padding:10px;">
-			<span class="dashicons dashicons-welcome-comments"></span> <?php _e( "It looks like you're trying to install and use more than 10 icons. Unfortunately the free version limits the number of custom icons to 10. If you'd like to access more than 10 custom icons, please consider upgrading to the", 'wp-svg-icons' ); ?> <a href="https://www.evan-herman.com/wp-svg-icons-pro/" target="_blank" title="<?php _e( 'Upgrade to pro' , 'wp-svg-icons' ); ?>"><?php _e( 'Pro Version' , 'wp-svg-icons' ); ?></a>
+			<span class="dashicons dashicons-welcome-comments"></span> <?php _e( "It looks like you're trying to install and use more than 10 icons. Unfortunately the free version limits the number of custom icons to 10. If you'd like to access more than 10 custom icons, please consider upgrading to the", 'wp-svg-icons' ); ?> <a href="https://www.wpicons.com/?discount=LITEUPGRADE&utm_source=wp-plugin&utm_medium=icon-limit-notice&utm_campaign=lite-upgrade" target="_blank" title="<?php _e( 'Upgrade to pro' , 'wp-svg-icons' ); ?>"><?php _e( 'Pro Version' , 'wp-svg-icons' ); ?></a>
 		</section>
 
 		<div class="current-font-pack">

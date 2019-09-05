@@ -2,8 +2,8 @@
 Contributors: webtechstreet, satishprajapati, hardiksharma
 Tags: page-builder, elementor
 Requires at least: 4.4
-Tested up to: 5.1
-Stable tag: 5.1
+Tested up to: 5.2
+Stable tag: 5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,8 @@ Current Addon Elements:
 * Info Circle (new)
 * Comparison Table (new)
 * Info Circle (new)
+* Background Slider
+* Modal Popup
 * Flip Box
 * Text Separator 
 * Price Table
@@ -69,6 +71,21 @@ Column gap => No gap
 3. /assets/screenshot-4.png
 
 == Changelog ==
+
+= 1.5.3 =
+* Fixed php warning in Particle Background modules
+
+= 1.5.2 =
+* Fixed : Date issue with Timeline widget.
+
+= 1.5.1 =
+* Fixed issue with missing CSS code from previous release.
+
+= 1.5 =
+* Enhancement: Added option to disable modules from that backend dashboard
+* Enhancement: Added option in google map to open info window on load
+* Fixed: Date format issue in Timeline widget
+* Fixed: Optimized js code of After Before Image Comparison widget for better performance.
 
 = 1.4 =
 * New Widget: Progress Bar

@@ -616,7 +616,7 @@ class Dsol_Posts_Controller
                 $final[$i]['time'] = $temp_time;
             }
             // Return all of our comment response data.
-            return rest_ensure_response(array($final, $data, $wpdb->last_query));
+            return rest_ensure_response(array($final));
     }
 
     public function editUserReservation($request)
@@ -806,3 +806,4 @@ function dsol_register_my_rest_routes()
 }
 
 add_action('rest_api_init', 'dsol_register_my_rest_routes');
+?>

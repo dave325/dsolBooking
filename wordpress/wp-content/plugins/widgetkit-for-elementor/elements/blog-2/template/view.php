@@ -96,7 +96,7 @@
                                 <?php if ($settings['date_enable']): ?>
                                     
                                 <span class="date-format">
-                                    <?php esc_html_e(date(get_option('date_format')), 'widgetkit-for-elementor'); ?>
+                                   <?php esc_html_e(date_i18n((get_option('date_format'))), 'widgetkit-for-elementor'); ?>
                                 </span>
                                 <?php endif ?>
 

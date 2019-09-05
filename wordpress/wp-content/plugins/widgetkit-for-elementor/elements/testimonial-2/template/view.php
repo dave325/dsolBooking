@@ -14,10 +14,10 @@
                           <p> <?php echo $testimonial['testimoni_content_2'];?></p>
                       </div>
                  <?php endif; ?>
-                <?php if ($testimonial['testimoni_image_2']['url']):?>
+                <?php if ($testimonial['testimoni_image_2']):?>
                   <div class="author">
                         <span>
-                            <img class="testimoni-image" src="<?php echo $testimonial['testimoni_image_2']['url']; ?>" alt="<?php the_title(); ?>">
+                            <img class="testimony-image" src="<?php echo $testimonial['testimoni_image_2']['url']; ?>" alt="<?php the_title(); ?>">
                         </span>     
                   </div>
                 <?php endif;?>

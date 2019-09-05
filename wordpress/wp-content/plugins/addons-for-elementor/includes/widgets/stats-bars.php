@@ -233,27 +233,6 @@ class LAE_Stats_Bars_Widget extends Widget_Base {
             ]
         );
 
-
-        $this->add_control(
-            'stats_percentage_spacing',
-            [
-                'label' => __('Spacing from Stats Title', 'livemesh-el-addons'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%', 'em'],
-                'default' => [
-                    'top' => 0,
-                    'right' => 0,
-                    'bottom' => 0,
-                    'left' => 5,
-                    'unit' => 'px',
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .lae-stats-bars .lae-stats-bar .lae-stats-title span' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'isLinked' => false
-            ]
-        );
-
         $this->add_control(
             'stats_percentage_color',
             [

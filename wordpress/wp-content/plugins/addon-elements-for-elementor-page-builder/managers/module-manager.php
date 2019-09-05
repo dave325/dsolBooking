@@ -1,40 +1,25 @@
 <?php
 namespace WTS_EAE\Managers;
+use WTS_EAE\Classes\Helper;
+
 class Module_Manager {
 	protected $modules = [];
 	public function __construct() {
-		$this->modules = [
-			'timeline',
-			'info-circle',
-		//	'evergreen-timer',
-			'comparison-table',
-			'image-compare',
-			'animated-text',
-			'dual-button',
-			'particles',
-			'modal-popup',
-			'progress-bar',
-			'flip-box',
-			'split-text',
-			'gmap',
-			'text-separator',
-			'price-table',
-			'twitter',
-			'bg-slider',
-			'animated-gradient',
+		$helper = new Helper();
+		$this->modules = $helper->get_eae_modules() ;
 
-			//'testimonial-slider',
-			'post-list',
-			'shape-separator',
-		];
+		$this->modules = apply_filters('wts_eae_active_modules', $this->modules);
 		// Todo:: apply filter for modules that depends on third party plugins
-		foreach ( $this->modules as $module_name ) {
-			$class_name = str_replace( '-', ' ', $module_name );
-			$class_name = str_replace( ' ', '', ucwords( $class_name ) );
-			$class_name = 'WTS_EAE' . '\\Modules\\' . $class_name . '\Module';
+		foreach ( $this->modules as $key => $module_name ) {
+			//echo 'Key '. $key;
+			if($module_name['enabled'] == 'true'){
+				$class_name = str_replace( '-', ' ', $key );
+				//$class_name = $module_name['Name'];
+				$class_name = str_replace( ' ', '', ucwords( $class_name ) );
+				$class_name = 'WTS_EAE' . '\\Modules\\' . $class_name . '\Module';
 
-			$this->modules[ $module_name ] = $class_name::instance();
-
+				$this->modules[ $module_name['name'] ] = $class_name::instance();
+			}
 
 		}
 	}

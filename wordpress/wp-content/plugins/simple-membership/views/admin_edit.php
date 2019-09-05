@@ -41,7 +41,7 @@
             <td><input name="email" autocomplete="off" class="regular-text validate[required,custom[email],ajax[ajaxEmailCall]]" type="text" id="email" value="<?php echo esc_attr($email); ?>" /></td>
         </tr>
         <tr class="swpm-admin-edit-password">
-            <th scope="row"><label for="password"><?php echo  SwpmUtils::_('Password'); ?> <span class="description"><?php /* translators: password input field */_e('(twice, leave empty to retain old password)'); ?></span></label></th>
+            <th scope="row"><label for="password"><?php echo  SwpmUtils::_('Password'); ?> <span class="description"><?php _e('(twice, leave empty to retain old password)', 'simple-membership'); ?></span></label></th>
             <td><input class="regular-text"  name="password" type="password" id="pass1" autocomplete="off" /><br />
             <input class="regular-text" name="password_re" type="password" id="pass2" autocomplete="off" />
             <br />
@@ -75,13 +75,25 @@
 		<th scope="row"><label for="subscr_id"><?php echo  SwpmUtils::_('Subscriber ID/Reference') ?> </label></th>
 		<td><input class="regular-text" name="subscr_id" type="text" id="subscr_id" value="<?php echo esc_attr($subscr_id); ?>" /></td>
 	</tr>
+        <tr class="swpm-admin-edit-expiry-date">
+		<th scope="row"><label for="member_expiry_date"><?php echo SwpmUtils::_('Expiry Date') ?> </label></th>
+		<td>
+                    <?php 
+                    $member_current_expiry_date = SwpmMemberUtils::get_formatted_expiry_date_by_user_id($member_id);
+                    echo esc_attr($member_current_expiry_date);
+                    ?>
+                    <p class="description indicator-hint">
+                        <?php echo SwpmUtils::_('This is calculated based on the current membership level assigned to this member and the expiry condition that you have set for that membership level.') ?>
+                    </p>
+                </td>
+	</tr>        
         <tr class="swpm-admin-edit-last-accessed">
 		<th scope="row"><label for="last_accessed"><?php echo SwpmUtils::_('Last Accessed Date') ?> </label></th>
 		<td>
                     <?php echo esc_attr($last_accessed); ?>
                     <p class="description indicator-hint"><?php echo SwpmUtils::_('This value gets updated when this member logs into your site.') ?></p>
                 </td>
-	</tr>         
+	</tr>
         <tr class="swpm-admin-edit-last-accessed-ip">
 		<th scope="row"><label for="last_accessed_from_ip"><?php echo  SwpmUtils::_('Last Accessed From IP') ?> </label></th>
 		<td>

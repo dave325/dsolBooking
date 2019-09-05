@@ -4,14 +4,14 @@
 
 	<div class="lae-notice-rate-content">
 
-		<p><?php _e( 'Hello!', 'livemesh-el-adddons' ); ?> <?php _e( 'I see that you have the plugin <strong>Livemesh Addons for Elementor</strong> installed for some time now.', 'livemesh-el-adddons' ); ?></p>
-        <p><?php _e( 'If you like this plugin, please write a few words about it at wordpress.org or social media. Your opinion will help others discover our plugin.', 'livemesh-el-adddons' ); ?></p>
-        <p><?php _e( 'Thank you!', 'livemesh-el-adddons' ); ?></p>
+		<p><?php _e( 'Hello!', 'livemesh-el-addons' ); ?> <?php _e( 'I see that you have the plugin <strong>Livemesh Addons for Elementor</strong> installed for some time now.', 'livemesh-el-addons' ); ?></p>
+        <p><?php _e( 'If you like this plugin, please write a few words about it at wordpress.org or social media. Your opinion will help others discover our plugin.', 'livemesh-el-addons' ); ?></p>
+        <p><?php _e( 'Thank you!', 'livemesh-el-addons' ); ?></p>
 
 		<p class="lae-notice-rate-actions">
-			<a href="<?php echo $this->get_dismiss_link(); ?>" class="button button-primary" onclick="window.open('https://wordpress.org/support/plugin/addons-for-elementor/reviews/?rate=5&filter=5#new-post');"><?php _e( 'Rate plugin', 'livemesh-el-adddons' ); ?></a>
-			<a href="<?php echo $this->get_dismiss_link( true ); ?>"><?php _e( 'Remind me later', 'livemesh-el-adddons' ); ?></a>
-			<a href="<?php echo $this->get_dismiss_link(); ?>" class="lae-notice-rate-dismiss"><?php _e( 'Dismiss', 'livemesh-el-adddons' ); ?></a>
+			<a href="<?php echo $this->get_dismiss_link(); ?>" class="button button-primary" onclick="window.open('https://wordpress.org/support/plugin/addons-for-elementor/reviews/?rate=5&filter=5#new-post');"><?php _e( 'Rate plugin', 'livemesh-el-addons' ); ?></a>
+			<a href="<?php echo $this->get_dismiss_link( true ); ?>"><?php _e( 'Remind me later', 'livemesh-el-addons' ); ?></a>
+			<a href="<?php echo $this->get_dismiss_link(); ?>" class="lae-notice-rate-dismiss"><?php _e( 'Dismiss', 'livemesh-el-addons' ); ?></a>
 		</p>
 
 	</div>

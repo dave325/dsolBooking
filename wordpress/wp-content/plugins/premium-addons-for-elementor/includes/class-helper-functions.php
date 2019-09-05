@@ -172,4 +172,31 @@ class Helper_Functions {
 		return self::$google_localize;
         
     }
+    
+    /**
+     * Get Installed Theme
+     * 
+     * Returns the active theme slug
+     * 
+     * @access public
+     * @return string theme slug
+     */
+    public static function get_installed_theme() {
+
+        $theme = wp_get_theme();
+
+        if( $theme->parent() ) {
+
+            $theme_name = $theme->parent()->get('Name');
+
+        } else {
+
+            $theme_name = $theme->get('Name');
+
+        }
+
+        $theme_name = sanitize_key( $theme_name );
+
+        return $theme_name;
+    }
 }

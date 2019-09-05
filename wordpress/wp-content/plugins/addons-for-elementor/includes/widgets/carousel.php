@@ -228,12 +228,11 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
         $this->add_control(
             'heading_desktop',
             [
-                'label' => __( 'Desktop', 'livemesh-el-addons' ),
+                'label' => __('Desktop', 'livemesh-el-addons'),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'after',
             ]
         );
-
 
 
         $this->add_control(
@@ -242,7 +241,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
                 'label' => __('Gutter', 'livemesh-el-addons'),
                 'description' => __('Space between columns.', 'livemesh-el-addons'),
                 'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%', 'em' ],
+                'size_units' => ['px', '%', 'em'],
                 'default' => [
                     'top' => 0,
                     'right' => 10,
@@ -285,7 +284,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
         $this->add_control(
             'heading_tablet',
             [
-                'label' => __( 'Tablet', 'livemesh-el-addons' ),
+                'label' => __('Tablet', 'livemesh-el-addons'),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'after',
             ]
@@ -297,7 +296,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
                 'label' => __('Gutter', 'livemesh-el-addons'),
                 'description' => __('Space between columns.', 'livemesh-el-addons'),
                 'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%', 'em' ],
+                'size_units' => ['px', '%', 'em'],
                 'default' => [
                     'top' => 0,
                     'right' => 10,
@@ -310,7 +309,6 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
                 ],
             ]
         );
-
 
 
         $this->add_control(
@@ -351,7 +349,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
         $this->add_control(
             'heading_mobile',
             [
-                'label' => __( 'Mobile Phone', 'livemesh-el-addons' ),
+                'label' => __('Mobile Phone', 'livemesh-el-addons'),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'after',
             ]
@@ -363,7 +361,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
                 'label' => __('Gutter', 'livemesh-el-addons'),
                 'description' => __('Space between columns.', 'livemesh-el-addons'),
                 'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%', 'em' ],
+                'size_units' => ['px', '%', 'em'],
                 'default' => [
                     'top' => 0,
                     'right' => 5,
@@ -416,7 +414,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
         $this->start_controls_section(
             'section_carousel_style',
             [
-                'label' => __( 'Carousel', 'livemesh-el-addons' ),
+                'label' => __('Carousel', 'livemesh-el-addons'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'show_label' => false,
             ]
@@ -425,7 +423,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
         $this->add_control(
             'heading_content',
             [
-                'label' => __( 'Content', 'livemesh-el-addons' ),
+                'label' => __('Content', 'livemesh-el-addons'),
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'after',
             ]
@@ -434,7 +432,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
         $this->add_control(
             'content_color',
             [
-                'label' => __( 'Color', 'livemesh-el-addons' ),
+                'label' => __('Color', 'livemesh-el-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .lae-carousel .lae-carousel-item' => 'color: {{VALUE}};',
@@ -445,7 +443,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
         $this->add_control(
             'content_bg_color',
             [
-                'label' => __( 'Background Color', 'livemesh-el-addons' ),
+                'label' => __('Background Color', 'livemesh-el-addons'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
                     '{{WRAPPER}} .lae-carousel .lae-carousel-item' => 'background-color: {{VALUE}};',
@@ -459,7 +457,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
                 'label' => __('Padding', 'livemesh-el-addons'),
                 'description' => __('Padding for the columns.', 'livemesh-el-addons'),
                 'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => [ 'px', '%', 'em' ],
+                'size_units' => ['px', '%', 'em'],
                 'default' => [
                     'top' => 5,
                     'right' => 5,
@@ -485,6 +483,8 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
     protected function render() {
 
         $settings = $this->get_settings_for_display();
+
+        $dir = is_rtl() ? ' dir="rtl"' : '';
 
         $settings = apply_filters('lae_carousel_' . $this->get_id() . '_settings', $settings);
 
@@ -518,7 +518,7 @@ Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Vestibulum turpis s
 
         if (!empty($elements)) :
 
-            $output = '<div id="lae-carousel-' . $this->get_id() . '" class="lae-carousel lae-container" data-settings=\'' . wp_json_encode($carousel_settings) . '\'>';
+            $output = '<div' . $dir . ' id="lae-carousel-' . $this->get_id() . '" class="lae-carousel lae-container" data-settings=\'' . wp_json_encode($carousel_settings) . '\'>';
 
             foreach ($elements as $element) :
 

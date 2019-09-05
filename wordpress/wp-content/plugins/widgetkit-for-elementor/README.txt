@@ -4,13 +4,13 @@ Contributors: Themesgrove
 Donate link: https://themesgrove.com/
 Tags: Elementor, Elementor Page Builder, Elements, Widget, Elementor Addons, Add-ons, Page Builder, Countdown, Timer, Slider, Team, E-commerce, Testimonial, Blog, Social-share, Button, Modal, Carousel, Portfolio, Pricing, Image-box, Icon-box, Element Kit, Widgetkit
 Requires at least: 4.0
-Tested up to: 4.9.8
-Stable tag: 1.2.2
+Tested up to: 5.2.2
+Stable tag: 1.5.4
 Requires PHP: 5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-15 Premium Addons for Elementor Page Builder.
+Premium Addons for Elementor Page Builder.
 Huge collection of elements with premium quality for using in Elementor Page Builder, which helps you to create any kind of complicated design without coding in shortest time.Elementor Page Builder must be installed and activated.
 
 == Description ==
@@ -148,6 +148,34 @@ PHP 5.4 or greater.
 
 
 == Changelog ==
+= 1.5.4 = 
+* Fixed - Bug
+
+= 1.5.3 = 
+* Imporved – Team round element
+* Imporved – Hover image element
+* Fixed - Bug
+
+= 1.5.2 = 
+* Imporved – Hover image element 
+* Fixed - Bug
+
+= 1.5.1 = 
+* Imporved – Testimonial Elements
+* Fixed - Bug
+
+= 1.5.0 = 
+* Imporved – Slider Elements
+* Improved - Post Carousel
+* Imporved – Text Animation Element
+* Fixed - Bug
+
+= 1.3.0 = 
+* Imporved – Slider Elements
+* New Option - Slider Data Pause True/False
+* Imporved – Portfolio Elements
+* Imporved – Team Elements
+* Fixed - Bug
 
 = 1.2.2 = 
 * Fixed - Bug

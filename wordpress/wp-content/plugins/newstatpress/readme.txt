@@ -3,8 +3,8 @@ Contributors: ice00, lechab
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F5S5PF4QBWU7E
 Tags: stats,statistics,widget,admin,sidebar,visits,visitors,pageview,user,agent,referrer,post,posts,spy,statistiche,ip2nation,country
 Requires at least: 3.5
-Tested up to: 4.9.5
-Stable Tag: 1.3.0
+Tested up to: 5.2.2
+Stable Tag: 1.3.2
 
 NewStatPress (Statpress plugin fork) is a real-time plugin to manage the visits' statistics about your blog  (without external web analytics).
 
@@ -149,6 +149,18 @@ Check at http://newstatpress.altervista.org for more details
 6.
 
 == Changelog ==
+
+= 1.3.2 =
+*Released date: 2019-07-20*
+
+* Fix exportation dates
+
+= 1.3.1 =
+*Released date: 2019-05-19*
+
+* Update Hungarian language thanks to Pille
+* Remove Warning "Address is not a valid IPv4 or IPv6"
+* Browsers (+93), OS (+11)
 
 = 1.3.0 =
 *Released date: 2018-05-15*

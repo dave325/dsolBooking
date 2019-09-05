@@ -123,11 +123,24 @@ function lae_get_info_for_taxonomies( $taxonomies )
 function lae_get_taxonomies_map()
 {
     $map = array();
-    $taxonomies = get_taxonomies();
+    $taxonomies = lae_get_all_taxonomies();
     foreach ( $taxonomies as $taxonomy ) {
         $map[$taxonomy] = $taxonomy;
     }
     return apply_filters( 'lae_taxonomies_map', $map );
+}
+
+function lae_get_all_taxonomies()
+{
+    $taxonomies = get_taxonomies( array(
+        'public'   => true,
+        '_builtin' => false,
+    ) );
+    $taxonomies = array_merge( array(
+        'category' => 'category',
+        'post_tag' => 'post_tag',
+    ), $taxonomies );
+    return $taxonomies;
 }
 
 function lae_entry_published( $format = null )

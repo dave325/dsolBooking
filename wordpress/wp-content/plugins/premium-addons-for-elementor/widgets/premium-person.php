@@ -1,5 +1,16 @@
 <?php
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Utils;
+use Elementor\Control_Media;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Css_Filter;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -10,11 +21,17 @@ class Premium_Person extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Person';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Person', 'premium-addons-for-elementor') );
 	}
 
     public function get_icon() {
         return 'pa-person';
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
     }
 
     public function get_categories() {
@@ -77,6 +94,7 @@ class Premium_Person extends Widget_Base {
                     'label'         => __('Height', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::SLIDER,
                     'description'   => __('Choose image height in (PX, EM)', 'premium-addons-for-elementor'),
+                    'size_units'    => ['px', "em", "vh"],
                     'range'         => [
                         'px'    => [
                             'min'       => 1,
@@ -87,7 +105,6 @@ class Premium_Person extends Widget_Base {
                             'max'       => 55,
                         ],
                     ],
-                    'size_units'    => ['px', "em"],
                     'label_block'   => true,
                     'selectors'     => [
                         '{{WRAPPER}} .premium-person-image-container img' => 'height: {{SIZE}}{{UNIT}};',
@@ -132,7 +149,7 @@ class Premium_Person extends Widget_Base {
                     'label'         => __('Name', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::TEXT,
                     'dynamic'       => [ 'active' => true ],
-                    'default'       => __('John Frank', 'premium-addons-for-elementor'),
+                    'default'       => 'John Frank',
                     'label_block'   => true,
                     ]
                 );
@@ -367,6 +384,15 @@ class Premium_Person extends Widget_Base {
 			]
 		);
         
+        $this->add_group_control(
+			Group_Control_Css_Filter::get_type(),
+			[
+				'name'      => 'hover_css_filters',
+                'label'     => __('Hover CSS Filters', 'premium-addons-for-elementor'),
+				'selector'  => '{{WRAPPER}} .premium-person-image-container:hover img'
+			]
+		);
+        
         /*End Image Style Section*/
         $this->end_controls_section();
         
@@ -570,11 +596,11 @@ class Premium_Person extends Widget_Base {
         // get our input from the widget settings.
         $settings = $this->get_settings_for_display();
         
-        $this->add_inline_editing_attributes('premium_person_name');
+        $this->add_inline_editing_attributes('name');
         
-        $this->add_inline_editing_attributes('premium_person_title');
+        $this->add_inline_editing_attributes('title');
         
-        $this->add_inline_editing_attributes('premium_person_content','advanced');
+        $this->add_inline_editing_attributes('description','advanced');
         
         $name_heading = $settings['premium_person_name_heading'];
         
@@ -591,13 +617,15 @@ class Premium_Person extends Widget_Base {
         </div>
         <div class="premium-person-info">
             <div class="premium-person-info-container">
-                <?php if( !empty( $settings['premium_person_name'] ) ) : ?><<?php echo $name_heading; ?> class="premium-person-name"><span <?php echo $this->get_render_attribute_string('premium_person_name'); ?>><?php echo $settings['premium_person_name']; ?></span></<?php echo $name_heading; ?>><?php endif; ?>
-                <?php if( !empty( $settings['premium_person_title'] ) ) : ?><<?php echo $title_heading; ?> class="premium-person-title"><span <?php echo $this->get_render_attribute_string('premium_person_title'); ?>><?php echo $settings['premium_person_title']; ?></span></<?php echo $title_heading; ?>><?php endif; ?>
-                <div class="premium-person-content">
-                    <div <?php echo $this->get_render_attribute_string('premium_person_content'); ?>>
-                        <?php echo $settings['premium_person_content']; ?>
+                <?php if( ! empty( $settings['premium_person_name'] ) ) : ?><<?php echo $name_heading; ?> class="premium-person-name"><span <?php echo $this->get_render_attribute_string('name'); ?>><?php echo $settings['premium_person_name']; ?></span></<?php echo $name_heading; ?>><?php endif; ?>
+                <?php if( ! empty( $settings['premium_person_title'] ) ) : ?><<?php echo $title_heading; ?> class="premium-person-title"><span <?php echo $this->get_render_attribute_string('title'); ?>><?php echo $settings['premium_person_title']; ?></span></<?php echo $title_heading; ?>><?php endif; ?>
+                <?php if( ! empty( $settings['premium_person_content'] ) ) : ?>
+                    <div class="premium-person-content">
+                        <div <?php echo $this->get_render_attribute_string('content'); ?>>
+                            <?php echo $settings['premium_person_content']; ?>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
                 <ul class="premium-person-social-list">
                     <?php if( !empty( $settings['premium_person_facebook'] ) ) : ?><li class="premium-person-list-item premium-person-facebook"><a href="<?php echo $settings['premium_person_facebook']; ?>" target="_blank"><i class="fa fa-facebook"></i></a></li><?php endif; ?>
                     <?php if( !empty( $settings['premium_person_twitter'] ) ) : ?><li class="premium-person-list-item premium-person-twitter"><a href="<?php echo $settings['premium_person_twitter']; ?>" target="_blank"><i class="fa fa-twitter"></i></a></li><?php endif; ?>
@@ -622,11 +650,11 @@ class Premium_Person extends Widget_Base {
         ?>
         <#
         
-        view.addInlineEditingAttributes('premium_person_name');
+        view.addInlineEditingAttributes('name');
         
-        view.addInlineEditingAttributes('premium_person_title');
+        view.addInlineEditingAttributes('title');
         
-        view.addInlineEditingAttributes('premium_person_content', 'advanced');
+        view.addInlineEditingAttributes('content', 'advanced');
         
         var nameHeading = settings.premium_person_name_heading,
         
@@ -640,27 +668,29 @@ class Premium_Person extends Widget_Base {
         
         <div {{{ view.getRenderAttributeString('container') }}} >
             <div class="premium-person-image-container">
-                <img src="{{ settings.premium_person_image.url}}" alt="{{ settings.premium_person_name }}">
+                <img src="{{ settings.premium_person_image.url }}" alt="{{ settings.premium_person_name }}">
             </div>
             <div class="premium-person-info">
                 <div class="premium-person-info-container">
                     <# if( '' != settings.premium_person_name  ) { #>
                     <{{{nameHeading}}} class="premium-person-name">
-                    <span {{{ view.getRenderAttributeString('premium_person_name') }}}>
+                    <span {{{ view.getRenderAttributeString('name') }}}>
                         {{{ settings.premium_person_name }}}
                     </span></{{{nameHeading}}}>
-                    <# } #>
-                    <# if( '' != settings.premium_person_title  ) { #>
+                    <# }
+                    if( '' != settings.premium_person_title  ) { #>
                     <{{{titleHeading}}} class="premium-person-title">
-                    <span {{{ view.getRenderAttributeString('premium_person_title') }}}>
+                    <span {{{ view.getRenderAttributeString('title') }}}>
                         {{{ settings.premium_person_title }}}
                     </span></{{{titleHeading}}}>
-                    <# } #>
-                    <div class="premium-person-content">
-                        <div {{{ view.getRenderAttributeString('premium_person_content') }}}>
-                            {{{ settings.premium_person_content }}}
+                    <# }
+                    if( '' != settings.premium_person_content ) { #>
+                        <div class="premium-person-content">
+                            <div {{{ view.getRenderAttributeString('content') }}}>
+                                {{{ settings.premium_person_content }}}
+                            </div>
                         </div>
-                    </div>
+                    <# } #>
                     <ul class="premium-person-social-list">
                         <# if( '' != settings.premium_person_facebook  ) { #>
                             <li class="premium-person-list-item premium-person-facebook"><a href="{{ settings.premium_person_facebook }}" target="_blank"><i class="fa fa-facebook"></i></a></li>

@@ -54,13 +54,13 @@ class wkfe_carousel extends Widget_Base {
 	$this->add_control(
 		'item_option',
 			[
-				'label'     => esc_html__( 'Item Options', 'widgetkit-for-elementor' ),
+				'label'     => esc_html__( 'Post Query', 'widgetkit-for-elementor' ),
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'custom_post',
 				'options'   => [
-					'custom_post'    => esc_html__( 'Custom Post', 'widgetkit-for-elementor' ),
-					'standard_post'  => esc_html__( 'Standard Post', 'widgetkit-for-elementor' ),
-					'sticky_post'    => esc_html__( 'Sticky Post', 'widgetkit-for-elementor' ),
+					'custom_post'    => esc_html__( 'Custom', 'widgetkit-for-elementor' ),
+					'standard_post'  => esc_html__( 'Standard', 'widgetkit-for-elementor' ),
+					'sticky_post'    => esc_html__( 'Sticky', 'widgetkit-for-elementor' ),
 				],
 			]
 		);
@@ -143,11 +143,11 @@ class wkfe_carousel extends Widget_Base {
 					'type'      => Controls_Manager::SELECT,
 					'default'   => '3',
 					'options'   => [
-						'1'    => esc_html__( 'Show 1', 'widgetkit-for-elementor' ),
-						'2'    => esc_html__( 'Show 2', 'widgetkit-for-elementor' ),
-						'3'    => esc_html__( 'Show 3', 'widgetkit-for-elementor' ),
-						'4'    => esc_html__( 'Show 4', 'widgetkit-for-elementor' ),
-						'-1'   => esc_html__( 'Show Unlimited', 'widgetkit-for-elementor' ),
+						'1'    => esc_html__( '1', 'widgetkit-for-elementor' ),
+						'2'    => esc_html__( '2', 'widgetkit-for-elementor' ),
+						'3'    => esc_html__( '3', 'widgetkit-for-elementor' ),
+						'4'    => esc_html__( '4', 'widgetkit-for-elementor' ),
+						'-1'   => esc_html__( 'Unlimited', 'widgetkit-for-elementor' ),
 					],
 
 					'condition' => [
@@ -164,11 +164,11 @@ class wkfe_carousel extends Widget_Base {
 					'type'      => Controls_Manager::SELECT,
 					'default'   => '3',
 					'options'   => [
-						'1'    => esc_html__( 'Show 1', 'widgetkit-for-elementor' ),
-						'2'    => esc_html__( 'Show 2', 'widgetkit-for-elementor' ),
-						'3'    => esc_html__( 'Show 3', 'widgetkit-for-elementor' ),
-						'4'    => esc_html__( 'Show 4', 'widgetkit-for-elementor' ),
-						'-1'   => esc_html__( 'Show Unlimited', 'widgetkit-for-elementor' ),
+						'1'    => esc_html__( '1', 'widgetkit-for-elementor' ),
+						'2'    => esc_html__( '2', 'widgetkit-for-elementor' ),
+						'3'    => esc_html__( '3', 'widgetkit-for-elementor' ),
+						'4'    => esc_html__( '4', 'widgetkit-for-elementor' ),
+						'-1'   => esc_html__( 'Unlimited', 'widgetkit-for-elementor' ),
 					],
 
 					'condition' => [
@@ -176,6 +176,48 @@ class wkfe_carousel extends Widget_Base {
 		            ],
 				]
 		);
+
+		   $this->add_control(
+                'items_order',
+                [
+                    'label' => esc_html__( 'Order', 'widgetkit-for-elementor' ),
+                    'type'  => Controls_Manager::SELECT,
+                    'default' => 'ASC',
+                    'options' => [
+                        'ASC'  => esc_html__( 'ASC', 'widgetkit-for-elementor' ),
+                        'DSC'  => esc_html__( 'DSC', 'widgetkit-for-elementor' ),
+                    ],
+                ]
+            );
+            $this->add_control(
+                'items_orderby',
+                [
+                    'label' => esc_html__( 'Orderby', 'widgetkit-for-elementor' ),
+                    'type'  => Controls_Manager::SELECT,
+                    'default' => 'title',
+                    'options' => [
+                        'title'  => esc_html__( 'Title', 'widgetkit-for-elementor' ),
+                        'date'   => esc_html__( 'Date', 'widgetkit-for-elementor' ),
+                        'rand'   => esc_html__( 'Count', 'widgetkit-for-elementor' ),
+                        'ID'     => esc_html__( 'Id', 'widgetkit-for-elementor' ),
+                        'name'   => esc_html__( 'Name', 'widgetkit-for-elementor' ),
+                        'comment_count'  => esc_html__( 'Comment Count', 'widgetkit-for-elementor' ),
+                        'meta_value'     => esc_html__( 'Meta Value', 'widgetkit-for-elementor' ),
+                    ],
+                ]
+            );
+
+        $this->add_control(
+            'title_word',
+            [
+                'label'       => __( 'Title Word Count', 'widgetkit-for-elementor' ),
+                'type'    => Controls_Manager::NUMBER,
+                'default' => 7,
+                'min'     => 1,
+                'max'     => 100,
+                'step'    => 1,
+            ]
+        );
 
 	$this->end_controls_section();
 
@@ -192,7 +234,7 @@ class wkfe_carousel extends Widget_Base {
 		$this->add_control(
 			'title_color',
 			[
-				'label'     => esc_html__( 'Title Color', 'widgetkit-for-elementor' ),
+				'label'     => esc_html__( 'Color', 'widgetkit-for-elementor' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#444',
 				'selectors' => [
@@ -205,7 +247,7 @@ class wkfe_carousel extends Widget_Base {
 			Group_Control_Typography::get_type(),
 				[
 					'name'     => 'title_typography',
-					'label'    => esc_html__( 'Title Typography', 'widgetkit-for-elementor' ),
+					'label'    => esc_html__( 'Typography', 'widgetkit-for-elementor' ),
 					'scheme'   => Scheme_Typography::TYPOGRAPHY_4,
 					'selector' => '{{WRAPPER}} .tgx-project .project-wrap .title',
 				]
@@ -214,7 +256,7 @@ class wkfe_carousel extends Widget_Base {
 		$this->add_control(
 			'title_hover_color',
 			[
-				'label'     => esc_html__( 'Title Hover Color', 'widgetkit-for-elementor' ),
+				'label'     => esc_html__( 'Hover Color', 'widgetkit-for-elementor' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#ed485f',
 				'selectors' => [
@@ -226,7 +268,7 @@ class wkfe_carousel extends Widget_Base {
 		$this->add_responsive_control(
 			'title_spacing',
 				[
-					'label'   => esc_html__( 'Title Specing', 'widgetkit-for-elementor' ),
+					'label'   => esc_html__( 'Spacing', 'widgetkit-for-elementor' ),
 					'type'    => Controls_Manager::SLIDER,
 					'default' => [
 					'size' =>20,
@@ -246,7 +288,7 @@ class wkfe_carousel extends Widget_Base {
 		$this->add_control(
 			'overlay_color',
 			[
-				'label'     => esc_html__( 'Item Overlay Color', 'widgetkit-for-elementor' ),
+				'label'     => esc_html__( 'Overlay Color', 'widgetkit-for-elementor' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => 'rgba(0,0,0,0.54)',
 				'selectors' => [

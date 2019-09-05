@@ -1,5 +1,19 @@
 <?php
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Modules\DynamicTags\Module as TagsModule;
+use Elementor\Widget_Base;
+use Elementor\Utils;
+use Elementor\Control_Media;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Background;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -10,11 +24,17 @@ class Premium_Testimonials extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Testimonial';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Testimonial', 'premium-addons-for-elementor') );
 	}
 
     public function get_icon() {
         return 'pa-testimonials';
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
     }
 
     public function get_categories() {
@@ -145,7 +165,13 @@ class Premium_Testimonials extends Widget_Base {
                 [
                     'label'             => __('Link', 'premium-addons-for-elementor'),
                     'type'              => Controls_Manager::TEXT,
-                    'dynamic'           => [ 'active' => true ],
+                    'dynamic'           => [
+                    'active'            => true,
+                    'categories'        => [
+                            TagsModule::POST_META_CATEGORY,
+                            TagsModule::URL_CATEGORY
+                        ]
+                    ],
                     'description'       => __( 'Add company URL', 'premium-addons-for-elementor' ),
                     'label_block'       => true,
                     'condition'         => [
@@ -189,14 +215,13 @@ class Premium_Testimonials extends Widget_Base {
                     'label'             => __('Testimonial Content', 'premium-addons-for-elementor'),
                     'type'              => Controls_Manager::WYSIWYG,
                     'dynamic'           => [ 'active' => true ],
-                    'default'           => __('Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Cras mattis consectetur purus sit amet fermentum. Nullam id dolor id nibh ultricies vehicula ut id elit. Donec id elit non mi porta gravida at eget metus.','premium-elementor'),
+                    'default'           => __('Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Cras mattis consectetur purus sit amet fermentum. Nullam id dolor id nibh ultricies vehicula ut id elit. Donec id elit non mi porta gravida at eget metus.','premium-addons-for-elementor'),
                     'label_block'       => true,
                     ]
                 );
         
         /*End Testimonial Content Section*/
         $this->end_controls_section();
-
         
         /*Image Styling*/
         $this->start_controls_section('premium_testimonial_image_style',
@@ -485,12 +510,68 @@ class Premium_Testimonials extends Widget_Base {
                 );
 
         /*End Typography Section*/
-        $this->end_controls_section();   
+        $this->end_controls_section();
+        
+        $this->start_controls_section('premium_testimonial_container_style',
+            [
+                'label'     => __('Container','premium-addons-for-elementor'),
+                'tab'       => Controls_Manager::TAB_STYLE,
+            ]
+        );
+        
+        $this->add_group_control(
+            Group_Control_Background::get_type(),
+            [
+                'name'              => 'premium_testimonial_background',
+                'types'             => [ 'classic' , 'gradient' ],
+                'selector'          => '{{WRAPPER}} .premium-testimonial-content-wrapper'
+            ]
+        );
+        
+        $this->add_group_control(
+            Group_Control_Border::get_type(),
+            [
+                'name'              => 'premium_testimonial_container_border',
+                'selector'          => '{{WRAPPER}} .premium-testimonial-content-wrapper',
+            ]
+        );
+
+        $this->add_control('premium_testimonial_container_border_radius',
+            [
+                'label'         => __('Border Radius', 'premium-addons-for-elementor'),
+                'type'          => Controls_Manager::SLIDER,
+                'size_units'    => ['px', '%', 'em'],
+                'selectors'     => [
+                    '{{WRAPPER}} .premium-testimonial-content-wrapper' => 'border-radius: {{SIZE}}{{UNIT}}'
+                ]
+            ]
+        );
+        
+        $this->add_group_control(
+            Group_Control_Box_Shadow::get_type(),
+            [
+                'name'              => 'premium_testimonial_container_box_shadow',
+                'selector'          => '{{WRAPPER}} .premium-testimonial-content-wrapper',
+            ]
+        );
+        
+        $this->add_responsive_control('premium_testimonial_box_padding',
+                [
+                    'label'         => __('Padding', 'premium-addons-for-elementor'),
+                    'type'          => Controls_Manager::DIMENSIONS,
+                    'size_units'    => [ 'px', 'em', '%' ],
+                    'selectors'     => [
+                        '{{WRAPPER}} .premium-testimonial-content-wrapper' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}',
+                        ]
+                    ]
+                );
+
+        $this->end_controls_section();
         
     }
 
     protected function render() {
-        // get our input from the widget settings.
+        
         $settings = $this->get_settings_for_display();
 
         $this->add_inline_editing_attributes('premium_testimonial_person_name');
@@ -499,15 +580,21 @@ class Premium_Testimonials extends Widget_Base {
         $person_title_tag = $settings['premium_testimonial_person_name_size'];
         
         $company_title_tag = $settings['premium_testimonial_company_name_size'];
+        
         $image_src = '';
-        if(!empty($settings['premium_testimonial_person_image']['url'])) {
+        
+        if( ! empty( $settings['premium_testimonial_person_image']['url'] ) ) {
             $image_src = $settings['premium_testimonial_person_image']['url'];
             $alt = esc_attr( Control_Media::get_image_alt( $settings['premium_testimonial_person_image'] ) );
         }
         
+        $this->add_render_attribute('testimonial', 'class', [
+            'premium-testimonial-box'
+        ]);
+        
     ?>
     
-    <div class="premium-testimonial-Box">
+    <div <?php echo $this->get_render_attribute_string('testimonial'); ?>>
         <div class="premium-testimonial-container">
             <i class="fa fa-quote-left premium-testimonial-upper-quote"></i>
             <div class="premium-testimonial-content-wrapper">
@@ -571,10 +658,14 @@ class Premium_Testimonials extends Widget_Base {
                 borderRadius = '15px;';
             }
             
+            view.addRenderAttribute('testimonial', 'class', [
+                'premium-testimonial-box'
+            ]);
+            
         
         #>
         
-            <div class="premium-testimonial-Box">
+            <div {{{ view.getRenderAttributeString('testimonial') }}}>
                 <div class="premium-testimonial-container">
                     <i class="fa fa-quote-left premium-testimonial-upper-quote"></i>
                     <div class="premium-testimonial-content-wrapper">
@@ -596,8 +687,6 @@ class Premium_Testimonials extends Widget_Base {
                     </div>
                     
                     <i class="fa fa-quote-right premium-testimonial-lower-quote"></i>
-                    
-                    
                     
                 </div>
             </div>

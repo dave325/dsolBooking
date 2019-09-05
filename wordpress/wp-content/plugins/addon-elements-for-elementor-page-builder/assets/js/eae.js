@@ -36,7 +36,9 @@ jQuery( window ).on( 'elementor/frontend/init', function() {
         }
 
         function add_marker( $marker, map ) {
-            var animate = $wrapper.data('animate')
+            var animate = $wrapper.data('animate');
+            var info_window_onload = $wrapper.data('show-info-window-onload');
+            //console.log(info_window_onload);
             $wrapper = $scope.find('.eae-markers');
             //alert($marker.attr('data-lat') + ' - '+ $marker.attr('data-lng'));
             var latlng = new google.maps.LatLng( $marker.attr('data-lat'), $marker.attr('data-lng') );
@@ -60,7 +62,7 @@ jQuery( window ).on( 'elementor/frontend/init', function() {
                 icon        : icon,
                 animation: google.maps.Animation.DROP
             });
-            if(animate == 'animate-yes'){
+            if(animate == 'animate-yes' && $marker.data('info-window') != 'yes'){
                 marker.setAnimation(google.maps.Animation.BOUNCE);
             }
             if(animate == 'animate-yes'){
@@ -83,10 +85,12 @@ jQuery( window ).on( 'elementor/frontend/init', function() {
                 });
 
                 // show info window when marker is clicked
+                if($marker.data('info-window') == 'yes'){
+                    infowindow.open(map, marker);
+                }
                 google.maps.event.addListener(marker, 'click', function() {
                     infowindow.open( map, marker );
                 });
-
 
             }
             if(animate == 'animate-yes') {
@@ -190,13 +194,15 @@ jQuery( window ).on( 'elementor/frontend/init', function() {
     $(window).on('elementor/frontend/init', function () {
 
         var ab_image = function ($scope, $) {
-            ab_style = $scope.find('.eae-img-comp-container').data("ab-style");
-            slider_pos = $scope.find('.eae-img-comp-container').data("slider-pos");
-            if (ab_style == "horizontal") {
-                horizontal($scope);
-            } else {
-                vertical();
-            }
+            $scope.find('.eae-img-comp-container').imagesLoaded().done(function () {
+                ab_style = $scope.find('.eae-img-comp-container').data("ab-style");
+                slider_pos = $scope.find('.eae-img-comp-container').data("slider-pos");
+                if (ab_style === "horizontal") {
+                    horizontal($scope);
+                } else {
+                    vertical($scope);
+                }
+            });
 
             function horizontal($scope) {
                 var x, i, start_pos;
@@ -310,7 +316,7 @@ jQuery( window ).on( 'elementor/frontend/init', function() {
                 }
             }
 
-            function vertical() {
+            function vertical($scope) {
                 var x, i;
                 /*find all elements with an "overlay" class:*/
                 //x = document.getElementsByClassName("eae-img-comp-overlay");
@@ -418,7 +424,7 @@ jQuery( window ).on( 'elementor/frontend/init', function() {
                     }
                 }
             }
-        }
+        };
 
         var ParticlesBG = function ($scope, $) {
 

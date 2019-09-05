@@ -1,0 +1,31 @@
+.elementor-widget-ep_tables {
+	.ep-table-body {
+		td {
+			> :only-child,
+			:last-child {
+				margin-bottom: 0;
+			}
+
+			ol, ul {
+				padding-left: 1.1em;
+			}
+		}
+	}
+
+	.ep-table-responsive {
+		@media (max-width: 767px) {
+			display: block;
+			max-width: 100%;
+			width: 100%;
+			border-collapse: collapse;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			-ms-overflow-style: -ms-autohiding-scrollbar;
+
+
+			th, td {
+				white-space: nowrap;
+			}
+		}
+	}
+}

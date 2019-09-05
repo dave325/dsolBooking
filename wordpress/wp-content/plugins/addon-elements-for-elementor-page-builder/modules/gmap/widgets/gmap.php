@@ -111,6 +111,18 @@ class Gmap extends EAE_Widget_Base {
             ]
         );
 
+		$repeater->add_control(
+			'info_window_onload',
+			[
+				'label' =>  __('Info Window On Load' , 'wts-eae'),
+				'type'  =>  Controls_Manager::SWITCHER,
+				'default'      => 'no',
+				'label_on'     => __( 'Open', 'wts-eae' ),
+				'label_off'    => __( 'Close', 'wts-eae' ),
+				'return_value' => 'yes',
+			]
+		);
+
 		$this->add_control('markers',
 			[
 				'label' => __('Markers', 'wts-eae'),
@@ -167,8 +179,6 @@ class Gmap extends EAE_Widget_Base {
                 ]
         );
 
-
-
 		$this->add_control(
 			'snazzy_style',
 			[
@@ -193,13 +203,15 @@ class Gmap extends EAE_Widget_Base {
 
         $this->add_render_attribute('wrapper' , 'data-animate' , 'animate-'.$settings['animate']);
 
+        //$this->add_render_attribute('wrapper' , 'data-show-info-window-onload' , $settings['open_info_window_onload']);
+
         if(count($markers)){
         	?>
 	        <div class="eae-markers" <?php echo $this->get_render_attribute_string('wrapper'); ?>>
 			<?php
         	foreach($markers as $marker){
 				?>
-		        <div class="marker" data-lng="<?php echo $marker['long']; ?>" data-lat="<?php echo $marker['lat']; ?>" data-icon="<?php echo $marker['icon']['url']; ?>" data-icon-size="<?php echo $marker['icon_size']['size']; ?>">
+		        <div class="marker" data-lng="<?php echo $marker['long']; ?>" data-lat="<?php echo $marker['lat']; ?>" data-icon="<?php echo $marker['icon']['url']; ?>" data-icon-size="<?php echo $marker['icon_size']['size']; ?>" data-info-window="<?php echo $marker['info_window_onload']; ?>">
 			        <?php echo $marker['address']; ?>
 		        </div>
 		        <?php

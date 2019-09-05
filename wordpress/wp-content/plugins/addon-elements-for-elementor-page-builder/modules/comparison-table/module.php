@@ -16,4 +16,10 @@ class Module extends Module_Base {
 		return 'eae-comparisontable';
 	}
 
+	public function get_title() {
+
+		return __('Comparison Table', 'wts-eae');
+
+	}
+
 }

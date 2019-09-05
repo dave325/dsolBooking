@@ -9,8 +9,8 @@
 * @since     0.1.0
 */
 
-if( ! defined( 'ABSPATH' ) ) {
-    return;
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
 }
 
 class SaveFont_ECIcons extends ECIcons {
@@ -18,11 +18,12 @@ class SaveFont_ECIcons extends ECIcons {
 
 	public function init() {
 
-		$action = ec_icons_manager()->getRequest( 'action', 'ec_icons_save_font' );
+		$action = $this->getRequest( 'action' );
 
 		// ajax events
-		add_action( 'wp_ajax_' . $action, array( $this, $action ) );
-
+		if ( ! empty( $action ) && is_callable( array( $this, $action ) ) ) {
+			add_action( 'wp_ajax_' . $action, array( $this, $action ) );
+		}
 	}
 
 
@@ -32,7 +33,13 @@ class SaveFont_ECIcons extends ECIcons {
 	 */
 	public function ec_icons_save_font() {
 
-		if ( wp_verify_nonce( $this->getRequest( '_wpnonce' ), 'ec_icons_nonce' ) ) {
+		if ( wp_verify_nonce( $this->getRequest( '_wpnonce' ), 'ec_icons_nonce' ) && current_user_can( 'manage_options' ) ) {
+
+			if ( ! class_exists( 'ZipArchive' ) ) {
+				$result['status_save'] = 'failedopen';
+				echo json_encode( $result );
+				die();
+			}
 
 			$file_name = $this->getRequest( 'file_name', 'font' );
 
@@ -58,25 +65,26 @@ class SaveFont_ECIcons extends ECIcons {
 
 				$font_data = $this->get_config_font( $file_name );
 
-				$icons     = $this->parse_css( $font_data['css_root'], $font_data['name'] );
+				$icons = $this->parse_css( $font_data['css_root'], $font_data['name'], $font_data['css_url'] );
 
 				if ( ! empty( $icons ) && is_array( $icons ) ) {
 					$result['count_icons'] = count( $icons );
-					$first_icon = ! empty( $icons ) ? key( $icons ) : '';
+					$first_icon            = ! empty( $icons ) ? key( $icons ) : '';
 					$result['first_icon']  = $first_icon;
-					$iconlist = '';
-					foreach($icons as $iconkey => $iconcode){
+					$iconlist              = '';
+					foreach ( $icons as $iconkey => $iconcode ) {
 						$iconlist .= '<div><i class="eci ' . $iconkey . '" style="font-size: 16px;"></i><span>' . $iconkey . '</span></div>';
 					}
 					$result['iconlist'] = $iconlist;
+
+					$result['name']        = $font_data['name'];
+					$result['status_save'] = $this->update_options( $font_data, '1' );
+					$result['data']        = $font_data;
+
+					new MergeCss_ECIcons();
+				} else {
+					$result['status_save'] = 'emptyfile';
 				}
-
-				$result['name'] = $font_data['name'];
-				$result['status_save'] = $this->update_options( $font_data, '1');
-				$result['data'] = $font_data;
-
-				new MergeCss_ECIcons();
-
 			} else {
 				$result['status_save'] = 'emptyfile';
 			}
@@ -128,7 +136,7 @@ class SaveFont_ECIcons extends ECIcons {
 	 */
 	public function ec_icons_delete_font() {
 
-		if ( wp_verify_nonce( $this->getRequest( '_wpnonce' ), 'ec_icons_nonce' ) ) {
+		if ( wp_verify_nonce( $this->getRequest( '_wpnonce' ), 'ec_icons_nonce' ) && current_user_can( 'manage_options' ) ) {
 
 			$file_name = $this->getRequest( 'file_name', 'font' );
 
@@ -144,10 +152,11 @@ class SaveFont_ECIcons extends ECIcons {
 			unset( $options[ $file_name ] );
 
 			// remove file
-			$this->rrmdir( $this->upload_dir . '/' . $data['file_name'] );
+			$this->rrmdir( ec_icons_manager()->upload_dir . '/' . $data['file_name'] );
+			unlink( ec_icons_manager()->upload_dir . '/' . $data['name'] . '.json' );
 
 			$result = array(
-				'name'   => $file_name,
+				'name'        => $file_name,
 				'status_save' => 'none',
 			);
 
@@ -179,19 +188,21 @@ class SaveFont_ECIcons extends ECIcons {
 
 		$options = get_option( 'ec_icons_fonts' );
 
-		if ( !empty( $options ) && is_array($options) ) {
+		if ( ! empty( $options ) && is_array( $options ) ) {
 
 			$newoptions = array();
-			
+
 			foreach ( $options as $key => $font ) {
 
 				if ( empty( $font['data'] ) ) {
 					continue;
 				}
 
-				$font_decode = json_decode($font['data'],true);
+				$font_decode = json_decode( $font['data'], true );
 
 				$font_data = $this->get_config_font( $font_decode['file_name'] );
+
+				if ( ! $font_data ) continue;
 
 				$newoptions[ $font_data['name'] ] = array(
 					'status' => '1',
@@ -205,7 +216,7 @@ class SaveFont_ECIcons extends ECIcons {
 
 		new MergeCss_ECIcons();
 
-		$result = array();
+		$result                 = array();
 		$result['status_regen'] = 'regen';
 		echo json_encode( $result );
 

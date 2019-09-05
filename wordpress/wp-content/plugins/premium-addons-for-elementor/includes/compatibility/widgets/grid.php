@@ -7,7 +7,7 @@ use WPML_Elementor_Module_With_Items;
 if ( ! defined('ABSPATH') ) exit; // No access of directly access
 
 /**
- * Fancy Text
+ * Grid
  *
  * Registers translatable widget with items.
  *

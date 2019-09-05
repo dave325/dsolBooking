@@ -24,7 +24,7 @@ class wkfe_slider_2 extends Widget_Base {
 	} 
 
 	public function get_title() {
-		return esc_html__( 'Slider Content Animation', 'widgetkit-for-elementor' );
+		return esc_html__( 'Slider Content', 'widgetkit-for-elementor' );
 	}
 
 	public function get_icon() {
@@ -251,6 +251,25 @@ class wkfe_slider_2 extends Widget_Base {
 		      ]
 		  );
 
+		$this->add_control(
+			'heading_tag',
+				[
+					'label'     => esc_html__( 'Heading Tag', 'widgetkit-for-elementor' ),
+					'type'      => Controls_Manager::SELECT,
+					'default'   => 'h2',
+					'options'   => [
+						'h1'			   => esc_html__('H1'),
+						'h2'			   => esc_html__('H2'),
+						'h3'			   => esc_html__('H3'),
+						'h4'			   => esc_html__('H4'),
+						'h5'			   => esc_html__('H5'),
+						'h6'			   => esc_html__('H6'),
+						'p'			       => esc_html__('P'),
+						'span'			   => esc_html__('Span'),
+					],
+				]
+		);
+
 	$this->end_controls_section();
 	// Content options End
 
@@ -351,14 +370,13 @@ class wkfe_slider_2 extends Widget_Base {
 			);
 
 
-
 	$this->end_controls_section();
 
 	// Color options Start
 	$this->start_controls_section(
 		'section_option',
 			[
-				'label' => esc_html__( 'Content Options', 'widgetkit-for-elementor' ),
+				'label' => esc_html__( 'Content', 'widgetkit-for-elementor' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 	);
@@ -538,7 +556,7 @@ class wkfe_slider_2 extends Widget_Base {
 					'label'  => esc_html__( 'Caption Width', 'widgetkit-for-elementor' ),
 					'type'   => Controls_Manager::SLIDER,
 					'default'  => [
-                        'size' => 400,
+                        'size' => 1110,
                     ],
 					'range'  => [
 						'px' => [
@@ -595,7 +613,7 @@ $this->end_controls_section();
 		$this->start_controls_section(
 			'button_style',
 				[
-					'label' => esc_html__( 'Button Options', 'widgetkit-for-elementor' ),
+					'label' => esc_html__( 'Button', 'widgetkit-for-elementor' ),
 					'tab'   => Controls_Manager::TAB_STYLE,
 				]
 		);
@@ -798,7 +816,7 @@ $this->end_controls_section();
 $this->start_controls_section(
 	'control_style',
 		[
-			'label' => esc_html__( 'Control Options', 'widgetkit-for-elementor' ),
+			'label' => esc_html__( 'Control', 'widgetkit-for-elementor' ),
 			'tab'   => Controls_Manager::TAB_STYLE,
 		]
 	);
@@ -838,13 +856,22 @@ $this->start_controls_section(
 					'default' => '10000',
 				]
 			);
-
+			$this->add_control(
+				'slider_data_pause',
+					[
+						'label'     => esc_html__( 'Data Pause', 'widgetkit-for-elementor' ),
+						'type'      => Controls_Manager::SWITCHER,
+						'default'   => 'yes',
+						'true'    => esc_html__( 'True', 'widgetkit-for-elementor' ),
+						'false'   => esc_html__( 'False', 'widgetkit-for-elementor' ),
+					]
+			);
 
 
 			$this->add_control(
 				'bg_repeat',
 				[
-					'label'     => esc_html__( 'Item Background Repeat', 'widgetkit-for-elementor' ),
+					'label'     => esc_html__( 'Background Repeat', 'widgetkit-for-elementor' ),
 					'type'      => Controls_Manager::SELECT,
 					'default'   => 'no-repeat',
 					'options'   => [
@@ -863,7 +890,7 @@ $this->start_controls_section(
 			$this->add_control(
 				'bg_size',
 				[
-					'label'     => esc_html__( 'Item Background Size', 'widgetkit-for-elementor' ),
+					'label'     => esc_html__( 'Background Size', 'widgetkit-for-elementor' ),
 					'type'      => Controls_Manager::SELECT,
 					'default'   => 'cover',
 					'options'   => [
@@ -880,11 +907,12 @@ $this->start_controls_section(
 			$this->add_control(
 				'bg_attachment',
 				[
-					'label'     => esc_html__( 'Item Background Attachment', 'widgetkit-for-elementor' ),
+					'label'     => esc_html__( 'Background Attachment', 'widgetkit-for-elementor' ),
 					'type'      => Controls_Manager::SELECT,
 					'default'   => 'fixed',
 					'options'   => [
-						'fixed'    => esc_html__( 'fixed', 'widgetkit-for-elementor' ),
+						'scroll'  => esc_html__( 'Scroll', 'widgetkit-for-elementor' ),
+						'fixed'    => esc_html__( 'Fixed', 'widgetkit-for-elementor' ),
 						'inherit'  => esc_html__( 'Inherit', 'widgetkit-for-elementor' ),
 					],
 					'selectors' => [

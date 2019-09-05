@@ -15,12 +15,13 @@ class Settings extends Settings_Page {
 
 	public function __construct() {
 		parent::__construct();
-
+		add_action('wp_ajax_eae_save_gmap',[ $this, 'eae_save_gmap_key']);
+		add_action('wp_ajax_eae_elements_save',[ $this, 'eae_save_elements']);
 		add_action( 'admin_menu', [ $this, 'register_admin_menu' ], 20 );
 	}
 
 	public function register_admin_menu() {
-		add_menu_page(
+		/*add_menu_page(
 			__( 'Elementor Addon Elements', 'wts-eae' ),
 			__( 'Elementor Addon Elements', 'wts-eae' ),
 			'manage_options',
@@ -28,7 +29,38 @@ class Settings extends Settings_Page {
 			[ $this, 'display_settings_page' ],
 			'',
 			99
+		);*/
+		add_menu_page(
+			__( 'Elementor Addons Elements', 'wts-eae' ),
+			__( 'Elementor Addons Elements', 'wts-eae' ),
+			'manage_options',
+			'eae-settings',
+			[ $this, 'display_settings_page_new' ],
+			'',
+			99
 		);
+	}
+
+	public function eae_save_gmap_key(){
+        $key = $_REQUEST['mapkey'];
+        echo 'key '.$key;
+		update_option('wts_eae_gmap_key',$key);
+    }
+
+	public function eae_save_elements(){
+		$elements = $_REQUEST['eae_items'];
+        $items = [];
+		for($i=0; $i <count($elements);$i++){
+            $items[$elements[$i]['key']] = $elements[$i]['enabled'];
+        }
+
+		update_option('wts_eae_elements',$items);
+    }
+
+	public function display_settings_page_new(){
+		?>
+		<div id="eae-settings"></div>
+    <?php
 	}
 
 	protected function get_page_title() {
@@ -39,7 +71,7 @@ class Settings extends Settings_Page {
 
 		return [
 			'general' => [
-				'label' => __( 'General', 'elementor' ),
+				'label' => __( 'General', 'wts-eae' ),
 				'sections' => [
 					'general' => [
 						'fields' => [

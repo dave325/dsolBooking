@@ -24,7 +24,7 @@
 
                        <?php if ($testimonial_1['testimoni_image_1']['url']):?>
                               <span>
-                                  <img class="testimoni-image" src="<?php echo $testimonial_1['testimoni_image_1']['url']; ?>">
+                                  <img class="testimony-image" src="<?php echo $testimonial_1['testimoni_image_1']['url']; ?>">
                               </span>
                       <?php endif;?>
                         

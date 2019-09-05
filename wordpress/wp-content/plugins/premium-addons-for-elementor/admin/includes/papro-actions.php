@@ -2,6 +2,8 @@
 
 namespace PremiumAddons\Admin\Includes;
 
+use PremiumAddons\Helper_Functions;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Papro_Actions {
@@ -22,7 +24,7 @@ class Papro_Actions {
 
     public function handle_custom_redirects() {
 
-        $theme_name = Admin_Notices::get_installed_theme();
+        $theme_slug = Helper_Functions::get_installed_theme();
 
         if ( empty( $_GET['page'] ) ) {
             return;
@@ -30,7 +32,7 @@ class Papro_Actions {
 
         if ( 'premium-addons-pro' === $_GET['page'] ) {
 
-            $url = sprintf('https://premiumaddons.com/pro/?utm_source=wp-menu&utm_medium=wp-dash&utm_campaign=get-pro&utm_term=%s', $theme_name );
+            $url = sprintf('https://premiumaddons.com/pro/?utm_source=wp-menu&utm_medium=wp-dash&utm_campaign=get-pro&utm_term=%s', $theme_slug );
             
             wp_redirect( $url );
 

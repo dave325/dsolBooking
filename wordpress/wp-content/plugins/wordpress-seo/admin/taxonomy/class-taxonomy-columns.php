@@ -11,11 +11,15 @@
 class WPSEO_Taxonomy_Columns {
 
 	/**
+	 * The SEO analysis.
+	 *
 	 * @var WPSEO_Metabox_Analysis_SEO
 	 */
 	private $analysis_seo;
 
 	/**
+	 * The readability analysis.
+	 *
 	 * @var WPSEO_Metabox_Analysis_Readability
 	 */
 	private $analysis_readability;
@@ -109,7 +113,7 @@ class WPSEO_Taxonomy_Columns {
 	 * @return string|null
 	 */
 	private function get_taxonomy() {
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX === true ) {
+		if ( wp_doing_ajax() ) {
 			return FILTER_INPUT( INPUT_POST, 'taxonomy' );
 		}
 

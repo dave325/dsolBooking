@@ -280,7 +280,7 @@ function ai1wm_multisite_bytes( $params ) {
  * @return string
  */
 function ai1wm_archive_size( $params ) {
-	return size_format( filesize( ai1wm_archive_path( $params ) ) );
+	return ai1wm_size_format( filesize( ai1wm_archive_path( $params ) ) );
 }
 
 /**
@@ -290,7 +290,7 @@ function ai1wm_archive_size( $params ) {
  * @return string
  */
 function ai1wm_backup_size( $params ) {
-	return size_format( filesize( ai1wm_backup_path( $params ) ) );
+	return ai1wm_size_format( filesize( ai1wm_backup_path( $params ) ) );
 }
 
 /**
@@ -314,6 +314,23 @@ function ai1wm_parse_size( $size, $default = null ) {
 	}
 
 	return $default;
+}
+
+/**
+ * Format file size into human-readable string
+ *
+ * Fixes the WP size_format bug: size_format( '0' ) => false
+ *
+ * @param  int|string   $bytes            Number of bytes. Note max integer size for integers.
+ * @param  int          $decimals         Optional. Precision of number of decimal places. Default 0.
+ * @return string|false False on failure. Number string on success.
+ */
+function ai1wm_size_format( $bytes, $decimals = 0 ) {
+	if ( strval( $bytes ) === '0' ) {
+		return size_format( 0, $decimals );
+	}
+
+	return size_format( $bytes, $decimals );
 }
 
 /**
@@ -695,6 +712,13 @@ function ai1wm_plugin_filters( $filters = array() ) {
 		$filters[] = 'plugins' . DIRECTORY_SEPARATOR . 'all-in-one-wp-migration-digitalocean-extension';
 	}
 
+	// Direct Extension
+	if ( defined( 'AI1WMXE_PLUGIN_BASENAME' ) ) {
+		$filters[] = 'plugins' . DIRECTORY_SEPARATOR . dirname( AI1WMXE_PLUGIN_BASENAME );
+	} else {
+		$filters[] = 'plugins' . DIRECTORY_SEPARATOR . 'all-in-one-wp-migration-direct-extension';
+	}
+
 	// Dropbox Extension
 	if ( defined( 'AI1WMDE_PLUGIN_BASENAME' ) ) {
 		$filters[] = 'plugins' . DIRECTORY_SEPARATOR . dirname( AI1WMDE_PLUGIN_BASENAME );
@@ -832,6 +856,11 @@ function ai1wm_active_servmask_plugins( $plugins = array() ) {
 	// DigitalOcean Spaces Extension
 	if ( defined( 'AI1WMIE_PLUGIN_BASENAME' ) ) {
 		$plugins[] = AI1WMIE_PLUGIN_BASENAME;
+	}
+
+	// Direct Extension
+	if ( defined( 'AI1WMXE_PLUGIN_BASENAME' ) ) {
+		$plugins[] = AI1WMXE_PLUGIN_BASENAME;
 	}
 
 	// Dropbox Extension
@@ -1403,6 +1432,11 @@ function ai1wm_setup_environment() {
 		@mb_internal_encoding( 'ISO-8859-1' );
 	}
 
+	// Clean (erase) the output buffer and turn off output buffering
+	if ( @ob_get_length() ) {
+		@ob_end_clean();
+	}
+
 	// Set error handler
 	@set_error_handler( 'Ai1wm_Handler::error' );
 
@@ -1429,4 +1463,51 @@ function ai1wm_get_timezone_string() {
 	}
 
 	return 'UTC';
+}
+
+/**
+ * Get WordPress filter hooks
+ *
+ * @param  string $tag The name of the filter hook
+ * @return array
+ */
+function ai1wm_get_filters( $tag ) {
+	global $wp_filter;
+
+	// Get WordPress filter hooks
+	$filters = array();
+	if ( isset( $wp_filter[ $tag ] ) ) {
+		if ( ( $filters = $wp_filter[ $tag ] ) ) {
+			// WordPress 4.7 introduces new class for working with filters/actions called WP_Hook
+			// which adds another level of abstraction and we need to address it.
+			if ( isset( $filters->callbacks ) ) {
+				$filters = $filters->callbacks;
+			}
+		}
+
+		ksort( $filters );
+	}
+
+	return $filters;
+}
+
+/**
+ * i18n friendly version of basename()
+ *
+ * @param  string $path   File path
+ * @param  string $suffix If the filename ends in suffix this will also be cut off
+ * @return string
+ */
+function ai1wm_basename( $path, $suffix = '' ) {
+	return urldecode( basename( str_replace( array( '%2F', '%5C' ), '/', urlencode( $path ) ), $suffix ) );
+}
+
+/**
+ * i18n friendly version of dirname()
+ *
+ * @param  string $path File path
+ * @return string
+ */
+function ai1wm_dirname( $path ) {
+	return urldecode( dirname( str_replace( array( '%2F', '%5C' ), '/', urlencode( $path ) ) ) );
 }

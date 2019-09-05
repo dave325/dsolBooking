@@ -110,7 +110,7 @@ jQuery(function($) {
 		
 		this.mapObject = mapObject;
 		
-		if(WPGMZA.settings.disable_infowindows)
+		if(WPGMZA.settings.disable_infowindows || WPGMZA.settings.wpgmza_settings_disable_infowindows == "1")
 			return false;
 		
 		if(this.mapObject.disableInfoWindow)

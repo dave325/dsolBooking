@@ -1,24 +1,44 @@
 <?php
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Repeater;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Text_Shadow;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
 class Premium_Fancytext extends Widget_Base {
+    
     public function get_name() {
         return 'premium-addon-fancy-text';
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Fancy Text';
+        return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Fancy Text', 'premium-addons-for-elementor') );
 	}
 
     public function get_icon() {
         return 'pa-fancy-text';
     }
     
-    public function get_script_depends()
-    {
-        return ['typed-js','vticker-js','premium-addons-js'];
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
+    
+    public function get_script_depends() {
+        return [
+            'typed-js',
+            'vticker-js',
+            'premium-addons-js'
+        ];
     }
 
     public function get_categories() {
@@ -132,9 +152,9 @@ class Premium_Fancytext extends Widget_Base {
                     'label'         => __('Effect', 'premium-addons-for-elementor'),
                     'type'          => Controls_Manager::SELECT,
                     'options'       => [
-                        'typing'=> __('Typing'),
-                        'slide' => __('Slide Up'),
-                        ],
+                        'typing'=> __('Typing', 'premium-addons-for-elementor'),
+                        'slide' => __('Slide Up', 'premium-addons-for-elementor')
+                    ],
                     'default'       => 'typing',
                     'label_block'   => true,
                     ]
@@ -301,6 +321,7 @@ class Premium_Fancytext extends Widget_Base {
                         ],
                     ],
                 'default'       => 'center',
+                'toggle'        => false,
                 'selectors'     => [
                     '{{WRAPPER}} .premium-fancy-list-items' => 'text-align: {{VALUE}};',
                 ],
@@ -466,15 +487,14 @@ class Premium_Fancytext extends Widget_Base {
     }
 
     protected function render( ) {
-        // get our input from the widget settings.
+        
         $settings = $this->get_settings_for_display();
-        $this->add_inline_editing_attributes('premium_fancy_prefix_text');
-        $this->add_inline_editing_attributes('premium_fancy_suffix_text');
-        $cursor_text = addslashes($settings['premium_fancy_text_cursor_text']);
+        
+        $cursor_text = addslashes( $settings['premium_fancy_text_cursor_text'] );
         
         if($settings['premium_fancy_text_effect'] == 'slide'){
-            $this->add_render_attribute( 'premium_fancy_prefix_text', 'class', 'premium-fancy-text-span-align' );
-            $this->add_render_attribute( 'premium_fancy_suffix_text', 'class', 'premium-fancy-text-span-align' );
+            $this->add_render_attribute( 'prefix', 'class', 'premium-fancy-text-span-align' );
+            $this->add_render_attribute( 'suffix', 'class', 'premium-fancy-text-span-align' );
         }
         
         if($settings['premium_fancy_text_effect'] == 'typing'){
@@ -511,7 +531,7 @@ class Premium_Fancytext extends Widget_Base {
     ?>
     
     <div class="premium-fancy-text-wrapper" data-settings='<?php echo wp_json_encode($fancytext_settings); ?>'>
-        <span class="premium-prefix-text"><span <?php echo $this->get_render_attribute_string('premium_fancy_prefix_text'); ?>><?php echo wp_kses( ( $settings['premium_fancy_prefix_text'] ), true ); ?></span></span>
+        <span class="premium-prefix-text"><span <?php echo $this->get_render_attribute_string('prefix'); ?>><?php echo wp_kses( ( $settings['premium_fancy_prefix_text'] ), true ); ?></span></span>
 
         <?php if ( $settings['premium_fancy_text_effect'] === 'typing'  ) : ?>
             <span class="premium-fancy-text" ></span>
@@ -526,8 +546,93 @@ class Premium_Fancytext extends Widget_Base {
                 </ul>
             </div>
         <?php endif; ?>
-        <span class="premium-suffix-text"><span <?php echo $this->get_render_attribute_string('premium_fancy_suffix_text'); ?>><?php echo wp_kses( ( $settings['premium_fancy_suffix_text'] ), true ); ?></span></span>
+        <span class="premium-suffix-text"><span <?php echo $this->get_render_attribute_string('suffix'); ?>><?php echo wp_kses( ( $settings['premium_fancy_suffix_text'] ), true ); ?></span></span>
     </div>
     <?php
     }
+    
+    protected function _content_template() {
+        ?>
+        <#
+        
+            view.addInlineEditingAttributes('prefix');
+            view.addInlineEditingAttributes('suffix');
+            
+            
+            var cursorText          = settings.premium_fancy_text_cursor_text,
+                cursorTextEscaped   = cursorText.replace(/'/g, "\\'");
+        
+            var fancyTextSettings = {};
+                
+        if( 'slide' === settings.premium_fancy_text_effect ) {
+            view.addRenderAttribute( 'prefix', 'class', 'premium-fancy-text-span-align' );
+            view.addRenderAttribute( 'suffix', 'class', 'premium-fancy-text-span-align' );
+        }
+        
+        if( 'typing' === settings.premium_fancy_text_effect ) {
+        
+            var showCursor  = settings.premium_fancy_text_show_cursor ? true : false,
+                loop        = settings.premium_fancy_text_type_loop ? true : false,
+                strings     = [];
+            
+            _.each( settings.premium_fancy_text_strings, function( item ) {
+                if ( '' !== item.premium_text_strings_text_field ) {
+                
+                    var fancyString = item.premium_text_strings_text_field;
+                    
+                    strings.push( fancyString.replace( '\'','`' ) );
+                }
+            });
+            
+            
+            
+            fancyTextSettings.effect     = settings.premium_fancy_text_effect,
+            fancyTextSettings.strings    = strings,
+            fancyTextSettings.typeSpeed  = settings.premium_fancy_text_type_speed,
+            fancyTextSettings.backSpeed  = settings.premium_fancy_text_back_speed,
+            fancyTextSettings.startDelay = settings.premium_fancy_text_start_delay,
+            fancyTextSettings.backDelay  = settings.premium_fancy_text_back_delay,
+            fancyTextSettings.showCursor = showCursor,
+            fancyTextSettings.cursorChar = cursorTextEscaped,
+            fancyTextSettings.loop       = loop;
+            
+            
+        } else {
+        
+            var mausePause = settings.premium_slide_up_hover_pause ? true : false;
+            
+            fancyTextSettings.effect        = settings.premium_fancy_text_effect,
+            fancyTextSettings.speed         = settings.premium_slide_up_speed,
+            fancyTextSettings.showItems     = settings.premium_slide_up_shown_items,
+            fancyTextSettings.pause         = settings.premium_slide_up_pause_time,
+            fancyTextSettings.mousePause    = mausePause
+           
+        }
+        
+            view.addRenderAttribute( 'container', 'class', 'premium-fancy-text-wrapper' );
+            view.addRenderAttribute( 'container', 'data-settings', JSON.stringify( fancyTextSettings ) );
+        
+        #>
+        
+            <div {{{ view.getRenderAttributeString('container') }}}>
+                <span class="premium-prefix-text"><span {{{ view.getRenderAttributeString('prefix') }}}>{{{ settings.premium_fancy_prefix_text }}}</span></span>
+
+            <# if ( 'typing' === settings.premium_fancy_text_effect ) { #>
+                <span class="premium-fancy-text" ></span>
+            <# } else { #> 
+                <div class="premium-fancy-text" style=' display: inline-block; text-align: center;'>
+                    <ul>
+                        <# _.each ( settings.premium_fancy_text_strings, function ( item ) {
+                            if ( '' !== item.premium_text_strings_text_field ) #>
+                                <li class='premium-fancy-list-items'>{{{ item.premium_text_strings_text_field }}}</li>
+                        <# }); #>
+                    </ul>
+                </div>
+            <# } #>
+                <span class="premium-suffix-text"><span {{{ view.getRenderAttributeString('suffix') }}}>{{{ settings.premium_fancy_suffix_text }}}</span></span>
+            </div>
+        
+        <?php
+    }
+    
 }

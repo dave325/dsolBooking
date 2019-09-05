@@ -1,9 +1,10 @@
-<?php 
-namespace Elementor;
+<?php
 
+namespace PremiumAddons\Includes;
+
+use Elementor\Frontend;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
 
 /**
 * premium_Templat_Tags class defines all the query of options of select box
@@ -67,19 +68,60 @@ class premium_Template_Tags {
 		}
 		return $this->options;
 	}
+    
+    /*
+     * Get Elementor Template ID by title
+     * 
+     * @since 3.6.0
+     * @access public
+     * 
+     */
+    public function get_id_by_title( $handle ) {
+        
+        $template = get_page_by_title( $handle, OBJECT, 'elementor_library' );
+        
+        $template_id = isset ( $template->ID ) ? $template->ID : $handle;
+        
+        return $template_id;
+    }
+
 
 	public function get_elementor_page_list() {
-		$pagelist = get_posts(array(
+        
+		$pagelist = get_posts( array(
 			'post_type' => 'elementor_library',
 			'showposts' => 999,
 		));
         
-		if ( ! empty( $pagelist ) && ! is_wp_error( $pagelist ) ){
+		if ( ! empty( $pagelist ) && ! is_wp_error( $pagelist ) ) {
+            
 			foreach ( $pagelist as $post ) {
-				$options[ $post->ID ] = __( $post->post_title, 'premium-addons-for-elementor' );
+				$options[ $post->post_title ] = $post->post_title;
 			}
+            
         update_option( 'temp_count', $options );
+        
         return $options;
 		}
 	}
+    
+    /*
+     * Get Elementor Template HTML Content
+     * 
+     * @since 3.6.0
+     * @access public
+     * 
+     */
+    public function get_template_content( $title ) {
+        
+        $frontend = new Frontend;
+        
+        $id = $this->get_id_by_title( $title );
+        
+        $template_content = $frontend->get_builder_content( $id, true );
+        
+        return $template_content;
+        
+    }
+    
 }

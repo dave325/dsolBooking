@@ -39,9 +39,7 @@ class Plugin {
 	}
     
     private function __construct() {
-        
 		add_action( 'init', array( $this, 'init' ), 0 );
-        
 	}
 }
 

@@ -164,7 +164,7 @@ class wkfe_hover_image extends Widget_Base {
 				'placeholder' => __( 'https://themesgrove.com', 'widgetkit-for-elementor' ),
 				'show_label' => true,
 				'condition' => [
-                   'hover_image_hover_animation' => ['default-effect', 'jazz-effect'],
+                   'hover_image_hover_animation' => ['default-effect', 'jazz-effect','bubba-effect', 'goliath-effect'],
                    'select_link_to' => ['url'],
                ],
 			]
@@ -575,7 +575,7 @@ class wkfe_hover_image extends Widget_Base {
 				],
 
 				'condition' => [
-                   'hover_image_hover_animation' => ['default-effect', 'goliath-effect'],
+                   'hover_image_hover_animation' => ['default-effect'],
                ],
 			]
 		);

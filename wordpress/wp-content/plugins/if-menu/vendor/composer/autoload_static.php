@@ -9,6 +9,7 @@ class ComposerStaticInit1675f12dcb616dfd5aef9267ba43b735
     public static $prefixLengthsPsr4 = array (
         'L' => 
         array (
+            'Layered\\SafeEval\\' => 17,
             'Layered\\IfMenu\\' => 15,
         ),
         'C' => 
@@ -18,6 +19,10 @@ class ComposerStaticInit1675f12dcb616dfd5aef9267ba43b735
     );
 
     public static $prefixDirsPsr4 = array (
+        'Layered\\SafeEval\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/layered/safe-eval',
+        ),
         'Layered\\IfMenu\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
@@ -39,6 +44,7 @@ class ComposerStaticInit1675f12dcb616dfd5aef9267ba43b735
         'Composer\\Installers\\BonefishInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/BonefishInstaller.php',
         'Composer\\Installers\\CakePHPInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/CakePHPInstaller.php',
         'Composer\\Installers\\ChefInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ChefInstaller.php',
+        'Composer\\Installers\\CiviCrmInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/CiviCrmInstaller.php',
         'Composer\\Installers\\ClanCatsFrameworkInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ClanCatsFrameworkInstaller.php',
         'Composer\\Installers\\CockpitInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/CockpitInstaller.php',
         'Composer\\Installers\\CodeIgniterInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/CodeIgniterInstaller.php',
@@ -119,6 +125,7 @@ class ComposerStaticInit1675f12dcb616dfd5aef9267ba43b735
         'Composer\\Installers\\ZendInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ZendInstaller.php',
         'Composer\\Installers\\ZikulaInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ZikulaInstaller.php',
         'Layered\\IfMenu\\Admin' => __DIR__ . '/../..' . '/src/Admin.php',
+        'Layered\\SafeEval\\SafeEval' => __DIR__ . '/..' . '/layered/safe-eval/SafeEval.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

@@ -57,6 +57,19 @@ class LAE_Portfolio_Widget extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'query_type',
+            [
+                'label' => __('Source', 'livemesh-el-addons'),
+                'type' => Controls_Manager::SELECT,
+                'options' => array(
+                    'custom_query' => __('Custom Query', 'livemesh-el-addons'),
+                    'current_query' => __('Current Query', 'livemesh-el-addons'),
+                    'related' => __('Related', 'livemesh-el-addons'),
+                ),
+                'default' => 'custom_query',
+            ]
+        );
 
         $this->add_control(
             'post_types',
@@ -65,7 +78,26 @@ class LAE_Portfolio_Widget extends Widget_Base {
                 'type' => Controls_Manager::SELECT2,
                 'default' => 'post',
                 'options' => lae_get_all_post_type_options(),
-                'multiple' => true
+                'multiple' => true,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
+            ]
+        );
+
+        $this->add_control(
+            'taxonomies',
+            [
+                'type' => Controls_Manager::SELECT2,
+                'label' => __('Choose the taxonomies to display related posts.', 'livemesh-el-addons'),
+                'label_block' => true,
+                'description' => __('Choose the taxonomies to be used for displaying posts related to current post, page or custom post type.', 'livemesh-el-addons'),
+                'options' => lae_get_taxonomies_map(),
+                'default' => 'category',
+                'multiple' => true,
+                'condition' => [
+                    'query_type' => 'related'
+                ]
             ]
         );
 
@@ -76,7 +108,10 @@ class LAE_Portfolio_Widget extends Widget_Base {
                 'type' => Controls_Manager::SELECT2,
                 'options' => lae_get_all_taxonomy_options(),
                 'multiple' => true,
-                'label_block' => true
+                'label_block' => true,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
             ]
         );
 
@@ -86,7 +121,10 @@ class LAE_Portfolio_Widget extends Widget_Base {
                 'label' => __('Post In', 'livemesh-el-addons'),
                 'description' => __('Provide a comma separated list of Post IDs to display in the grid.', 'livemesh-el-addons'),
                 'type' => Controls_Manager::TEXT,
-                'label_block' => true
+                'label_block' => true,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
             ]
         );
 
@@ -96,6 +134,9 @@ class LAE_Portfolio_Widget extends Widget_Base {
                 'label' => __('Posts Per Page', 'livemesh-el-addons'),
                 'type' => Controls_Manager::NUMBER,
                 'default' => 6,
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
             ]
         );
 
@@ -104,6 +145,9 @@ class LAE_Portfolio_Widget extends Widget_Base {
             [
                 'label' => __('Advanced', 'livemesh-el-addons'),
                 'type' => Controls_Manager::HEADING,
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
             ]
         );
 
@@ -126,6 +170,9 @@ class LAE_Portfolio_Widget extends Widget_Base {
                     'post__in' => __('By include order', 'livemesh-el-addons'),
                 ),
                 'default' => 'date',
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
             ]
         );
 
@@ -139,6 +186,23 @@ class LAE_Portfolio_Widget extends Widget_Base {
                     'DESC' => __('Descending', 'livemesh-el-addons'),
                 ),
                 'default' => 'DESC',
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
+            ]
+        );
+
+
+        $this->add_control(
+            'offset',
+            [
+                'label' => __('Offset', 'livemesh-el-addons'),
+                'description' => __('Number of posts to skip or pass over.', 'livemesh-el-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 0,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
             ]
         );
 
@@ -784,6 +848,8 @@ class LAE_Portfolio_Widget extends Widget_Base {
         // Loop through the posts and do something with them.
         if ($loop->have_posts()) :
 
+            $dir = is_rtl() ? ' dir="rtl"' : '';
+
             // Check if any taxonomy filter has been applied
             list($chosen_terms, $taxonomies) = lae_get_chosen_terms($query_args);
 
@@ -815,9 +881,9 @@ class LAE_Portfolio_Widget extends Widget_Base {
 
             endif;
 
-            $output .= '<div id="lae-portfolio-' . uniqid()
+            $output .= '<div' . $dir . ' id="lae-portfolio-' . uniqid()
                 . '" class="lae-portfolio js-isotope lae-' . esc_attr($settings['layout_mode']) . ' lae-grid-container ' . lae_get_grid_classes($settings)
-                . '" data-isotope-options=\'{ "itemSelector": ".lae-portfolio-item", "layoutMode": "' . esc_attr($settings['layout_mode']) . '"}\'>';
+                . '" data-isotope-options=\'{ "itemSelector": ".lae-portfolio-item", "layoutMode": "' . esc_attr($settings['layout_mode']) . '", "originLeft": ' . esc_attr(!is_rtl()? 'true' : 'false') . '}\'>';
 
             $current_page = get_queried_object_id();
 

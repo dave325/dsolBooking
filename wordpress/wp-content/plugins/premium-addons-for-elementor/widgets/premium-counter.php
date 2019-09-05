@@ -1,7 +1,20 @@
 <?php 
-namespace Elementor;
 
-if( !defined( 'ABSPATH' ) ) exit; // No access of directly access
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Utils;
+use Elementor\Icons_Manager;
+use Elementor\Control_Media;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Text_Shadow;
+
+if( ! defined( 'ABSPATH' ) ) exit; // No access of directly access
 
 class Premium_Counter extends Widget_Base {
 
@@ -10,12 +23,18 @@ class Premium_Counter extends Widget_Base {
 	}
 
 	public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Counter';
+        return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Counter', 'premium-addons-for-elementor') );
 	}
 
 	public function get_icon() {
 		return 'pa-counter';
 	}
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
 
 	public function get_script_depends() {
 		return [
@@ -49,7 +68,7 @@ class Premium_Counter extends Widget_Base {
         
 		$this->add_control('premium_counter_start_value',
 			[
-				'label'			=> __( 'Start Number', 'premium-addons-for-elementor' ),
+				'label'			=> __( 'Starting Number', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::NUMBER,
 				'default'		=> 0
 			]
@@ -57,7 +76,7 @@ class Premium_Counter extends Widget_Base {
         
         $this->add_control('premium_counter_end_value',
 			[
-				'label'			=> __( 'End Number', 'premium-addons-for-elementor' ),
+				'label'			=> __( 'Ending Number', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::NUMBER,
 				'default'		=> 500
 			]
@@ -68,7 +87,7 @@ class Premium_Counter extends Widget_Base {
 				'label'			=> __( 'Thousands Separator', 'premium-addons-for-elementor' ),
 				'type'			=> Controls_Manager::TEXT,
                 'dynamic'       => [ 'active' => true ],
-				'description'	=> __( 'Separate coverts 125000 into 125,000', 'premium-addons-for-elementor' ),
+				'description'	=> __( 'Separator converts 125000 into 125,000', 'premium-addons-for-elementor' ),
 				'default'		=> ','
 			]
 		);
@@ -129,11 +148,15 @@ class Premium_Counter extends Widget_Base {
 		  	]
 		);
 
-		$this->add_control('premium_counter_icon',
+		$this->add_control('premium_counter_icon_updated',
 		  	[
 		     	'label'			=> __( 'Select an Icon', 'premium-addons-for-elementor' ),
-		     	'type' 			=> Controls_Manager::ICON,
-                'default'       => 'fa fa-clock-o',
+		     	'type'              => Controls_Manager::ICONS,
+                'fa4compatibility'  => 'premium_counter_icon',
+                'default' => [
+                    'value'     => 'fas fa-clock',
+                    'library'   => 'fa-solid',
+                ],
 			  	'condition'		=> [
 			  		'premium_counter_icon_image' => 'icon'
 			  	]
@@ -174,6 +197,7 @@ class Premium_Counter extends Widget_Base {
             [
                 'label'         => __('Animations', 'premium-addons-for-elementor'),
                 'type'          => Controls_Manager::ANIMATION,
+                'render_type'   => 'template'
             ]
             );
         
@@ -490,10 +514,7 @@ class Premium_Counter extends Widget_Base {
 	}
     
     public function get_counter_content($settings, $direction) {
-        
-//      $d_after 		= intval( $settings['premium_counter_d_after'] );
-// 		$d_s = $settings['premium_counter_d_separator'];
-// 		$t_s = $settings['premium_counter_t_separator'];
+
         $start_value = $settings['premium_counter_start_value'];
         
     ?>
@@ -528,42 +549,55 @@ class Premium_Counter extends Widget_Base {
         
         $animation = $settings['premium_counter_icon_animation'];
         
+        if ( $settings['premium_counter_icon_image'] === 'icon' ) {
+            if ( ! empty ( $settings['premium_counter_icon'] )  ) {
+                $this->add_render_attribute( 'icon', 'class', $settings['premium_counter_icon'] );
+                $this->add_render_attribute( 'icon', 'aria-hidden', 'true' );
+            }
+            
+            $migrated = isset( $settings['__fa4_migrated']['premium_counter_icon_updated'] );
+            $is_new = empty( $settings['premium_counter_icon'] ) && Icons_Manager::is_migration_allowed();
+        } else {
+            $alt = esc_attr( Control_Media::get_image_alt( $settings['premium_counter_image_upload'] ) );
+            
+            $this->add_render_attribute( 'image', 'class', 'custom-image' );
+            $this->add_render_attribute( 'image', 'src', $settings['premium_counter_image_upload']['url'] );
+            $this->add_render_attribute( 'image', 'alt', $alt );
+        }
+        
         $flex_width = '';
  		if( $settings['premium_counter_icon_image'] == 'custom' && $settings['premium_counter_icon_style'] == 'simple' ) {
  			$flex_width = ' flex-width ';
  		}
         
-        if( $settings['premium_counter_icon_image'] == 'icon' ) {
-			$icon_image = '<i class="' . $settings['premium_counter_icon'] .'"></i>';
-		} else {
-            $alt = esc_attr( Control_Media::get_image_alt( $settings['premium_counter_image_upload'] ) );
-			$icon_image = '<img class="custom-image" src="'.$settings['premium_counter_image_upload']['url'] . '" alt="' . $alt . '">';
-		}
-    ?>
+        ?>
 
         <div class="premium-counter-icon <?php echo $direction; ?>">
-            <span data-animation="<?php echo $animation; ?>" class="icon<?php echo $flex_width; ?><?php echo $icon_style; ?>"><?php echo $icon_image; ?></span>
+            <span class="icon<?php echo $flex_width; ?><?php echo $icon_style; ?>" data-animation="<?php echo $animation; ?>">
+            
+                <?php if( $settings['premium_counter_icon_image'] === 'icon' ) {
+        
+                    if ( $is_new || $migrated ) :
+                        Icons_Manager::render_icon( $settings['premium_counter_icon_updated'], [ 'aria-hidden' => 'true' ] );
+                    else: ?>
+                        <i <?php echo $this->get_render_attribute_string( 'icon' ); ?>></i>
+                    <?php endif;
+                } else { ?>
+                    <img <?php echo $this->get_render_attribute_string('image'); ?>>
+                <?php } ?>
+            
+            </span>
         </div>
 
     <?php
     }
 
 	protected function render() {
+        
 		$settings = $this->get_settings_for_display();
 
         $this->add_inline_editing_attributes('premium_counter_title');
-            
-//        $separator = $settings['premium_counter_t_separator'];
-//        
-//        $decimal = $settings['premium_counter_d_separator'];
-		
-        if( $settings['premium_counter_icon_image'] == 'icon' ) {
-			$icon_image = '<i class="' . $settings['premium_counter_icon'] .'"></i>';
-		} else {
-            $alt = esc_attr( Control_Media::get_image_alt( $settings['premium_counter_image_upload'] ) );
-			$icon_image = '<img class="custom-image" src="'.$settings['premium_counter_image_upload']['url'] . '" alt="' . $alt . '">';
-		}
-
+         
 		$position = $settings['premium_counter_icon_position'];
 		
         $center = $position == 'top' ? ' center' : '';
@@ -574,27 +608,14 @@ class Premium_Counter extends Widget_Base {
  		if( $settings['premium_counter_icon_image'] == 'custom' && $settings['premium_counter_icon_style'] == 'simple' ) {
  			$flex_width = ' flex-width ';
  		}
-
-// 		$counter_settings = [
-//            'id'            => $this->get_id(),
-//            'toValue'		=> $settings['premium_counter_end_value'],
-//            'speed'			=> $settings['premium_counter_speed'],
-//            'separator'		=> $separator,
-//            'decimal'		=> $decimal,
-// 		];
-        
-        //$this->add_render_attribute( 'counter', 'id', 'counter-wrapper-'. $this->get_id() );
-        
-        //$this->add_render_attribute( 'counter', 'class', [ 'premium-counter', 'premium-counter-area' . $center ] );
-        
-        //$this->add_render_attribute( 'counter', 'data-settings', wp_json_encode( $counter_settings ) );
         
         $this->add_render_attribute( 'counter', [
-                'class' => [ 'premium-counter', 'premium-counter-area' . $center ],
-                'data-duration' => $settings['premium_counter_speed'] * 1000,
-                'data-to-value' => $settings['premium_counter_end_value'],
-                'data-delimiter'=>  empty( $settings['premium_counter_t_separator'] ) ? ',' : $settings['premium_counter_t_separator'],
-                'data-rounding' => empty ( $settings['premium_counter_d_after'] ) ? 0  : $settings['premium_counter_d_after']
+                'class' 			=> [ 'premium-counter', 'premium-counter-area' . $center ],
+				'data-duration' 	=> $settings['premium_counter_speed'] * 1000,
+				'data-from-value' 	=> $settings['premium_counter_start_value'],
+				'data-to-value' 	=> $settings['premium_counter_end_value'],
+                'data-delimiter'	=>  empty( $settings['premium_counter_t_separator'] ) ? ',' : $settings['premium_counter_t_separator'],
+                'data-rounding' 	=> empty ( $settings['premium_counter_d_after'] ) ? 0  : $settings['premium_counter_d_after']
             ]
         );
 
@@ -602,13 +623,13 @@ class Premium_Counter extends Widget_Base {
 
         <div <?php echo $this->get_render_attribute_string('counter'); ?>>
             <?php if( $position == 'right' ) {
-                $this->get_counter_content($settings, $position);
-                if( ! empty( $settings['premium_counter_icon'] ) || !empty( $settings['premium_counter_image_upload'] ) ) {
+                $this->get_counter_content( $settings, $position );
+                if( ! empty( $settings['premium_counter_icon'] ) || ! empty( $settings['premium_counter_image_upload']['url'] ) ) {
                     $this->get_counter_icon($settings, $position);
                 }
             
             } else { 
-                if( !empty( $settings['premium_counter_icon'] ) || !empty( $settings['premium_counter_image_upload'] ) ) {
+                if( ! empty( $settings['premium_counter_icon'] ) || ! empty( $settings['premium_counter_image_upload']['url'] ) ) {
                     $this->get_counter_icon($settings, $left);
                 } 
                 $this->get_counter_content($settings, $left);
@@ -620,4 +641,129 @@ class Premium_Counter extends Widget_Base {
 
 		<?php
 	}
+    
+    protected function _content_template() {
+        ?>
+        <#
+            
+            var iconImage,
+                position,
+                center,
+                left;
+                
+        
+            view.addInlineEditingAttributes('title');
+            
+            position = settings.premium_counter_icon_position;
+
+            center = 'top' === position ? ' center' : '';
+
+            left = 'left' === center ? ' left' : '';
+
+            var delimiter = '' === settings.premium_counter_t_separator ? ',' : settings.premium_counter_t_separator,
+                round     = '' === settings.premium_counter_d_after ? 0 : settings.premium_counter_d_after;
+            
+            view.addRenderAttribute( 'counter', 'class', [ 'premium-counter', 'premium-counter-area' + center ] );
+            view.addRenderAttribute( 'counter', 'data-duration', settings.premium_counter_speed * 1000 );
+			view.addRenderAttribute( 'counter', 'data-from-value', settings.premium_counter_start_value );
+            view.addRenderAttribute( 'counter', 'data-to-value', settings.premium_counter_end_value );
+            view.addRenderAttribute( 'counter', 'data-delimiter', delimiter );
+            view.addRenderAttribute( 'counter', 'data-rounding', round );
+            
+            function getCounterContent( direction ) {
+            
+                var startValue = settings.premium_counter_start_value;
+                
+                view.addRenderAttribute( 'counter_wrap', 'class', [ 'premium-init-wrapper', direction ] );
+                
+                view.addRenderAttribute( 'value', 'id', 'counter-' + view.getID() );
+                
+                view.addRenderAttribute( 'value', 'class', 'premium-counter-init' );
+                
+            #>
+            
+                <div {{{ view.getRenderAttributeString('counter_wrap') }}}>
+
+                    <# if ( '' !== settings.premium_counter_preffix ) { #>
+                        <span id="prefix" class="counter-su-pre">{{{ settings.premium_counter_preffix }}}</span>
+                    <# } #>
+
+                    <span {{{ view.getRenderAttributeString('value') }}}>{{{ startValue }}}</span>
+
+                    <# if ( '' !== settings.premium_counter_suffix ) { #>
+                        <span id="suffix" class="counter-su-pre">{{{ settings.premium_counter_suffix }}}</span>
+                    <# } #>
+
+                    <# if ( '' !== settings.premium_counter_title ) { #>
+                        <h4 class="premium-counter-title">
+                            <div {{{ view.getRenderAttributeString('title') }}}>
+                                {{{ settings.premium_counter_title }}}
+                            </div>
+                        </h4>
+                    <# } #>
+                </div>
+            
+            <#
+            }
+            
+            function getCounterIcon( direction ) {
+            
+                var iconStyle = 'simple' !== settings.premium_counter_icon_style ? ' icon-bg ' + settings.premium_counter_icon_style : '',
+                    animation = settings.premium_counter_icon_animation,
+                    flexWidth = '';
+                
+                var iconHTML = elementor.helpers.renderIcon( view, settings.premium_counter_icon_updated, { 'aria-hidden': true }, 'i' , 'object' ),
+                    migrated = elementor.helpers.isIconMigrated( settings, 'premium_counter_icon_updated' );
+                    
+                if( 'custom' === settings.premium_counter_icon_image && 'simple' ===  settings.premium_counter_icon_style ) {
+                    flexWidth = ' flex-width ';
+                }
+                
+                view.addRenderAttribute( 'icon_wrap', 'class', [ 'premium-counter-icon', direction ] );
+                
+                var iconClass = 'icon' + flexWidth + iconStyle;
+            
+            #>
+
+            <div {{{ view.getRenderAttributeString('icon_wrap') }}}>
+                <span data-animation="{{ animation }}" class="{{ iconClass }}">
+                    <# if( 'icon' === settings.premium_counter_icon_image ) {
+                        if ( iconHTML && iconHTML.rendered && ( ! settings.premium_counter_icon || migrated ) ) { #>
+                            {{{ iconHTML.value }}}
+                        <# } else { #>
+                            <i class="{{ settings.premium_counter_icon }}" aria-hidden="true"></i>
+                        <# } #>
+                    <# } else { #>
+                        <img class="custom-image" src="{{ settings.premium_counter_image_upload.url }}">
+                    <# } #>
+                </span>
+            </div>
+            
+            <#
+            }
+           
+        #>
+        
+        <div {{{ view.getRenderAttributeString('counter') }}}>
+            <# if( 'right' === position  ) {
+            
+                getCounterContent( position );
+                
+                if( '' !== settings.premium_counter_icon || '' !== settings.premium_counter_image_upload.url ) {
+                    getCounterIcon( position );
+                }
+            
+            } else {
+            
+                if( '' !== settings.premium_counter_icon || '' !== settings.premium_counter_image_upload.url ) {
+                    getCounterIcon( position );
+                }
+                
+                getCounterContent( position );
+            
+            } #>
+        </div>
+        
+        <?php
+    }
 }

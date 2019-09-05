@@ -2,9 +2,7 @@
 
 namespace PremiumAddons\Admin\Settings;
 
-use PremiumAddons\Admin\Includes\Admin_Notices;
 use PremiumAddons\Helper_Functions;
-
 
 if( ! defined( 'ABSPATH' ) ) exit(); // Exit if accessed directly
 
@@ -12,7 +10,7 @@ class Modules_Settings {
     
     protected $page_slug = 'premium-addons';
 
-    public static $pa_elements_keys = ['premium-banner', 'premium-blog','premium-carousel', 'premium-countdown','premium-counter','premium-dual-header','premium-fancytext','premium-image-separator','premium-maps','premium-modalbox','premium-person','premium-progressbar','premium-testimonials','premium-title','premium-videobox','premium-pricing-table','premium-button','premium-contactform', 'premium-image-button', 'premium-grid','premium-vscroll', 'premium-image-scroll'];
+    public static $pa_elements_keys = ['premium-banner', 'premium-blog','premium-carousel', 'premium-countdown','premium-counter','premium-dual-header','premium-fancytext','premium-image-separator','premium-maps','premium-modalbox','premium-person','premium-progressbar','premium-testimonials','premium-title','premium-videobox','premium-pricing-table','premium-button','premium-contactform', 'premium-image-button', 'premium-grid','premium-vscroll', 'premium-image-scroll', 'premium-templates'];
     
     private $pa_default_settings;
     
@@ -140,11 +138,11 @@ class Modules_Settings {
 
     public function pa_admin_page() {
         
-        $theme_name = Admin_Notices::get_installed_theme();
+        $theme_slug = Helper_Functions::get_installed_theme();
         
         $js_info = array(
 			'ajaxurl'   => admin_url( 'admin-ajax.php' ),
-            'theme'     => $theme_name
+            'theme'     => $theme_slug
 		);
 
 		wp_localize_script( 'pa-admin-js', 'settings', $js_info );
@@ -353,6 +351,18 @@ class Modules_Settings {
                                     </label>
                                 </td>
                                 
+                                <th><?php echo sprintf( '%1$s %2$s', $prefix, __('Templates', 'premium-addons-for-elementor') ); ?></th>
+                                <td>
+                                    <label class="switch">
+                                            <input type="checkbox" id="premium-templates" name="premium-templates" <?php checked(1, $this->pa_get_settings['premium-templates'], true) ?>>
+                                            <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                
+                            </tr>
+                            
+                            <tr>
+                                
                                 <th><?php echo sprintf( '%1$s %2$s', $prefix, __('Title', 'premium-addons-for-elementor') ); ?></th>
                                 <td>
                                     <label class="switch">
@@ -360,9 +370,7 @@ class Modules_Settings {
                                             <span class="slider round"></span>
                                     </label>
                                 </td>
-                            </tr>
-                            
-                            <tr>
+                                
                                 <th><?php echo sprintf( '%1$s %2$s', $prefix, __('Video Box', 'premium-addons-for-elementor') ); ?></th>
                                 <td>
                                     <label class="switch">
@@ -370,6 +378,11 @@ class Modules_Settings {
                                             <span class="slider round"></span>
                                         </label>
                                 </td>
+                                
+                            </tr>
+                            
+                            <tr>
+                                
                                 <th><?php echo sprintf( '%1$s %2$s', $prefix, __('Vertical Scroll', 'premium-addons-for-elementor') ); ?></th>
                                 <td>
                                     <label class="switch">
@@ -665,6 +678,23 @@ class Modules_Settings {
         
         return $enabled_keys;
     }
+    
+    /*
+     * Check If Premium Templates is enabled
+     * 
+     * @since 3.6.0
+     * @access public
+     * 
+     * @return boolean
+     */
+    public static function check_premium_templates() {
+        
+        $premium_templates = self::get_enabled_keys()['premium-templates'];
+
+        $is_enabled = isset( $premium_templates ) ? $premium_templates : 1;
+        
+        return $is_enabled;
+    }
 
     public function pa_save_settings() {
         
@@ -689,6 +719,7 @@ class Modules_Settings {
             'premium-progressbar' 		=> intval( $settings['premium-progressbar'] ? 1 : 0 ),
             'premium-testimonials' 		=> intval( $settings['premium-testimonials'] ? 1 : 0 ),
             'premium-title'             => intval( $settings['premium-title'] ? 1 : 0 ),
+            'premium-templates'         => intval( $settings['premium-templates'] ? 1 : 0 ),
             'premium-videobox'          => intval( $settings['premium-videobox'] ? 1 : 0 ),
             'premium-pricing-table'     => intval( $settings['premium-pricing-table'] ? 1 : 0),
             'premium-button'            => intval( $settings['premium-button'] ? 1 : 0),

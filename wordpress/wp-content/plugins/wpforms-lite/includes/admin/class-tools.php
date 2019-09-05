@@ -512,6 +512,8 @@ class WPForms_Tools {
 	 */
 	public function export_tab() {
 
+		do_action( 'wpforms_admin_tools_export_top' );
+
 		?>
 
 		<div class="wpforms-setting-row tools">
@@ -593,6 +595,8 @@ class WPForms_Tools {
 		</div>
 
 		<?php
+
+		do_action( 'wpforms_admin_tools_export_bottom' );
 	}
 
 	/**
@@ -674,6 +678,9 @@ class WPForms_Tools {
 
 		// Import Form(s).
 		if ( 'import_form' === $_POST['action'] && ! empty( $_FILES['file']['tmp_name'] ) ) {
+
+			// Add filter of the link rel attr to avoid JSON damage.
+			add_filter( 'wp_targeted_link_rel', '__return_empty_string', 50, 1 );
 
 			$ext = strtolower( pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION ) );
 

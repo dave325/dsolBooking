@@ -24,19 +24,19 @@ class Group_Control_Icon extends Group_Control_Base {
 
 		$controls['icon_type'] = [
 			'type'        => Controls_Manager::CHOOSE,
-			'label'       => __( 'Type', 'bpel' ),
+			'label'       => __( 'Type', 'wts-eae' ),
 			'default'     => 'icon',
 			'options'     => [
 				'icon'  => [
-					'title' => __( 'Fontawesome Icon', 'bpel' ),
+					'title' => __( 'Fontawesome Icon', 'wts-eae' ),
 					'icon'  => 'fa fa-font-awesome',
 				],
 				'image' => [
-					'title' => __( 'Custom Icons', 'bpel' ),
+					'title' => __( 'Custom Icons', 'wts-eae' ),
 					'icon'  => 'fa fa-image',
 				],
 				'text'  => [
-					'title' => __( 'Text', 'bpel' ),
+					'title' => __( 'Text', 'wts-eae' ),
 					'icon'  => 'fa fa-font',
 				],
 			],
@@ -49,7 +49,7 @@ class Group_Control_Icon extends Group_Control_Base {
 
 
 		$controls['icon'] = [
-			'label'     => __( 'Icon', 'Icon Control', 'bpel' ),
+			'label'     => __( 'Icon', 'wts-eae' ),
 			'type'      => Controls_Manager::ICON,
 			'default'   => 'fa fa-star',
 			'condition' => [
@@ -59,7 +59,7 @@ class Group_Control_Icon extends Group_Control_Base {
 		];
 
 		$controls['image'] = [
-			'label'       => __( 'Custom Icon', 'Icon Control', 'bpel' ),
+			'label'       => __( 'Custom Icon', 'wts-eae' ),
 			'type'        => Controls_Manager::MEDIA,
 			'label_block' => false,
 			'condition'   => [
@@ -69,7 +69,7 @@ class Group_Control_Icon extends Group_Control_Base {
 		];
 
 		$controls['text'] = [
-			'label'       => __( 'Text', 'Icon Control', 'bpel' ),
+			'label'       => __( 'Text', 'wts-eae' ),
 			'type'        => Controls_Manager::TEXT,
 			'label_block' => false,
 			'condition'   => [
@@ -79,13 +79,13 @@ class Group_Control_Icon extends Group_Control_Base {
 		];
 
 		$controls['view'] = [
-			'label'     => __( 'View', 'Icon Control', 'bpel' ),
+			'label'     => __( 'View', 'wts-eae' ),
 			'type'      => Controls_Manager::SELECT,
 			'options'   => [
-				'global'  => __( 'Global', 'bpel'),
-				'default' => __( 'Default', 'bpel' ),
-				'stacked' => __( 'Stacked', 'bpel' ),
-				'framed'  => __( 'Framed', 'bpel' ),
+				'global'  => __( 'Global', 'wts-eae'),
+				'default' => __( 'Default', 'wts-eae' ),
+				'stacked' => __( 'Stacked', 'wts-eae' ),
+				'framed'  => __( 'Framed', 'wts-eae' ),
 			],
 			'default'   => 'global',
 			'condition' => [
@@ -95,12 +95,12 @@ class Group_Control_Icon extends Group_Control_Base {
 		];
 
 		$controls['shape'] = [
-			'label'     => __( 'Shape', 'Icon Control', 'bpel' ),
+			'label'     => __( 'Shape', 'wts-eae' ),
 			'type'      => Controls_Manager::SELECT,
 			'options'   => [
-				'global'  => __( 'Global', 'bpel'),
-				'circle' => __( 'Circle', 'bpel' ),
-				'square' => __( 'Square', 'bpel' ),
+				'global'  => __( 'Global', 'wts-eae'),
+				'circle' => __( 'Circle', 'wts-eae' ),
+				'square' => __( 'Square', 'wts-eae' ),
 			],
 			'default'   => 'global',
 			'condition' => [
@@ -116,7 +116,7 @@ class Group_Control_Icon extends Group_Control_Base {
 	protected function get_default_options() {
 		return [
 			'popover' => [
-				'starter_title' => _x( 'Icon', 'Icon Control', 'bpel' ),
+				'starter_title' => _x( 'Icon', 'wts-eae' ),
 				'starter_name'  => 'eae_icon',
 			]
 		];

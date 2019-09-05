@@ -50,6 +50,15 @@ function if_menu_basic_conditions(array $conditions) {
 		);
 	}
 
+	$conditions[] = array(
+		'id'		=>	'users-can-register',
+		'name'		=>	__('User registration is allowed', 'if-menu'),
+		'condition'	=>	function() {
+			return (bool) get_option('users_can_register');
+		},
+		'group'		=>	__('User', 'if-menu')
+	);
+
 
 	// Page type
 	$conditions[] = array(

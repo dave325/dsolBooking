@@ -18,18 +18,24 @@ class WPSEO_Author_Sitemap_Provider implements WPSEO_Sitemap_Provider {
 	 * @return boolean
 	 */
 	public function handles_type( $type ) {
+		// If the author archives have been disabled, we don't do anything.
+		if ( WPSEO_Options::get( 'disable-author', false ) || WPSEO_Options::get( 'noindex-author-wpseo', false ) ) {
+			return false;
+		}
 
 		return $type === 'author';
 	}
 
 	/**
+	 * Get the links for the sitemap index.
+	 *
 	 * @param int $max_entries Entries per sitemap.
 	 *
 	 * @return array
 	 */
 	public function get_index_links( $max_entries ) {
 
-		if ( WPSEO_Options::get( 'disable-author', false ) || WPSEO_Options::get( 'noindex-author-wpseo', false ) ) {
+		if ( ! $this->handles_type( 'author' ) ) {
 			return array();
 		}
 
@@ -91,7 +97,7 @@ class WPSEO_Author_Sitemap_Provider implements WPSEO_Sitemap_Provider {
 
 		$defaults = array(
 			// @todo Re-enable after plugin requirements raised to WP 4.6 with the fix.
-			// 'who'        => 'authors', Breaks meta keys, see https://core.trac.wordpress.org/ticket/36724#ticket R.
+			// 'who'        => 'authors', Breaks meta keys, {@link https://core.trac.wordpress.org/ticket/36724#ticket} R.
 			'meta_key'   => '_yoast_wpseo_profile_updated',
 			'orderby'    => 'meta_value_num',
 			'order'      => 'DESC',
@@ -132,13 +138,15 @@ class WPSEO_Author_Sitemap_Provider implements WPSEO_Sitemap_Provider {
 	 * @param int    $max_entries  Entries per sitemap.
 	 * @param int    $current_page Current page of the sitemap.
 	 *
+	 * @throws OutOfBoundsException When an invalid page is requested.
+	 *
 	 * @return array
 	 */
 	public function get_sitemap_links( $type, $max_entries, $current_page ) {
 
 		$links = array();
 
-		if ( WPSEO_Options::get( 'disable-author', false ) || WPSEO_Options::get( 'noindex-author-wpseo', false ) ) {
+		if ( ! $this->handles_type( 'author' ) ) {
 			return $links;
 		}
 
@@ -146,9 +154,15 @@ class WPSEO_Author_Sitemap_Provider implements WPSEO_Sitemap_Provider {
 			'offset' => ( $current_page - 1 ) * $max_entries,
 			'number' => $max_entries,
 		);
-		$users         = $this->get_users( $user_criteria );
-		$users         = $this->exclude_users( $users );
 
+		$users = $this->get_users( $user_criteria );
+
+		// Throw an exception when there are no users in the sitemap.
+		if ( count( $users ) === 0 ) {
+			throw new OutOfBoundsException( 'Invalid sitemap page requested' );
+		}
+
+		$users = $this->exclude_users( $users );
 		if ( empty( $users ) ) {
 			$users = array();
 		}

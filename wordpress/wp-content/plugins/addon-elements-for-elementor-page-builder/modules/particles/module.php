@@ -18,8 +18,17 @@ class Module{
 		add_action( 'elementor/frontend/column/before_render', [ $this, '_before_render'],10,1);
 		add_action( 'elementor/frontend/section/before_render', [ $this, '_before_render'],10,1);
 
+		add_action( 'wp_enqueue_scripts', [ $this, 'eae_add_particles' ] );
+		add_action( 'elementor/editor/wp_head', [ $this, 'eae_add_particles_admin' ] );
 	}
 
+	function eae_add_particles(){
+        wp_enqueue_script('eae-particles');
+    }
+
+    function eae_add_particles_admin(){
+	    wp_enqueue_script( 'eae-partices', EAE_URL . 'assets/js/particles.js', array( 'jquery' ), '1.0', true );
+    }
 	public function register_controls($element, $section_id, $args){
 
 		if ( ('section' === $element->get_name() && 'section_background' === $section_id) || ('column' === $element->get_name() && 'section_style' === $section_id)) {

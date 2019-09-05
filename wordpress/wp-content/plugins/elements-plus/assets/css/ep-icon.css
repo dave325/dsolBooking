@@ -65,26 +65,34 @@
 	content: "\E00B";
 }
 
-.ep-icon-instagram:before {
+.ep-icon-inline:before {
 	content: "\E00C";
 }
 
-.ep-icon-label:before {
+.ep-icon-instagram:before {
 	content: "\E00D";
 }
 
-.ep-icon-maps:before {
+.ep-icon-label:before {
 	content: "\E00E";
 }
 
-.ep-icon-preloader:before {
+.ep-icon-maps:before {
 	content: "\E00F";
 }
 
-.ep-icon-search:before {
+.ep-icon-preloader:before {
 	content: "\E010";
 }
 
-.ep-icon-youtube:before {
+.ep-icon-search:before {
 	content: "\E011";
+}
+
+.ep-icon-table:before {
+	content: "\E012";
+}
+
+.ep-icon-youtube:before {
+	content: "\E013";
 }

@@ -494,6 +494,7 @@ class DualButton extends EAE_Widget_Base {
 				'size_units' => [ 'px', '%' ],
 				'selectors'  => [
 					'{{WRAPPER}} .eae-button-1-wrapper' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}}.animation-none .eae-button-1-wrapper:hover,{{WRAPPER}} .eae-button-1-wrapper:hover:before,{{WRAPPER}} .eae-button-1-wrapper:before' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -609,7 +610,7 @@ class DualButton extends EAE_Widget_Base {
 			[
 				'name'     => 'button2_background_color_hover',
 				'label'    => __( 'Background Color', 'wts-eae' ),
-				'selector' => '{{WRAPPER}} .eae-button-2-wrapper:hover,{{WRAPPER}} .eae-button-2-wrapper:hover:before,{{WRAPPER}} .eae-button-2-wrapper:before',
+				'selector' => '{{WRAPPER}}.animation-none .eae-button-2-wrapper:hover,{{WRAPPER}} .eae-button-2-wrapper:hover:before,{{WRAPPER}} .eae-button-2-wrapper:before',
 			]
 		);
 
@@ -663,6 +664,7 @@ class DualButton extends EAE_Widget_Base {
 				'size_units' => [ 'px', '%' ],
 				'selectors'  => [
 					'{{WRAPPER}} .eae-button-2-wrapper' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}}.animation-none .eae-button-2-wrapper:hover,{{WRAPPER}} .eae-button-2-wrapper:hover:before,{{WRAPPER}} .eae-button-2-wrapper:before' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);

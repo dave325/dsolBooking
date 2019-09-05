@@ -4,7 +4,7 @@
  * Description: Custom elements for the Elementor page builder by CSSIgniter.com
  * Plugin URI: https://cssigniter.com/plugins/elements-plus/
  * Author: The CSSIgniter Team
- * Version: 2.3.0
+ * Version: 2.6.0
  * Author URI: https://cssigniter.com/
  * Text Domain: elements-plus
  * Domain Path: /languages
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'plugins_loaded', 'elements_plus_init' );
 function elements_plus_init() {
 
-	define( 'ELEMENTS_PLUS_VERSION', '2.3.0' );
+	define( 'ELEMENTS_PLUS_VERSION', '2.6.0' );
 	define( 'ELEMENTS_PLUS_URL', plugins_url( '/', __FILE__ ) );
 	define( 'ELEMENTS_PLUS_PATH', plugin_dir_path( __FILE__ ) );
 
@@ -169,6 +169,9 @@ function elements_plus_sanitize_settings( $options ) {
 		'checkbox_instagram_filters'   => '',
 		'checkbox_search'              => '',
 		'checkbox_countdown'           => '',
+		'checkbox_inline_svg'          => '',
+		'checkbox_tilt'                => '',
+		'checkbox_tables'              => '',
 	);
 
 	$options = wp_parse_args( $options, $defaults );
@@ -238,6 +241,10 @@ function elements_plus_add_elements() {
 		require_once ELEMENTS_PLUS_PATH . 'elements/ep-image-hover-effects.php';
 	}
 
+	if ( $options['checkbox_inline_svg'] && elements_plus_is_plugin_active( 'safe_svg' ) ) {
+		require_once ELEMENTS_PLUS_PATH . 'elements/ep-inline-svg.php';
+	}
+
 	if ( $options['checkbox_instagram'] && elements_plus_is_plugin_active( 'null_instagram_widget' ) ) {
 		require_once ELEMENTS_PLUS_PATH . 'elements/ep-instagram.php';
 	}
@@ -260,6 +267,14 @@ function elements_plus_add_elements() {
 
 	if ( $options['checkbox_search'] ) {
 		require_once ELEMENTS_PLUS_PATH . 'elements/ep-search.php';
+	}
+
+	if ( $options['checkbox_tables'] ) {
+		require_once ELEMENTS_PLUS_PATH . 'elements/ep-tables.php';
+	}
+
+	if ( $options['checkbox_tilt'] ) {
+		require_once ELEMENTS_PLUS_PATH . 'elements/ep-tilt.php';
 	}
 
 	if ( $options['checkbox_tooltip'] ) {
@@ -293,6 +308,9 @@ function elements_plus_scripts() {
 	$instagram_filters   = $options['checkbox_instagram_filters'];
 	$search              = $options['checkbox_search'];
 	$countdown           = $options['checkbox_countdown'];
+	$svg                 = $options['checkbox_inline_svg'];
+	$tilt                = $options['checkbox_tilt'];
+	$tables              = $options['checkbox_tables'];
 
 	if ( 1 === $icon ) {
 		wp_enqueue_style( 'ep-icon-module', ELEMENTS_PLUS_URL . 'assets/css/ep-icon-module.css', array(), ELEMENTS_PLUS_VERSION );
@@ -303,7 +321,7 @@ function elements_plus_scripts() {
 		wp_enqueue_script( 'justified-gallery', ELEMENTS_PLUS_URL . 'assets/js/jquery.justifiedGallery.min.js', array( 'jquery' ), '3.6.3', true );
 	}
 
-	if ( 1 === $justified || 1 === $maps || 1 === $audioigniter || 1 === $video_slider || 1 === $preloader || 1 === $flipclock || 1 === $image_comparison ) {
+	if ( 1 === $justified || 1 === $maps || 1 === $audioigniter || 1 === $video_slider || 1 === $preloader || 1 === $flipclock || 1 === $image_comparison || 1 === $image_hover_effects ) {
 		wp_enqueue_script( 'ep-scripts', ELEMENTS_PLUS_URL . 'assets/js/ep-scripts.js', array( 'jquery' ), ELEMENTS_PLUS_VERSION, true );
 	}
 
@@ -334,8 +352,8 @@ function elements_plus_scripts() {
 
 	if ( 1 === $image_hover_effects ) {
 		wp_enqueue_script( 'three', ELEMENTS_PLUS_URL . 'assets/js/three.min.js', array(), '1.0', true );
-		wp_enqueue_script( 'tweenmax', ELEMENTS_PLUS_URL . 'assets/js/TweenMax.min.js', array(), '1.20.3', true );
-		wp_enqueue_script( 'hover', ELEMENTS_PLUS_URL . 'assets/js/hover.min.js', array(), '1.0', true );
+		wp_enqueue_script( 'jstween', ELEMENTS_PLUS_URL . 'assets/js/jstween.js', array(), ELEMENTS_PLUS_VERSION, true );
+		wp_enqueue_script( 'hover', ELEMENTS_PLUS_URL . 'assets/js/hover.js', array(), ELEMENTS_PLUS_VERSION, true );
 	}
 
 	if ( 1 === $label || 1 === $button_plus || 1 === $justified || 1 === $cta || 1 === $video_slider || 1 === $preloader || 1 === $instagram || 1 === $tooltip || 1 === $icon || 1 === $flipclock || 1 === $image_hover_effects || 1 === $dual_button ) {
@@ -361,6 +379,15 @@ function elements_plus_scripts() {
 		wp_enqueue_script( 'ep-countdown', ELEMENTS_PLUS_URL . 'assets/js/ep-countdown.js', array( 'jquery' ), ELEMENTS_PLUS_VERSION, true );
 		wp_enqueue_style( 'ep-countdown-style', ELEMENTS_PLUS_URL . 'assets/css/ep-countdown.css', array(), ELEMENTS_PLUS_VERSION );
 	}
+
+	if ( 1 === $tilt ) {
+		wp_enqueue_script( 'ep-tilt', ELEMENTS_PLUS_URL . 'assets/js/vanilla-tilt.min.js', null, ELEMENTS_PLUS_VERSION, true );
+	}
+
+	if ( 1 === $tables ) {
+		wp_enqueue_style( 'ep-tables', ELEMENTS_PLUS_URL . 'assets/css/ep-tables.css', array(), ELEMENTS_PLUS_VERSION );
+	}
+
 }
 
 function elements_plus_admin_styles( $hook ) {

@@ -2,6 +2,9 @@
 
 namespace WPGMZA\Integration;
 
+if(!defined('ABSPATH'))
+	return;
+
 /**
  * This module integrates the plugin with the Gutenberg editor
  */
@@ -25,12 +28,14 @@ class Gutenberg extends \WPGMZA\Factory
 		));
 		
 		if(function_exists('register_block_type'))
+		{
 			register_block_type('gutenberg-wpgmza/block', array(
 				'render_callback' => array(
 					$this,
 					'onRender'
 				)
 			));
+		}
 	}
 	
 	/**
@@ -86,8 +91,6 @@ class Gutenberg extends \WPGMZA\Factory
 	 */
 	public function onRender($attr)
 	{
-		extract($attr);
-		
 		$attributes = array_merge(array('id' => 1), $attr);
 		
 		$str = "[wpgmza";

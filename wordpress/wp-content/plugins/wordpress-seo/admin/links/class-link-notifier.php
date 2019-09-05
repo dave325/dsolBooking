@@ -11,12 +11,14 @@
 class WPSEO_Link_Notifier {
 
 	/**
+	 * The ID of the link indexing notification.
+	 *
 	 * @var string
 	 */
 	const NOTIFICATION_ID = 'wpseo-reindex-links';
 
 	/**
-	 * Registers all hooks to WordPress
+	 * Registers all hooks to WordPress.
 	 */
 	public function register_hooks() {
 		if ( filter_input( INPUT_GET, 'page' ) === 'wpseo_dashboard' ) {
@@ -42,7 +44,7 @@ class WPSEO_Link_Notifier {
 	}
 
 	/**
-	 * Adds the notification when it isn't set already and the amount of unindexed items is greater than the set.
+	 * Adds the notification when it isn't set already and the amount of unindexed items is greater than the set
 	 * threshold.
 	 */
 	public function manage_notification() {

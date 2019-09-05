@@ -13,7 +13,7 @@ class dsol_meetings
 	
 	public static function dsol_pendingRequests( $pendingType )
 	{	
-		$typeArr = array( 'pending', 'pendPayment', '501C3', 'approved', 'denied', 'archived', 'all' );
+		$typeArr = array( 'pending', 'pendPayment', '501C3', 'approved', 'denied', 'archived','delete', 'all' );
 		$pendingType = trim( $pendingType );
 		
 		if( empty( $pendingType ) or !in_array( $pendingType, $typeArr) ) {
@@ -88,25 +88,8 @@ class dsol_meetings
 				break;
 				
 			case 'changeStatus':
-				if( empty( $externals['res_id'] ) ) {
-					self::showError( 'res_id', $externals['res_id'] );
-					break;
-				}
-
-				$statusArr = array( 'pending', 'pendPayment', 'approved', 'denied', 'archived', 'delete' );
-				$requestInfo = $pendingList['id'][$externals['res_id']];
-				if( !in_array( $externals['status'], $statusArr ) ) {
-					# BAD STATUS ERROR MESSAGE
-					require( DSOL_BOOKING_PATH . 'templates/meetings/error_badStatus.php' );
-					break;
-				}
-				if( !is_array( $externals['res_id'] ) ) {
-					$externals['resList'] = array( $externals['res_id'] );
-				} else {
-					$externals['resList'] = $externals['res_id'];
-				}
 				
-				self::changeStatus( $externals, $pendingList, $branchList, $roomContList, $amenityList );				
+				self::changeStatus();				
 				break;
 				
 			case 'edit':
@@ -169,206 +152,22 @@ class dsol_meetings
 			return false;
 		}
 		$final = array( 'fail' => array(), 'noChange' => array(), 'changed' => array() );
-
-		# cycle through res list.
-		foreach ( $externals[ 'resList' ] as $val ) {
-
-            # double check ID
-            /**
-             * Aung
-             * 
-             * Removed $pendingList[ 'id' ]  from !array_key_exits(...)
-             */
-			if ( !array_key_exists($pendingList[ 'id' ], $val) ) {
-				$final[ 'fail' ][] = $val;
-				# check if status is different
-            } 
-
-            /**
-             *  Aung
-             * 
-             * Removing elseif ( $pendingList[ 'id' ][ $val ][ 'status' ] == $externals[ 'status' ] )
-             */
-            else {
-				$final[ 'changed' ][] = $val;
-				# mail alerts
-			}
-		}
-
-		if ( !empty( $final[ 'changed' ] ) ) {
-			# get correct status email
-			# status that required an outgoing email: pendPayment, denied, accepted.
-
-			$sendMail = FALSE;
-			$needHash = FALSE;
-
-			switch ( $externals[ 'status' ] ) {
-                /**
-                 * Aung
-                 * 
-                 * Removed case 'pending'
-                 */
-				case 'archive':
-				case 'accepted':
-					break;
-
-				case 'approved':
-					$sendMail = TRUE;
-					break;
-
-				case 'denied':
-					$sendMail = 'denied';
-
-					$subject = get_option( 'dsol_requestDenied_subject' );
-
-					$body = nl2br( get_option( 'dsol_requestDenied_body' ) );
-					$costIncrement = 0;
-					break;
-                /**
-                 * Aung
-                 * 
-                 * Removed case 'pendPayment':
-                 */
-
-				case 'delete':
-					$delete = TRUE;
-			}
-			$i = 0;
+        $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
+        $table_name_room = $wpdb->prefix . 'dsol_booking_room';
+        $table_name_container = $wpdb->prefix . 'dsol_booking_container';
+        $table_name_time = $wpdb->prefix . 'dsol_booking_time';
+        
+	
 			# SEND EMAIL
-			foreach ( $final[ 'changed' ] as $val ) {
-				if($delete == true){
+			foreach ( $externals[ 'resList' ]as $val ) {
 					# UPDATE DATABASE
-					$table_name = $wpdb->prefix . "dsol_times";
-					$table_nameRes = $wpdb->prefix . "dsol_reservations";
-				$wpdb->delete(	$table_nameRes, 
+				$wpdb->delete(	$table_name_time, 
+						array( 'res_id' => $val ) );
+				$wpdb->delete(	$table_name_reservation, 
 						array( 'res_id' => $val ) );
 
-                /**
-                 * Aung
-                 * 
-                 * Removed $wpdb->delete ... 'ti_id' => $pendingList['id'][$val]['id']
-                 */
-				if ( $sendMail == true ) {
-					if ( $sendMail !== 'denied' ) {
-                        /**
-                         * Aung
-                         * 
-                         * Removed $pendingList[ 'id' ][ $val ][ 'nonProfit' ] == TRUE
-                         * of if-logic case
-                         */
-                        if ( $externals[ 'status' ] == 'pendPayment' ) {
-                            $subject = get_option( 'dsol_profit_pending_subject' );
-                            $body = nl2br( get_option( 'dsol_profit_pending_body' ) );
-                        } else {
-                            $subject = get_option( 'dsol_requestAcceptedProfit_subject' );
-                            $body = nl2br( get_option( 'dsol_requestAcceptedProfit_body' ) );
-                        }
-
-                        /**
-                         * Aung
-                         * 
-                         * Removed $pendingList[ 'id' ][ $val ][ 'roomDeposit' ] = get_option( 'dsol_profitDeposit' );
-                         */
-                        $costIncrement = get_option( 'dsol_profitIncrementPrice' );
-                    }
-                    
-                    /**
-                     * Aung
-                     * 
-                     * Removed if-block of $pendingList[ 'id' ][ $val ][ 'roomDeposit' ] = '0';
-                     */
-
-                     /**
-                      * Aung
-                      *
-                      * Remove $roomCount = count( $roomContList[ 'id' ][ $pendingList[ 'id' ][ $val ][ 'roomID' ] ][ 'rooms' ] );
-                      */
-                    /**
-                     * Aung 
-                     * 
-                     * Removed udating pendingList
-                     */
-
-
-                    /**
-                     * Aung
-                     * 
-                     * Removed $amenity = array() and updating $amenity
-                     */
-                    
-					$fromName = get_option( 'dsol_alertEmailFromName' );
-					$fromEmail = get_option( 'dsol_alertEmailFromEmail' );
-					$replyToOnly = ( true == get_option( 'dsol_emailReplyToOnly' ) ) ? "From: {$fromName}\r\nReply-To: {$fromName} <{$fromEmail}>\r\n" : "From: {$fromName} <{$fromEmail}>\r\n";
-
-                    /**
-                     * Aung
-                     * 
-                     * Removed pendingList payment link
-                     */
-
-                    /**
-                     *  Aung
-                     * 
-                     * 'amenity', 'amenityVal',  were in below array
-                     */
-					$valArr = array('branchName', 'ccLink', 'contactAddress1', 'contactAddress2', 'contactCity', 'contactEmail', 'contactName', 'contactPhonePrimary', 'contactPhoneSecondary', 'contactState', 'contactWebsite', 'contactZip', 'date', 'desc', 'endTime', 'endTimeDisp', 'eventName', 'formDate', 'nonProfit', 'nonProfitDisp', 'numAttend', 'paymentLink', 'roomDeposit', 'roomID', 'roomName', 'roomPrice', 'startTime', 'startTimeDisp', 'totalPrice' );
-					foreach ( $valArr as $val2 ) {
-
-                        /**
-                         * Aung
-                         * 
-                         * Removed if-block replacing $body with pendingList 
-                         */
-						$body = str_replace( "{{$val2}}", NULL, $body );
-					}
-
-                    # date 1 - two weeks from now
-                    /**
-                     * Aung
-                     * 
-                     * Removed $timeArr = getdate( strtotime( $pendingList[ 'id' ][ $val ][ 'created' ] ) );
-                     * Related with pendingList
-                     */
-					$date1 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] + 14, $timeArr[ 'year' ] );
-					$date3 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] + 1, $timeArr[ 'year' ] );
-
-                    # two weeks before event	
-                    /***
-                     * Aung
-                     * 
-                     * Removed $timeArr = getdate( strtotime( $pendingList[ 'id' ][ $val ][ 'date' ] . ' ' . $pendingList[ 'id' ][ $val ][ 'startTime' ] ) );
-                     */
-					$date2 = mktime( 0, 0, 0, $timeArr[ 'mon' ], $timeArr[ 'mday' ] - 14, $timeArr[ 'year' ] );
-
-
-					# check dates
-					$mainDate = min( $date1, $date2 );
-					if ( $mainDate < $date3 ) {
-						$mainDate = $date3;
-					}
-					$body = str_replace( '{paymentDate}', date( 'm-d-Y', $mainDate ), $body );
-					$headers  = 'MIME-Version: 1.0' . "\r\n";
-					$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n" .
-						$replyToOnly .
-						'X-Mailer: PHP/' . phpversion();
-
-                    /**
-                     * Aung
-                     * 
-                     * Removed mail( $pendingList['id'][$val]['contactEmail'], $subject, $body, $headers );
-                     */
                 }	
-            }			
-				
-				# UPDATE DATABASE
-				$table_name = $wpdb->prefix . "dsol_reservations";
-				
-				$wpdb->update(	$table_name, 
-						array( 'me_status'				=> $externals['status'] ), 
-						array( 'res_id' => $val ) );
-						$i++;
-			}
-		}
+            
 
 		$_SESSION['showData'] = $final;
 		echo '<META HTTP-EQUIV="Refresh" Content="0; URL=?page=dsol_meetings&action=changeStatusShow">';

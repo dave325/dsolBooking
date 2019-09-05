@@ -6,14 +6,24 @@
  * Slug: premium-image-scroll
  */
 
-namespace Elementor;
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use PremiumAddons\Includes;
+use Elementor\Widget_Base;
+use Elementor\Utils;
+use Elementor\Control_Media;
+use Elementor\Controls_Manager;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Css_Filter;
+use Elementor\Group_Control_Box_Shadow;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Premium_Image_Scroll extends Widget_Base {
     
     public function getTemplateInstance() {
-		return $this->templateInstance = premium_Template_Tags::getInstance();
+		return $this->templateInstance = Includes\premium_Template_Tags::getInstance();
     }
     
     public function get_name() {
@@ -21,7 +31,7 @@ class Premium_Image_Scroll extends Widget_Base {
     }
 
     public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Image Scroll';
+		return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Image Scroll', 'premium-addons-for-elementor') );
     }
     
     public function is_reload_preview_required() {
@@ -34,6 +44,12 @@ class Premium_Image_Scroll extends Widget_Base {
 
     public function get_categories() {
         return [ 'premium-elements' ];
+    }
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
     }
 
     public function get_script_depends() {
@@ -291,6 +307,23 @@ class Premium_Image_Scroll extends Widget_Base {
                 'label'         => __('Normal', 'premium-addons-for-elementor'),
             ]
         );
+        
+        $this->add_control('opacity',
+			[
+				'label'     => __( 'Opacity', 'premium-addons-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'max'   => 1,
+						'min'   => 0.10,
+						'step'  => 0.01,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .premium-image-scroll-image' => 'opacity: {{SIZE}};',
+				],
+			]
+		);
 
         $this->add_group_control(
             Group_Control_Css_Filter::get_type(),
@@ -308,6 +341,23 @@ class Premium_Image_Scroll extends Widget_Base {
             ]
         );
         
+        $this->add_control('hover_opacity',
+			[
+				'label'     => __( 'Opacity', 'premium-addons-for-elementor' ),
+				'type'      => Controls_Manager::SLIDER,
+				'range'     => [
+					'px' => [
+						'max'   => 1,
+						'min'   => 0.10,
+						'step'  => 0.01,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .premium-image-scroll-section:hover .premium-image-scroll-image' => 'opacity: {{SIZE}};',
+				],
+			]
+		); 
+       
         $this->add_group_control(
             Group_Control_Css_Filter::get_type(),
             [

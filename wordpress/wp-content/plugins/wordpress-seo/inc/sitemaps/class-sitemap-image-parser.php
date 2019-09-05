@@ -138,6 +138,8 @@ class WPSEO_Sitemap_Image_Parser {
 	}
 
 	/**
+	 * Get the images in the term description.
+	 *
 	 * @param object $term Term to get images from description for.
 	 *
 	 * @return array
@@ -230,7 +232,7 @@ class WPSEO_Sitemap_Image_Parser {
 	 * Parse gallery shortcodes in a given content.
 	 *
 	 * @param string $content Content string.
-	 * @param int    $post_id Optional ID of post being parsed.
+	 * @param int    $post_id Optional. ID of post being parsed.
 	 *
 	 * @return array Set of attachment objects.
 	 */
@@ -413,7 +415,7 @@ class WPSEO_Sitemap_Image_Parser {
 		}
 
 		if ( strpos( $src, 'http' ) !== 0 ) {
-			// Protocol relative url, we add the scheme as the standard requires a protocol.
+			// Protocol relative URL, we add the scheme as the standard requires a protocol.
 			return $this->scheme . ':' . $src;
 		}
 
@@ -423,7 +425,7 @@ class WPSEO_Sitemap_Image_Parser {
 	/**
 	 * Returns the attachments for a gallery.
 	 *
-	 * @param int   $id      The post id.
+	 * @param int   $id      The post ID.
 	 * @param array $gallery The gallery config.
 	 *
 	 * @return array The selected attachments.
@@ -444,9 +446,9 @@ class WPSEO_Sitemap_Image_Parser {
 	}
 
 	/**
-	 * Returns the attachments for the given id.
+	 * Returns the attachments for the given ID.
 	 *
-	 * @param int   $id      The post id.
+	 * @param int   $id      The post ID.
 	 * @param array $gallery The gallery config.
 	 *
 	 * @return array The selected attachments.
@@ -466,9 +468,9 @@ class WPSEO_Sitemap_Image_Parser {
 	}
 
 	/**
-	 * Returns an array with attachments for the post ids that will be included.
+	 * Returns an array with attachments for the post IDs that will be included.
 	 *
-	 * @param array $include Array with ids to include.
+	 * @param array $include Array with IDs to include.
 	 *
 	 * @return array The found attachments.
 	 */

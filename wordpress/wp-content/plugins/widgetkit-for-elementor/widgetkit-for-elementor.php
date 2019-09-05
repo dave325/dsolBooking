@@ -2,7 +2,7 @@
 /*
 Plugin Name: WidgetKit for Elementor
 Description: Huge collection of pro quality element or section for use in Elementor page builder,which you help to create any kind of complicated design without coding.  Elementor Page Builder must be installed and activated.
-Version: 1.2.2
+Version: 1.5.4
 Text Domain: widgetkit-for-elementor
 Author: Themesgrove
 Author URI: https://themesgrove.com
@@ -40,6 +40,26 @@ Domain Path: /languages
         }
 
         /**
+         * Initialize the plugin tracker
+         *
+         * @return void
+         */
+        protected function appsero_init_tracker_widgetkit_for_elementor() {
+
+            if ( ! class_exists( 'Appsero\Client' ) ) {
+            require_once WKFE_PATH . '/vendor/appsero/client/src/Client.php';
+            }
+
+            $client = new Appsero\Client( '91bf222e-d4ce-4fdb-97dc-30a95fa0bff7', 'widgetkit-for-elementor', WKFE_FILE );
+
+            // Active insights
+            $client->insights()->init();
+
+        }
+
+        
+
+        /**
          * Creates an Action Menu
          */
 
@@ -49,13 +69,13 @@ Domain Path: /languages
             if (!$this_plugin) {
                 $this_plugin = plugin_basename(__FILE__);
             }
-            $settings_links = sprintf( '<a href="admin.php?page=widgetkit-settings">' . __( 'Settings' ) . '</a>' );
+            $settings_links = sprintf( '<a href="admin.php?page=widgetkit-settings#widgetkit-elements">' . __( 'Settings', 'widgetkit-for-elementor' ) . '</a>' );
 
         if(! class_exists( 'WidgetKit_Pro' ) ) {
             // check to make sure we are on the correct plugin
             if ($file == $this_plugin) {
                 // link to what ever you want
-                $plugin_links['WidgetKit_Pro'] = sprintf( '<a href="https://themesgrove.com/product/widgetkit/" target="_blank" style="color:#39a700eb; font-weight: bold;">' . __( 'Get Pro' ) . '</a>' );
+                $plugin_links['WidgetKit_Pro'] = sprintf( '<a href="https://themesgrove.com/widgetkit-for-elementor/" target="_blank" style="color:#39a700eb; font-weight: bold;">' . __( 'Get Pro', 'widgetkit-for-elementor' ) . '</a>' );
                  
          
                 // add the links to the list of links already there
@@ -84,9 +104,9 @@ Domain Path: /languages
 
 
         // Widget register
-        function __construct() {
+        public function __construct() {
             add_action( 'elementor/widgets/widgets_registered', array( $this, 'widgetkit_for_elementor_widget_bundle') );
-            
+            $this->appsero_init_tracker_widgetkit_for_elementor();
         }
 
        function widgetkit_for_elementor_widget_register() {

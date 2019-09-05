@@ -75,7 +75,13 @@ class WPForms_Admin_Menu {
 			array( $this, 'admin_page' )
 		);
 
-		do_action( 'wpform_admin_menu', $this );
+		do_action_deprecated(
+			'wpform_admin_menu',
+			array( $this ),
+			'1.5.5 of the WPForms plugin',
+			'wpforms_admin_menu'
+		);
+		do_action( 'wpforms_admin_menu', $this );
 
 		// Settings sub menu item.
 		add_submenu_page(
@@ -121,7 +127,7 @@ class WPForms_Admin_Menu {
 		add_submenu_page(
 			'wpforms-overview',
 			esc_html__( 'About WPForms', 'wpforms-lite' ),
-			esc_html__( 'About Us', 'wpform-lite' ),
+			esc_html__( 'About Us', 'wpforms-lite' ),
 			$menu_cap,
 			WPForms_About::SLUG,
 			array( $this, 'admin_page' )

@@ -264,7 +264,9 @@ document.getElementById(thediv).style.display="none"
       print "<br><iframe class='visit-iframe' scrolling='no' marginwidth=0 marginheight=0 src=http://api.hostip.info/get_html.php?ip=".$rk->ip."></iframe>";
     }
     print "<br><small><span>OS or device:</span> ".$rk->os."</small>";
-    print "<br><small><span>DNS Name:</span> ".gethostbyaddr($rk->ip)."</small>";
+    if(filter_var($rk->ip, FILTER_VALIDATE_IP)) {
+      print "<br><small><span>DNS Name:</span> ".gethostbyaddr($rk->ip)."</small>";
+    }
     print "<br><small><span>Browser:</span> ".$rk->browser."</small>";
     print "<br><small><span>Browser Detail:</span> ".$rk->agent."</small>";
     print "<br><br></div>";

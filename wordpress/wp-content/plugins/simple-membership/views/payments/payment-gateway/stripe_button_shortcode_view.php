@@ -45,6 +45,7 @@ function swpm_render_stripe_buy_now_button_sc_output($button_code, $args) {
     } else {
         $price_in_cents = $payment_amount * 100; //The amount (in cents). This value is passed to Stripe API.
     }
+    $payment_amount_formatted=SwpmMiscUtils::format_money($payment_amount,$payment_currency);
     //Return, cancel, notifiy URLs
     $notify_url = SIMPLE_WP_MEMBERSHIP_SITE_HOME_URL . '/?swpm_process_stripe_buy_now=1'; //We are going to use it to do post payment processing.
     //$button_image_url = get_post_meta($button_id, 'button_image_url', true);//Stripe doesn't currenty support button image for their standard checkout.
@@ -86,17 +87,19 @@ function swpm_render_stripe_buy_now_button_sc_output($button_code, $args) {
         }
     }
 
+    $uniqid=uniqid();
+
     /* === Stripe Buy Now Button Form === */
     $output = '';
     $output .= '<div class="swpm-button-wrapper swpm-stripe-buy-now-wrapper">';
-    $output .= "<form action='" . $notify_url . "' METHOD='POST'> ";
+    $output .= "<form id='swpm-stripe-payment-form-".$uniqid."' action='" . $notify_url . "' METHOD='POST'> ";
     $output .= "<div style='display: none !important'>";
     $output .= "<script src='https://checkout.stripe.com/checkout.js' class='stripe-button'
         data-key='" . $publishable_key . "'
         data-panel-label='Pay'
         data-amount='{$price_in_cents}'
         data-name='{$item_name}'";
-    $output .= "data-description='{$payment_amount} {$payment_currency}'";
+    $output .= "data-description='{$payment_amount_formatted}'";
     $output .= "data-locale='auto'";
     $output .= "data-label='{$button_text}'"; //Stripe doesn't currenty support button image for their standard checkout.
     $output .= "data-currency='{$payment_currency}'";
@@ -109,6 +112,13 @@ function swpm_render_stripe_buy_now_button_sc_output($button_code, $args) {
     $output .= apply_filters('swpm_stripe_additional_checkout_data_parameters', ''); //Filter to allow the addition of extra data parameters for stripe checkout.
     $output .= "></script>";
     $output .= '</div>';
+
+    //apply filter to output additional form fields
+    $coupon_input='';
+    $coupon_input = apply_filters('swpm_payment_form_additional_fields',$coupon_input,$button_id,$uniqid);
+    if (!empty($coupon_input)) {
+        $output.=$coupon_input;
+    }
 
     $button_image_url = get_post_meta($button_id, 'button_image_url', true);
     if (!empty($button_image_url)) {

@@ -77,6 +77,9 @@ class WPForms_Field_Select extends WPForms_Field {
 			'class' => array(),
 			'data'  => array(),
 			'id'    => "wpforms-{$form_id}-field_{$field_id}",
+			'attr'  => array(
+				'name' => "wpforms[fields][{$field_id}]",
+			),
 		);
 
 		// Set properties.
@@ -267,7 +270,9 @@ class WPForms_Field_Select extends WPForms_Field {
 		$container = $field['properties']['input_container'];
 
 		$field_placeholder = ! empty( $field['placeholder'] ) ? $field['placeholder'] : '';
-		$field_required    = ! empty( $field['required'] ) ? ' required' : '';
+		if ( ! empty( $field['required'] ) ) {
+			$container['attr']['required'] = 'required';
+		}
 
 		$choices     = $field['properties']['inputs'];
 		$has_default = false;
@@ -282,11 +287,9 @@ class WPForms_Field_Select extends WPForms_Field {
 
 		// Preselect default if no other choices were marked as default.
 		printf(
-			'<select name="wpforms[fields][%d]" %s %s>',
-			(int) $field['id'],
-			wpforms_html_attributes( $container['id'], $container['class'], $container['data'] ),
-			$field_required
-		); // WPCS: XSS ok.
+			'<select %s>',
+			wpforms_html_attributes( $container['id'], $container['class'], $container['data'], $container['attr'] )
+		);
 
 		// Optional placeholder.
 		if ( ! empty( $field_placeholder ) ) {

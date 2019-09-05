@@ -260,7 +260,7 @@ class Helper {
 		/*$widget->start_controls_section(
 			'section_style_' . $control_name . '_icon',
 			[
-				'label' => __( $control_label . ' Icon', 'bpel' ),
+				'label' => __( $control_label . ' Icon', 'wts-eae' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 				'condition' => [
 					$control_name . '_icon!' => '',
@@ -273,7 +273,7 @@ class Helper {
 		$widget->start_controls_tab(
 			$control_name . '_icon_colors_normal',
 			[
-				'label' => __( 'Normal', 'bpel' ),
+				'label' => __( 'Normal', 'wts-eae' ),
 			]
 		);
 
@@ -281,7 +281,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_primary_color',
 				[
-					'label'     => __( 'Primary Color', 'bpel' ),
+					'label'     => __( 'Primary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'scheme'    => [
 						'type'  => Scheme_Color::get_type(),
@@ -301,7 +301,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_secondary_color',
 				[
-					'label'     => __( 'Secondary Color', 'bpel' ),
+					'label'     => __( 'Secondary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '#fff',
 					//'condition' => [
@@ -321,7 +321,7 @@ class Helper {
 			$widget->start_controls_tab(
 				$control_name . '_icon_colors_hover',
 				[
-					'label' => __( 'Hover', 'bpel' ),
+					'label' => __( 'Hover', 'wts-eae' ),
 				]
 			);
 		}
@@ -329,7 +329,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_primary_color',
 				[
-					'label'     => __( 'Primary Color', 'bpel' ),
+					'label'     => __( 'Primary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'selectors' => [
@@ -346,7 +346,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_secondary_color',
 				[
-					'label'     => __( 'Secondary Color', 'bpel' ),
+					'label'     => __( 'Secondary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					//'condition' => [
@@ -364,7 +364,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_animation',
 				[
-					'label' => __( 'Hover Animation', 'bpel' ),
+					'label' => __( 'Hover Animation', 'wts-eae' ),
 					'type'  => Controls_Manager::HOVER_ANIMATION,
 				]
 			);
@@ -377,7 +377,7 @@ class Helper {
 			$widget->start_controls_tab(
 				$control_name . '_icon_colors_focus',
 				[
-					'label' => __( 'Focus', 'bpel' ),
+					'label' => __( 'Focus', 'wts-eae' ),
 				]
 			);
 
@@ -386,7 +386,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_focus_primary_color',
 					[
-						'label'     => __( 'Primary Color', 'bpel' ),
+						'label'     => __( 'Primary Color', 'wts-eae' ),
 						'type'      => Controls_Manager::COLOR,
 						'scheme'    => [
 							'type'  => Scheme_Color::get_type(),
@@ -406,7 +406,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_focus_secondary_color',
 					[
-						'label'     => __( 'Secondary Color', 'bpel' ),
+						'label'     => __( 'Secondary Color', 'wts-eae' ),
 						'type'      => Controls_Manager::COLOR,
 						'scheme'    => [
 							'type'  => Scheme_Color::get_type(),
@@ -434,7 +434,7 @@ class Helper {
 			$widget->add_responsive_control(
 				$control_name . '_icon_size',
 				[
-					'label'     => __( 'Size', 'bpel' ),
+					'label'     => __( 'Size', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'range'     => [
 						'px' => [
@@ -454,7 +454,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_padding',
 				[
-					'label'     => __( 'Padding', 'bpel' ),
+					'label'     => __( 'Padding', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'selectors' => [
 						'{{WRAPPER}} .eae-icon-'.$control_name.'.eae-icon' => 'padding: {{SIZE}}{{UNIT}};',
@@ -477,7 +477,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_rotate',
 				[
-					'label'     => __( 'Rotate', 'bpel' ),
+					'label'     => __( 'Rotate', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'default'   => [
 						'size' => 0,
@@ -494,14 +494,14 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_border_style',
 				[
-					'label'     => __( 'Border Style', 'bpel' ),
+					'label'     => __( 'Border Style', 'wts-eae' ),
 					'type'      => Controls_Manager::SELECT,
 					'options' => [
-						'none' => __( 'None', 'bpel' ),
-						'solid' => __( 'Solid', 'bpel' ),
-						'double' => __( 'Double', 'bpel' ),
-						'dotted' => __( 'Dotted', 'bpel' ),
-						'dashed' => __( 'Dashed', 'bpel' ),
+						'none' => __( 'None', 'wts-eae' ),
+						'solid' => __( 'Solid', 'wts-eae' ),
+						'double' => __( 'Double', 'wts-eae' ),
+						'dotted' => __( 'Dotted', 'wts-eae' ),
+						'dashed' => __( 'Dashed', 'wts-eae' ),
 					],
 					'default' => 'solid',
 					'selectors' => [
@@ -516,7 +516,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_border_width',
 				[
-					'label'     => __( 'Border Width', 'bpel' ),
+					'label'     => __( 'Border Width', 'wts-eae' ),
 					'type'      => Controls_Manager::DIMENSIONS,
 					'default'   => [
 						'value' => 20,
@@ -533,7 +533,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_border_radius',
 				[
-					'label'      => __( 'Border Radius', 'bpel' ),
+					'label'      => __( 'Border Radius', 'wts-eae' ),
 					'type'       => Controls_Manager::DIMENSIONS,
 					'size_units' => [ 'px', '%' ],
 					'selectors'  => [
@@ -578,7 +578,7 @@ class Helper {
 		/*$widget->start_controls_section(
 			'section_style_' . $control_name . '_icon',
 			[
-				'label' => __( $control_label . ' Icon', 'bpel' ),
+				'label' => __( $control_label . ' Icon', 'wts-eae' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 				'condition' => [
 					$control_name . '_icon!' => '',
@@ -589,10 +589,10 @@ class Helper {
 		$widget->add_control(
 			$control_name . 'custom_styles',
 			[
-				'label'     => __( 'Custom Icon Style', 'bpel' ),
+				'label'     => __( 'Custom Icon Style', 'wts-eae' ),
 				'type'      => Controls_Manager::SWITCHER,
-				'label_off' => __( 'No', 'bpel' ),
-				'label_on'  => __( 'Yes', 'bpel' ),
+				'label_off' => __( 'No', 'wts-eae' ),
+				'label_on'  => __( 'Yes', 'wts-eae' ),
 				'default'   => '',
 			]
 		);
@@ -603,7 +603,7 @@ class Helper {
 			$widget->start_controls_tab(
 				$control_name . '_icon_colors_normal',
 				[
-					'label' => __( 'Normal', 'bpel' ),
+					'label' => __( 'Normal', 'wts-eae' ),
 				]
 			);
 		} else {
@@ -611,7 +611,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_colors_normal',
 				[
-					'label'     => __( 'Normal', 'bpel' ),
+					'label'     => __( 'Normal', 'wts-eae' ),
 					'type'      => Controls_Manager::HEADING,
 					'condition' => [
 						$control_name . 'custom_styles' => 'yes'
@@ -624,7 +624,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_primary_color',
 				[
-					'label'     => __( 'Primary Color', 'bpel' ),
+					'label'     => __( 'Primary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'selectors' => [
@@ -644,7 +644,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_secondary_color',
 				[
-					'label'     => __( 'Secondary Color', 'bpel' ),
+					'label'     => __( 'Secondary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'condition' => [
@@ -670,7 +670,7 @@ class Helper {
 			$widget->start_controls_tab(
 				$control_name . '_icon_colors_hover',
 				[
-					'label'     => __( 'Hover', 'bpel' ),
+					'label'     => __( 'Hover', 'wts-eae' ),
 					'condition' => [
 						$control_name . 'custom_styles' => 'yes'
 					]
@@ -681,7 +681,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_colors_hover',
 					[
-						'label'     => __( 'Hover', 'bpel' ),
+						'label'     => __( 'Hover', 'wts-eae' ),
 						'type'      => Controls_Manager::HEADING,
 						'condition' => [
 							$control_name . 'custom_styles' => 'yes'
@@ -695,7 +695,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_primary_color',
 				[
-					'label'     => __( 'Primary Color', 'bpel' ),
+					'label'     => __( 'Primary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'selectors' => [
@@ -715,7 +715,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_secondary_color',
 				[
-					'label'     => __( 'Secondary Color', 'bpel' ),
+					'label'     => __( 'Secondary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'condition' => [
@@ -737,7 +737,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_animation',
 				[
-					'label'     => __( 'Hover Animation', 'eae' ),
+					'label'     => __( 'Hover Animation', 'wts-eae' ),
 					'type'      => Controls_Manager::HOVER_ANIMATION,
 					'condition' => [
 						$control_name . 'custom_styles' => 'yes'
@@ -758,7 +758,7 @@ class Helper {
 				$widget->start_controls_tab(
 					$control_name . '_icon_colors_focus',
 					[
-						'label' => __( 'Focus', 'bpel' ),
+						'label' => __( 'Focus', 'wts-eae' ),
 					]
 				);
 			} else {
@@ -766,7 +766,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_colors_focus',
 					[
-						'label'     => __( 'Focus', 'bpel' ),
+						'label'     => __( 'Focus', 'wts-eae' ),
 						'type'      => Controls_Manager::HEADING,
 						'condition' => [
 							$control_name . 'custom_styles' => 'yes'
@@ -779,7 +779,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_focus_primary_color',
 					[
-						'label'     => __( 'Primary Color', 'bpel' ),
+						'label'     => __( 'Primary Color', 'wts-eae' ),
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						'selectors' => [
@@ -799,7 +799,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_focus_secondary_color',
 					[
-						'label'     => __( 'Secondary Color', 'bpel' ),
+						'label'     => __( 'Secondary Color', 'wts-eae' ),
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						'condition' => [
@@ -831,7 +831,7 @@ class Helper {
 			$widget->add_responsive_control(
 				$control_name . '_icon_size',
 				[
-					'label'     => __( 'Size', 'bpel' ),
+					'label'     => __( 'Size', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'range'     => [
 						'px' => [
@@ -855,7 +855,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_padding',
 				[
-					'label'     => __( 'Padding', 'bpel' ),
+					'label'     => __( 'Padding', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'selectors' => [
 						//'{{WRAPPER}} {{CURRENT_ITEM}} .eae-icon-' . $control_name . '_wrapper .elementor-icon' => 'padding: {{SIZE}}{{UNIT}};',
@@ -881,7 +881,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_rotate',
 				[
-					'label'     => __( 'Rotate', 'bpel' ),
+					'label'     => __( 'Rotate', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'default'   => [
 						'size' => 0,
@@ -900,14 +900,14 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_border_style',
 				[
-					'label'     => __( 'Border Style', 'bpel' ),
+					'label'     => __( 'Border Style', 'wts-eae' ),
 					'type'      => Controls_Manager::SELECT,
 					'options' => [
-						'none' => __( 'None', 'bpel' ),
-						'solid' => __( 'Solid', 'bpel' ),
-						'double' => __( 'Double', 'bpel' ),
-						'dotted' => __( 'Dotted', 'bpel' ),
-						'dashed' => __( 'Dashed', 'bpel' ),
+						'none' => __( 'None', 'wts-eae' ),
+						'solid' => __( 'Solid', 'wts-eae' ),
+						'double' => __( 'Double', 'wts-eae' ),
+						'dotted' => __( 'Dotted', 'wts-eae' ),
+						'dashed' => __( 'Dashed', 'wts-eae' ),
 					],
 					'default' => 'solid',
 					'selectors' => [
@@ -925,7 +925,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_border_width',
 				[
-					'label'     => __( 'Border Width', 'bpel' ),
+					'label'     => __( 'Border Width', 'wts-eae' ),
 					'type'      => Controls_Manager::DIMENSIONS,
 					'selectors' => [
 						'{{WRAPPER}} {{CURRENT_ITEM}} .eae-icon-'.$control_name.'.eae-icon' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -941,7 +941,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_border_radius',
 				[
-					'label'      => __( 'Border Radius', 'bpel' ),
+					'label'      => __( 'Border Radius', 'wts-eae' ),
 					'type'       => Controls_Manager::DIMENSIONS,
 					'size_units' => [ 'px', '%' ],
 					'selectors'  => [
@@ -987,7 +987,7 @@ class Helper {
 		/*$widget->start_controls_section(
 			'section_style_' . $control_name . '_icon',
 			[
-				'label' => __( $control_label . ' Icon', 'bpel' ),
+				'label' => __( $control_label . ' Icon', 'wts-eae' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 				'condition' => [
 					$control_name . '_icon!' => '',
@@ -1000,7 +1000,7 @@ class Helper {
 		$widget->start_controls_tab(
 			$control_name . '_icon_colors_normal',
 			[
-				'label' => __( 'Normal', 'bpel' ),
+				'label' => __( 'Normal', 'wts-eae' ),
 			]
 		);
 
@@ -1008,7 +1008,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_primary_color',
 				[
-					'label'     => __( 'Primary Color', 'bpel' ),
+					'label'     => __( 'Primary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '#6ec1e4',
 					'selectors' => [
@@ -1024,7 +1024,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_secondary_color',
 				[
-					'label'     => __( 'Secondary Color', 'bpel' ),
+					'label'     => __( 'Secondary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '#ffffff',
 					//'condition' => [
@@ -1043,7 +1043,7 @@ class Helper {
 		$widget->start_controls_tab(
 			$control_name . '_icon_colors_hover',
 			[
-				'label' => __( 'Hover', 'bpel' ),
+				'label' => __( 'Hover', 'wts-eae' ),
 			]
 		);
 
@@ -1051,7 +1051,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_primary_color',
 				[
-					'label'     => __( 'Primary Color', 'bpel' ),
+					'label'     => __( 'Primary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					'selectors' => [
@@ -1067,7 +1067,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_secondary_color',
 				[
-					'label'     => __( 'Secondary Color', 'bpel' ),
+					'label'     => __( 'Secondary Color', 'wts-eae' ),
 					'type'      => Controls_Manager::COLOR,
 					'default'   => '',
 					//'condition' => [
@@ -1085,7 +1085,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_hover_animation',
 				[
-					'label' => __( 'Hover Animation', 'bpel' ),
+					'label' => __( 'Hover Animation', 'wts-eae' ),
 					'type'  => Controls_Manager::HOVER_ANIMATION,
 				]
 			);
@@ -1098,7 +1098,7 @@ class Helper {
 			$widget->start_controls_tab(
 				$control_name . '_icon_colors_focus',
 				[
-					'label' => __( 'Focus', 'bpel' ),
+					'label' => __( 'Focus', 'wts-eae' ),
 				]
 			);
 
@@ -1107,7 +1107,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_focus_primary_color',
 					[
-						'label'     => __( 'Primary Color', 'bpel' ),
+						'label'     => __( 'Primary Color', 'wts-eae' ),
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						'selectors' => [
@@ -1123,7 +1123,7 @@ class Helper {
 				$widget->add_control(
 					$control_name . '_icon_focus_secondary_color',
 					[
-						'label'     => __( 'Secondary Color', 'bpel' ),
+						'label'     => __( 'Secondary Color', 'wts-eae' ),
 						'type'      => Controls_Manager::COLOR,
 						'default'   => '',
 						//'condition' => [
@@ -1148,7 +1148,7 @@ class Helper {
 			$widget->add_responsive_control(
 				$control_name . '_icon_size',
 				[
-					'label'     => __( 'Size', 'bpel' ),
+					'label'     => __( 'Size', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'range'     => [
 						'px' => [
@@ -1167,7 +1167,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_padding',
 				[
-					'label'     => __( 'Background Size', 'bpel' ),
+					'label'     => __( 'Background Size', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'selectors' => [
 						'{{WRAPPER}} .eae-icon-' . $control_name . '_wrapper.eae-icon-wrapper' => 'display: inline-block; min-height: {{SIZE}}{{UNIT}}; min-width: {{SIZE}}{{UNIT}}; line-height: {{SIZE}}{{UNIT}};',
@@ -1191,7 +1191,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_rotate',
 				[
-					'label'     => __( 'Rotate', 'bpel' ),
+					'label'     => __( 'Rotate', 'wts-eae' ),
 					'type'      => Controls_Manager::SLIDER,
 					'default'   => [
 						'size' => 0,
@@ -1208,7 +1208,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_border_width',
 				[
-					'label'     => __( 'Border Width', 'bpel' ),
+					'label'     => __( 'Border Width', 'wts-eae' ),
 					'type'      => Controls_Manager::DIMENSIONS,
 					'selectors' => [
 						'{{WRAPPER}} .eae-icon-' . $control_name . '_wrapper .elementor-icon' => 'border-width: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
@@ -1224,7 +1224,7 @@ class Helper {
 			$widget->add_control(
 				$control_name . '_icon_border_radius',
 				[
-					'label'      => __( 'Border Radius', 'bpel' ),
+					'label'      => __( 'Border Radius', 'wts-eae' ),
 					'type'       => Controls_Manager::DIMENSIONS,
 					'size_units' => [ 'px', '%' ],
 					'selectors'  => [
@@ -1258,7 +1258,7 @@ class Helper {
 				Group_Control_Border::get_type(),
 				[
 					'name' => $args['name'].'_border',
-					'label' => __( $args['label'].' Border', 'bpel' ),
+					'label' => __( $args['label'].' Border', 'wts-eae' ),
 					'selector' => $args['selector'],
 					'condition' => [
 						'ribbons_badges_switcher!' => ''
@@ -1271,7 +1271,7 @@ class Helper {
 			$widget->add_control(
 				$args['name'] . '_border_radius',
 				[
-					'label' => __('Border Radius', 'bpel'),
+					'label' => __('Border Radius', 'wts-eae'),
 					'type' => Controls_Manager::DIMENSIONS,
 					'size_units' => ['px', '%'],
 					'selectors' => [
@@ -1289,7 +1289,7 @@ class Helper {
 				Group_Control_Box_Shadow::get_type(),
 				[
 					'name' => $args['name'].'_box_shadow',
-					'label' => __( 'Box Shadow', 'bpel' ),
+					'label' => __( 'Box Shadow', 'wts-eae' ),
 					'selector' => $args['selector'],
 					'condition' => [
 						'ribbons_badges_switcher!' => ''
@@ -1302,7 +1302,7 @@ class Helper {
 			$widget->add_control(
 				$args['name'] . '_padding',
 				[
-					'label' => __('Padding', 'bpel'),
+					'label' => __('Padding', 'wts-eae'),
 					'type' => Controls_Manager::DIMENSIONS,
 					'size_units' => ['px', '%'],
 					'selectors' => [
@@ -1320,7 +1320,7 @@ class Helper {
 			$widget->add_control(
 				$args['name'].'_margin',
 				[
-					'label' => __( 'Margin', 'bpel' ),
+					'label' => __( 'Margin', 'wts-eae' ),
 					'type' => Controls_Manager::DIMENSIONS,
 					'size_units' => [ 'px', '%' ],
 					'selectors' => [
@@ -1332,5 +1332,43 @@ class Helper {
 				]
 			);
 		}
+	}
+
+	function get_eae_modules() {
+		$modules = [
+			'timeline'          => [ 'name' => 'Timeline', 'enabled' => true, 'type' => 'widget' ],
+			'info-circle'       => [ 'name' => 'Info Circle', 'enabled' => true, 'type' => 'widget' ],
+			'comparison-table'  => [ 'name' => 'Comparison Table', 'enabled' => true, 'type' => 'widget' ],
+			'image-compare'     => [ 'name' => 'Image Compare', 'enabled' => true, 'type' => 'widget' ],
+			'animated-text'     => [ 'name' => 'Animated Text', 'enabled' => true, 'type' => 'widget' ],
+			'dual-button'       => [ 'name' => 'Dual Button', 'enabled' => true, 'type' => 'widget' ],
+			'particles'         => [ 'name' => 'Particles', 'enabled' => true, 'type' => 'feature' ],
+			'modal-popup'       => [ 'name' => 'Modal Popup', 'enabled' => true, 'type' => 'widget' ],
+			'progress-bar'      => [ 'name' => 'Progress Bar', 'enabled' => true, 'type' => 'widget' ],
+			'flip-box'          => [ 'name' => 'Flip Box', 'enabled' => true, 'type' => 'widget' ],
+			'split-text'        => [ 'name' => 'Split Text', 'enabled' => true, 'type' => 'widget' ],
+			'gmap'              => [ 'name' => 'Google Map', 'enabled' => true, 'type' => 'widget' ],
+			'text-separator'    => [ 'name' => 'Text Separator', 'enabled' => true, 'type' => 'widget' ],
+			'price-table'       => [ 'name' => 'Price Table', 'enabled' => true, 'type' => 'widget' ],
+			'twitter'           => [ 'name' => 'Twitter', 'enabled' => true, 'type' => 'widget' ],
+			'bg-slider'         => [ 'name' => 'Background Slider', 'enabled' => true, 'type' => 'feature' ],
+			'animated-gradient' => [ 'name' => 'Animated Gradient', 'enabled' => true, 'type' => 'feature' ],
+			'post-list'         => [ 'name' => 'Post List', 'enabled' => true, 'type' => 'widget' ],
+			'shape-separator'   => [ 'name' => 'Shape Separator', 'enabled' => true, 'type' => 'widget' ],
+			//'evergreen-timer',
+			//'testimonial-slider',
+		];
+
+		$saved_modules = get_option('wts_eae_elements');
+
+		if($saved_modules !== false ){
+			foreach ( $modules as $key => $module_name ) {
+				$modules[$key]['enabled'] = $saved_modules[$key];
+			}
+        }
+
+		$modules = apply_filters('wts_eae_active_modules', $modules);
+
+		return $modules;
 	}
 }

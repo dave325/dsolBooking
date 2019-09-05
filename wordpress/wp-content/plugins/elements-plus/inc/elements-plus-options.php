@@ -106,6 +106,14 @@ class Elements_Plus extends \Elementor\Settings {
 				'label' => __('An element which allows you to switch between two images on hover with beautiful effects. Caution: These effects are WebGL based and may hurt the performance of your pages. Do not use more than 4 - 5 instances of this widget in any given page. ', 'elements-plus'),
 			),
 
+			'checkbox_inline_svg' => array(
+				'title' => __( 'Inline SVG <em>Plus!</em>', 'elements-plus' ),
+				'label' => __('Add SVG as markup instead of an HTML image tag.', 'elements-plus'),
+				'plugin'  => 'safe_svg',
+				/* translators: %s is a URL. */
+				'warning' => sprintf( __( '<a href="%s" target="_blank">Safe SVG</a> is not active. Install and activate the plugin to use this module.', 'elements-plus' ), 'https://wordpress.org/plugins/safe-svg/' ),
+			),
+
 			'checkbox_instagram' => array(
 				'title'   => __( 'Instagram <em>Plus!</em>', 'elements-plus' ),
 				'label'   => __( 'Display the most recent images from an Instagram feed or a certain tag.', 'elements-plus' ),
@@ -137,6 +145,16 @@ class Elements_Plus extends \Elementor\Settings {
 			'checkbox_search' => array(
 				'title' => __( 'Search <em>Plus!</em>', 'elements-plus' ),
 				'label' => __( 'Create highly configurable AJAX powered search boxes.', 'elements-plus' ),
+			),
+
+			'checkbox_tables' => array(
+				'title' => __( 'Tables <em>Plus!</em>', 'elements-plus' ),
+				'label' => __( 'This option will enable the tables element.', 'elements-plus' ),
+			),
+
+			'checkbox_tilt' => array(
+				'title' => __( 'Tilt Effect <em>Plus!</em>', 'elements-plus' ),
+				'label' => __( 'This option will enable the tilt effect.', 'elements-plus' ),
 			),
 
 			'checkbox_tooltip' => array(

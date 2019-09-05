@@ -10,22 +10,26 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 /**
- * Class WPSEO_GSC_Table
+ * Class WPSEO_GSC_Table.
  */
 class WPSEO_GSC_Table extends WP_List_Table {
 
 	/**
+	 * Modal height.
+	 *
 	 * @var int
 	 */
 	const FREE_MODAL_HEIGHT = 140;
 
 	/**
+	 * The search phrase.
+	 *
 	 * @var string
 	 */
 	private $search_string;
 
 	/**
-	 * The category that is displayed
+	 * The category that is displayed.
 	 *
 	 * @var mixed|string
 	 */
@@ -39,6 +43,8 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	private $per_page = 50;
 
 	/**
+	 * Current page.
+	 *
 	 * @var integer
 	 */
 	private $current_page = 1;
@@ -69,7 +75,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Getting the screen id from this table
+	 * Getting the screen id from this table.
 	 *
 	 * @return string
 	 */
@@ -92,7 +98,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Set the table columns
+	 * Set the table columns.
 	 *
 	 * @return array
 	 */
@@ -109,7 +115,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Return the columns that are sortable
+	 * Return the columns that are sortable.
 	 *
 	 * @return array
 	 */
@@ -125,7 +131,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Return available bulk actions
+	 * Return available bulk actions.
 	 *
 	 * @return array
 	 */
@@ -136,7 +142,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Default method to display a column
+	 * Default method to display a column.
 	 *
 	 * @param array  $item        Data array.
 	 * @param string $column_name Column name key.
@@ -148,7 +154,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Checkbox column
+	 * Checkbox column.
 	 *
 	 * @param array $item Item data array.
 	 *
@@ -164,7 +170,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Formatting the output of the column last crawled into a dateformat
+	 * Formatting the output of the column last crawled into a dateformat.
 	 *
 	 * @param array $item Item data array.
 	 *
@@ -175,7 +181,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Formatting the output of the column first detected into a dateformat
+	 * Formatting the output of the column first detected into a dateformat.
 	 *
 	 * @param array $item Item data array.
 	 *
@@ -186,7 +192,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * URL column
+	 * URL column.
 	 *
 	 * @param array $item Item data array.
 	 *
@@ -212,7 +218,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	/**
 	 * Generates and display row actions links for the list table.
 	 *
-	 * We override the parent class method to avoid doubled buttons to be printed out.
+	 * We override the parent class method to avoid buttons to be printed out twice.
 	 *
 	 * @param object $item        The item being acted upon.
 	 * @param string $column_name Current column name.
@@ -224,14 +230,14 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Running the setup of the columns
+	 * Running the setup of the columns.
 	 */
 	private function setup_columns() {
 		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 	}
 
 	/**
-	 * Check if the current category allow creating redirects
+	 * Check if the current category allow creating redirects.
 	 *
 	 * @return bool
 	 */
@@ -240,7 +246,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Setting the table navigation
+	 * Setting the table navigation.
 	 *
 	 * @param int $total_items    Total number of items.
 	 * @param int $posts_per_page Number of items per page.
@@ -256,7 +262,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Setting the items
+	 * Setting the items.
 	 */
 	private function parse_items() {
 		if ( is_array( $this->items ) && count( $this->items ) > 0 ) {
@@ -272,7 +278,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Search through the items
+	 * Search through the items.
 	 */
 	private function do_search() {
 		$results = array();
@@ -290,7 +296,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Running the pagination
+	 * Running the pagination.
 	 */
 	private function paginate_items() {
 		/*
@@ -307,7 +313,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Sort the items by callback
+	 * Sort the items by callback.
 	 */
 	private function sort_items() {
 		// Sort the results.
@@ -315,7 +321,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Doing the sorting of the issues
+	 * Doing the sorting of the issues.
 	 *
 	 * @param array $a First data set for comparison.
 	 * @param array $b Second data set for comparison.
@@ -393,7 +399,7 @@ class WPSEO_GSC_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Showing the hidden fields used by the AJAX requests
+	 * Showing the hidden fields used by the AJAX requests.
 	 *
 	 * @param string $platform Platform (desktop, mobile, feature phone).
 	 */

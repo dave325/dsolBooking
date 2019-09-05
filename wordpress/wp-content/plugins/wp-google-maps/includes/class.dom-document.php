@@ -2,6 +2,9 @@
 
 namespace WPGMZA;
 
+if(!defined('ABSPATH'))
+	return;
+
 require_once(plugin_dir_path(__FILE__) . 'class.dom-element.php');
 
 class DOMDocument extends \DOMDocument
@@ -114,6 +117,19 @@ class DOMDocument extends \DOMDocument
 		return $result;
 	}
 	
+	public function getDocumentElementSafe()
+	{
+		// Workaround for some installations of PHP missing documentElement property
+		if(property_exists($this, 'documentElement'))
+			return $this->documentElement;
+		
+		$xpath = new \DOMXPath($this);
+		$result = $xpath->query('/html/body');
+		$item = $result->item(0);
+		
+		return $item;
+	}
+	
 	/**
 	 * @internal Handles imports based on the content
 	 */
@@ -174,9 +190,10 @@ class DOMDocument extends \DOMDocument
 	 */
 	public function querySelector($query)
 	{
-		if(!$this->documentElement)
+		if(!$this->getDocumentElementSafe())
 			throw new \Exception('Document is empty');
-		return $this->documentElement->querySelector($query);
+		
+		return $this->getDocumentElementSafe()->querySelector($query);
 	}
 	
 	/**
@@ -185,9 +202,10 @@ class DOMDocument extends \DOMDocument
 	 */
 	public function querySelectorAll($query)
 	{
-		if(!$this->documentElement)
+		if(!$this->getDocumentElementSafe())
 			throw new \Exception('Document is empty');
-		return $this->documentElement->querySelectorAll($query);
+		
+		return $this->getDocumentElementSafe()->querySelectorAll($query);
 	}
 	
 	/**
@@ -197,9 +215,18 @@ class DOMDocument extends \DOMDocument
 	 */
 	public function populate($src, $formatters=null)
 	{
-		if(!$this->documentElement)
+		if(!$this->getDocumentElementSafe())
 			throw new \Exception('Document is empty');
-		return $this->documentElement->populate($src, $formatters);
+		
+		return $this->getDocumentElementSafe()->populate($src, $formatters);
+	}
+	
+	public function serializeFormData()
+	{
+		if(!$this->getDocumentElementSafe())
+			throw new \Exception('Document is empty');
+		
+		return $this->getDocumentElementSafe()->serializeFormData();
 	}
 	
 	/**
@@ -223,7 +250,10 @@ class DOMDocument extends \DOMDocument
 	{
 		$result = '';
 		
-		$body = $this->querySelector('body');
+		if(property_exists($this, 'documentElement'))
+			$body = $this->querySelector('body');
+		else
+			$body = $this->getDocumentElementSafe();
 		
 		if(!$body)
 			return null;

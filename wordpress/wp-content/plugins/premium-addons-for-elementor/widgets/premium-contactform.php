@@ -1,5 +1,15 @@
 <?php 
-namespace Elementor;
+
+namespace PremiumAddons\Widgets;
+
+use PremiumAddons\Helper_Functions;
+use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
+use Elementor\Scheme_Color;
+use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Border;
+use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Box_Shadow;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // If this file is called directly, abort.
 
@@ -8,9 +18,15 @@ class Premium_Contactform extends Widget_Base {
 	public function get_name() {
 		return 'premium-contact-form';
 	}
+    
+    public function get_style_depends() {
+        return [
+            'premium-addons'
+        ];
+    }
 
 	public function get_title() {
-		return \PremiumAddons\Helper_Functions::get_prefix() . ' Contact Form7';
+        return sprintf( '%1$s %2$s', Helper_Functions::get_prefix(), __('Contact Form7', 'premium-addons-for-elementor') );
 	}
 
 	public function get_icon() {
@@ -231,12 +247,6 @@ class Premium_Contactform extends Widget_Base {
 				],
 			]
 		);
-                
-                                
-                
-                
-                
-                   
                 
                 $this->add_responsive_control(
 			'premium_elements_input_padding',

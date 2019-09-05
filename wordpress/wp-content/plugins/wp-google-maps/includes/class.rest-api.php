@@ -2,6 +2,9 @@
 
 namespace WPGMZA;
 
+if(!defined('ABSPATH'))
+	return;
+
 /**
  * This class facilitates all communication between the client and any server side modules which can be interacted with through the WordPress REST API.
  */
@@ -11,26 +14,277 @@ class RestAPI extends Factory
 	 * @const The plugins REST API namespace
 	 */
 	const NS = 'wpgmza/v1';
+	const CUSTOM_BASE64_REGEX = '/base64[A-Za-z0-9+\-]+(={0,3})?(\/[A-Za-z0-9+\-]+(={0,3})?)?/';
+	
+	private $fallbackRoutesByRegex;
+	private $nonceTable;
 	
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
-		add_action('wp_enqueue_scripts', array($this, 'onEnqueueScripts'));
-		add_action('admin_enqueue_scripts', array($this, 'onEnqueueScripts'));
-		add_action('enqueue_block_assets', array($this, 'onEnqueueScripts'));
+		$this->fallbackRoutesByRegex = array();
+		$this->nonceTable = array();
 		
+		// REST API init
 		add_action('rest_api_init', array($this, 'onRestAPIInit'));
+		
+		add_action('parse_request', array($this, 'onParseRequest'));
+		add_action('init', array($this, 'onInit'));
+		
+		// WP REST Cache integration
+		add_filter('wp_rest_cache/allowed_endpoints', array($this, 'onWPRestCacheAllowedEndpoints'));
+		
+		// AJAX callbacks for when REST API is blocked
+		add_action('wp_ajax_wpgmza_report_rest_api_blocked', array($this, 'onReportRestAPIBlocked'));
+		add_action('wp_ajax_nopriv_wpgmza_report_rest_api_blocked', array($this, 'onReportRestAPIBlocked'));
+		
+		// AJAX fallback for when REST API is blocked
+		add_action('wp_ajax_wpgmza_rest_api_request', array($this, 'onAJAXRequest'));
+		add_action('wp_ajax_nopriv_wpgmza_rest_api_request', array($this, 'onAJAXRequest'));
+	}
+	
+	public static function isCompressedPathVariableSupported()
+	{
+		return function_exists('zlib_decode');
+	}
+	
+	public static function isRequestURIUsingCompressedPathVariable()
+	{
+		return preg_match(RestAPI::CUSTOM_BASE64_REGEX, $_SERVER['REQUEST_URI']);
+	}
+	
+	protected function addRestNonce($route)
+	{
+		$this->nonceTable[$route] = wp_create_nonce('wpgmza_' . $route);
+	}
+	
+	public function getNonceTable()
+	{
+		return $this->nonceTable;
+	}
+	
+	protected function checkActionNonce($route)
+	{
+		$route = preg_replace('#^/wpgmza/v1#', '', $route);
+		$nonce = $_SERVER['HTTP_X_WPGMZA_ACTION_NONCE'];
+		
+		$result = wp_verify_nonce($nonce, 'wpgmza_' . $route);
+		
+		return $result !== false;
+	}
+	
+	public function registerRoute($route, $args)
+	{
+		$methodIsOnlyGET = true;
+		
+		if(!empty($args['methods']))
+		{
+			$methods = $args['methods'];
+			
+			if(is_string($methods))
+				$methodIsOnlyGET = $methods == 'GET';
+			else if(is_array($methods))
+			{
+				foreach($methods as $method)
+				{
+					if($method == 'GET')
+						continue;
+					
+					$methodIsOnlyGET = false;
+					break;
+				}
+			}
+		}
+		
+		if(!defined('REST_REQUEST'))
+		{
+			if($methodIsOnlyGET)
+				return;	// No need to add nonces for GET requests to the nonce table
+			
+			$this->addRestNonce($route);
+			
+			if(!wp_doing_ajax())
+				return;
+		}
+		
+		$callback = $args['callback'];
+		
+		$args['callback'] = function($request) use ($route, $callback, $methodIsOnlyGET)
+		{
+			global $wpgmza;
+			
+			$doActionNonceCheck = 
+				empty($args['skipNonceCheck']) &&
+				!$methodIsOnlyGET && 
+				(
+					!$wpgmza->isProVersion() 
+					||
+					version_compare($wpgmza->getProVersion(), '7.11.47', '>=')
+				);
+			
+			if($doActionNonceCheck && !$this->checkActionNonce($route))
+				return new \WP_Error('wpgmza_action_not_allowed', 'You do not have permission to perform this action', array('status' => 403));
+			
+			return $callback($request);
+		};
+		
+		if(defined('REST_REQUEST'))
+		{
+			register_rest_route(RestAPI::NS, $route, $args);
+			
+			if(isset($args['useCompressedPathVariable']) && $args['useCompressedPathVariable'])
+			{
+				$compressedRoute = preg_replace('#/$#', '', $route) . RestAPI::CUSTOM_BASE64_REGEX;
+				register_rest_route(RestAPI::NS, $compressedRoute, $args);
+			}
+		}
+		
+		$this->fallbackRoutesByRegex["#$route#"] = $args;
+	}
+	
+	protected function parseCompressedParameters($param)
+	{
+		$parts = explode('/', $param);
+		
+		if(empty($parts))
+			throw new \Exception('Failed to explode compressed parameters');
+		
+		$data = $parts[0];
+		
+		$data = preg_replace('/^base64/', '', $data);
+		$data = preg_replace('/-/', '/', $data);
+		$data = base64_decode($data);
+		
+		if(!function_exists('zlib_decode'))
+			throw new \Exception('Server does not support inflate');
+		
+		if(!($string = zlib_decode($data)))
+			throw new \Exception('The server failed to inflate the request');
+		
+		// TODO: Maybe $string should have stripslashes applied here
+		
+		if(!($request = json_decode($string, JSON_OBJECT_AS_ARRAY)))
+			throw new \Exception('The decompressed request could not be interpreted as JSON');
+		
+		if(count($parts) == 2)
+		{
+			if(!isset($request['midcbp']))
+				throw new \Exception('No compressed buffer pointer supplied for marker IDs');
+			
+			// Marker IDs
+			$compressed = $parts[1];
+			
+			$compressed = preg_replace('/-/', '/', $compressed);
+			$compressed = base64_decode($compressed);
+			$compressed = zlib_decode($compressed);
+			$compressed = array_values( unpack('C' . strlen($compressed), $compressed) );
+			
+			$pointer = (int)$request['midcbp'];
+			
+			$eliasFano = new EliasFano();
+			$markerIDs = $eliasFano->decode($compressed, (int)$request['midcbp']);
+		}
+		
+		return $request;
 	}
 	
 	/**
-	 * Enqueues the wp-api script, required to use the Rest API client side.
-	 * @return void
+	 * This function will interpret the request parameters either from a compressed base64 string,
+	 * or from the $_REQUEST array when no compressed string is present
+	 * @return array The request parameters
 	 */
-	public function onEnqueueScripts()
+	public function getRequestParameters()
 	{
-		wp_enqueue_script('wp-api');
+		switch($_SERVER['REQUEST_METHOD'])
+		{
+			case 'GET':
+				
+				$uri = $_SERVER['REQUEST_URI'];
+				
+				if(preg_match(RestAPI::CUSTOM_BASE64_REGEX, $_SERVER['REQUEST_URI'], $m))
+					return $this->parseCompressedParameters($m[0]);
+				
+				return $_GET;
+			
+				break;
+			
+			case 'POST':
+			
+				return $_POST;
+				
+				break;
+			
+			case 'DELETE':
+			case 'PUT':
+			
+				$request = array();
+				$body = file_get_contents('php://input');
+				parse_str($body, $request);
+				
+				return $request;
+				
+				break;
+			
+			default:
+			
+				return $_REQUEST;
+				
+				break;
+		}
+	}
+	
+	protected function registerRoutes()
+	{
+		global $wpgmza;
+		
+		$this->registerRoute('/maps(\/\d+)?/', array(
+			'methods'					=> 'GET',
+			'callback'					=> array($this, 'maps')
+		));
+		
+		$this->registerRoute('/markers/\d+/', array(
+			'methods'					=> array('GET'),
+			'callback'					=> array($this, 'markers')
+		));
+		
+		$this->registerRoute('/markers', array(
+			'methods'					=> array('GET'),
+			'callback'					=> array($this, 'markers'),
+			'useCompressedPathVariable'	=> true
+		));
+
+		$this->registerRoute('/markers(\/\d+)?/', array(
+			'methods'					=> array('DELETE'),
+			'callback'					=> array($this, 'markers'),
+			'permission_callback'		=> array($wpgmza, 'isUserAllowedToEdit')
+		));
+		
+		$this->registerRoute('/datatables', array(
+			'methods'					=> array('GET'),
+			'callback'					=> array($this, 'datatables'),
+			'useCompressedPathVariable'	=> true
+		));
+		
+		$this->registerRoute('/datatables', array(
+			'methods'					=> array('POST'),
+			'callback'					=> array($this, 'datatables')
+		));
+		
+		$this->registerRoute('/geocode-cache', array(
+			'methods'					=> array('GET'),
+			'callback'					=> array($this, 'geocodeCache'),
+			'useCompressedPathVariable'	=> true
+		));
+		
+		$this->registerRoute('/decompress', array(
+			'methods'					=> array('GET'),
+			'callback'					=> array($this, 'decompress'),
+			'useCompressedPathVariable'	=> true
+		));
+		
+		do_action('wpgmza_register_rest_api_routes');
 	}
 	
 	/**
@@ -39,28 +293,121 @@ class RestAPI extends Factory
 	 */
 	public function onRestAPIInit()
 	{
-		register_rest_route(RestAPI::NS, '/maps(\/\d+)?/', array(
-			'methods'				=> 'GET',
-			'callback'				=> array($this, 'maps')
-		));
+		// NB: Permalink Manager Lite compatibility. This fix prevents the plugin from causing POST REST requests being redirected to GET
+		// NB: We also check the plugin is active to mitigate any potential effects to other plugins. This could be removed, as an optimization
+		global $wp_query;
 		
-		register_rest_route(RestAPI::NS, '/markers(\/\d+)?/', array(
-			'methods'				=> array('GET'),
-			'callback'				=> array($this, 'markers')
-		));
+		$active_plugins = get_option('active_plugins');
+		if(!empty($wp_query->query_vars) && array_search('permalink-manager/permalink-manager.php', $active_plugins))
+			$wp_query->query_vars['do_not_redirect'] = 1;
 		
-		register_rest_route(RestAPI::NS, '/markers(\/\d+)?/', array(
-			'methods'				=> 'DELETE',
-			'callback'				=> array($this, 'markers'),
-			'permission_callback'	=> function() {
-				return current_user_can('administrator');
+		$this->registerRoutes();
+	}
+	
+	public function onParseRequest()
+	{
+		// Register routes for the nonce table
+		if(!defined('REST_REQUEST'))
+			$this->registerRoutes();
+	}
+	
+	public function onInit()
+	{
+		$this->registerRoutes();
+	}
+	
+	protected function sendAJAXResponse($result, $code=200)
+	{
+		if($code != 200)
+			http_response_code($code);
+		
+		header('Content-type: application/json');
+		
+		echo json_encode($result);
+	}
+	
+	public function onAJAXRequest()
+	{
+		$this->onRestAPIInit();
+		
+		// Check route is specified
+		if(empty($_REQUEST['route']))
+		{
+			$this->sendAJAXResponse(array(
+				'code'			=> 'rest_no_route',
+				'message'		=> 'No route was found matching the URL request method',
+				'data'			=> array(
+					'status'	=> 404
+				)
+			), 404);
+			return;
+		}
+		
+		// Try to match the route
+		$args = null;
+		
+		foreach($this->fallbackRoutesByRegex as $regex => $value)
+		{
+			if(preg_match($regex, $_REQUEST['route']))
+			{
+				$args = $value;
+				break;
 			}
-		));
+		}
 		
-		register_rest_route(RestAPI::NS, '/datatables/', array(
-			'methods'				=> array('GET', 'POST'),
-			'callback'				=> array($this, 'datatables')
-		));
+		if(!$args)
+		{
+			$this->sendAJAXResponse(array(
+				'code'			=> 'rest_no_route',
+				'message'		=> 'No route was found matching the URL request method',
+				'data'			=> array(
+					'status'	=> 404
+				)
+			), 404);
+			exit;
+		}
+		
+		// Check permissions
+		if(!empty($args['permission_callback']))
+		{
+			$allowed = $args['permission_callback']();
+
+			if(!$allowed)
+			{
+				$this->sendAJAXResponse(array(
+					'code'			=> 'rest_forbidden',
+					'message'		=> 'You are not authorized to use this method',
+					'data'			=> array(
+						'status'	=> 403
+					)
+				), 403);
+				exit;
+			}
+		}
+		
+		// Fire callback
+		$result = $args['callback'](null);
+		$this->sendAJAXResponse($result);
+		
+		exit;
+	}
+	
+	public function onWPRestCacheAllowedEndpoints($allowed_endpoints)
+	{
+		$cachable_endpoints = array(
+			'markers',
+			'datatables',
+			'geocode-cache',
+			'marker-listing'
+		);
+		
+		foreach($cachable_endpoints as $endpoint)
+		{
+			if(!isset($allowed_endpoints[RestAPI::NS]) || !in_array($endpoint, $allowed_endpoints[RestAPI::NS]))
+				$allowed_endpoints[RestAPI::NS][] = $endpoint;
+		}
+		
+		return $allowed_endpoints;
 	}
 	
 	public function maps($request)
@@ -68,12 +415,12 @@ class RestAPI extends Factory
 		global $wpdb;
 		global $WPGMZA_TABLE_NAME_MAPS;
 		
-		$route = $request->get_route();
+		$route = $_SERVER['REQUEST_URI'];
 		
 		switch($_SERVER['REQUEST_METHOD'])
 		{
 			case 'GET':
-				if(preg_match('#/wpgmza/v1/markers/(\d+)#', $route, $m))
+				if(preg_match('#/wpgmza/v1/maps/(\d+)#', $route, $m))
 				{
 					$map = Map::createInstance($m[1]);
 					return $map;
@@ -125,7 +472,8 @@ class RestAPI extends Factory
 		global $wpdb;
 		global $wpgmza_tblname;
 		
-		$route = $request->get_route();
+		$route 		= $_SERVER['REQUEST_URI'];
+		$params		= $this->getRequestParameters();
 		
 		switch($_SERVER['REQUEST_METHOD'])
 		{
@@ -138,17 +486,17 @@ class RestAPI extends Factory
 				
 				$fields = null;
 				
-				if(isset($_GET['fields']) && is_string($_GET['fields']))
-					$fields = explode(',', $_GET['fields']);
-				else if(!empty($_GET['fields']))
-					$fields = $_GET['fields'];
+				if(isset($params['fields']) && is_string($params['fields']))
+					$fields = explode(',', $params['fields']);
+				else if(!empty($params['fields']))
+					$fields = $params['fields'];
 				
 				if(!empty($fields))
 					$fields = $this->sanitizeFieldNames($fields, $wpgmza_tblname);
 				
-				if(!empty($_GET['filter']))
+				if(!empty($params['filter']))
 				{
-					$filteringParameters = json_decode( stripslashes($_GET['filter']) );
+					$filteringParameters = json_decode( stripslashes($params['filter']) );
 					
 					$markerFilter = MarkerFilter::createInstance($filteringParameters);
 					
@@ -192,7 +540,7 @@ class RestAPI extends Factory
 				
 				if(isset($request['id']))
 				{
-					$marker = new Marker($request['id']);
+					$marker = Marker::createInstance($request['id']);
 					$marker->trash();
 				}
 				
@@ -215,15 +563,85 @@ class RestAPI extends Factory
 	
 	public function datatables()
 	{
-		$request = $_REQUEST['wpgmzaDataTableRequestData'];
+		$request = $this->getRequestParameters();
 		
-		$class = '\\' . stripslashes( $request['phpClass'] );
+		// NB: Legacy support
+		if(isset($request['wpgmzaDataTableRequestData']))
+			$request = $request['wpgmzaDataTableRequestData'];
 		
-		$instance = $class::createInstance();
+		if(RestAPI::isRequestURIUsingCompressedPathVariable())
+			$class = '\\' . $request['phpClass'];
+		else
+			$class = '\\' . stripslashes( $request['phpClass'] );
+		
+		try{
+			
+			$reflection = new \ReflectionClass($class);
+			
+		}catch(Exception $e) {
+			
+			return new \WP_Error('wpgmza_invalid_datatable_class', 'Invalid class specified', array('status' => 403));
+			
+		}
+		
+		if(
+				(
+					class_exists('\\WPGMZA\\MarkerListing') 
+					&&
+					$reflection->isSubclassOf('\\WPGMZA\\MarkerListing')
+				)
+				
+				||
+				
+				(
+					class_exists('\\WPGMZA\\MarkerListing\\AdvancedTable')
+					&&
+					(
+						$class == '\\WPGMZA\\MarkerListing\\AdvancedTable'
+						||
+						$reflection->isSubclassOf('\\WPGMZA\\MarkerListing\\AdvancedTable')
+					)
+				)
+			)
+		{
+			$map_id = $request['map_id'];
+			$instance = $class::createInstance($map_id);
+		}
+		else
+			$instance = $class::createInstance();
 		
 		if(!($instance instanceof DataTable))
-			return WP_Error('wpgmza_invalid_datatable_class', 'Specified PHP class must extend WPGMZA\\DataTable', array('status' => 403));
+			return new \WP_Error('wpgmza_invalid_datatable_class', 'Specified PHP class must extend WPGMZA\\DataTable', array('status' => 403));
 		
-		return $instance->data($request);
+		$result = $instance->data($request);
+		
+		return $result;
+	}
+	
+	public function geocodeCache($request)
+	{
+		$params	= $this->getRequestParameters();
+		$cache	= new NominatimGeocodeCache();
+		
+		$record	= $cache->get(addslashes($params['query']));
+		
+		if(!$record)
+			$record = array();
+		
+		return $record;
+	}
+	
+	public function decompress($request)
+	{
+		$params = $this->getRequestParameters();
+		
+		return $params;
+	}
+	
+	public function onReportRestAPIBlocked()
+	{
+		$now = new \DateTime();
+		
+		update_option('wpgmza_last_rest_api_blocked', $now->format(\DateTime::ISO8601));
 	}
 }

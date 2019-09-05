@@ -74,7 +74,7 @@ class LAE_Team_Widget extends Widget_Base {
         $this->add_responsive_control(
             'per_line',
             [
-                'label' => __( 'Columns per row', 'livemesh-el-addons' ),
+                'label' => __('Columns per row', 'livemesh-el-addons'),
                 'type' => Controls_Manager::SELECT,
                 'default' => '3',
                 'tablet_default' => '2',
@@ -98,7 +98,7 @@ class LAE_Team_Widget extends Widget_Base {
             Group_Control_Image_Size::get_type(),
             [
                 'name' => 'thumbnail_size',
-                'label' => __( 'Team Member Image Size', 'livemesh-el-addons' ),
+                'label' => __('Team Member Image Size', 'livemesh-el-addons'),
                 'default' => 'full',
             ]
         );
@@ -160,6 +160,24 @@ class LAE_Team_Widget extends Widget_Base {
                             'active' => true,
                         ],
                     ],
+
+
+                    [
+                        'name' => 'member_link',
+                        'label' => __('Team Member URL', 'livemesh-el-addons'),
+                        'description' => __('The link for the page describing the team member.', 'livemesh-el-addons'),
+                        'type' => Controls_Manager::URL,
+                        'label_block' => true,
+                        'default' => [
+                            'url' => '',
+                            'is_external' => 'true',
+                        ],
+                        'placeholder' => __('http://member-link.com', 'livemesh-el-addons'),
+                        'dynamic' => [
+                            'active' => true,
+                        ],
+                    ],
+
                     [
                         'name' => 'member_details',
                         'label' => __('Team Member details', 'livemesh-el-addons'),
@@ -394,6 +412,17 @@ class LAE_Team_Widget extends Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'title_hover_color',
+            [
+                'label' => __('Hover Color for Link', 'livemesh-el-addons'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .lae-team-members .lae-team-member .lae-team-member-text .lae-title-link:hover .lae-title' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
@@ -476,7 +505,7 @@ class LAE_Team_Widget extends Widget_Base {
             [
                 'label' => __('Icon size in pixels', 'livemesh-el-addons'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => [ 'px', '%', 'em' ],
+                'size_units' => ['px', '%', 'em'],
                 'range' => [
                     'px' => [
                         'min' => 10,
@@ -558,7 +587,30 @@ class LAE_Team_Widget extends Widget_Base {
 
         $output = '<div class="lae-team-members lae-' . $settings['style'] . ' ' . $container_style . '">';
 
-        foreach ($settings['team_members'] as $team_member):
+        foreach ($settings['team_members'] as $index => $team_member):
+
+            $has_link = false;
+
+            if (!empty($team_member['member_link']['url'])) {
+
+                $has_link = true;
+
+                $link_key = 'link_' . $index;
+
+                $url = $team_member['member_link'];
+
+                $this->add_render_attribute($link_key, 'title', $team_member['member_name']);
+
+                $this->add_render_attribute($link_key, 'href', $url['url']);
+
+                if (!empty($url['is_external'])) {
+                    $this->add_render_attribute($link_key, 'target', '_blank');
+                }
+
+                if (!empty($url['nofollow'])) {
+                    $this->add_render_attribute($link_key, 'rel', 'nofollow');
+                }
+            }
 
             $child_output = '<div class="' . $item_style . ' lae-team-member-wrapper">';
 
@@ -571,6 +623,9 @@ class LAE_Team_Widget extends Widget_Base {
             if (!empty($team_member['member_image'])):
 
                 $image_html = lae_get_image_html($team_member['member_image'], 'thumbnail_size', $settings);
+
+                if ($has_link)
+                    $image_html = '<a class="lae-image-link" ' . $this->get_render_attribute_string($link_key) . '>' . $image_html . '</a>';
 
                 $child_output .= $image_html;
 
@@ -586,7 +641,12 @@ class LAE_Team_Widget extends Widget_Base {
 
             $child_output .= '<div class="lae-team-member-text">';
 
-            $child_output .= '<' . $settings['title_tag'] . ' class="lae-title">' . esc_html($team_member['member_name']) . '</' . $settings['title_tag'] . '>';
+            $title_html = '<' . $settings['title_tag'] . ' class="lae-title">' . esc_html($team_member['member_name']) . '</' . $settings['title_tag'] . '>';
+
+            if ($has_link)
+                $title_html = '<a class="lae-title-link" ' . $this->get_render_attribute_string($link_key) . '>' . $title_html . '</a>';
+
+            $child_output .= $title_html;
 
             $child_output .= '<div class="lae-team-member-position">';
 

@@ -14,7 +14,7 @@ class Post_Helper {
 		$widget->add_control(
 			'source',
 			[
-				'label'   => __( 'Source', 'bpel' ),
+				'label'   => __( 'Source', 'wts-eae' ),
 				'type'    => Controls_Manager::SELECT,
 				'options' => self::get_post_types(),
 				'default' => 'post'
@@ -40,11 +40,11 @@ class Post_Helper {
 			$widget->add_control(
 				$taxonomy . '_rule',
 				[
-					'label'     => __( 'Filter Mode', 'bpel' ),
+					'label'     => __( 'Filter Mode', 'wts-eae' ),
 					'type'      => Controls_Manager::SELECT,
 					'options'   => [
-						'IN' => __( 'Includes', 'bpel' ),
-						'NOT IN' => __( 'Excludes', 'bpel' )
+						'IN' => __( 'Includes', 'wts-eae' ),
+						'NOT IN' => __( 'Excludes', 'wts-eae' )
 					],
 					'condition' => [
 						'source' => $tax_object->object_type,
@@ -76,7 +76,7 @@ class Post_Helper {
 		$widget->add_control(
 			'order_heading',
 			[
-				'label'     => __( 'Order & Limit', 'bepl' ),
+				'label'     => __( 'Order & Limit', 'wts-eae' ),
 				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before'
 			]
@@ -85,15 +85,15 @@ class Post_Helper {
 		$widget->add_control(
 			'order_by',
 			[
-				'label' =>  __('Order By', 'bepl'),
+				'label' =>  __('Order By', 'wts-eae'),
 				'type'  => Controls_Manager::SELECT,
 				'options'   => [
-					'ID'         => __( 'ID', 'bpel' ),
-					'date'       => __( 'Date', 'bepl' ),
-					'title'       => __( 'Title', 'bepl' ),
-					'menu_order' => __( 'Menu Order', 'bepl' ),
-					'random'     => __( 'Random', 'bepl' ),
-					'meta_value'   => __( 'Custom Field', 'bepl' )
+					'ID'         => __( 'ID', 'wts-eae' ),
+					'date'       => __( 'Date', 'wts-eae' ),
+					'title'       => __( 'Title', 'wts-eae' ),
+					'menu_order' => __( 'Menu Order', 'wts-eae' ),
+					'random'     => __( 'Random', 'wts-eae' ),
+					'meta_value'   => __( 'Custom Field', 'wts-eae' )
 				],
 				'default'   => 'menu_order'
 			]
@@ -102,7 +102,7 @@ class Post_Helper {
 		$widget->add_control(
 			'order_meta_key',
 			[
-				'label' => __('Meta Key (Custom Field Name)', 'bepl'),
+				'label' => __('Meta Key (Custom Field Name)', 'wts-eae'),
 				'type'  => Controls_Manager::TEXT,
 				'condition' => [
 					'order_by'  => 'meta_key'
@@ -113,11 +113,11 @@ class Post_Helper {
 		$widget->add_control(
 			'order',
 			[
-				'label' => __('Order', 'bepl'),
+				'label' => __('Order', 'wts-eae'),
 				'type'  => Controls_Manager::SELECT,
 				'options'   => [
-					'ASC'   => __('Ascending', 'bepl'),
-					'DESC'  => __('Descending', 'bepl')
+					'ASC'   => __('Ascending', 'wts-eae'),
+					'DESC'  => __('Descending', 'wts-eae')
 				],
 				'default'   => 'DESC'
 			]
@@ -126,7 +126,7 @@ class Post_Helper {
 		$widget->add_control(
 			'offset',
 			[
-				'label' => __('Offset', 'bpel'),
+				'label' => __('Offset', 'wts-eae'),
 				'type'  => Controls_Manager::NUMBER
 			]
 		);
@@ -134,7 +134,7 @@ class Post_Helper {
 		$widget->add_control(
 			'post_count',
 			[
-				'label'     => __('Post Count', 'bpel'),
+				'label'     => __('Post Count', 'wts-eae'),
 				'type'      => Controls_Manager::NUMBER,
 				'default'   => '6'
 			]

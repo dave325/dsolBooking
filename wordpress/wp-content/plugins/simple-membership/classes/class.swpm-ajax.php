@@ -10,6 +10,10 @@ class SwpmAjax {
         $field_value = filter_input(INPUT_GET, 'fieldValue');
         $field_id = filter_input(INPUT_GET, 'fieldId');
         $member_id = filter_input(INPUT_GET, 'member_id');
+        if (!check_ajax_referer( 'swpm-rego-form-ajax-nonce', 'nonce', false )) {
+            echo '[ "' . $field_id .  '",false, "'.SwpmUtils::_('Nonce check failed. Please reload page.').'" ]' ;
+            exit;
+        }
         if (!is_email($field_value)){
             echo '[ "' . $field_id .  '",false, "'.SwpmUtils::_('Invalid Email Address').'" ]' ;
             exit;
@@ -18,7 +22,7 @@ class SwpmAjax {
         $query = $wpdb->prepare("SELECT member_id FROM $table WHERE email = %s AND user_name != ''", $field_value);
         $db_id = $wpdb->get_var($query) ;
         $exists = ($db_id > 0) && $db_id != $member_id;
-        echo '[ "' . $field_id . (($exists) ? '",false, "&chi;&nbsp;'.SwpmUtils::_('Aready taken').'"]' : '",true, "&radic;&nbsp;Available"]');
+        echo '[ "' . $field_id . (($exists) ? '",false, "&chi;&nbsp;'.SwpmUtils::_('Aready taken').'"]' : '",true, "&radic;&nbsp;'.SwpmUtils::_('Available'). '"]');
         exit;
     }
 
@@ -26,6 +30,10 @@ class SwpmAjax {
         global $wpdb;        
         $field_value = filter_input(INPUT_GET, 'fieldValue');
         $field_id = filter_input(INPUT_GET, 'fieldId');
+        if (!check_ajax_referer( 'swpm-rego-form-ajax-nonce', 'nonce', false )) {
+            echo '[ "' . $field_id .  '",false, "'.SwpmUtils::_('Nonce check failed. Please reload page.').'" ]' ;
+            exit;
+        }
         if (!SwpmMemberUtils::is_valid_user_name($field_value)){
             echo '[ "' . $field_id . '",false,"&chi;&nbsp;'. SwpmUtils::_('Name contains invalid character'). '"]';
             exit;

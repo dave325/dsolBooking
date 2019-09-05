@@ -65,7 +65,8 @@ class SimpleWpMembership {
         add_action('load-toplevel_page_simple_wp_membership', array(&$this, 'admin_library'));
         add_action('load-wp-membership_page_simple_wp_membership_levels', array(&$this, 'admin_library'));
 
-        add_action('wp_authenticate', array(&$this, 'wp_authenticate_handler'), 1, 2);        
+        add_action('wp_login', array(&$this, 'wp_login_hook_handler'), 10, 2);
+        add_action('wp_authenticate', array(&$this, 'wp_authenticate_handler'), 1, 2);
         add_action('wp_logout', array(&$this, 'wp_logout'));
         add_action('swpm_logout', array(&$this, 'swpm_do_user_logout'));
         add_action('user_register', array(&$this, 'swpm_handle_wp_user_registration'));
@@ -93,6 +94,13 @@ class SimpleWpMembership {
 
     function wp_password_reset_hook($user, $pass) {
         $swpm_user = SwpmMemberUtils::get_user_by_user_name($user->user_login);
+        
+        //Check if SWPM user entry exists
+        if (empty($swpm_user)) {
+            SwpmLog::log_auth_debug("wp_password_reset_hook() - SWPM user not found for username: '" . $user->user_login ."'. This is OK, assuming that this user was created directly in WP Users menu (not using SWPM).", true);
+            return;
+        }
+        
         $swpm_id = $swpm_user->member_id;
         if (!empty($swpm_id)) {
             $password_hash = SwpmUtils::encrypt_password($pass);
@@ -187,7 +195,8 @@ class SimpleWpMembership {
         //Initialize the settings menu hooks.
         $swpm_settings_obj->init_config_hooks();
         $addon_saved = filter_input(INPUT_POST, 'swpm-addon-settings');
-        if (!empty($addon_saved)) {
+        if (!empty($addon_saved) && current_user_can('manage_options')) {
+            check_admin_referer('swpm_addon_settings_section', 'swpm_addon_settings_section_save_settings');
             do_action('swpm_addon_settings_save');
         }
     }
@@ -228,6 +237,9 @@ class SimpleWpMembership {
             }
         }
         SwpmLog::log_auth_debug("Trying wp_signon() with username: " . $username, true);
+        
+        add_filter('wordfence_ls_require_captcha', '__return_false');//For Wordfence plugin's captcha compatibility
+        
         $user_obj = wp_signon(array('user_login' => $username, 'user_password' => $pass, 'remember' => $rememberme), is_ssl());
         if ($user_obj instanceof WP_User) {
             wp_set_current_user($user_obj->ID, $user_obj->user_login);
@@ -289,6 +301,17 @@ class SimpleWpMembership {
         $auth->login_to_swpm_using_wp_user($user);
     }
 
+    /* Used to log the user into SWPM system using the wp_login hook. Some social plugins use this hook to handle the login */
+    public function wp_login_hook_handler($user_login, $user){
+        SwpmLog::log_auth_debug('wp_login hook triggered. Username: ' . $user_login, true);
+        $auth = SwpmAuth::get_instance();
+        if ($auth->is_logged_in()) {
+            //User is already logged-in. Nothing to do.
+            return;
+        }        
+        $auth->login_to_swpm_using_wp_user($user);
+    }
+    
     public function wp_authenticate_handler($username, $password) {
 
         $auth = SwpmAuth::get_instance();
@@ -637,7 +660,7 @@ class SimpleWpMembership {
         wp_register_script('swpm.validationEngine-localization', SIMPLE_WP_MEMBERSHIP_URL . '/js/swpm.validationEngine-localization.js', array('jquery'));
     }
 
-    public static function enqueue_validation_scripts($add_params = false) {
+    public static function enqueue_validation_scripts($add_params = array()) {
         //Localization for jquery.validationEngine
         //This array will be merged with $.validationEngineLanguage.allRules object from jquery.validationEngine-en.js file
         $loc_data = array(
@@ -655,9 +678,12 @@ class SimpleWpMembership {
             'required' => array(
                 'alertText' => '* ' . SwpmUtils::_('This field is required'),
             ),
-            'SWPMUserName' => array(
-                'alertText' => '* ' . SwpmUtils::_('Invalid Username').'<br>'.SwpmUtils::_('Usernames can only contain: letters, numbers and .-*@'),
+            'strongPass' => array(
+                'alertText' => '* ' . SwpmUtils::_('Password must contain at least:').'<br>'.SwpmUtils::_('- a digit').'<br>'.SwpmUtils::_('- an uppercase letter').'<br>'.SwpmUtils::_('- a lowercase letter'),
             ),
+            'SWPMUserName' => array(
+                'alertText' => '* ' . SwpmUtils::_('Invalid Username').'<br>'.SwpmUtils::_('Usernames can only contain: letters, numbers and .-_*@'),
+            ),            
             'minSize' => array(
                 'alertText' => '* ' . SwpmUtils::_('Minimum '),
                 'alertText2' => SwpmUtils::_(' characters required'),
@@ -667,12 +693,21 @@ class SimpleWpMembership {
             ),
         );
 
-        if ($add_params !== false) {
+        $nonce=wp_create_nonce( 'swpm-rego-form-ajax-nonce' );
+
+        if ($add_params) {
             // Additional parameters should be added to the array, replacing existing ones
+            if (isset($add_params['ajaxEmailCall'])) {
+                if (isset($add_params['ajaxEmailCall']['extraData'])) {
+                    $add_params['ajaxEmailCall']['extraData'].='&nonce='.$nonce;
+                }
+            }
             $loc_data = array_replace_recursive($add_params, $loc_data);
         }
 
         wp_localize_script('swpm.validationEngine-localization', 'swpm_validationEngine_localization', $loc_data);
+
+        wp_localize_script('jquery.validationEngine-en', 'swpmRegForm', array('nonce' => $nonce));
 
         wp_enqueue_style('validationEngine.jquery');
         wp_enqueue_script('jquery.validationEngine');

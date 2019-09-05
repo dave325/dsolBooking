@@ -58,7 +58,7 @@
                                         <div class="entry-meta">
                                             <span>
                                                 <a href="<?php the_permalink();?>">
-                                                   <?php esc_html_e(date(get_option('date_format')), 'widgetkit-for-elementor'); ?>                                            
+                                                   <?php esc_html_e(date_i18n((get_option('date_format'))), 'widgetkit-for-elementor'); ?>                                            
                                                 </a>
                                                 
                                                 <?php if ($settings['comment_enable']): ?>
@@ -92,7 +92,7 @@
                                         <div class="entry-meta">
                                             <span>
                                                 <a href="<?php the_permalink();?>">
-                                                   <?php esc_html_e(date(get_option('date_format')), 'widgetkit-for-elementor'); ?>                                            
+                                                   <?php esc_html_e(date_i18n((get_option('date_format'))), 'widgetkit-for-elementor'); ?>                                            
                                                 </a>
 
                                                     <?php if ($settings['comment_enable']): ?>

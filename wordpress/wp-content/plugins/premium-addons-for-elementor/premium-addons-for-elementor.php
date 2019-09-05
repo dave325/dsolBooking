@@ -3,9 +3,9 @@
 Plugin Name: Premium Addons for Elementor
 Description: Premium Addons Plugin Includes 22+ premium widgets for Elementor Page Builder.
 Plugin URI: https://premiumaddons.com
-Version: 3.2.3
+Version: 3.6.9
 Author: Leap13
-Author URI: http://leap13.com/
+Author URI: https://leap13.com/
 Text Domain: premium-addons-for-elementor
 Domain Path: /languages
 License: GNU General Public License v3.0
@@ -14,34 +14,42 @@ License: GNU General Public License v3.0
 if ( ! defined('ABSPATH') ) exit; // No access of directly access
 
 // Define Constants
-define('PREMIUM_ADDONS_VERSION', '3.2.3');
+define('PREMIUM_ADDONS_VERSION', '3.6.9');
 define('PREMIUM_ADDONS_URL', plugins_url('/', __FILE__));
 define('PREMIUM_ADDONS_PATH', plugin_dir_path(__FILE__));
 define('PREMIUM_ADDONS_FILE', __FILE__);
-define('PREMIUM_ADDONS_BASENAME', plugin_basename(PREMIUM_ADDONS_FILE));
-define('PREMIUM_ADDONS_STABLE_VERSION', '3.2.2');
+define('PREMIUM_ADDONS_BASENAME', plugin_basename( PREMIUM_ADDONS_FILE ) );
+define('PREMIUM_ADDONS_STABLE_VERSION', '3.6.8');
 
 if( ! class_exists('Premium_Addons_Elementor') ) {
+    
     /*
     * Intialize and Sets up the plugin
     */
     class Premium_Addons_Elementor {
         
+        /**
+         * Member Variable
+         *
+         * @var instance
+         */
         private static $instance = null;
         
         /**
-        * Sets up needed actions/filters for the plug-in to initialize.
-        * @since 1.0.0
-        * @access public
-        * @return void
-        */
+         * Sets up needed actions/filters for the plug-in to initialize.
+         * 
+         * @since 1.0.0
+         * @access public
+         * 
+         * @return void
+         */
         public function __construct() {
             
-            add_action('plugins_loaded', array( $this, 'premium_addons_elementor_setup') );
+            add_action( 'plugins_loaded', array( $this, 'premium_addons_elementor_setup' ) );
             
-            add_action('elementor/init', array( $this, 'elementor_init') );
+            add_action( 'elementor/init', array( $this, 'elementor_init' ) );
             
-            add_action( 'init', array( $this, 'init_addons' ), -999 );
+            add_action( 'init', array( $this, 'init' ), -999 );
  
             add_action( 'admin_post_premium_addons_rollback', 'post_premium_addons_rollback' );
             
@@ -50,24 +58,30 @@ if( ! class_exists('Premium_Addons_Elementor') ) {
         }
         
         /**
-        * Installs translation text domain and checks if Elementor is installed
-        * @since 1.0.0
-        * @access public
-        * @return void
-        */
+         * Installs translation text domain and checks if Elementor is installed
+         * 
+         * @since 1.0.0
+         * @access public
+         * 
+         * @return void
+         */
         public function premium_addons_elementor_setup() {
+            
             $this->load_domain();
             
             $this->init_files(); 
         }
         
         /**
-        * Set transient for admin review notice
-        * @since 3.1.7
-        * @access public
-        * @return void
-        */
+         * Set transient for admin review notice
+         * 
+         * @since 3.1.7
+         * @access public
+         * 
+         * @return void
+         */
         public function set_transient() {
+            
             $cache_key = 'premium_notice_' . PREMIUM_ADDONS_VERSION;
             
             $expiration = 3600 * 72;
@@ -78,46 +92,57 @@ if( ! class_exists('Premium_Addons_Elementor') ) {
         
         /**
          * Require initial necessary files
+         * 
          * @since 2.6.8
          * @access public
+         * 
          * @return void
          */
-        public function init_files(){
+        public function init_files() {
+            
             if ( is_admin() ) {
-                require_once (PREMIUM_ADDONS_PATH . 'includes/system-info.php');
-                require_once (PREMIUM_ADDONS_PATH . 'includes/maintenance.php');
-                require_once (PREMIUM_ADDONS_PATH . 'includes/rollback.php');
-                require_once (PREMIUM_ADDONS_PATH . 'includes/class-beta-testers.php');
-                require_once (PREMIUM_ADDONS_PATH . 'plugin.php');
-                require_once (PREMIUM_ADDONS_PATH . 'admin/includes/notices.php' );
-                require_once (PREMIUM_ADDONS_PATH . 'admin/settings/about.php');
-                require_once (PREMIUM_ADDONS_PATH . 'admin/settings/version-control.php');
-                require_once (PREMIUM_ADDONS_PATH . 'admin/settings/sys-info.php');
-                require_once (PREMIUM_ADDONS_PATH . 'admin/settings/gopro.php');
+                
+                require_once ( PREMIUM_ADDONS_PATH . 'admin/includes/dep/maintenance.php');
+                require_once ( PREMIUM_ADDONS_PATH . 'admin/includes/dep/rollback.php');
+                
+                require_once ( PREMIUM_ADDONS_PATH . 'includes/class-beta-testers.php');
+                require_once ( PREMIUM_ADDONS_PATH . 'includes/plugin.php');
+                require_once ( PREMIUM_ADDONS_PATH . 'admin/includes/admin-notices.php' );
+                require_once ( PREMIUM_ADDONS_PATH . 'admin/includes/plugin-info.php');
+                require_once ( PREMIUM_ADDONS_PATH . 'admin/includes/version-control.php');
+                require_once ( PREMIUM_ADDONS_PATH . 'admin/includes/reports.php');
+                require_once ( PREMIUM_ADDONS_PATH . 'admin/includes/papro-actions.php');
                 $beta_testers = new Premium_Beta_Testers();
+                
             }
     
-            require_once (PREMIUM_ADDONS_PATH . 'includes/helper-functions.php');
-            require_once (PREMIUM_ADDONS_PATH . 'admin/settings/gomaps.php');
-            require_once (PREMIUM_ADDONS_PATH . 'admin/settings/elements.php');
-            require_once (PREMIUM_ADDONS_PATH . 'includes/elementor-helper.php');
+            require_once ( PREMIUM_ADDONS_PATH . 'includes/class-helper-functions.php' );
+            require_once ( PREMIUM_ADDONS_PATH . 'admin/settings/maps.php' );
+            require_once ( PREMIUM_ADDONS_PATH . 'admin/settings/modules-setting.php' );
+            require_once ( PREMIUM_ADDONS_PATH . 'includes/elementor-helper.php' );
             
         }
         
         /**
          * Load plugin translated strings using text domain
+         * 
          * @since 2.6.8
          * @access public
+         * 
          * @return void
          */
         public function load_domain() {
-            load_plugin_textdomain('premium-addons-for-elementor', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
+            
+            load_plugin_textdomain( 'premium-addons-for-elementor' );
+            
         }
         
         /**
          * Elementor Init
+         * 
          * @since 2.6.8
          * @access public
+         * 
          * @return void
          */
         public function elementor_init() {
@@ -126,24 +151,62 @@ if( ! class_exists('Premium_Addons_Elementor') ) {
             
             require_once ( PREMIUM_ADDONS_PATH . 'includes/class-addons-category.php' );
             
-            
         }
         
         /**
-        * Load required file for addons integration
-        * @return void
-        */
+         * Load required file for addons integration
+         * 
+         * @since 2.6.8
+         * @access public
+         * 
+         * @return void
+         */
         public function init_addons() {
             require_once ( PREMIUM_ADDONS_PATH . 'includes/class-addons-integration.php' );
         }
         
         /**
+         * Load the required files for templates integration
+         * 
+         * @since 3.6.0
+         * @access public
+         * 
+         * @return void
+         */
+        public function init_templates() {
+            //Load templates file
+            require_once ( PREMIUM_ADDONS_PATH . 'includes/templates/templates.php');
+        }
+        
+        /*
+         * Init 
+         * 
+         * @since 3.4.0
+         * @access public
+         * 
+         * @return void
+         */
+        public function init() {
+            
+            $this->init_addons();
+            
+            if ( PremiumAddons\Admin\Settings\Modules_Settings::check_premium_templates() ) {
+                $this->init_templates();
+            
+            }
+            
+        }
+
+
+        /**
          * Creates and returns an instance of the class
+         * 
          * @since 2.6.8
          * @access public
-         * return object
+         * 
+         * @return object
          */
-        public static function get_instance(){
+        public static function get_instance() {
             if( self::$instance == null ) {
                 self::$instance = new self;
             }
@@ -154,6 +217,7 @@ if( ! class_exists('Premium_Addons_Elementor') ) {
 }
 
 if ( ! function_exists( 'premium_addons' ) ) {
+    
 	/**
 	 * Returns an instance of the plugin class.
 	 * @since  1.0.0
@@ -163,4 +227,5 @@ if ( ! function_exists( 'premium_addons' ) ) {
 		return Premium_Addons_Elementor::get_instance();
 	}
 }
+
 premium_addons();

@@ -5,7 +5,8 @@
  * *********************************************** */
 add_filter('swpm_payment_button_shortcode_for_braintree_buy_now', 'swpm_render_braintree_buy_now_button_sc_output', 10, 2);
 
-function swpm_render_braintree_buy_now_button_sc_output($button_code, $args) {
+function swpm_render_braintree_buy_now_button_sc_output($button_code, $args)
+{
 
     $button_id = isset($args['id']) ? $args['id'] : '';
     if (empty($button_id)) {
@@ -13,13 +14,12 @@ function swpm_render_braintree_buy_now_button_sc_output($button_code, $args) {
     }
 
     //Get class option for button styling, set Stripe's default if none specified
-    $class = isset($args['class']) ? $args['class'] : 'stripe-button-el';
+    $class = isset($args['class']) ? $args['class'] : '';
 
     //Check new_window parameter
     $window_target = isset($args['new_window']) ? 'target="_blank"' : '';
     $button_text = (isset($args['button_text'])) ? $args['button_text'] : SwpmUtils::_('Buy Now');
-    $billing_address = isset($args['billing_address']) ? '1' : '';
-    ; //By default don't show the billing address in the checkout form.
+    $billing_address = isset($args['billing_address']) ? '1' : '';; //By default don't show the billing address in the checkout form.
     $item_logo = ''; //Can be used to show an item logo or thumbnail in the checkout form.
 
     $settings = SwpmSettings::get_instance();
@@ -38,8 +38,9 @@ function swpm_render_braintree_buy_now_button_sc_output($button_code, $args) {
         return '<p class="swpm-red-box">Error! The payment amount value of the button must be a numeric number. Example: 49.50 </p>';
     }
     $payment_amount = round($payment_amount, 2); //round the amount to 2 decimal place.
-    $payment_amount_formatted = number_format($payment_amount, 2, '.', '');
     $payment_currency = get_post_meta($button_id, 'currency_code', true);
+
+    $payment_amount_formatted = SwpmMiscUtils::format_money($payment_amount,$payment_currency);
 
     //Return, cancel, notifiy URLs
     $return_url = get_post_meta($button_id, 'return_url', true);
@@ -94,29 +95,74 @@ function swpm_render_braintree_buy_now_button_sc_output($button_code, $args) {
     /* === Braintree Buy Now Button Form === */
     $output = '';
     $output .= '<div class="swpm-button-wrapper swpm-braintree-buy-now-wrapper">';
-    $output .= "<form action='" . $notify_url . "' METHOD='POST'> ";
+    $output .= "<form id='swpm-braintree-payment-form-" . $uniqid . "' action='" . $notify_url . "' METHOD='POST'> ";
     $output .= '<div id="swpm-form-cont-' . $uniqid . '" class="swpm-braintree-form-container swpm-form-container-' . $button_id . '" style="display:none;"></div>';
     $output .= '<div id="swpm-braintree-additional-fields-container-' . $uniqid . '" class="swpm-braintree-additional-fields-container swpm-braintree-additional-fields-container-' . $button_id . '" style="display:none;">';
     $output .= '<p><input type="text" name="first_name" placeholder="First Name" value="' . (isset($member_first_name) ? $member_first_name : '') . '" required></p>';
     $output .= '<p><input type="text" name="last_name" placeholder="Last Name" value="' . (isset($member_last_name) ? $member_last_name : '') . '" required></p>';
     $output .= '<p><input type="text" name="member_email" placeholder="Email" value="' . (isset($member_email) ? $member_email : '') . '" required></p>';
-    $output .= '<div id="swpm-braintree-amount-container-' . $uniqid . '" class="swpm-braintree-amount-container"><p>' . $payment_amount_formatted . ' ' . $payment_currency . '</p></div>';
+    //apply filter to output additional form fields
+    $coupon_input = '';
+    $coupon_input = apply_filters('swpm_payment_form_additional_fields', $coupon_input, $button_id, $uniqid);
+    if (!empty($coupon_input)) {
+        $output .= $coupon_input;
+    }
+    $output .= '<div id="swpm-braintree-amount-container-' . $uniqid . '" class="swpm-braintree-amount-container"><p>' . $payment_amount_formatted.'</p></div>';
     $output .= '</div>';
     $output .= '<button id="swpm-show-form-btn-' . $uniqid . '" class="swpm-braintree-pay-now-button swpm-braintree-show-form-button-' . $button_id . ' ' . $class . '" type="button" onclick="swpm_braintree_show_form_' . $uniqid . '();"><span>' . $button_text . '</span></button>';
     $output .= '<button id="swpm-submit-form-btn-' . $uniqid . '" class="swpm-braintree-pay-now-button swpm-braintree-submit-form-button-' . $button_id . ' ' . $class . '" type="submit" style="display: none;"><span>' . $button_text . '</span></button>';
-    $output .= '<script src="https://js.braintreegateway.com/js/braintree-2.30.0.min.js"></script>';
-    $output .= '<script>';
-    $output .= "function swpm_braintree_show_form_" . $uniqid . "() {";
-    $output .= 'document.getElementById(\'swpm-show-form-btn-' . $uniqid . '\').style.display = "none";';
-    $output .= 'document.getElementById(\'swpm-submit-form-btn-' . $uniqid . '\').style.display = "block";';
-    $output .= 'document.getElementById(\'swpm-form-cont-' . $uniqid . '\').style.display = "block";';
-    $output .= "braintree.setup('" . $clientToken . "', 'dropin', {container: 'swpm-form-cont-" . $uniqid . "', ";
-    $output .= "onReady: function(obj){document.getElementById('swpm-braintree-additional-fields-container-" . $uniqid . "').style.display = \"block\";}});";
-    $output .= '}';
-    $output .= '</script>';
+    $output .= '<script src="https://js.braintreegateway.com/js/braintree-2.32.1.min.js"></script>';
+    ob_start();
+    ?>
+    <script>
+        function swpm_braintree_show_form__uniqid_() {
+            document.getElementById('swpm-show-form-btn-_uniqid_').style.display = "none";
+            document.getElementById('swpm-submit-form-btn-_uniqid_').style.display = "block";
+            document.getElementById('swpm-form-cont-_uniqid_').style.display = "block";
+            var clientToken = '_token_';
+            braintree.setup(clientToken, 'dropin', {
+                container: 'swpm-form-cont-_uniqid_',
+                onReady: function(obj) {
+                    document.getElementById('swpm-braintree-additional-fields-container-_uniqid_').style.display = "block";
+                },
+                onPaymentMethodReceived: function(obj) {
+                    document.getElementById('swpm-submit-form-btn-_uniqid_').disabled = true;
+                    var client = new braintree.api.Client({
+                        clientToken: clientToken
+                    });
+                    if (obj.type !== 'CreditCard') {
+                        document.getElementById('swpm-braintree-nonce-field-_uniqid_').value = obj.nonce;
+                        document.getElementById('swpm-braintree-payment-form-_uniqid_').submit();
+                        return true;
+                    }
+                    var form = document.getElementById('swpm-braintree-payment-form-_uniqid_');
+                    var amount = form.querySelector('[name="item_price"]').value;
+                    client.verify3DS({
+                        amount: amount,
+                        creditCard: obj.nonce
+                    }, function(err, response) {
+                        if (!err) {
+                            document.getElementById('swpm-braintree-nonce-field-_uniqid_').value = response.nonce;
+                            document.getElementById('swpm-braintree-payment-form-_uniqid_').submit();
+                        } else {
+                            alert(err.message);
+                            document.getElementById('swpm-submit-form-btn-_uniqid_').disabled = false;
+                            return false;
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+    <?php
+
+    $scr = ob_get_clean();
+    $scr = str_replace(array('_uniqid_', '_token_', '_amount_'), array($uniqid, $clientToken, $payment_amount), $scr);
+    $output .= $scr;
 
     $output .= wp_nonce_field('stripe_payments', '_wpnonce', true, false);
     $output .= '<input type="hidden" name="item_number" value="' . $button_id . '" />';
+    $output .= '<input type="hidden" id="swpm-braintree-nonce-field-' . $uniqid . '" name="payment_method_nonce" value="" />';
     $output .= "<input type='hidden' value='{$item_name}' name='item_name' />";
     $output .= "<input type='hidden' value='{$payment_amount}' name='item_price' />";
     $output .= "<input type='hidden' value='{$payment_currency}' name='currency_code' />";

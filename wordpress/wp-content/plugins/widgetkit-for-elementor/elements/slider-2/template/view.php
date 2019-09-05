@@ -16,7 +16,7 @@
                  <?php if ($settings['slider_interval']):
                      echo $settings['slider_interval'];
                  endif; ?>
-                ">
+                " <?php echo ($settings['slider_data_pause'] == 'yes') ? '' : 'data-pause="false"'; ?>>
                  <?php if ($settings['dot_enable']):?>
                     <!-- Indicators -->
                     <ol class="carousel-indicators">
@@ -42,9 +42,9 @@
                             <?php endif; ?>
                                 <div class="carousel-caption ">
                                     <?php if ($slider['title']):?>
-                                        <h2 class="slider-title animated animate-delay-1 <?php echo $slider['title_animation']; ?>">
+                                        <<?php echo $settings['heading_tag'];?> class="slider-title animated animate-delay-1 <?php echo $slider['title_animation']; ?>">
                                             <?php echo $slider['title']; ?>
-                                        </h2>
+                                        </<?php echo $settings['heading_tag'];?>>
                                     <?php endif; ?>
 
 
@@ -117,11 +117,11 @@
                 <!-- Left and right controls -->
                 <a class="left carousel-control hidden-xs" href="#<?php echo $id; ?>" role="button" data-slide="prev">
                     <span class="fa fa-angle-left" aria-hidden="true"></span>
-                    <span class="sr-only"><?php esc_html_e('Previous', 'widgetkit-for-elementor');?></span>
+                    <!-- <span class="sr-only"><?php esc_html_e('Previous', 'widgetkit-for-elementor');?></span> -->
                 </a>
                 <a class="right carousel-control hidden-xs" href="#<?php echo $id; ?>" role="button" data-slide="next">
                     <span class="fa fa-angle-right" aria-hidden="true"></span>
-                    <span class="sr-only"><?php esc_html_e('Next', 'widgetkit-for-elementor');?></span>
+                   <!--  <span class="sr-only"><?php esc_html_e('Next', 'widgetkit-for-elementor');?></span> -->
                 </a>
             <?php endif; ?>
         </div>

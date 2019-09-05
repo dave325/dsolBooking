@@ -1,45 +1,5 @@
 [
     {
-        "name": "codeinwp/themeisle-sdk",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/Codeinwp/themeisle-sdk.git",
-            "reference": "951cde6e799e00d46a52416b62221fd771ddc326"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/Codeinwp/themeisle-sdk/zipball/951cde6e799e00d46a52416b62221fd771ddc326",
-            "reference": "951cde6e799e00d46a52416b62221fd771ddc326",
-            "shasum": ""
-        },
-        "time": "2018-11-26 14:24:47",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "load.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-2.0+"
-        ],
-        "authors": [
-            {
-                "name": "ThemeIsle team",
-                "email": "friends@themeisle.com",
-                "homepage": "https://themeisle.com"
-            }
-        ],
-        "description": "ThemeIsle SDK ",
-        "homepage": "https://github.com/Codeinwp/themeisle-sdk",
-        "keywords": [
-            "wordpress"
-        ]
-    },
-    {
         "name": "codeinwp/icon-picker",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -62,7 +22,7 @@
         },
         "time": "2018-12-10 16:06:38",
         "type": "wordpress-plugin",
-        "installation-source": "dist",
+        "installation-source": "source",
         "notification-url": "https://packagist.org/downloads/",
         "license": [
             "GPL-2.0"
@@ -103,7 +63,7 @@
         },
         "time": "2018-12-10 16:01:32",
         "type": "wordpress-plugin",
-        "installation-source": "dist",
+        "installation-source": "source",
         "notification-url": "https://packagist.org/downloads/",
         "license": [
             "GPL-2.0"
@@ -114,6 +74,46 @@
             "custom-fields",
             "menu",
             "plugin",
+            "wordpress"
+        ]
+    },
+    {
+        "name": "codeinwp/themeisle-sdk",
+        "version": "3.0.6",
+        "version_normalized": "3.0.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Codeinwp/themeisle-sdk.git",
+            "reference": "cde61ab54f93495f0c5b7901cc5072f320f969ff"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Codeinwp/themeisle-sdk/zipball/cde61ab54f93495f0c5b7901cc5072f320f969ff",
+            "reference": "cde61ab54f93495f0c5b7901cc5072f320f969ff",
+            "shasum": ""
+        },
+        "require-dev": {
+            "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+            "squizlabs/php_codesniffer": "^3.1",
+            "wp-coding-standards/wpcs": "^1.0.0"
+        },
+        "time": "2019-05-21 11:49:48",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "ThemeIsle team",
+                "email": "friends@themeisle.com",
+                "homepage": "https://themeisle.com"
+            }
+        ],
+        "description": "ThemeIsle SDK.",
+        "homepage": "https://github.com/Codeinwp/themeisle-sdk",
+        "keywords": [
             "wordpress"
         ]
     }

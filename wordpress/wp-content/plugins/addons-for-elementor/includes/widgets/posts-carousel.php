@@ -54,6 +54,21 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
             ]
         );
 
+
+        $this->add_control(
+            'query_type',
+            [
+                'label' => __('Source', 'livemesh-el-addons'),
+                'type' => Controls_Manager::SELECT,
+                'options' => array(
+                    'custom_query' => __('Custom Query', 'livemesh-el-addons'),
+                    'current_query' => __('Current Query', 'livemesh-el-addons'),
+                    'related' => __('Related', 'livemesh-el-addons'),
+                ),
+                'default' => 'custom_query',
+            ]
+        );
+
         $this->add_control(
             'post_types',
             [
@@ -61,7 +76,26 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
                 'type' => Controls_Manager::SELECT2,
                 'default' => 'post',
                 'options' => lae_get_all_post_type_options(),
-                'multiple' => true
+                'multiple' => true,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
+            ]
+        );
+
+        $this->add_control(
+            'taxonomies',
+            [
+                'type' => Controls_Manager::SELECT2,
+                'label' => __('Choose the taxonomies to display related posts.', 'livemesh-el-addons'),
+                'label_block' => true,
+                'description' => __('Choose the taxonomies to be used for displaying posts related to current post, page or custom post type.', 'livemesh-el-addons'),
+                'options' => lae_get_taxonomies_map(),
+                'default' => 'category',
+                'multiple' => true,
+                'condition' => [
+                    'query_type' => 'related'
+                ]
             ]
         );
 
@@ -72,7 +106,10 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
                 'type' => Controls_Manager::SELECT2,
                 'options' => lae_get_all_taxonomy_options(),
                 'multiple' => true,
-                'label_block' => true
+                'label_block' => true,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
             ]
         );
 
@@ -82,7 +119,10 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
                 'label' => __('Post In', 'livemesh-el-addons'),
                 'description' => __('Provide a comma separated list of Post IDs to display in the grid.', 'livemesh-el-addons'),
                 'type' => Controls_Manager::TEXT,
-                'label_block' => true
+                'label_block' => true,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
             ]
         );
 
@@ -92,6 +132,9 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
                 'label' => __('Posts Per Page', 'livemesh-el-addons'),
                 'type' => Controls_Manager::NUMBER,
                 'default' => 6,
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
             ]
         );
 
@@ -100,6 +143,9 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
             [
                 'label' => __('Advanced', 'livemesh-el-addons'),
                 'type' => Controls_Manager::HEADING,
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
             ]
         );
 
@@ -122,6 +168,9 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
                     'post__in' => __('By include order', 'livemesh-el-addons'),
                 ),
                 'default' => 'date',
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
             ]
         );
 
@@ -135,6 +184,23 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
                     'DESC' => __('Descending', 'livemesh-el-addons'),
                 ),
                 'default' => 'DESC',
+                'condition' => [
+                    'query_type' => ['custom_query', 'related']
+                ]
+            ]
+        );
+
+
+        $this->add_control(
+            'offset',
+            [
+                'label' => __('Offset', 'livemesh-el-addons'),
+                'description' => __('Number of posts to skip or pass over.', 'livemesh-el-addons'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 0,
+                'condition' => [
+                    'query_type' => 'custom_query'
+                ]
             ]
         );
 
@@ -782,6 +848,8 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
 
         $settings = $this->get_settings_for_display();
 
+        $dir = is_rtl() ? ' dir="rtl"' : '';
+
         $settings = apply_filters('lae_posts_carousel_' . $this->get_id() . '_settings', $settings);
 
         $taxonomies = array();
@@ -815,7 +883,7 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
         // Use the processed post selector query to find posts.
         $query_args = lae_build_query_args($settings);
 
-        $query_args = apply_filters('lae_posts_carousel_'. $this->get_id() . '_query_args', $query_args, $settings);
+        $query_args = apply_filters('lae_posts_carousel_' . $this->get_id() . '_query_args', $query_args, $settings);
 
         $loop = new \WP_Query($query_args);
 
@@ -824,7 +892,7 @@ class LAE_Posts_Carousel_Widget extends Widget_Base {
 
             $post_id = get_the_ID();
 
-            $output = '<div id="lae-posts-carousel-' . uniqid()
+            $output = '<div' . $dir . ' id="lae-posts-carousel-' . uniqid()
                 . '" class="lae-posts-carousel lae-container" data-settings=\'' . wp_json_encode($carousel_settings) . '\'>';
 
             $taxonomies[] = $settings['taxonomy_chosen'];

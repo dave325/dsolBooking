@@ -35,11 +35,11 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       let resId = -1;
       let date = Date.now();
       let room = 1;
-
+      console.log(myFactory.getData)
       if (myFactory.getData.arr.length > 0) {
         // Set data 
 
-        let date = new Date();
+        date = new Date();
         var urlParams = new URLSearchParams(window.location.search);
         // If user is editing post
         if (urlParams.get('res_id')) {
@@ -58,7 +58,6 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
           }
         }
       }
-
       // Call api with given date, room, and reservation id
       restapi.times(date, room, resId).then(
         (res) => {
@@ -663,7 +662,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
           // Add edit route
           myFactory.getData.res_id = parseInt(id);
           // Make edit call
-          $http.post(localized.path + '/wp-json/dsol-booking/v1/bookRoom', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
+          $http.post(localized.path + '/wp-json/dsol-booking/v1/editUserReservation', myFactory.getData, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
             (res) => {
               $scope.submitting = false;
               myFactory.removeData();
@@ -719,12 +718,13 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         // Store current res_id from checkboxes
         $scope.items = [];
         // Set lastCheck for editRes info
-        $scope.lastCheck;
+        $scope.lastCheck;u
       },
       (err) => {
         console.error(err)
       }
     );
+    
 
 
     /**
@@ -1196,7 +1196,10 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       if (!moment().isSame(date)) {
         givenDate = date;
       }
+      console.log("Date: " + moment(date).format("YYYY/MM/DD"))
+      console.log("Given Date: " + new Date(givenDate))
       let newdate = moment(givenDate).format("YYYY/MM/DD");
+      console.log("New Date: " + newdate)
       return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { room: room, date: newdate }, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
         (res) => {
           return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then(

@@ -54,7 +54,7 @@ var WPFormsBuilderEducation = window.WPFormsBuilderEducation || ( function( docu
 
 			$( document ).on(
 				'click',
-				'.wpforms-add-fields-button, .wpforms-panel-sidebar-section, .wpforms-builder-settings-block-add',
+				'.wpforms-add-fields-button, .wpforms-panel-sidebar-section, .wpforms-builder-settings-block-add, .wpforms-field-option-group-toggle',
 				function( event ) {
 
 					var $this = $( this );

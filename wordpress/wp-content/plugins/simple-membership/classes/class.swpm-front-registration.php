@@ -269,20 +269,32 @@ class SwpmFrontRegistration extends SwpmRegistration {
             $member_info = $form->get_sanitized_member_form_data();
             SwpmUtils::update_wp_user($auth->get('user_name'), $member_info); //Update corresponding wp user record.
 
-
+            //Lets check if password was also changed.
+            $password_also_changed = false;
             if (isset($member_info['plain_password'])) {
-                //Password was also changed so show the appropriate message
+                //Password was also changed.
                 $msg_str = '<div class="swpm-profile-update-success">' . SwpmUtils::_('Profile updated successfully. You will need to re-login since you changed your password.') . '</div>';
                 $message = array('succeeded' => true, 'message' => $msg_str);
                 unset($member_info['plain_password']);
+                //Set the password chagned flag.
+                $password_also_changed = true;
+            }
+            
+            //Update the data in the swpm database.
+            $swpm_id = $auth->get('member_id');
+            //SwpmLog::log_simple_debug("Updating member profile data with SWPM ID: " . $swpm_id, true);
+            $member_info = array_filter($member_info);//Remove any null values.
+            $wpdb->update($wpdb->prefix . "swpm_members_tbl", $member_info, array('member_id' => $swpm_id));
+            $auth->reload_user_data();//Reload user data after update so the profile page reflects the new data.
+
+            if ($password_also_changed) {
+                //Password was also changed. Logout the user's current session.
                 wp_logout(); //Log the user out from the WP user session also.
                 SwpmLog::log_simple_debug("Member has updated the password from profile edit page. Logging the user out so he can re-login using the new password.", true);
             }
-
-            $wpdb->update($wpdb->prefix . "swpm_members_tbl", $member_info, array('member_id' => $auth->get('member_id')));
-            $auth->reload_user_data();
-
+            
             SwpmTransfer::get_instance()->set('status', $message);
+            
             do_action('swpm_front_end_profile_edited', $member_info);
             return true; //Successful form submission.
         } else {
@@ -373,7 +385,7 @@ class SwpmFrontRegistration extends SwpmRegistration {
         }
         if ($member->account_state !== 'activation_required') {
             //account already active
-            echo SwpmUtils::_('Account already active. <a href="' . $login_page_url . '">Click here</a> to login.');
+            echo SwpmUtils::_('Account already active. ') . '<a href="' . $login_page_url . '">' . SwpmUtils::_('click here') . '</a>' . SwpmUtils::_(' to login.');
             wp_die();
         }
         $code = FILTER_INPUT(INPUT_GET, 'swpm_token', FILTER_SANITIZE_STRING);
@@ -383,7 +395,7 @@ class SwpmFrontRegistration extends SwpmRegistration {
             wp_die(SwpmUtils::_('Activation code mismatch. Cannot activate this account. Please contact the site admin.'));
         }
         //activation code match
-        delete_option('swpm_email_activation_code_usr_' . $member_id);
+        delete_option('swpm_email_activation_data_usr_' . $member_id);
         //store rego form id in constant so FB addon could use it
         if (!empty($act_data['fb_form_id'])) {
             define('SWPM_EMAIL_ACTIVATION_FORM_ID', $act_data['fb_form_id']);
@@ -391,7 +403,7 @@ class SwpmFrontRegistration extends SwpmRegistration {
         $activation_account_status = apply_filters('swpm_activation_feature_override_account_status', 'active');
         SwpmMemberUtils::update_account_state($member_id, $activation_account_status);
         $this->member_info = (array) $member;
-        $this->member_info['plain_password'] = $act_data['plain_password'];
+        $this->member_info['plain_password'] = SwpmUtils::crypt($act_data['plain_password'], 'd');
         $this->send_reg_email();
 
         $msg = '<div class="swpm_temporary_msg" style="font-weight: bold;">' . SwpmUtils::_('Success! Your account has been activated successfully.') . '</div>';
@@ -433,10 +445,10 @@ class SwpmFrontRegistration extends SwpmRegistration {
             $act_data['plain_password'] = '';
         }
 
-        delete_option('swpm_email_activation_code_usr_' . $member_id);
+        delete_option('swpm_email_activation_data_usr_' . $member_id);
 
         $this->member_info = (array) $member;
-        $this->member_info['plain_password'] = $act_data['plain_password'];
+        $this->member_info['plain_password'] = SwpmUtils::crypt($act_data['plain_password'], 'd');
         $this->email_activation = true;
         $this->send_reg_email();
 

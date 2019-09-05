@@ -4,6 +4,8 @@
 
         var slider_elem = $scope.find('.lae-testimonials-slider').eq(0);
 
+        var rtl = slider_elem.attr('dir') === 'rtl';
+
         var settings = slider_elem.data('settings');
 
         slider_elem.flexslider({
@@ -22,6 +24,7 @@
             smoothHeight: false,
             animationLoop: true,
             slideshow: true,
+            rtl: rtl,
             easing: "swing",
             controlsContainer: "lae-testimonials-slider"
         });
@@ -119,9 +122,11 @@
 
     var WidgetLAECarouselHandler = function ($scope, $) {
 
-        var carousel_elem = $scope.find('.lae-carousel, .lae-posts-carousel, .lae-gallery-carousel, .lae-services-carousel').eq(0);
+        var carousel_elem = $scope.find('.lae-carousel, .lae-posts-carousel').eq(0);
 
         if (carousel_elem.length > 0) {
+
+            var rtl = carousel_elem.attr('dir') === 'rtl';
 
             var settings = carousel_elem.data('settings');
 
@@ -166,6 +171,7 @@
                 pauseOnHover: pause_on_hover,
                 slidesToShow: display_columns,
                 slidesToScroll: scroll_columns,
+                rtl: rtl,
                 responsive: [
                     {
                         breakpoint: tablet_width,
@@ -193,24 +199,25 @@
             return;
         }
 
-        var container = $scope.find('.lae-portfolio');
-        if (container.length === 0) {
+        var portfolioElem = $scope.find('.lae-portfolio');
+        if (portfolioElem.length === 0) {
             return; // no items to filter or load and hence don't continue
         }
 
-        // layout Isotope after all images have loaded
-        var htmlContent = $scope.find('.js-isotope');
+        var rtl = portfolioElem.attr('dir') === 'rtl';
 
-        var isotopeOptions = htmlContent.data('isotope-options');
+        var isotopeOptions = portfolioElem.data('isotope-options');
 
-        htmlContent.isotope({
+        portfolioElem.isotope({
             // options
             itemSelector: isotopeOptions['itemSelector'],
-            layoutMode: isotopeOptions['layoutMode']
+            layoutMode: isotopeOptions['layoutMode'],
+            originLeft: !rtl,
         });
 
-        htmlContent.imagesLoaded(function () {
-            htmlContent.isotope('layout');
+        // layout Isotope after all images have loaded
+        portfolioElem.imagesLoaded(function () {
+            portfolioElem.isotope('layout');
         });
 
         /* -------------- Taxonomy Filter --------------- */
@@ -219,7 +226,7 @@
             e.preventDefault();
 
             var selector = $(this).attr('data-value');
-            container.isotope({filter: selector});
+            portfolioElem.isotope({filter: selector});
             $(this).closest('.lae-taxonomy-filter').children().removeClass('lae-active');
             $(this).closest('.lae-filter-item').addClass('lae-active');
             return false;

@@ -3,12 +3,12 @@ Contributors: michaelbourne
 Donate link: https://www.paypal.me/yycpro
 Tags: elementor, icons, fontello, icon fonts
 Requires at least: 4.5
-Tested up to: 5.0.3
-Stable tag: 0.2.2
+Tested up to: 5.2.1
+Stable tag: 0.3.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
-Add custom icon fonts and SVGs to the built in Elementor icon controls
+Add custom icon fonts to the built in Elementor icon controls
 
 == Description ==
 
@@ -16,7 +16,7 @@ Enables the user to add their own custom icons to the built in Elementor icon co
 
 = Plugin Features =
  
-*   Add unlimited icons and SVG icons to your website via Fontello
+*   Add unlimited icons to your website via Fontello font packs
 *   View the icons in each uploaded pack, delete individual packs if desired
 *   Use icons anywhere you would normally with the default Elementor icon selectors
 
@@ -43,6 +43,12 @@ You can add your own icons from Fontello to Elementor (free and pro). From exisi
 
 You bet! Upload as many as you like, they will all work. However, make sure you give each font a unique name (text box beside the Fontello download button).
 
+= How do I remove Font Awesome icons from the default icon selectors, so that only my custom icons are available? =
+
+Add this to your functions.php file in a child theme:
+
+`add_filter('eci_drop_fa', '__return_true');`
+
 = HELP! It doesnt work?! =
 
 There is a small, small chance this plugin may not work on your web host. This is caused by two things generally: a mod_security rule flagging the ZIP upload, or the lack of PHP libraries needed to unzip files (ZipArchive). Here's the good news: your host can fix both of these easily. If they refuse, consider moving to a more modern host.
@@ -56,6 +62,24 @@ Removing this plugin will render your custom icons to be deleted. Take care to u
 None yet
 
 == Changelog ==
+
+= 0.3.1 =
+* Small tweak for Elementor 2.6
+
+= 0.3 =
+* Added support for the new Elementor v2.6+ icons manager
+
+= 0.2.4 =
+* Supress PHP warning if Fontello file can't be read by server
+* Add URL fallback for Fontello file reading (some servers are setup in a way that prevents server path reading)
+* Fix "empty Fontello file name" issues by defaulting to ZIP file name instead of random string, thereby fixing the "disappearing icons" in unnamed files
+* Fix CSS issues in editor and icon lists
+
+= 0.2.3 =
+* Adjusted priority of custom function to prevent certain themes from breaking it
+* Change to parse css function to prevent a possible but rare error 
+* Change to CSS display of icons from inline-block (FA style) to block (E style)
+* Added filter to remove FA icons from default selectors
 
 = 0.2.2 =
 * Regen error fix
@@ -90,6 +114,19 @@ None yet
 * Initial Public Version
 
 == Upgrade Notice ==
+
+= 0.3.1 =
+Small fix for Elementor 2.6
+
+= 0.3 =
+Elementor version 2.6+ Support. You MUST 'regen CSS' after this update.
+Fixed query string parameter on backend to prevent collisions with other plugins
+
+= 0.2.4 =
+PHP & CSS fixes
+
+= 0.2.3 =
+Small fix for themes that were conflicting with custom icons being registered. Slight CSS change.
 
 = 0.2.1 =
 You MUST 'regen CSS' after this update.

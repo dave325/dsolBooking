@@ -79,7 +79,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 		$this->add_control(
 			'global_icon',
 			[
-				'label'     => __( 'Icon', 'Icon Control', 'wts-eae' ),
+				'label'     => __( 'Icon', 'wts-eae' ),
 				'type'      => Controls_Manager::ICON,
 				'default'   => 'fa fa-calendar',
 				'condition' => [
@@ -91,7 +91,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 		$this->add_control(
 			'global_icon_image',
 			[
-				'label'       => __( 'Custom Icon', 'Icon Control', 'wts-eae' ),
+				'label'       => __( 'Custom Icon', 'wts-eae' ),
 				'type'        => Controls_Manager::MEDIA,
 				'label_block' => false,
 				'condition'   => [
@@ -103,7 +103,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 		$this->add_control(
 			'global_icon_text',
 			[
-				'label'       => __( 'Text', 'Icon Control', 'wts-eae' ),
+				'label'       => __( 'Text', 'wts-eae' ),
 				'type'        => Controls_Manager::TEXT,
 				'label_block' => false,
 				'condition'   => [
@@ -115,7 +115,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 		$this->add_control(
 			'global_icon_view',
 			[
-				'label'   => __( 'View', 'Icon Control', 'wts-eae' ),
+				'label'   => __( 'View', 'wts-eae' ),
 				'type'    => Controls_Manager::SELECT,
 				'options' => [
 					'default' => __( 'Default', 'wts-eae' ),
@@ -129,7 +129,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 		$this->add_control(
 			'global_icon_shape',
 			[
-				'label'     => __( 'Shape', 'Icon Control', 'wts-eae' ),
+				'label'     => __( 'Shape', 'wts-eae' ),
 				'type'      => Controls_Manager::SELECT,
 				'options'   => [
 					'circle' => __( 'Circle', 'wts-eae' ),
@@ -1297,6 +1297,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 			if ( $item['item_link']['nofollow'] ) {
 				$this->parent->add_render_attribute( $item['_id'] . '-link-attributes', 'rel', 'nofollow' );
 			}
+
 			?>
 
 			<?php
@@ -1319,7 +1320,9 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 					if ( $item['item_date'] !== '' ) {
 						?>
                         <div <?php echo $this->parent->get_render_attribute_string( 'meta' ); ?>>
-							<?php echo $item['item_date'] ?>
+	                        <?php
+                                echo $item['item_date'];
+	                        ?>
                         </div>
 						<?php
 					}
@@ -1335,7 +1338,9 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 					$default_icon['text']      = $this->get_instance_value( 'global_icon_text' );
 					$default_icon['view']      = $this->get_instance_value( 'global_icon_view' );
 					$default_icon['shape']     = $this->get_instance_value( 'global_icon_shape' );
-					echo $helper->get_icon_html( $item, 'item_icon', $default_icon ); ?>
+					echo $helper->get_icon_html( $item, 'item_icon', $default_icon );
+
+					?>
                 </div>
                 <div class="eae-tl-content-wrapper">
 					<?php if ( ! empty( $item['item_link']['url'] ) )
@@ -1359,7 +1364,9 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 										if ( $item['item_date'] !== '' ) {
 											?>
                                             <div class="eae-tl-item-meta-inner">
-												<?php echo $item['item_date'] ?>
+	                                            <?php
+                                                    echo $item['item_date'];
+	                                            ?>
                                             </div>
 											<?php
 										}
@@ -1395,7 +1402,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
                 <div class="eae-timeline-item">
                     <div <?php echo $this->parent->get_render_attribute_string( 'meta_wrapper' ); ?>>
                         <div <?php echo $this->parent->get_render_attribute_string( 'meta' ); ?>>
-							<?php echo $this->render_date_by_format( 'F d, Y' ); ?>
+							<?php echo $this->render_post_date($settings); ?>
                         </div>
                     </div>
 
@@ -1427,7 +1434,7 @@ abstract class Skin_Base extends Elementor_Skin_Base {
                                 <div class="eae-content-inner">
                                     <div class="eae-tl-item-meta-wrapper-inner">
                                         <div class="eae-tl-item-meta-inner">
-											<?php echo $this->render_date_by_format( 'F d, Y' ); ?>
+											<?php echo $this->render_post_date($settings); ?>
                                         </div>
                                     </div>
 									<?php
@@ -1507,8 +1514,18 @@ abstract class Skin_Base extends Elementor_Skin_Base {
 		}
 	}
 
-	public function render_date_by_format( $format ) {
+	public function render_post_date($settings) {
 		global $post;
-		echo get_the_date( $format, $post );
+		if($settings['show_date'] == 'yes'){
+		    $format = $settings['post_date_format'];
+		    if($format == 'custom'){
+		        $format = $settings['post_date_format_custom'];
+            }
+		    if($format == 'default'){
+			    $format = get_option('date_format');
+            }
+			echo get_the_date( $format, $post );
+        }
+
 	}
 }

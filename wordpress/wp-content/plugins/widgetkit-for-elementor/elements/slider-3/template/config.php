@@ -27,7 +27,7 @@ class wkfe_slider_3 extends Widget_Base
 
     public function get_title()
     {
-        return __('Slider Box Animation', 'widgetkit-for-elementor');
+        return __('Slider Box', 'widgetkit-for-elementor');
     }
 
     public function get_icon()
@@ -136,6 +136,24 @@ class wkfe_slider_3 extends Widget_Base
 
                 ]
             );
+        $this->add_control(
+            'heading_tag',
+                [
+                    'label'     => esc_html__( 'Heading Tag', 'widgetkit-for-elementor' ),
+                    'type'      => Controls_Manager::SELECT,
+                    'default'   => 'h2',
+                    'options'   => [
+                        'h1'               => esc_html__('H1'),
+                        'h2'               => esc_html__('H2'),
+                        'h3'               => esc_html__('H3'),
+                        'h4'               => esc_html__('H4'),
+                        'h5'               => esc_html__('H5'),
+                        'h6'               => esc_html__('H6'),
+                        'p'                => esc_html__('P'),
+                        'span'             => esc_html__('Span'),
+                    ],
+                ]
+        );
         $this->end_controls_section();
 
 

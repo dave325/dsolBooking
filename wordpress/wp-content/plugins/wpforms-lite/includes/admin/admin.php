@@ -124,7 +124,7 @@ function wpforms_admin_scripts() {
 		'addon_deactivate'                => esc_html__( 'Deactivate', 'wpforms-lite' ),
 		'addon_inactive'                  => esc_html__( 'Inactive', 'wpforms-lite' ),
 		'addon_install'                   => esc_html__( 'Install Addon', 'wpforms-lite' ),
-		'addon_error'                     => esc_html__( 'Could not install an addon. Please download from wpforms.com and install manually.', 'wpforms-lite' ),
+		'addon_error'                     => esc_html__( 'Could not install addon. Please download from wpforms.com and install manually.', 'wpforms-lite' ),
 		'plugin_error'                    => esc_html__( 'Could not install a plugin. Please download from WordPress.org and install manually.', 'wpforms-lite' ),
 		'addon_search'                    => esc_html__( 'Searching Addons', 'wpforms-lite' ),
 		'ajax_url'                        => admin_url( 'admin-ajax.php' ),
@@ -146,6 +146,8 @@ function wpforms_admin_scripts() {
 		'importer_forms_required'         => esc_html__( 'Please select at least one form to import.', 'wpforms-lite' ),
 		'isPro'                           => wpforms()->pro,
 		'nonce'                           => wp_create_nonce( 'wpforms-admin' ),
+		'almost_done'                     => esc_html__( 'Almost Done', 'wpforms-lite' ),
+		'oops'                            => esc_html__( 'Oops!', 'wpforms-lite' ),
 		'ok'                              => esc_html__( 'OK', 'wpforms-lite' ),
 		'plugin_install_activate_btn'     => esc_html__( 'Install and Activate', 'wpforms-lite' ),
 		'plugin_install_activate_confirm' => esc_html__( 'needs to be installed and activated to import its forms. Would you like us to install and activate it for you?', 'wpforms-lite' ),
@@ -154,6 +156,7 @@ function wpforms_admin_scripts() {
 		'provider_delete_confirm'         => esc_html__( 'Are you sure you want to disconnect this account?', 'wpforms-lite' ),
 		'provider_auth_error'             => esc_html__( 'Could not authenticate with the provider.', 'wpforms-lite' ),
 		'save_refresh'                    => esc_html__( 'Save and Refresh', 'wpforms-lite' ),
+		'server_error'                    => esc_html__( 'Unfortunately, there was an server connection error.', 'wpforms-lite' ),
 		'settings_form_style_base'        => sprintf(
 			wp_kses(
 				/* translators: %s - WPForms.com docs page URL. */
@@ -344,8 +347,8 @@ function wpforms_admin_upgrade_link( $medium = 'link' ) {
  */
 function wpforms_check_php_version() {
 
-	// Display for PHP below 5.4.
-	if ( version_compare( PHP_VERSION, '5.4', '>=' ) ) {
+	// Display for PHP below 5.6
+	if ( version_compare( PHP_VERSION, '5.5', '>=' ) ) {
 		return;
 	}
 
@@ -379,7 +382,7 @@ function wpforms_check_php_version() {
 		) .
 		'<br><br><em>' .
 		wp_kses(
-			__( '<strong>Please Note:</strong> Support for PHP 5.3 will be discontinued in 2019. After this, if no further action is taken, WPForms functionality will be disabled.', 'wpforms-lite' ),
+			__( '<strong>Please Note:</strong> Support for PHP 5.3 to 5.5 will be discontinued in 2019. After this, if no further action is taken, WPForms functionality will be disabled.', 'wpforms-lite' ),
 			array(
 				'strong' => array(),
 				'em'     => array(),

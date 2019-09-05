@@ -2,6 +2,8 @@
 
 namespace PremiumAddons\Admin\Includes;
 
+use PremiumAddons\Helper_Functions;
+
 if( ! defined( 'ABSPATH') ) exit();
 
 class Admin_Notices {
@@ -36,7 +38,7 @@ class Admin_Notices {
 
         $this->handle_review_notice();
         
-        $this->handle_fb_notice();
+        $this->handle_templates_notice();
 
     }
     
@@ -56,7 +58,7 @@ class Admin_Notices {
         }
         //$this->get_pbg_notice();
         
-        $this->get_fb_notice();
+        $this->get_templates_notice();
 
     }
 
@@ -109,25 +111,25 @@ class Admin_Notices {
     }
     
     /**
-     * Checks if Facebook Reviews message is dismissed.
+     * Checks if Premium Templates message is dismissed.
      * 
-     * @since 3.5.2
+     * @since 3.6.0
      * @access public
      * 
      * @return void
      */
-    public function handle_fb_notice() {
-        if ( ! isset( $_GET['fb'] ) ) {
+    public function handle_templates_notice() {
+        if ( ! isset( $_GET['templates'] ) ) {
             return;
         }
 
-        if ( 'opt_out' === $_GET['fb'] ) {
+        if ( 'opt_out' === $_GET['templates'] ) {
             check_admin_referer( 'opt_out' );
 
-            update_option( 'fb_notice', '1' );
+            update_option( 'templates_notice', '1' );
         }
 
-        wp_redirect( remove_query_arg( 'fb' ) );
+        wp_redirect( remove_query_arg( 'templates' ) );
         exit;
     }
 
@@ -273,63 +275,35 @@ class Admin_Notices {
     
     /**
      * 
-     * Shows an admin notice for Facebook Reviews.
+     * Shows an admin notice for Premium Templates.
      * 
-     * @since 3.5.2
+     * @since 3.6.0
      * @access public
      * 
      * @return void
      */
-    public function get_fb_notice() {
+    public function get_templates_notice() {
         
-        $fb_notice = get_option( 'fb_notice' );
+        $templates_notice = get_option( 'templates_notice' );
         
-        $theme = self::get_installed_theme();
+        $theme = Helper_Functions::get_installed_theme();
     
-        $notice_url = sprintf( 'http://premiumaddons.com/facebook-reviews-widget-for-elementor-page-builder/?utm_source=fb-notification&utm_medium=wp-dash&utm_campaign=get-pro&utm_term=%s', $theme );
+        $notice_url = sprintf( 'https://premiumaddons.com/premium-templates-for-elementor/?utm_source=templates-notification&utm_medium=wp-dash&utm_campaign=get-pro&utm_term=%s', $theme );
 
-        if ( '1' === $fb_notice ) {
+        if ( '1' === $templates_notice ) {
             return;
-        } else if ( '1' !== $fb_notice ) {
-            $optout_url = wp_nonce_url( add_query_arg( 'fb', 'opt_out' ), 'opt_out' );
+        } else if ( '1' !== $templates_notice ) {
+            $optout_url = wp_nonce_url( add_query_arg( 'templates', 'opt_out' ), 'opt_out' );
             
-            $fb_message = sprintf( __('<p class="pa-text-wrap" style="display: flex; align-items: center; padding:10px 10px 10px 0;"><img src="%s" style="margin-right: 0.8em; width: 40px;"><strong><span>Facebook Reviews Widget for Elementor&nbsp</strong> has been amazingly improved.&nbsp</span><a href="%s" target="_blank" style="flex-grow: 2;"> Check it out now.</a>', 'premium-addons-for-elementor' ), PREMIUM_ADDONS_URL .'admin/images/premium-addons-logo.png', $notice_url );
+            $templates_message = sprintf( __('<p class="pa-text-wrap" style="display: flex; align-items: center; padding:10px 10px 10px 0;"><img src="%s" style="margin-right: 0.8em; width: 40px;"><strong><span>Premium Templates&nbsp</strong> is now available in Premium Addons for Elementor.&nbsp</span><a href="%s" target="_blank" style="flex-grow: 2;"> Check it out now.</a>', 'premium-addons-for-elementor' ), PREMIUM_ADDONS_URL .'admin/images/premium-addons-logo.png', $notice_url );
             
-            $fb_message .= sprintf(__('<a href="%s" style="text-decoration: none; margin-left: 1em; float:right; "><span class="dashicons dashicons-dismiss"></span></a></p>', 'premium-addons-for-elementor'),  $optout_url );
+            $templates_message .= sprintf(__('<a href="%s" style="text-decoration: none; margin-left: 1em; float:right; "><span class="dashicons dashicons-dismiss"></span></a></p>', 'premium-addons-for-elementor'),  $optout_url );
 
-            $this->render_admin_notices( $fb_message );
+            $this->render_admin_notices( $templates_message );
 
         }
         
     }
-    
-    /**
-     * Get Installed Theme
-     * 
-     * Returns the active theme slug
-     * 
-     * @access public
-     * @return string theme slug
-     */
-    public static function get_installed_theme() {
-
-        $theme = wp_get_theme();
-
-        if( $theme->parent() ) {
-
-            $theme_name = $theme->parent()->get('Name');
-
-        } else {
-
-            $theme_name = $theme->get('Name');
-
-        }
-
-        $theme_name = sanitize_key( $theme_name );
-
-        return $theme_name;
-    }
-
     
     /**
      * Checks if a plugin is installed
