@@ -83,6 +83,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
               $scope.resRepeat = myFactory.getData.repeat;
               $scope.validTimes = res.times;
               $scope.reservations = res.reservations;
+              console.log(res)
               $scope.rooms = res.rooms;
               $scope.data = myFactory.getData;
               // Call timeout to wait for digest to render times with new $scope data
@@ -100,6 +101,8 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                   myFactory.removeData();
                   myFactory.storeInfo();
                   $scope.dt = new Date();
+                  $scope.roomShow = $scope.rooms[0];
+                  $scope.resRepeat = { id: '0', name: 'No Repeat' };
                   $scope.info = "Selected time is before current date and time";
                   return;
                 }
@@ -147,35 +150,11 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                   $scope.info = "Error getting information";
                   return;
                 } else {
-                  /*
-                  // Store moment variables from factory data
-                  let curDate = moment.unix(myFactory.getData.arr[0]).hours(6).minute(0).seconds(0).milliseconds(0);
-                  let resStartTimestamp = moment.unix(myFactory.getData.arr[0]);
-                  let resEndTimestamp = moment.unix(myFactory.getData.arr[myFactory.getData.arr.length - 1]);
-                  */
-                  // let i, m = curDate;
                   let i;
 
                   // Call timeout to wait for digest
                   $timeout(() => {
-                    console.log(res)
-                    /*
-                    // Using momentjs, loop through the current time and increment by 30 minuets
-                    for (m = curDate, i = 0; m.isBefore(resEndTimestamp); m.add(30, 'minutes')) {
-                      // Check if current moment is between the 2 times and then select validTimes
-                      if (m.isBetween(resStartTimestamp.subtract(1, "minutes"), resEndTimestamp)) {
-                        if ($scope.validTimes[i].available) {
-                          hourChecks[i].checked = true;
-                          $scope.validTimes[i].selected = true;
-                          angular.element('#hours_' + i).parent().parent().addClass('selected');
-                        }
-                      }
-                      if (m.isAfter(resEndTimestamp)) {
-                        break;
-                      }
-                      i++;
-                    }*/
-                    console.log(hourChecks)
+                    console.log(res);
                     for (i = 0; i < res.selectedTimes.length; i++) {
                       hourChecks[res.selectedTimes[i]].checked = true;
                       $scope.validTimes[res.selectedTimes[i]].selected = true;
@@ -189,7 +168,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
 
 
-              $scope.resRepeat = { id: '0', name: 'No Repeat' };
+              $scope.resRepeat = myFactory.getData.repeat;
               $scope.roomShow = myFactory.getData.room.container_number;
             }, 0);
           }
@@ -568,7 +547,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
   }])
 
-  .controller('SubmitForm', function ($scope, $http, myFactory, $location, restapi) {
+  .controller('SubmitForm', function ($scope, $http, myFactory, $uibModal, restapi) {
     if (myFactory.getData.arr.length == 0) {
       window.location.href = localized.path + "/members";
       //$location.path('/');
@@ -595,28 +574,36 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
           desc: ''
         };
       }
-      $scope.invalidDates;
-      console.log(myFactory.getData)
+      $scope.invalidDates = [];
+      $scope.validDates = [];
+      $scope.modal = null;
       // Check if data time length is greater than 1
-      if ($scope.data.arr.length > 1) {
-        // Store valid dates if repeat is selected
-        let dates = restapi.checkRepeatReservations($scope.data.arr[0].start_time, $scope.data.arr[$scope.data.arr.length - 1].end_time, $scope.data.room.c_id, $scope.data.repeat);
-        myFactory.setMultipleDates(dates.validDates);
-        $scope.invalidDates = dates.invalidDates;
-        console.log(dates)
-      } else {
+      if ($scope.data.repeat.id > 0) {
+        $scope.loading = true;
         // Store valid dates if repeat is selecteds
-        let dates = restapi.checkRepeatReservations($scope.data.arr[0].start_time, $scope.data.arr[0].end_time, $scope.data.room.c_id, $scope.data.repeat);
-        myFactory.setMultipleDates(dates.validDates);
-        $scope.invalidDates = dates.invalidDates;
+        restapi.checkRepeatReservations($scope.data.arr[0].start_time, $scope.data.arr[$scope.data.arr.length - 1].end_time, $scope.data.room.c_id, $scope.data.repeat).then(
+          (data) => {
+            let reservations = data;
+            myFactory.setMultipleDates(reservations.validDates);
+            $scope.invalidDates = reservations.invalidDates;
+            $scope.validDates = reservations.validDates;
+            $scope.loading = false;
+            $scope.$apply();
+          }
+        )
       }
     }
+
+    $scope.open = function () {
+      // Get the modal
+      $scope.modal = document.getElementById("myModal");
+      // When the user clicks on the button, open the modal
+      $scope.modal.style.display = "block";
+    };
     /**
-     * Submite form
+     * Submits form
      */
     $scope.submit = function () {
-      console.log($scope.info.numAttend <= myFactory.getData.room.occupancy)
-      console.log(myFactory.getData)
       $scope.submitting = true;
       console.log($scope.info)
       // Check if user data fields are added
@@ -648,7 +635,11 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
               console.log(res);
               // remove data from factory
               myFactory.removeData();
-              alert("Successfully booked!");
+              $scope.open();
+
+              setTimeout(() => {
+                $scope.modal.style.display = "none";
+              }, 1000)
               window.location.href = localized.path + "/members";
               // send page to confirmation
               //$location.path('/').search('action', 'confirmation');
@@ -668,7 +659,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
               myFactory.removeData();
               alert("Successfully booked!");
               window.location.href = localized.path + "/members";
-              //$location.path('/?action=confirmation');
+              $location.path('/?action=confirmation');
             }, (err) => {
               $scope.info = "There was an error with the booking. Please try again or contact the admin.";
               $scope.submitting = false;
@@ -703,6 +694,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
     $scope.user = localized.username;
     restapi.getUserReservations().then(
       (res) => {
+        console.log(res.data)
         // Loop through returned data and transform each start and end date to unix
         res.data.forEach((el, idx) => {
           /**
@@ -718,13 +710,13 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         // Store current res_id from checkboxes
         $scope.items = [];
         // Set lastCheck for editRes info
-        $scope.lastCheck;u
+        $scope.lastCheck; 
       },
       (err) => {
         console.error(err)
       }
     );
-    
+
 
 
     /**
@@ -912,7 +904,9 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
      */
     function checkRepeatReservations(startTime, endTime, room, repeatType) {
       let validDates = [],
-        invalidDates = [];
+        invalidDates = [],
+        returnedReservations = [],
+        timeSlots = [];
       const curDate = moment.unix(new Date().getTime() / 1000);
       const m = moment.unix(startTime);
       const tempDate = moment.unix(endTime);
@@ -922,273 +916,357 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
         // if daily
         case "1":
-          // Check if currend date is the same as m
-          while (m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7)) {
-            // boolean variable to see if adding things 
-            let canAdd = false;
-            // Loop through each reservation
-            for (let i = 0; i < myFactory.getData.reservations.length; i++) {
-              // Store individual reservation
-              let el = myFactory.getData.reservations[i];
-              if (myFactory.getData.reservations[i].time.length > 1) {
-                for (let j = 0; j < myFactory.getData.reservations[i].time.length; j++) {
-                  if (j == myFactory.getData.reservations[i].time.length - 1) {
-                    //BOOKMARK
-                    if (
-                      // Check if m is the same day as starttime, 
-                      // room is came, m is between start and end time
-                      // and tempDate is between the start and end time
-                      // set can Add to false
-                      m.isSame(el.start_time, "day") &&
-                      el.c_id == room &&
-                      m.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time) ||
-                      tempDate.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time)
-                    ) {
-                      canAdd = false;
-                      break;
-                    } else if (
-                      // Check if m is not the same day as starttime, 
-                      // room is came, m is between start and end time
-                      // and tempDate is between the start and end time
-                      // set can Add to false
-                      !m.isSame(el.start_time, "day") &&
-                      el.c_id == room &&
-                      m.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time) ||
-                      tempDate.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time)
-                    ) {
-                      canAdd = false;
-                      break;
-                    } else {
-                      // Set flag to true
-                      canAdd = true;
-                    }
+          return new Promise((resolve, reject) => {
+            this.getReservationByDate(m, myFactory.getData.room.c_id, 1).then(
+              (res) => {
+                // Loop through each promise data
+                for (let k = 0; k < data.length; k++) {
+                  let canAdd = true;
+                  // Check if data for each selected day has any reservations
+                  if (data[k].length == 0) {
+                    canAdd = true;
                   } else {
+                    for (let i = 0; i < data[k].length; i++) {
+                      // Store individual reservation
+                      let reservation = data[k][i];
 
+                      // Check if time is stored in multiple sections
+                      if (reservation.time.length > 1) {
+                        for (let j = 0; j < reservation.time.length; j++) {
+                          //console.log('ere')
+                          //console.log(checkTimes(myFactory.getData.arr, reservation.time[j]))
+                          if (j == reservation.time.length - 1) {
+                            //BOOKMARK
+                            if (
+                              // Check if m is the same day as starttime, 
+                              // room is came, m is between start and end time
+                              // and tempDate is between the start and end time
+                              // set can Add to false
+                              moment(timeSlots[k] * 1000).isSame(moment(reservation.time[j].start_time), 'day') &&
+                              checkTimes(myFactory.getData.arr, reservation.time[j]) &&
+                              reservation.c_id == room
+                            ) {
+                              canAdd = false;
+                              break;
+                            } else {
+                              // Set flag to true
+                              canAdd = true;
+                            }
+                          } else {
+
+                          }
+                        }
+                      } else {
+                        if (
+                          // Check if m is the same day as starttime, 
+                          // room is came, m is between start and end time
+                          // and tempDate is between the start and end time
+                          // set can Add to false
+                          moment(timeSlots[k] * 1000).isSame(moment(reservation.time[0].start_time), 'day') &&
+                          checkTimes(myFactory.getData.arr, reservation.time[0]) &&
+                          reservation.c_id == room
+                        ) {
+                          canAdd = false;
+                          break;
+                        } else {
+                          // Set flag to true
+                          canAdd = true;
+                        }
+
+                      }
+                    }
                   }
+                  if (!canAdd) {
+                    invalidDates.push(timeaSlots[k]);
+                  } else {
+                    validDates.push(timeSlots[k]);
+                  }
+                  isDone = true;
                 }
-              } else {
-                if (
-                  // Check if m is the same day as starttime, 
-                  // room is came, m is between start and end time
-                  // and tempDate is between the start and end time
-                  // set can Add to false
-                  m.isSame(el.start_time, "day") &&
-                  el.c_id == room &&
-                  m.isBetween(el.time[0].start_time, el.time[0].end_time) ||
-                  tempDate.isBetween(el.time[0].start_time, el.time[0].end_time)
-                ) {
-                  canAdd = false;
-                  break;
-                } else if (
-                  // Check if m is not the same day as starttime, 
-                  // room is came, m is between start and end time
-                  // and tempDate is between the start and end time
-                  // set can Add to false
-                  !m.isSame(el.start_time, "day") &&
-                  el.c_id == room &&
-                  m.isBetween(el.time[0].start_time, el.time[0].end_time) ||
-                  tempDate.isBetween(el.time[0].start_time, el.time[0].end_time)
-                ) {
-                  canAdd = false;
-                  break;
-                } else {
-                  // Set flag to true
-                  canAdd = true;
-                }
-
               }
-            }
-            // If date is not possible, set time to invalidDate
-            if (!canAdd) {
-              invalidDates.push(m.unix(startTime));
-            } else {
-              validDates.push(m.unix(startTime));
-            }
-            // Increase m by 1 day
-            m.add('1', "days");
-          }
+            )
+            resolve({ "validDates": validDates, "invalidDates": invalidDates })
+          }), (err) => {
+            console.log(err);
+            reject({ 'error': true })
+          };
           break;
+
         // Check weekly
         case "2":
+          returnedReservations = [];
+          timeSlots = [];
           // Loop while m is in same month
-          while (m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7)) {
-            let canAdd = false;
-            for (let i = 0; i < myFactory.getData.reservations.length; i++) {
-              // Store individual reservation
-              let el = myFactory.getData.reservations[i];
-              if (myFactory.getData.reservations[i].time.length > 1) {
-                for (let j = 0; j < myFactory.getData.reservations[i].time.length; j++) {
-                  if (j == myFactory.getData.reservations[i].time.length - 1) {
-                    //BOOKMARK
-                    if (
-                      // Check if m is the same day as starttime, 
-                      // room is came, m is between start and end time
-                      // and tempDate is between the start and end time
-                      // set can Add to false
-                      m.isSame(el.start_time, "day") &&
-                      el.c_id == room &&
-                      m.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time) ||
-                      tempDate.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time)
-                    ) {
-                      canAdd = false;
-                      break;
-                    } else if (
-                      // Check if m is not the same day as starttime, 
-                      // room is came, m is between start and end time
-                      // and tempDate is between the start and end time
-                      // set can Add to false
-                      !m.isSame(el.start_time, "day") &&
-                      el.c_id == room &&
-                      m.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time) ||
-                      tempDate.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time)
-                    ) {
-                      canAdd = false;
-                      break;
-                    } else {
-                      // Set flag to true
-                      canAdd = true;
-                    }
-                  } else {
+          for (m; m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7); m.add('1', "weeks")) {
+            // Add promise returned from function call to array
+            returnedReservations.push(this.getReservationByDate(m, myFactory.getData.room.c_id))
+            // Add the current time sent to function call
+            timeSlots.push(m.unix());
+            continue;
+          }
+          console.log(myFactory.getData)
+          // Execute all promises from arr variable
+          return Promise.all(returnedReservations).then(
+            (data) => {
+              //console.log("data length: " + data.length)
+              // Loop through each promise data
+              for (let k = 0; k < data.length; k++) {
+                let canAdd = true;
+                // Check if data for each selected day has any reservations
+                if (data[k].length == 0) {
+                  canAdd = true;
+                } else {
+                  for (let i = 0; i < data[k].length; i++) {
+                    // Store individual reservation
+                    let reservation = data[k][i];
 
+                    // Check if time is stored in multiple sections
+                    if (reservation.time.length > 1) {
+                      for (let j = 0; j < reservation.time.length; j++) {
+                                                //console.log('ere')
+                        //console.log(checkTimes(myFactory.getData.arr, reservation.time[j]))
+                        if (j == reservation.time.length - 1) {
+                          //BOOKMARK
+                          if (
+                            // Check if m is the same day as starttime, 
+                            // room is came, m is between start and end time
+                            // and tempDate is between the start and end time
+                            // set can Add to false
+                            moment(timeSlots[k] * 1000).isSame(moment(reservation.time[j].start_time), 'day') &&
+                            checkTimes(myFactory.getData.arr, reservation.time[j]) &&
+                            reservation.c_id == room
+                          ) {
+                            canAdd = false;
+                            break;
+                          } else {
+                            // Set flag to true
+                            canAdd = true;
+                          }
+                        } else {
+
+                        }
+                      }
+                    } else {
+                      if (
+                        // Check if m is the same day as starttime, 
+                        // room is came, m is between start and end time
+                        // and tempDate is between the start and end time
+                        // set can Add to false
+                        moment(timeSlots[k] * 1000).isSame(moment(reservation.time[0].start_time), 'day') &&
+                        checkTimes(myFactory.getData.arr, reservation.time[0]) &&
+                        reservation.c_id == room
+                      ) {
+                        canAdd = false;
+                        break;
+                      } else {
+                        // Set flag to true
+                        canAdd = true;
+                      }
+
+                    }
                   }
                 }
-              } else {
-                if (
-                  // Check if m is the same day as starttime, 
-                  // room is came, m is between start and end time
-                  // and tempDate is between the start and end time
-                  // set can Add to false
-                  m.isSame(el.start_time, "day") &&
-                  el.c_id == room &&
-                  m.isBetween(el.time[0].start_time, el.time[0].end_time) ||
-                  tempDate.isBetween(el.time[0].start_time, el.time[0].end_time)
-                ) {
-                  canAdd = false;
-                  break;
-                } else if (
-                  // Check if m is not the same day as starttime, 
-                  // room is came, m is between start and end time
-                  // and tempDate is between the start and end time
-                  // set can Add to false
-                  !m.isSame(el.start_time, "day") &&
-                  el.c_id == room &&
-                  m.isBetween(el.time[0].start_time, el.time[0].end_time) ||
-                  tempDate.isBetween(el.time[0].start_time, el.time[0].end_time)
-                ) {
-                  canAdd = false;
-                  break;
+                if (!canAdd) {
+                  invalidDates.push(timeSlots[k]);
                 } else {
-                  // Set flag to true
-                  canAdd = true;
+                  validDates.push(timeSlots[k]);
                 }
-
+                isDone = true;
               }
+              return { "validDates": validDates, "invalidDates": invalidDates };
             }
-            if (!canAdd) {
-              invalidDates.push(m.unix(startTime));
-            } else {
-              validDates.push(m.unix(startTime));
-            }
-            // Increase m by 1 day
-            m.add('1', "weeks");
-          }
-          break;
+
+
+
+          )
         case "3":
-          while (m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7)) {
-            let canAdd = false;
-            for (let i = 0; i < myFactory.getData.reservations.length; i++) {
-              // Store individual reservation
-              let el = myFactory.getData.reservations[i];
-              if (myFactory.getData.reservations[i].time.length > 1) {
-                for (let j = 0; j < myFactory.getData.reservations[i].time.length; j++) {
-                  if (j == myFactory.getData.reservations[i].time.length - 1) {
-                    //BOOKMARK
-                    if (
-                      // Check if m is the same day as starttime, 
-                      // room is came, m is between start and end time
-                      // and tempDate is between the start and end time
-                      // set can Add to false
-                      m.isSame(el.start_time, "day") &&
-                      el.c_id == room &&
-                      m.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time) ||
-                      tempDate.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time)
-                    ) {
-                      canAdd = false;
-                      break;
-                    } else if (
-                      // Check if m is not the same day as starttime, 
-                      // room is came, m is between start and end time
-                      // and tempDate is between the start and end time
-                      // set can Add to false
-                      !m.isSame(el.start_time, "day") &&
-                      el.c_id == room &&
-                      m.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time) ||
-                      tempDate.isBetween(myFactory.getData.reservations[i].time[j].start_time, myFactory.getData.reservations[i].time[j].end_time)
-                    ) {
-                      canAdd = false;
-                      break;
-                    } else {
-                      // Set flag to true
-                      canAdd = true;
-                    }
-                  } else {
+          returnedReservations = [];
+          timeSlots = [];
+          // Loop while m is in same month
+          for (m; m.isSame(curDate, "month") || (m.isSame(checkDate, 'month') && m.date() <= 7); m.add('2', "weeks")) {
+            // Add promise returned from function call to array
+            returnedReservations.push(this.getReservationByDate(m, myFactory.getData.room.c_id))
+            // Add the current time sent to function call
+            timeSlots.push(m.unix());
+            continue;
+          }
+          //console.log(myFactory.getData)
+          // TODO - Double check this logic (variable m might be wrong place)
+          // Execute all promises from arr variable
+          return Promise.all(returnedReservations).then(
+            (data) => {
+              // Loop through each promise data
+              for (let k = 0; k < data.length; k++) {
+                let canAdd = true;
+                // Check if data for each selected day has any reservations
+                if (data[k].length == 0) {
+                  canAdd = true;
+                } else {
+                  for (let i = 0; i < data[k].length; i++) {
+                    // Store individual reservation
+                    let reservation = data[k][i];
 
+                    // Check if time is stored in multiple sections
+                    if (reservation.time.length > 1) {
+                      for (let j = 0; j < reservation.time.length; j++) {
+                                                //console.log('ere')
+                        //console.log(checkTimes(myFactory.getData.arr, reservation.time[j]))
+                        if (j == reservation.time.length - 1) {
+                          //BOOKMARK
+                          if (
+                            // Check if m is the same day as starttime, 
+                            // room is came, m is between start and end time
+                            // and tempDate is between the start and end time
+                            // set can Add to false
+                            moment(timeSlots[k] * 1000).isSame(moment(reservation.time[j].start_time), 'day') &&
+                            checkTimes(myFactory.getData.arr, reservation.time[j]) &&
+                            reservation.c_id == room
+                          ) {
+                            canAdd = false;
+                            break;
+                          } else {
+                            // Set flag to true
+                            canAdd = true;
+                          }
+                        } else {
+
+                        }
+                      }
+                    } else {
+                      if (
+                        // Check if m is the same day as starttime, 
+                        // room is came, m is between start and end time
+                        // and tempDate is between the start and end time
+                        // set can Add to false
+                        moment(timeSlots[k] * 1000).isSame(moment(reservation.time[0].start_time), 'day') &&
+                        checkTimes(myFactory.getData.arr, reservation.time[0]) &&
+                        reservation.c_id == room
+                      ) {
+                        canAdd = false;
+                        break;
+                      } else {
+                        // Set flag to true
+                        canAdd = true;
+                      }
+
+                    }
                   }
                 }
-              } else {
-                if (
-                  // Check if m is the same day as starttime, 
-                  // room is came, m is between start and end time
-                  // and tempDate is between the start and end time
-                  // set can Add to false
-                  m.isSame(el.start_time, "day") &&
-                  el.c_id == room &&
-                  m.isBetween(el.time[0].start_time, el.time[0].end_time) ||
-                  tempDate.isBetween(el.time[0].start_time, el.time[0].end_time)
-                ) {
-                  canAdd = false;
-                  break;
-                } else if (
-                  // Check if m is not the same day as starttime, 
-                  // room is came, m is between start and end time
-                  // and tempDate is between the start and end time
-                  // set can Add to false
-                  !m.isSame(el.start_time, "day") &&
-                  el.c_id == room &&
-                  m.isBetween(el.time[0].start_time, el.time[0].end_time) ||
-                  tempDate.isBetween(el.time[0].start_time, el.time[0].end_time)
-                ) {
-                  canAdd = false;
-                  break;
+                if (!canAdd) {
+                  invalidDates.push(timeSlots[k]);
                 } else {
-                  // Set flag to true
-                  canAdd = true;
+                  validDates.push(timeSlots[k]);
                 }
-
+                isDone = true;
               }
+
+              //console.log(validDates)
+              return { "validDates": validDates, "invalidDates": invalidDates };
             }
-            if (!canAdd) {
-              invalidDates.push(m.unix(startTime));
-            } else {
-              validDates.push(m.unix(startTime));
-            }
-            m.add('2', "weeks");
-          }
-          break;
+
+
+
+          )
         default:
 
           break;
       }
       return { "validDates": validDates, "invalidDates": invalidDates };
     }
-    function getTimes(date, room, resid) {
+
+    /**
+     * 
+     * @param {Moment} date 
+     * @param {int} room 
+     * @param {boolean} daily 
+     * 
+     * @returns Promise<Array>
+     * 
+     * API call to server to retrieve information about reservations
+     */
+    function getReservationByDate(date, room, daily) {
       var givenDate = new Date();
-      var room, residEdit = -1;
+      let isDaily = -1;
+      if (daily) {
+        isDaily = daily;
+      }
+      // If the current date is not the same as the date provided, set the given Date to the date arg
+      if (!moment().isSame(date)) {
+        givenDate = date;
+      }
       if (room) {
         room = room;
       } else {
         room = -1;
       }
+      // console.log("Date: " + moment(date).format("YYYY/MM/DD"))
+      // console.log("Given Date: " + new Date(givenDate))
+      let newdate = moment(givenDate).format("YYYY/MM/DD");
+      // console.log("New Date: " + newdate)
+      let reservations;
+      return $http.post(localized.path + '/wp-json/dsol-booking/v1/getReservationByDate',
+        { room: room, date: newdate, isDaily: isDaily }, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
+          (res) => {
+            console.log(res)
+            return res.data;
+          }
+        );
+
+    }
+
+    /**
+     * 
+     * @param {*} selectedTimes 
+     * @param {*} reservationTime 
+     */
+    function checkTimes(selectedTimes, reservationTime) {
+
+      let result = false;
+      let resStartTime = new Date(reservationTime.start_time);
+      let resEndTIme = new Date(reservationTime.end_time);
+      for (let i = 0; i < selectedTimes.length; i++) {
+        let timeToBeCheckedStartTime = new Date(selectedTimes[i].start_time * 1000);
+        let timeToBeCheckedEndTime = new Date(selectedTimes[i].end_time * 1000);
+        if (
+          timeToBeCheckedStartTime.getHours() >= resStartTime.getHours() &&
+          timeToBeCheckedStartTime.getHours() <= resEndTIme.getHours() &&
+          timeToBeCheckedStartTime.getMinutes() >= resStartTime.getMinutes() &&
+          timeToBeCheckedStartTime.getMinutes() <= resEndTIme.getMinutes() &&
+          timeToBeCheckedEndTime.getHours() >= resStartTime.getHours() &&
+          timeToBeCheckedEndTime.getHours() <= resEndTIme.getHours() &&
+          timeToBeCheckedEndTime.getMinutes() >= resStartTime.getMinutes() &&
+          timeToBeCheckedEndTime.getMinutes() <= resEndTIme.getMinutes()
+        ) {
+          result = true;
+        } else {
+          result = false;
+        }
+      }
+      console.log(result)
+      return result;
+    }
+
+
+    /**
+     * 
+     * @param {*} date 
+     * @param {*} room 
+     * @param {*} resid 
+     */
+    function getTimes(date, room, resid) {
+      // Store current time in givenDate variable
+      var givenDate = new Date();
+      // Store room and resid in variables
+      var room, residEdit = -1;
+
+      // If room is valid, then set the value 
+      if (room) {
+        room = room;
+      } else {
+        room = -1;
+      }
+
+      // If resid is valid, then set the value
       if (resid && resid > -1) {
         residEdit = resid;
       }
@@ -1196,10 +1274,10 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       if (!moment().isSame(date)) {
         givenDate = date;
       }
-      console.log("Date: " + moment(date).format("YYYY/MM/DD"))
-      console.log("Given Date: " + new Date(givenDate))
+      //console.log("Date: " + moment(date).format("YYYY/MM/DD"))
+      //console.log("Given Date: " + new Date(givenDate))
       let newdate = moment(givenDate).format("YYYY/MM/DD");
-      console.log("New Date: " + newdate)
+      //console.log("New Date: " + newdate)
       return $http.post(localized.path + '/wp-json/dsol-booking/v1/test', { room: room, date: newdate }, { headers: { 'X-WP-Nonce': localized.nonce } }).then(
         (res) => {
           return $http.post(localized.path + '/wp-json/dsol-booking/v1/getRoomInfo').then(
@@ -1226,7 +1304,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
                 tempDate.add(30, "minutes");
                 hasAdded = false;
-                if (reservations.length === 0) {
+                if (reservations.length === 0 && m.isSameOrAfter(currentSysDate, "minute")) {
                   validTimes.push({
                     //start_time: m.format('h:mm ss A'),
                     //end_time: tempDate.format('h:mm ss A'),
@@ -1400,7 +1478,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                           selected: false,
                           past: true
                         });
-                      }else if(!hasAdded && !m.isSame(Date.now(), "day") ){
+                      } else if (!hasAdded && !m.isSame(Date.now(), "day")) {
                         validTimes.push({
                           //start_time: m.format('h:mm ss A'),
                           //end_time: tempDate.format('h:mm ss A'),
@@ -1446,6 +1524,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
     }
 
     function getUserReservations() {
+      console.log(localized)
       return $http.post(localized.path + '/wp-json/dsol-booking/v1/getReservations', { user: localized.username }, { headers: { 'X-WP-Nonce': localized.nonce } });
     }
 
@@ -1459,6 +1538,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
     var service = {
       times: getTimes,
+      getReservationByDate: getReservationByDate,
       checkRepeatReservations: checkRepeatReservations,
       checkValidUser: checkValidUser,
       getUserReservations: getUserReservations,

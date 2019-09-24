@@ -1,5 +1,21 @@
 <div id="dsol-book-room" class="container-fluid col-12" ng-app="wp">
     <div id="view-container" ng-controller="SubmitForm" autoscroll="true">
+        <div id="loadingContainer" ng-if="loading">
+            <div id="loadingScreen">
+
+            </div>
+            <div class="loading"></div>
+        </div>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <p>Successfully Booked </p>
+                <p>Redirecting...</p>
+            </div>
+
+        </div>
         <form name="form1" method="post">
             <div id="row topRow">
                 <div class="col-12 col-md-10 col-md-offset-1">
@@ -32,43 +48,54 @@
                                 <div class="question">
                                     Date
                                 </div>
-                                <div class="formInput">
+                                <div class="formInput row">
                                     <ng-container ng-if="data.repeat.id < 1">
                                         <em>
                                             {{data.arr[0].start_time* 1000 | date: 'shortDate'}}
                                         </em>
                                     </ng-container>
                                     <ng-container ng-if="data.repeat.id > 0">
-                                        <em>Dates already taken:</em>
-                                        <p ng-repeat="date in invalidDates">
-                                            {{date * 1000 | date:'shortDate'}}
-                                        </p>
-                                    </ng-container>
-                                </div>
-                            </div>
-                            <div class="wideCol" ng-if="data.multipleDates.length > 0">
-                                <div class="question">
-                                </div>
-                                <div class="formInput">
-                                    <ng-container ng-if="data.repeat.id > 0">
-                                        <em>Dates Available:</em>
-                                        <ul>
-                                            <li ng-repeat="date in data.multipleDates" class="col-12 col-md-4">
+                                        <div class="col-12 col-md-6" ng-if="invalidDates.length > 0">
+                                            <em>Dates already taken:</em>
+                                            <p ng-repeat="date in invalidDates">
                                                 {{date * 1000 | date:'shortDate'}}
-                                            </li>
-                                        </ul>
+                                            </p>
+                                        </div>
+                                        <div class="col-12 col-md-6" ng-if="validDates.length > 0">
+                                            <em class="col-12">Allowed dates:</em>
+                                            <div class="col-12">
+                                                <p ng-repeat="date in validDates" class="col-12 col-md-6">
+                                                    {{date * 1000 | date:'shortDate'}}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </ng-container>
+
                                 </div>
                             </div>
                             <div class="wideCol">
                                 <div class="question">
                                     Requested times
                                 </div>
-                                <div class="formInput">
-                                    <em ng-if="data.arr.length > 1"> {{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+                                <div class="formInput" ng-if="data.isSeperate == 0">
+                                    <em ng-if="data.arr.length > 1"> {{data.arr[0].start_time* 1000 | date:'shortTime'}}
+                                        -
                                         {{data.arr[data.arr.length - 1].end_time* 1000 | date:'shortTime'}}</em>
-                                    <em ng-if="data.arr.length == 1">{{data.arr[0].start_time* 1000 | date:'shortTime'}} -
+                                    <em ng-if="data.arr.length == 1">{{data.arr[0].start_time* 1000 | date:'shortTime'}}
+                                        -
                                         {{data.arr[0].end_time * 1000| date:'shortTime'}}</em>
+                                </div>
+                                <div class="formInput" ng-if="data.isSeperate == 1">
+                                    <ng-container ng-repeat="idx in data.seperateIndexes">
+                                        <em ng-if="$index == data.seperateIndexes.length - 1">
+                                            {{data.arr[idx].start_time* 1000 | date:'shortTime'}}
+                                            -
+                                            {{data.arr[data.arr.length - 1].end_time* 1000 | date:'shortTime'}}<br></em>
+                                        <em ng-if="$index != data.seperateIndexes.length - 1">
+                                            {{data.arr[idx].start_time* 1000 | date:'shortTime'}}
+                                            -
+                                            {{data.arr[idx].end_time* 1000 | date:'shortTime'}}<br></em>
+                                    </ng-container>
                                 </div>
                             </div>
                             <div class="wideCol">
@@ -87,7 +114,8 @@
 
                             </div>
                             <div class="formInput">
-                                <input name="numAttend" type="number" id="numAttend" ng-model="info.numAttend" size="3" maxlength="3" min="0" max="{{data.room.occupancy}}" />
+                                <input name="numAttend" type="number" id="numAttend" ng-model="info.numAttend" size="3"
+                                    maxlength="3" min="0" max="{{data.room.occupancy}}" />
                             </div>
                         </div>
                         <div class="wideCol">
@@ -101,7 +129,8 @@
                         </div>
                         <div class="wideCol">
                             <div class="formInput">
-                                <div ng-class="{'bg-warning':error.desc.length > 0 || error.numAttend.length > 0}" class="col-xs-12" ng-if="error.desc || error.numAttend > -1">
+                                <div ng-class="{'bg-warning':error.desc.length > 0 || error.numAttend.length > 0}"
+                                    class="col-xs-12" ng-if="error.desc || error.numAttend > -1">
                                     <h3>Please Correct the Following Errors:</h3>
                                     <p ng-if="error.desc">{{error.desc}}</p>
                                     <p ng-if="error.numAttend">{{error.numAttend}}</p>
@@ -109,7 +138,8 @@
                                 <div ng-class="{'bg-info':submitting}" class="col-xs-12" ng-if="submitting">
                                     <h3>Submitting...:</h3>
                                 </div>
-                                <input name="submit" type="submit" value="Submit" ng-click="submit()" ng-disabled="isDisabled" />
+                                <input name="submit" type="submit" value="Submit" ng-click="submit()"
+                                    ng-disabled="isDisabled || loading" />
                             </div>
                         </div>
                     </div>

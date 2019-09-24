@@ -18,10 +18,10 @@ services:
      depends_on:
        - db
      ports:
-       - "8000:80"
+       - "3001:80"
      restart: always
      volumes:
-       - ./wordpress:/var/www/html/
+       - ./wordpress:/var/www/html
      environment:
        WORDPRESS_DB_HOST: db:3306
        WORDPRESS_DB_USER: wordpress
@@ -33,8 +33,9 @@ services:
     image: phpmyadmin/phpmyadmin
     depends_on:
       - db
+      - wordpress
     ports:
-      - 8181:80
+      - "8181:80"
     environment:
       MYSQL_USER: wordpress
       MYSQL_ROOT_PASSWORD: wordpress

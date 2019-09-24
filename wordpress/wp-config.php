@@ -46,14 +46,14 @@ define( 'DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-define( 'AUTH_KEY',         '5d14c52877e3804088310b9cd5267f7cce3110f1');
-define( 'SECURE_AUTH_KEY',  '89ed1345a1da01e9325af75e134460067ea34c66');
-define( 'LOGGED_IN_KEY',    'cca69b2412d37c667e25a167b483d14f6d011f5b');
-define( 'NONCE_KEY',        'fe2463cf506698c2bfd0131bd46453e25a78d1ca');
-define( 'AUTH_SALT',        '60a3702a75d112b46898b9d5349c07fc889bc668');
-define( 'SECURE_AUTH_SALT', '93d7b30fe4e63a491f37aa2963bb6934dbe3e0c9');
-define( 'LOGGED_IN_SALT',   '485460e79f2d01a85134dd70973e6feb767432a2');
-define( 'NONCE_SALT',       'c8850c5b8cc89390e32c0c44253a261a34c03fcd');
+define( 'AUTH_KEY',         '22f895dab967bfb46f027adfb2b5712213763d9b');
+define( 'SECURE_AUTH_KEY',  '621a2a2d33eb3d32db6cac4b7bdc9c6348e25301');
+define( 'LOGGED_IN_KEY',    '96865ffdf37e33d5279dc54175db996112385818');
+define( 'NONCE_KEY',        '35218f574e21806e15d4e4f7a367fd78f646e901');
+define( 'AUTH_SALT',        '244c08ed02caf004d4b6f4d6c6ab962bd7d978e2');
+define( 'SECURE_AUTH_SALT', 'b1d326a840c924361c4b8c728947af39812d31c3');
+define( 'LOGGED_IN_SALT',   'e2380d22b3cb8829e3e8c4c635b4e3a2038ab4d6');
+define( 'NONCE_SALT',       '1e94b5c848828fad1d820620fcfebe92611fcd40');
 
 /**#@-*/
 
@@ -77,8 +77,7 @@ $table_prefix = 'wp_';
  *
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
-define( 'WP_DEBUG', true );
-define( 'WP_DEBUG_LOG', true );
+define( 'WP_DEBUG', false );
 
 // If we're behind a proxy server and using HTTPS, we need to alert Wordpress of that fact
 // see also http://codex.wordpress.org/Administration_Over_SSL#Using_a_Reverse_Proxy

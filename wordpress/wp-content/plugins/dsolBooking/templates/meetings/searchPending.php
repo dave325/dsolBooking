@@ -2,10 +2,10 @@
 <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script language="javascript">
-	$(function() {
-		$("#editView").click(function(e) {
+	jQuery(document).ready(function() {
+		jQuery(".editView").click(function(e) {
 			e.preventDefault();
-			var urlParams = new URLSearchParams($(this).attr('href'));
+			var urlParams = new URLSearchParams(jQuery(this).attr('href'));
 
 			fetch(urlParams.get('url') + '/wp-json/dsol-booking/v1/adminEditReservations', {
 				method: "POST",
@@ -58,7 +58,7 @@
 		}
 		console.log(data)
 				window.sessionStorage.setItem('userData', JSON.stringify(data));
-				window.location.href = "http:/localhost:8000/members" + "/members?res_id=" + response.res_id;
+				window.location.href = document.location.origin + "/members" + "/members?res_id=" + response.res_id;
 			})
 		});
 		// Setup date drops
@@ -312,7 +312,7 @@ if (empty($cooked)) {
 							} ?></p>
 					</td>
 					<td>
-						<a id="editView" href="?url=<?php echo get_site_url()  ?>&amp;page=dsol_meetings_search&amp;res_id=<?php echo $val['res_id']; ?>&amp;nonce=<?php echo $nonce ?>&amp;action=edit">
+						<a class="editView" href="?url=<?php echo get_site_url()  ?>&amp;page=dsol_meetings_search&amp;res_id=<?php echo $val['res_id']; ?>&amp;nonce=<?php echo $nonce ?>&amp;action=edit">
 							<?php _e('Edit', 'book-a-room'); ?>
 						</a>
 						<input type="hidden" value="<?php echo wp_create_nonce('wp-rest') ?>" id="nonce"> 

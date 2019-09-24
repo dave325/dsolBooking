@@ -21,6 +21,13 @@ class Dsol_Posts_Controller
                 'callback'  => array($this, 'get_items')
             )
         ));
+        register_rest_route($this->namespace, '/getReservationByDate', array(
+            // Here we register the readable endpoint for collections.
+            array(
+                'methods'   => 'POST',
+                'callback'  => array($this, 'getReservationByDate')
+            )
+        ));
         register_rest_route($this->namespace, '/getRoomInfo', array(
             // Notice how we are registering multiple endpoints the 'schema' equates to an OPTIONS request.
             array(
@@ -93,6 +100,90 @@ class Dsol_Posts_Controller
         return rest_ensure_response($request->get_body());
     }
 
+    public function getReservationByDate(WP_REST_Request $request)
+    {
+        global $wpdb;
+
+        /***
+         * Rewrite By David
+         *     Sumaita
+         *     Removed part of the where clause
+         */
+        $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
+        $table_name_room = $wpdb->prefix . 'dsol_booking_room';
+        $table_name_container = $wpdb->prefix . 'dsol_booking_container';
+        $table_name_time = $wpdb->prefix . 'dsol_booking_time';
+        $table_name_branch = $wpdb->prefix . 'dsol_booking_branch';
+        $timestamp = strtotime(time());
+        /*         
+        $daysRemaining = (int)date('t') - (int)date('j') + 7;
+        $endTime = date('Y-m-d', strtotime(date('Y-m-d'). ' + ' .$daysRemaining . ' days'));
+        $startTime = date('Y-m-d'); */
+        // Get information from frontend POST request
+        $room =  $request->get_json_params();
+        // If the room value is set and the room is valid check for specific value
+        if (isset($room['room']) && $room['room'] > 0) {
+            $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL AND {$table_name_reservation}.c_id = {$room['room']}";
+        } else {
+            $where = "WHERE {$table_name_reservation}.res_id IS NOT NULL AND {$table_name_reservation}.c_id = 1";
+        }
+        $curMonth = date('M');
+        if(isset($room['isDaily'])){
+            $daysRemaining = (int)date('t') - (int)date('j') + 7;
+            $endDate = date('Y-m-d', strtotime(date('Y-m-d'). ' + ' .$daysRemaining . ' days'));
+            $whereDate = "start_time BETWEEN '{$room['date']} 00:00:01' AND '{$endDate} 23:59:59'";
+        }else{
+            $whereDate = "start_time BETWEEN '{$room['date']} 00:00:01' AND '{$room['date']} 23:59:59'";
+        }
+        // $where .= " AND month(JSON_EXTRACT(JSON_ARRAYAGG({$table_name_time}.start_time) , '$[0]')) = {$curMonth})";
+        $sql = "SELECT {$table_name_reservation}.res_id,
+                        {$table_name_reservation}.company_name,
+                        {$table_name_reservation}.email,
+                        {$table_name_reservation}.attendance,
+                        {$table_name_reservation}.notes,
+                        {$table_name_container}.container_number,
+                        {$table_name_container}.c_id,
+                        {$table_name_room}.room_number,
+                        {$table_name_branch}.b_name,
+                        GROUP_CONCAT({$table_name_time}.start_time) AS start_time,
+                        GROUP_CONCAT({$table_name_time}.end_time) AS end_time
+        FROM {$table_name_branch}
+        LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
+        LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
+        LEFT JOIN {$table_name_reservation} ON {$table_name_container}.c_id = {$table_name_reservation}.c_id
+        LEFT JOIN {$table_name_time} ON {$table_name_time}.res_id = {$table_name_reservation}.res_id
+        {$where} AND 
+        {$whereDate}
+        GROUP BY {$table_name_reservation}.res_id, {$table_name_container}.container_number,{$table_name_room}.room_number,{$table_name_branch}.b_name
+        ORDER BY JSON_EXTRACT(Json_Array({$table_name_time}.start_time) , '$[0]');";
+        // Return the sql query as an associative array
+        $final = $wpdb->get_results($sql, ARRAY_A);
+        if ($wpdb->last_error !== '') {
+            return new WP_Error(400, ($wpdb->last_error));
+        }
+        $last = $wpdb->last_query;
+        // Loop through each result set
+        for ($i = 0; $i < count($final); $i++) {
+            // temp variable to store time array
+            $temp_time = array();
+            // decode results saved from json array in query
+            $decode_end_time = explode(',',$final[$i]['end_time']);
+            $decode_start_time = explode(',',$final[$i]['start_time']);
+            // Store start and end time in appropriate pairings
+            for ($j = 0; $j < sizeof($decode_start_time); $j++) {
+                array_push($temp_time, array(
+                    "start_time" => $decode_start_time[$j],
+                    "end_time" => $decode_end_time[$j]
+                ));
+            }
+            // Push filtered array set to official time set
+            $final[$i]['time'] = $temp_time;
+        }
+        // Return all of our comment response data.
+        return rest_ensure_response($final);
+    }
+
+
     /**
      * Grabs the five most recent posts and outputs them as a rest response.
      *
@@ -136,8 +227,8 @@ class Dsol_Posts_Controller
                         {$table_name_container}.c_id,
                         {$table_name_room}.room_number,
                         {$table_name_branch}.b_name,
-                        Json_Array({$table_name_time}.start_time) AS start_time,
-                        Json_Array({$table_name_time}.end_time) AS end_time
+                        GROUP_CONCAT({$table_name_time}.start_time) AS start_time,
+                        GROUP_CONCAT({$table_name_time}.end_time) AS end_time
         FROM {$table_name_branch}
         LEFT JOIN {$table_name_room} ON {$table_name_branch}.b_id = {$table_name_room}.b_id
         LEFT JOIN {$table_name_container} ON {$table_name_room}.r_id = {$table_name_container}.r_id
@@ -158,8 +249,8 @@ class Dsol_Posts_Controller
             // temp variable to store time array
             $temp_time = array();
             // decode results saved from json array in query
-            $decode_end_time = json_decode($final[$i]['end_time']);
-            $decode_start_time = json_decode($final[$i]['start_time']);
+            $decode_end_time = explode(',',$final[$i]['end_time']);
+            $decode_start_time = explode(',',$final[$i]['start_time']);
             // Store start and end time in appropriate pairings
             for ($j = 0; $j < sizeof($decode_start_time); $j++) {
                 array_push($temp_time, array(
@@ -218,7 +309,6 @@ class Dsol_Posts_Controller
     public function bookRoom(WP_REST_Request $request)
     {
         global $wpdb;
-        $wpdb->show_errors();
         if (is_user_logged_in()) {
             $data = $request->get_json_params();
             $table_name_reservation = $wpdb->prefix . 'dsol_booking_reservation';
@@ -227,6 +317,7 @@ class Dsol_Posts_Controller
             $end_time = date('Y-m-d H:i:s', $data["arr"][sizeOf($data["arr"]) - 1]["end_time"]);
             $contNum = $data['room']['c_id'];
             $time_insert_arr = array();
+            
             /*
             Need to adjust
             
@@ -321,10 +412,10 @@ class Dsol_Posts_Controller
                             */
                     }
                 } catch (\UnexpectedValueException $e) {
-                    return rest_ensure_response(array("error", $e));
+                    return new WP_Error(400,array("error", $e));
                 }
-
-                if (isset($data['res_id'])) {
+                // return rest_ensure_response(array( 'times' => $time_insert_arr, 'line' => 417));
+                if (isset($data['res_id']) && $data['res_id'] > 0) {
                     $resId = $data['res_id'];
                     foreach ($time_insert_arr as $time) {
                         $time = array(
@@ -367,7 +458,7 @@ class Dsol_Posts_Controller
                         $wpdb->insert($table_name_time, $time);
                         if ($wpdb->last_error !== '') {
                             $wpdb->query('ROLLBACK');
-                            return new WP_Error(400, ('Error adding time'));
+                            return new WP_Error(400, array('Error adding time'));
                         }
                     }
                 }
@@ -396,7 +487,7 @@ class Dsol_Posts_Controller
                         $wpdb->print_error();
                     }
                     */
-                return rest_ensure_response("Success");
+                return rest_ensure_response(array("Success" => true));
             } else {
                 $time_sql = "";
                 $i = 0;
@@ -454,7 +545,7 @@ class Dsol_Posts_Controller
                         );
                     }
                 } catch (Exceptions $e) {
-                    return rest_ensure_response($e);
+                    return new WP_Error(400,$e);
                 }
                 if (isset($data['res_id'])) {
                     $resId = $data['res_id'];
