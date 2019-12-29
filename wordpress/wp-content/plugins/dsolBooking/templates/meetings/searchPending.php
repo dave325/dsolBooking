@@ -58,7 +58,7 @@
 		}
 		console.log(data)
 				window.sessionStorage.setItem('userData', JSON.stringify(data));
-				window.location.href = document.location.origin + "/members" + "/members?res_id=" + response.res_id;
+				window.location.href = document.location.origin + "/members" + "/members?res_id=" + response.res_id + "?admin=" + 1;
 			})
 		});
 		// Setup date drops

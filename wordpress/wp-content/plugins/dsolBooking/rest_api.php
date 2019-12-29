@@ -318,17 +318,6 @@ class Dsol_Posts_Controller
             $contNum = $data['room']['c_id'];
             $time_insert_arr = array();
             
-            /*
-            Need to adjust
-            
-            $timeCheck = "SELECT *
-            FROM `$table_name_time`
-            LEFT JOIN `$table_name_reservation` ON `$table_name_time`.res_id = `$table_name_reservation`.res_id
-            WHERE (`$table_name_reservation`.c_id = {$contNum}) AND ((`$table_name_time`.start_time BETWEEN '{$start_time}' AND '{$end_time}') OR (`$table_name_time`.end_time BETWEEN '{$start_time}' AND '{$end_time}')) ";
-            $res = $wpdb->get_results($timeCheck);
-            if ($wpdb->last_error !== '') {
-                return new WP_Error(400, ('Time check issue'));
-            }*/
             //if (sizeof($res) == 0) {
             if ($data['repeat']['id'] > 0) {
                 $values = array();
@@ -345,7 +334,12 @@ class Dsol_Posts_Controller
                     $time_insert_arr = array();
                     $i = 0;
                     foreach ($data["multipleDates"] as $value) {
-                        if (date('n', $value) == date('n', time()) || date('n', $value) == date('n', time()) + 1 && date('j', $value) <= 7) {
+                        $start_month = date('n', strtotime($value));
+                        $next_month = date('n', time() + 1);
+                        if($next_month == "12"){
+                            $next_month = "1";
+                        }
+                        if ($start_month == date('n', time()) || $start_month == $next_month && date('j', $value) <= 7) {
                             if ($data["isSeperate"] == 0) {
 
                                 $temp_date = date("Y-m-d", $value);
@@ -414,7 +408,7 @@ class Dsol_Posts_Controller
                 } catch (\UnexpectedValueException $e) {
                     return new WP_Error(400,array("error", $e));
                 }
-                // return rest_ensure_response(array( 'times' => $time_insert_arr, 'line' => 417));
+                return rest_ensure_response(array( 'times' => $time_insert_arr, 'line' => 417));
                 if (isset($data['res_id']) && $data['res_id'] > 0) {
                     $resId = $data['res_id'];
                     foreach ($time_insert_arr as $time) {
@@ -462,38 +456,19 @@ class Dsol_Posts_Controller
                         }
                     }
                 }
-                /*
-                    $wpdb->insert($table_name_time, array(
-                        "start_time" => $start_time,
-                        "end_time" => $end_time
-                    ));
-                    $insert_id = $wpdb->insert_id;
-                    if ($wpdb->last_error !== '') {
-                        return rest_ensure_response($wpdb->last_result);
-                    }
-                    $wpdb->insert($table_name_reservation, array(
-                        "c_id" => $data["room"]["c_id"],
-                        "t_id" => $insert_id,
-                        "modified_by" => wp_get_current_user()->display_name,
-                        "created_at" => current_time('mysql', 1),
-                        "modified_at" => current_time('mysql', 1),
-                        "created_by" => wp_get_current_user()->user_email,
-                        "company_name" => wp_get_current_user()->display_name,
-                        "email" => wp_get_current_user()->user_email,
-                        "attendance" => $data["numAttend"],
-                        "notes" => $data["desc"]
-                    ));
-                    if ($wpdb->last_error !== '') {
-                        $wpdb->print_error();
-                    }
-                    */
                 return rest_ensure_response(array("Success" => true));
             } else {
                 $time_sql = "";
                 $i = 0;
                 try {
                     if (sizeOf($data['arr']) > 1) {
-                        if (date('n', strtotime($start_time)) == date('n', time()) || date('n', strtotime($start_time)) == date('n', time()) + 1 && date('j', strtotime($start_time)) <= 7) {
+                        $t = array();
+                        $start_month = date('n', strtotime($start_time));
+                        $next_month = date('n', time() + 1);
+                        if($next_month == "12"){
+                            $next_month = "1";
+                        }
+                        if ($start_month == date('n', time()) || $start_month == $next_month && date('j', strtotime($start_time)) <= 7) {
                             if ($data["isSeperate"] == 0) {
                                 $temp_date = date("Y-m-d", strtotime($start_time));
                                 $temp_end_time = date("H:i:s", strtotime($end_time));
@@ -544,7 +519,7 @@ class Dsol_Posts_Controller
                             "end_time" => $end_time
                         );
                     }
-                } catch (Exceptions $e) {
+                } catch (Exception $e) {
                     return new WP_Error(400,$e);
                 }
                 if (isset($data['res_id'])) {
@@ -568,7 +543,6 @@ class Dsol_Posts_Controller
                         "notes" => $data["desc"]
                     ), array("res_id" => $resId));
                 } else {
-                    //return rest_ensure_response(array($data, $time_insert_arr, sizeOf($data['seperateIndexes'])));
                     $wpdb->insert($table_name_reservation, array(
                         "c_id" => $data["room"]["c_id"],
                         "modified_by" => wp_get_current_user()->display_name,
@@ -590,7 +564,9 @@ class Dsol_Posts_Controller
                         $time['res_id'] = $temp_insert_id;
                         $wpdb->insert($table_name_time, $time);
                         if ($wpdb->last_error !== '') {
+                            
                             $wpdb->query('ROLLBACK');
+                            return rest_ensure_response($wpdb->last_result);
                             return new WP_Error(400, ($wpdb->last_result));
                         }
                     }
@@ -599,7 +575,7 @@ class Dsol_Posts_Controller
                         return rest_ensure_response($wpdb->last_result);
                     }
                 }
-                return rest_ensure_response(array("Success" => true));
+                return rest_ensure_response(array("Success" => true, 'data' => $data, "timesBooked" => $time_insert_arr));
             }
         } else {
             return new WP_Error(400, ('The Time is already taken'), array($time_insert_arr));

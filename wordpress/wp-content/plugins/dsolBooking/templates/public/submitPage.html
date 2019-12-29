@@ -127,6 +127,17 @@
                                 <textarea name="desc" rows="3" id="desc" ng-model="info.desc"></textarea>
                             </div>
                         </div>
+                        <div ng-if="isAdmin">
+                            <div class="wideCol">
+                                <div class="question">
+                                    <label for="desc">
+                                        Purpose of meeting*</label>
+                                </div>
+                                <div class="formInput">
+                                    <textarea name="desc" rows="3" id="desc" ng-model="info.desc"></textarea>
+                                </div>
+                            </div>
+                        </div>
                         <div class="wideCol">
                             <div class="formInput">
                                 <div ng-class="{'bg-warning':error.desc.length > 0 || error.numAttend.length > 0}"

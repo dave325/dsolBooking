@@ -552,6 +552,14 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       window.location.href = localized.path + "/members";
       //$location.path('/');
     } else {
+      var urlParams = new URLSearchParams(window.location.search);
+      let isAdmin = urlParams.get("admin");
+        if(isAdmin){
+          $scope.isAdmin = true;
+          %$http.get(localized.path + '/wp-json/dsol-booking/v1/)
+        }else{
+          $scope.isAdmin = false;
+        }
       // Store factory data in scope
       $scope.data = myFactory.getData;
       // Store username data

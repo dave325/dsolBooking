@@ -677,7 +677,7 @@ class dsol_meetings
      */
 
 	 public static function showPending(){
-		require( BOOKAROOM_PATH . 'templates/meetings/pending.php' );
+		require( DSOL_BOOKING_PATH . 'templates/meetings/pending.php' );
 	 }
 	
 	/**
