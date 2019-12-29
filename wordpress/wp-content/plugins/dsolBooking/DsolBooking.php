@@ -70,7 +70,7 @@ function dSol_enqueuer() {
 								'partials' => plugins_url( 'dsolBooking/templates/partials/' ),
 								"path" =>  get_site_url(),
 								'nonce' => wp_create_nonce( 'wp_rest' ),
-								'username' => wp_get_current_user(),
+								'user' => wp_get_current_user(),
 								'assets' =>plugins_url('dsolBooking')
                 )
     );

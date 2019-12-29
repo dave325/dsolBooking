@@ -75,6 +75,21 @@ class Dsol_Posts_Controller
                 "callback" => array($this, 'adminEditReservations')
             )
             ));
+            register_rest_route($this->namespace, '/getUsers',array(
+                array(
+                    'methods' => "GET",
+                    "callback" => array($this, 'getUsers')
+                )
+                ));
+    }
+
+    public function getUsers($request){
+        $args = array(
+            'role'    => 'Customer',
+            'orderby' => 'user_nicename',
+            'order'   => 'ASC'
+        );
+        return rest_ensure_response(get_users( $args ));
     }
 
     /**
@@ -534,23 +549,27 @@ class Dsol_Posts_Controller
                     $wpdb->update($table_name_reservation, array(
                         "c_id" => $data["room"]["c_id"],
                         "modified_by" => wp_get_current_user()->display_name,
-                        "created_at" => current_time('mysql', 1),
                         "modified_at" => current_time('mysql', 1),
-                        "created_by" => wp_get_current_user()->user_email,
-                        "company_name" => wp_get_current_user()->display_name,
-                        "email" => wp_get_current_user()->user_email,
                         "attendance" => $data["numAttend"],
                         "notes" => $data["desc"]
                     ), array("res_id" => $resId));
                 } else {
+                    if(current_user_can("manage_options") && isset($data["customerId"]) && $data['customerId'] > -1){
+                        $user = get_users(array(
+                            "search" => $data["customerId"],
+                            "search_columns" => "ID"
+                        ))[0];
+                    }else{
+                        $user = wp_get_current_user();
+                    }
                     $wpdb->insert($table_name_reservation, array(
                         "c_id" => $data["room"]["c_id"],
                         "modified_by" => wp_get_current_user()->display_name,
                         "created_at" => current_time('mysql', 1),
                         "modified_at" => current_time('mysql', 1),
                         "created_by" => wp_get_current_user()->user_email,
-                        "company_name" => wp_get_current_user()->display_name,
-                        "email" => wp_get_current_user()->user_email,
+                        "company_name" => $user->data->display_name,
+                        "email" => $user->data->user_email,
                         "attendance" => $data["numAttend"],
                         "notes" => $data["desc"]
                     ));
@@ -575,7 +594,7 @@ class Dsol_Posts_Controller
                         return rest_ensure_response($wpdb->last_result);
                     }
                 }
-                return rest_ensure_response(array("Success" => true, 'data' => $data, "timesBooked" => $time_insert_arr));
+                return rest_ensure_response(array("Success" => true, 'data' => $data));
             }
         } else {
             return new WP_Error(400, ('The Time is already taken'), array($time_insert_arr));

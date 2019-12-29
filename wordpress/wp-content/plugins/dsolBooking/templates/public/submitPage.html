@@ -131,10 +131,12 @@
                             <div class="wideCol">
                                 <div class="question">
                                     <label for="desc">
-                                        Purpose of meeting*</label>
+                                        Which Customer*</label>
                                 </div>
                                 <div class="formInput">
-                                    <textarea name="desc" rows="3" id="desc" ng-model="info.desc"></textarea>
+                                    <select name="customer" id="customer" ng-model="info.customer">
+                                        <option ng-repeat="customer in customers" value="{{customer.data.ID}}">{{customer.data.user_nicename}}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

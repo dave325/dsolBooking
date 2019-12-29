@@ -8,6 +8,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
     $scope.reservations = [];
     // Stores the room from the resolved object in the route
     $scope.rooms = [];
+    console.log(localized)
     // Set the current user and reservations to a factory object for reuse
     myFactory.setUser(localized.user);
     //myFactory.setReservations(TIMES.reservations);
@@ -537,33 +538,52 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         //$location.path('/').search('action', 'submit');
         var urlParams = new URLSearchParams(window.location.search);
         let id = urlParams.get("res_id");
+        let isAdmin;
+        console.log(localized.user.roles)
+        if(localized.user.roles.includes('administrator')){
+          isAdmin = 1;
+        }else{
+          isAdmin = 0;
+        }
         if (id) {
-          window.location.href = localized.path + '/submit-page?res_id=' + id;
+          window.location.href = localized.path + '/submit-page?res_id=' + id + "&admin=" + isAdmin;
         } else {
-          window.location.href = localized.path + '/submit-page';
+          window.location.href = localized.path + '/submit-page?admin=' + isAdmin;
         }
       }
     }
 
   }])
 
-  .controller('SubmitForm', function ($scope, $http, myFactory, $uibModal, restapi) {
+  .controller('SubmitForm', function ($scope, $http, myFactory, $timeout, restapi) {
     if (myFactory.getData.arr.length == 0) {
       window.location.href = localized.path + "/members";
       //$location.path('/');
     } else {
       var urlParams = new URLSearchParams(window.location.search);
       let isAdmin = urlParams.get("admin");
-        if(isAdmin){
-          $scope.isAdmin = true;
-          %$http.get(localized.path + '/wp-json/dsol-booking/v1/)
-        }else{
-          $scope.isAdmin = false;
-        }
+      $scope.customers = [];
+      console.log(isAdmin)
+      if (isAdmin) {
+        $scope.isAdmin = true;
+        $http.get(localized.path + '/wp-json/dsol-booking/v1/getUsers', { headers: { 'X-WP-Nonce': localized.nonce } }).then(
+          (res) => {
+            $timeout(() => {
+
+              $scope.customers = res.data;
+              console.log(res);
+            },0)
+
+          }
+        );
+
+      } else {
+        $scope.isAdmin = false;
+      }
       // Store factory data in scope
       $scope.data = myFactory.getData;
       // Store username data
-      $scope.username = localized.username.data.display_name;
+      $scope.username = localized.user.data.display_name;
       $scope.isDisabled = false;
       $scope.error = {
         desc: '',
@@ -628,12 +648,16 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         };
         // Disbale submit 
         $scope.isDisabled = true;
+        var urlParams = new URLSearchParams(window.location.search);
+        let id = urlParams.get("res_id");
+        let isAdmin = urlParams.get("admin");
         // set factory data
         myFactory.setNumAttend($scope.info.numAttend);
         myFactory.setDesc($scope.info.desc);
+        if(isAdmin){
+          myFactory.setCustomer($scope.info.customer);
+        }
         myFactory.storeInfo();
-        var urlParams = new URLSearchParams(window.location.search);
-        let id = urlParams.get("res_id");
         // Check if res_id is not selected and make new api call
         if (!id) {
           // Make api call to book room
@@ -718,7 +742,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         // Store current res_id from checkboxes
         $scope.items = [];
         // Set lastCheck for editRes info
-        $scope.lastCheck; 
+        $scope.lastCheck;
       },
       (err) => {
         console.error(err)
@@ -817,7 +841,8 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         nonce: localized.nonce,
         user: {},
         isSeperate: 0,
-        seperateIndexes: [0]
+        seperateIndexes: [0],
+        customerId : -1
       };
     }
     // Expose data and functions
@@ -834,7 +859,8 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       setRepeat: setRepeat,
       storeInfo: storeInfo,
       retrieveInfo: retrieveInfo,
-      removeData: removeData
+      removeData: removeData,
+      setCustomer:setCustomer
     };
     function setArr(arrCopy) {
       data.arr = arrCopy;
@@ -857,6 +883,10 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
     }
     function setDesc(desc) {
       data.desc = desc;
+    }
+
+    function setCustomer(cust){
+      data.customerId = cust;
     }
 
     function setRoom(room) {
@@ -1031,7 +1061,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                     // Check if time is stored in multiple sections
                     if (reservation.time.length > 1) {
                       for (let j = 0; j < reservation.time.length; j++) {
-                                                //console.log('ere')
+                        //console.log('ere')
                         //console.log(checkTimes(myFactory.getData.arr, reservation.time[j]))
                         if (j == reservation.time.length - 1) {
                           //BOOKMARK
@@ -1117,7 +1147,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
                     // Check if time is stored in multiple sections
                     if (reservation.time.length > 1) {
                       for (let j = 0; j < reservation.time.length; j++) {
-                                                //console.log('ere')
+                        //console.log('ere')
                         //console.log(checkTimes(myFactory.getData.arr, reservation.time[j]))
                         if (j == reservation.time.length - 1) {
                           //BOOKMARK
