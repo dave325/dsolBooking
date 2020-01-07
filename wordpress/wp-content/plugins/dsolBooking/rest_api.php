@@ -75,12 +75,18 @@ class Dsol_Posts_Controller
                 "callback" => array($this, 'adminEditReservations')
             )
             ));
-            register_rest_route($this->namespace, '/getUsers',array(
-                array(
-                    'methods' => "GET",
-                    "callback" => array($this, 'getUsers')
-                )
-                ));
+        register_rest_route($this->namespace, '/getUsers',array(
+            array(
+                'methods' => "GET",
+                "callback" => array($this, 'getUsers')
+            )
+            ));
+        register_rest_route($this->namespace, '/hooks',array(
+            array(
+                'methods' => "POST",
+                "callback" => array($this, 'hooks')
+            )
+            ));
     }
 
     public function getUsers($request){
@@ -90,6 +96,16 @@ class Dsol_Posts_Controller
             'order'   => 'ASC'
         );
         return rest_ensure_response(get_users( $args ));
+    }
+
+    public function hooks($request){
+        global $wpdb;
+
+		$table_name = $wpdb->prefix . "dsol_booking_room";
+
+		$final = $wpdb->insert( $table_name,
+			array( 'room_number' => 8,
+				'b_id' => 0  ));
     }
 
     /**
@@ -349,7 +365,7 @@ class Dsol_Posts_Controller
                     $time_insert_arr = array();
                     $i = 0;
                     foreach ($data["multipleDates"] as $value) {
-                        $start_month = date('n', strtotime($value));
+                        $start_month = date('n', $value);
                         $next_month = date('n', time() + 1);
                         if($next_month == "12"){
                             $next_month = "1";
@@ -423,7 +439,6 @@ class Dsol_Posts_Controller
                 } catch (\UnexpectedValueException $e) {
                     return new WP_Error(400,array("error", $e));
                 }
-                return rest_ensure_response(array( 'times' => $time_insert_arr, 'line' => 417));
                 if (isset($data['res_id']) && $data['res_id'] > 0) {
                     $resId = $data['res_id'];
                     foreach ($time_insert_arr as $time) {
@@ -892,4 +907,3 @@ function dsol_register_my_rest_routes()
 }
 
 add_action('rest_api_init', 'dsol_register_my_rest_routes');
-?>

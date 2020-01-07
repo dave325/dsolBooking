@@ -721,9 +721,9 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
   .controller('profile', function ($scope, restapi, $location, myFactory) {
     // Set user 
-    myFactory.setUser(localized.username);
+    myFactory.setUser(localized.user);
     // Store user in local scope
-    $scope.user = localized.username;
+    $scope.user = localized.user;
     restapi.getUserReservations().then(
       (res) => {
         console.log(res.data)
@@ -1563,7 +1563,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
     function getUserReservations() {
       console.log(localized)
-      return $http.post(localized.path + '/wp-json/dsol-booking/v1/getReservations', { user: localized.username }, { headers: { 'X-WP-Nonce': localized.nonce } });
+      return $http.post(localized.path + '/wp-json/dsol-booking/v1/getReservations', { user: localized.user }, { headers: { 'X-WP-Nonce': localized.nonce } });
     }
 
     function editUserReservation(info) {
