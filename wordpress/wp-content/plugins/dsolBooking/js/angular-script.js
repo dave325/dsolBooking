@@ -564,7 +564,7 @@ angular.module('wp', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
       let isAdmin = urlParams.get("admin");
       $scope.customers = [];
       console.log(isAdmin)
-      if (isAdmin) {
+      if (isAdmin && isAdmin == 1) {
         $scope.isAdmin = true;
         $http.get(localized.path + '/wp-json/dsol-booking/v1/getUsers', { headers: { 'X-WP-Nonce': localized.nonce } }).then(
           (res) => {

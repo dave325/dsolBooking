@@ -62,7 +62,7 @@ function dSol_enqueuer() {
 	wp_enqueue_script('angular-route',"https://code.angularjs.org/1.7.8/angular-route.min.js", "", "", false);
 	wp_enqueue_script( "angular-animate", "https://code.angularjs.org/1.7.8/angular-animate.min.js", "", "", false );
 	wp_enqueue_script('moment',"https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js");
-	wp_enqueue_script('angular-script',plugins_url( 'dsolBooking/js/angular-script.js' ), "", "1.1.0", false);
+	wp_enqueue_script('angular-script',plugins_url( 'dsolBooking/js/angular-script.js' ), "", "1.1.3", false);
 	wp_enqueue_script('angular-bootstrap', plugins_url('dsolBooking/js/ui-bootstrap-tpls-2.5.0.min.js'), "","",false);
 	
 	wp_localize_script('angular-script', 'localized',
