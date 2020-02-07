@@ -1,3 +1,4 @@
 .DS_Store
 wordpress/wp-admin
 wordpress/wp-includes
+debug.log

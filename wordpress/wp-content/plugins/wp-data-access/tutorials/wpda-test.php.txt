@@ -1,0 +1,68 @@
+<?php
+
+/*
+Plugin Name: wpda test
+*/
+
+/*
+ * This is a mini plugin showing how to use Wp Data Access directly from your php code.
+ *
+ * Following these steps:
+ * (1) Copy this example file to your plugin folder and remove the .txt file extention.
+ * (2) Make sure WP Data Access plugin is installed and activated.
+ * (3) Grant access to a table you like to use for this test: Wp Data Access > Manage Plugin > Back-end Settings.
+ * (4) Change 'wp_customers' (table_name) to the name of the table you selected in the previous step.
+ * (5) Activate wpda test plugin.
+ * (6) Check your WP Data Access menu (or other menu if you changed the code below).
+ * (7) Sub menu "Added by code" should be available with list table and simple form (if activated).
+ */
+
+function add_wpda_menu() {
+
+	// (2) Add your menu
+	add_action('admin_menu', 'add_app_menu');
+
+}
+
+function add_app_menu(){
+
+	if (!class_exists('WPDataAccess\List_Table\WPDA_List_View')) {
+		// Is WP Data Access deactivated or uninstalled?
+		return;
+	}
+
+	// (3) Create a (sub) menu handle
+	// Works for add_menu_page and add_submenu_page equally
+	$wpda_table_list_menu = add_submenu_page(
+        'wpda', 					// Set to your own menu slug
+        'WPDA menu added by code',	// Your page title
+        'Added by code',			// Your menu title
+        'manage_options',			// Set your authorization here
+        'wpda_test',				// Menu slug of your page
+        'show_page'					// Calls function below
+    );
+
+	global $wpda_table_list_view;
+	// (4) Add Instantiate class WPDA_List_View
+	// This allows you to set screen options
+	// If screen options are not available, something went wrong here...
+    $wpda_table_list_view = new WPDataAccess\List_Table\WPDA_List_View(
+        [
+            'page_hook_suffix' => $wpda_table_list_menu,	// Handle to (sub)
+            'table_name'       => 'wp_customers'			// Database table in your wordpress schema (CHECK!!!)
+        ]
+    );
+
+}
+
+function show_page(){
+
+	global $wpda_table_list_view;
+	// (5) Show menu page
+	$wpda_table_list_view->show();
+
+}
+
+// (1) Wait untill all plugins are loaded
+// You need to do this to get access to WP Data Access classes
+add_action('plugins_loaded', 'add_wpda_menu');

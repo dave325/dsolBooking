@@ -1,0 +1,46 @@
+*** BUGS ***
+
++ After updating a table design the user (sometimes) has to reconcile to reflect the real database table structure
++ Recreate repository not working as expected on WordPress multisite
++ Table settings not working correctly when multiple manage table windows are open (last opened is taken for insert/update/delete)
++ Default option set not (always) used if non default (???)
+
+*** WORK IN PROGRESS ***
+
++ Allow to export view data from bulk actions menu (forum support #12131944 - dsbking)
++ Add awesome video tutorials on how to create a scheduled export (comment nacho)
+
++ Repair demos and tutorials (update plugin tables) and move to website
++ Update videos
++ Add videos to documentation
+  + Data Backup tool
+  + Data Explorer
+  + Data Designer
+  + Data Menus
+
+*** NEXT & FEATURE REQUESTS ***
+
++ Add forward/backward buttons to data entry forms related to selection in Data Explorer (form post #12275882 - dizwell)
++ Add media from URL (using the WordPress media library)
++ Display multiple lookup columns
++ Implement foreign keys in Data Designer
++ Implement compare in Data Designer
++ Use GET and POST vars (old and new) in default where (form post #12232151 - khansadi)
++ Add media to export for media columns
++ Disable edit mode for parent and enable mode for child (form post #11889053 - wpsd2006)
++ Nested lookup in ADD and EDIT page (review wmuskie) already done???
++ Number field formatting
+  + Display a float number with 2 decimal places, or no decimal places etc.
+  + For extra credit a way to display the integer 305623456 as 305-62-3456
+  + A way to display leading 0s so 123 would display as 000123
++ Field formatting e.g. phone number, credit card (review wmuskie)
++ Import CSV files
++ Create and modify views (support forum #11907073 - @Gbade)
++ Backup data to Google Drive and OneDrive
++ Improve table availability check on menu construction
++ Export posts related to static pages in data projects (id +  author)
++ Is it possible to add grid editing with DataTables as an add-on? (YES) (forum post #11660769)
+
+*** FUTURE ***
+
++ Data Command (SQL command line)
